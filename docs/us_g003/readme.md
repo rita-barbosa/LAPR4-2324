@@ -1,4 +1,4 @@
-# US 1001
+# US G002
 
 *This is an example template*
 

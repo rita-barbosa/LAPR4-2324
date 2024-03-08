@@ -1,18 +1,13 @@
-# US 3004
+# US G006
 
-*This is an example template*
 
 ## 1. Context
 
-*Explain the context for this task. It is the first time the task is assigned to be developed or this tasks was incomplete in a previous sprint and is to be completed in this sprint? Are we fixing some bug?*
+It is the first time this task was assigned, seeing as this is the first sprint.
 
 ## 2. Requirements
 
-*In this section you should present the functionality that is being developed, how do you understand it, as well as possible correlations to other requirements (i.e., dependencies). You should also add acceptance criteria.*
-
-*Example*
-
-**US G002** As {Ator} I Want...
+**US G006** As Project Manager, I want the team to elaborate a Domain Model using DDD.
 
 **Acceptance Criteria:**
 
@@ -27,6 +22,13 @@
 ## 3. Analysis
 
 *In this section, the team should report the study/analysis/comparison that was done in order to take the best design decisions for the requirement. This section should also include supporting diagrams/artifacts (such as domain model; use case diagrams, etc.),*
+
+**Client Clarifications:**
+
+>**Question:**
+> 
+> **Answer:**
+
 
 ## 4. Design
 
