@@ -11,7 +11,8 @@ name: Java CI with Maven
 on:
   push:
     branches:
-      - master    
+      - master
+      - main
 #  workflow_dispatch:
 
 jobs:
@@ -22,7 +23,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        ref: 'master'
+        ref: 'main'
         fetch-depth: 0
       
     - name: Set up JDK 11
@@ -30,5 +31,7 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
-        cache: maven
+
+    - name: Build with Maven
+      run: mvn --batch-mode --update-snapshots verify
 
