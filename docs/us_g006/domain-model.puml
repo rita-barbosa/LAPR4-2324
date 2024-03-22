@@ -1,0 +1,105 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+skinparam classAttributeIconSize 0
+hide empty attributes
+skinparam classBackgroundColor beige
+skinparam ArrowColor #222222
+
+
+
+'SHARED VALUE OBJETS
+    class JobReference <<(V,#FF8B40) value object>> {}
+    class Address <<(V,#FF8B40) value object>> {}
+
+package "<<aggregate>> JobOpening" {
+    entity JobOpening <<entity>> <<root>> {
+    - numberVacancy
+    }
+    class Function <<(V,#FF8B40) value object>> {}
+    class ContractType <<(V,#FF8B40) value object>> {}
+    class Mode <<(V,#FF8B40) value object>> {}
+
+    class Company <<(V,#FF8B40) value object>> {}
+    class RequirementSpecification <<(V,#FF8B40) value object>> {}
+    class Description <<(V,#FF8B40) value object>> {}
+}
+
+    entity Administrator <<entity>>  {}
+    entity CustomerManager <<entity>>  {}
+
+package "<<aggregate>> Entity" {
+    entity Entity <<entity>>  {}
+    class CompanyName <<(V,#FF8B40) value object>> {}
+    class CustomerCode <<(V,#FF8B40) value object>> {}
+}
+
+    entity Customer <<entity>>  {}
+    entity Operator <<entity>>  {}
+    entity Candidate <<entity>>  {}
+
+
+package "<<aggregate>> Application" {
+    entity Application <<entity>>  {}
+    class Interview <<(V,#FF8B40) value object>> {}
+    class CandidateEmail <<(V,#FF8B40) value object>> {}
+    class CandidateName <<(V,#FF8B40) value object>> {}
+    class CandidatePhoneNumber <<(V,#FF8B40) value object>> {}
+}
+
+package "<<aggregate>> Recruitment Process" {
+    entity RecruitmentProcess <<entity>> <<root>> {}
+    class RecruitmentPeriod <<(V,#FF8B40) value object>> {}
+    entity Phase <<entity>> {}
+    class PhasePeriod <<(V,#FF8B40) value object>> {}
+    class PhaseType <<(V,#FF8B40) value object>> {}
+}
+
+
+
+Administrator -> "1..*" Entity: manages
+Administrator --> "1..*" CustomerManager : manages
+Administrator -> "1..*" Customer : registers
+
+Entity --> "1..*" JobOpening : sends
+Entity --> "1" CompanyName
+Entity --> "1" Address
+Entity --> "1" CustomerCode
+
+CustomerManager ---> "1..*" Entity: manages
+CustomerManager -> "1..*" JobOpening: registers
+
+CustomerManager ---> "0..*" Application : overseas
+CustomerManager --> "1..*" RecruitmentProcess : sets up
+
+
+Operator --> "0..*" Candidate : registers
+Operator --> "0..*" Application : registers
+
+Candidate --> "1..*" Application : submits
+Candidate --> "1..*" JobOpening : applies for
+
+JobOpening ---> "1"  JobReference : includes
+JobOpening --> "1"  Mode : includes
+JobOpening ---> "1"  Address : includes
+JobOpening --> "1"  Function : includes
+JobOpening ---> "1"  Description : includes
+JobOpening ---> "1"  ContractType : includes
+JobOpening --> "1"  Company : includes
+JobOpening ---> "1"  RequirementSpecification : includes
+
+RecruitmentProcess --> "1" RecruitmentPeriod : goes on for
+RecruitmentProcess ---> "5..6" Phase : encompasses
+Phase --> "1" PhasePeriod :  goes on for
+Phase --> "1" PhaseType : categorizes
+
+Customer --> Entity :  represents
+Interview --> Application : is part of
+
+Application --> JobReference
+Application --> CandidateEmail
+Application -> CandidateName
+Application --> CandidatePhoneNumber
+
+
+@enduml

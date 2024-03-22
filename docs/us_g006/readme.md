@@ -1,79 +1,67 @@
 # US G006
 
-
 ## 1. Context
 
 It is the first time this task was assigned, seeing as this is the first sprint.
 
 ## 2. Requirements
 
-**US G006** As Project Manager, I want the team to elaborate a Domain Model using DDD.
-
-**Acceptance Criteria:**
-
-- G002.1. The system should...Blá Blá Blá ...
-
-- G002.2. Blá Blá Blá ...
-
-**Dependencies/References:**
-
-*Regarding this requirement we understand that it relates to...*
+**US G006:** As Project Manager, I want the team to elaborate a Domain Model using DDD.
 
 ## 3. Analysis
 
-*In this section, the team should report the study/analysis/comparison that was done in order to take the best design decisions for the requirement. This section should also include supporting diagrams/artifacts (such as domain model; use case diagrams, etc.),*
-
 **Client Clarifications:**
 
->**Question:**
-> 
-> **Answer:**
+> **Question:** Who's responsible for analysing applications?
+>
+> **Answer:** The Customer Manager is the one that analysis and decides the ranking of candidates.
 
+> **Question:** Is there only one user per Customer (Entity)?
+>
+> **Answer:** Yes.
 
-## 4. Design
+> **Question:** How are the job requirements selected/defined?
+>
+> **Answer:** The Customer Manager registers the job opening and proceeds to choose the requirement specification
+> suitable for it from those created and registered in the system by the language engineer.
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (presenting the classes that support the functionality), the identification and rational behind the applied design patterns and the specification of the main tests used to validade the functionality.*
+> **Question:** Does the Administrator only manage the Customer Manager? What does this responsability entail?
+>
+> **Answer:** The Admin will manage those users and might manage Operators.
 
-### 4.1. Realization
+> **Question:** What is the needed information for registration of Customers? And what about the employees?
+>
+> **Answer:** For the customers, it is important to know their name and address. For the users, the email (used to
+> identify users in the system) and name are necessary.
 
-### 4.2. Class Diagram
+> **Question:** What's the difference between the requirement and interview model?
+>
+> **Answer:** The 'style' of the question and answer is similar, yet the primary purpose of the requirements is to assess whether the candidate meets the minimum criteria, the result being yes or no. The essence of the interview is to categorize and rate each response, ultimately assigning a grade to each candidate to aid in the ranking process.
 
-![a class diagram](class-diagram-01.svg "A Class Diagram")
+> **Question:** Does a Customer Manager manage more than one Customer?
+>
+> **Answer:** Yes.
 
-### 4.3. Applied Patterns
+> **Question:** Does the Operator register an application or is that an automatic system process?
+>
+> **Answer:** The Operator initiates the application process by registering it, while the system should automatically import the resulting data from the Application File Bot. The Operator generates a template file containing the required data for application validation. Upon completing the necessary information, they submit it for verification. If the criteria are not met, the application is rejected.
 
-### 4.4. Tests
+> **Question:** Regarding section 2.2.1, is it necessary for the previous recruitment process phase to be closed before advancing to the next phase?  
+>
+> **Answer:** The phases must proceed sequentially. As one phase concludes, the next one will commence.
 
-Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
+> **Question:** In relation to section 2.2.1, is it during the Analysis phase that interviews are assessed, and is this result what determines the ranking of candidates? Additionally, what is the purpose of the CV in this phase? Since interviews are not mandatory, what happens if they do not take place?
+>
+> **Answer:** The interview scores are calculated during the interview phase. The CV and other data are used by the Customer Manager in the analysis phase to rank the candidates. However, the ordering is the responsibility of the Customer Manager. The absence of interviews does not affect the ranking of candidates as it does not explicitly depend on interviews.
 
-**Test 1:** *Verifies that it is not possible to ...*
+> **Question:** In relation to the job reference, what is the Customer Code?
+>
+> **Answer:** Upon registration in the system, a Customer must have an identifier code, which is an abbreviation of their name limited to 10 characters.
 
-**Refers to Acceptance Criteria:** G002.1
+**Domain Model:**
 
+![Domain Model](domain-model.svg)
 
-```
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
-	...
-}
-````
+## 4. Observations
 
-## 5. Implementation
-
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the design. It should also describe and explain other important artifacts necessary to fully understand the implementation like, for instance, configuration files.*
-
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
-
-## 6. Integration/Demonstration
-
-*In this section the team should describe the efforts realized in order to integrate this functionality with the other parts/components of the system*
-
-*It is also important to explain any scripts or instructions required to execute an demonstrate this functionality*
-
-## 7. Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the development this work.*
+*[N/A]*
