@@ -41,7 +41,7 @@ jobs:
       # The verify phase is executed, which typically compiles the source code, runs tests, and packages the application if the build is successful.
       run: |
             mvn --batch-mode --update-snapshots verify
-            mkdir artifacts && cp target/*.jar artifacts
+            mkdir artifacts && cp */target/*.jar artifacts
 
     # finds the jar files within the project, specified with the directory path,  and puts them all in a zip
     - name: Upload JAR file
