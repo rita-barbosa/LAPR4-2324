@@ -60,6 +60,8 @@ jobs:
 #        path: target/surefire-reports
 #        if-no-files-found: warn
 #        overwrite: true
+#
+#       Lets see
 
   # the artifacts are available for download on GitHub, on Actions - simply click on the commit and then on Artifacts
 
