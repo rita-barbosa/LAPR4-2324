@@ -39,25 +39,27 @@ jobs:
         cache: 'maven'  #load dependencies specified on the pom file
     - name: Build with Maven
       # The verify phase is executed, which typically compiles the source code, runs tests, and packages the application if the build is successful.
-      run: mvn --batch-mode --update-snapshots verify
+      run: |
+            mvn --batch-mode --update-snapshots verify
+            mkdir artifacts && cp target/*.jar artifacts
 
     # finds the jar files within the project, specified with the directory path,  and puts them all in a zip
     - name: Upload JAR file
       uses: actions/upload-artifact@v4
       with:
         name: sem4pi_23_24_2dg2_jar
-        path: target
+        path: artifacts
         if-no-files-found: warn
         overwrite: true
 
     # finds the sure-fire report and puts it in a zip
-    - name: Upload Sure-fire Reports
-      uses: actions/upload-artifact@v4
-      with:
-        name: surefire-reports
-        path: target/surefire-reports
-        if-no-files-found: warn
-        overwrite: true
+#    - name: Upload Sure-fire Reports
+#      uses: actions/upload-artifact@v4
+#      with:
+#        name: surefire-reports
+#        path: target/surefire-reports
+#        if-no-files-found: warn
+#        overwrite: true
 
   # the artifacts are available for download on GitHub, on Actions - simply click on the commit and then on Artifacts
 
