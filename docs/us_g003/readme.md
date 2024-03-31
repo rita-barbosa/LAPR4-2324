@@ -30,6 +30,7 @@
 
 ## 4. Design
 
+> Due to the nature of this user story, this part of the documentation will only explain what was done to set up certain technologies, so the usage of diagrams was considered unnecessary or confusing to the reader.
 
 ## 5. Implementation
 
