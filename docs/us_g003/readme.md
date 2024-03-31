@@ -22,11 +22,16 @@
 
 ## 3. Analysis
 
- 
+> For the usage of ANTLR we'll be using ANTLR, version 2.7.7, due to the already existing documentation for it. The dependencies should be added to the POM files in order to support said technology.
+
+> The usage of an already existing plugin is also recommended (ANTLR v4) for a better and more understandable development with ANTLR4.
+
+> For the envisioned servers we'll be using H2 databases. The dependencies should be added to the POM files in order to support said technology.
+
 ## 4. Design
 
- 
+
 ## 5. Implementation
 
- 
+
 ## 6. Observations
