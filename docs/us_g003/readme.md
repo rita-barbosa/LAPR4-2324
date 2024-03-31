@@ -34,5 +34,8 @@
 
 ## 5. Implementation
 
+> For the setup of the ANTLR the dependencies and plugins were added to the POM file according to already existing and recommend documentation from the LPROG recommended reading. (![ANTLR Mega Tutorial](ANTLR_Mega_Tutorial.pdf)
 
 ## 6. Observations
+
+> As mentioned before, since this user story is about setting up technologies to support future functionalities of the program, the lack of documentation is understandable as the functionalities will only be implemented in the next sprint.
