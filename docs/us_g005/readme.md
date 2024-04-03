@@ -1,77 +1,32 @@
-# US G002
-
-*This is an example template*
+# US G005
 
 ## 1. Context
 
-*Explain the context for this task. It is the first time the task is assigned to be developed or this tasks was incomplete in a previous sprint and is to be completed in this sprint? Are we fixing some bug?*
+It is the first time this task was assigned, seeing as this is the first sprint.
 
 ## 2. Requirements
 
-*In this section you should present the functionality that is being developed, how do you understand it, as well as possible correlations to other requirements (i.e., dependencies). You should also add acceptance criteria.*
-
-*Example*
-
-**US G002** As {Ator} I Want...
-
-**Acceptance Criteria:**
-
-- G002.1. The system should...Blá Blá Blá ...
-
-- G002.2. Blá Blá Blá ...
+**US G005:** As Project Manager, I want the team to add to the project the necessary scripts, so that build/executions/deployments/... can be executed effortlessly.
 
 **Dependencies/References:**
 
-*Regarding this requirement we understand that it relates to...*
+Include scripts for all the major tasks and execution of applications.
 
 ## 3. Analysis
 
-*In this section, the team should report the study/analysis/comparison that was done in order to take the best design decisions for the requirement. This section should also include supporting diagrams/artifacts (such as domain model; use case diagrams, etc.),*
+**Client Clarifications:**
+
+> **Question:** Relativamente à G005, os scripts que são referidos são apenas de build e testes?
+>
+> **Answer:** Eu diria que nesta fase (sprint A) possivelmente os scripts remetem apenas para construir as aplicações, executar testes e executar as aplicações. 
+> No entanto, a ideia é que consigam manter um conjunto de scripts que permitam a cada momento fazer as operações mais comuns de forma simplificada e fora do IDE. 
+> Mais à frente isso torna-se mais importante quando tiverem de preparar, por exemplo, “deployments” mais complexos.
+
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (presenting the classes that support the functionality), the identification and rational behind the applied design patterns and the specification of the main tests used to validade the functionality.*
-
-### 4.1. Realization
-
-### 4.2. Class Diagram
-
-![a class diagram](class-diagram-01.svg "A Class Diagram")
-
-### 4.3. Applied Patterns
-
-### 4.4. Tests
-
-Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
-
-**Test 1:** *Verifies that it is not possible to ...*
-
-**Refers to Acceptance Criteria:** G002.1
-
-
-```
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
-	...
-}
-````
+> Due to the type of this user story, it will only exist an explanation of the main idea.
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the design. It should also describe and explain other important artifacts necessary to fully understand the implementation like, for instance, configuration files.*
-
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
-
-## 6. Integration/Demonstration
-
-*In this section the team should describe the efforts realized in order to integrate this functionality with the other parts/components of the system*
-
-*It is also important to explain any scripts or instructions required to execute an demonstrate this functionality*
-
-## 7. Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the development this work.*
+> To implement this user story, were made scripts for all the existing applications and major tasks, in two different formats: .bat and .sh.
