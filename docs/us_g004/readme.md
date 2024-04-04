@@ -6,8 +6,6 @@ The user story G004 is first presented in Sprint A.
 
 ## 2. Requirements
 
->*In this section you should present the functionality that is being developed, how do you understand it, as well as possible correlations to other requirements (i.e., dependencies). You should also add acceptance criteria.*
-
 **G004** As Project Manager, I want the team to setup a continuous integration server.
 
 **Acceptance Criteria:**
@@ -17,7 +15,7 @@ The user story G004 is first presented in Sprint A.
 
 **Dependencies/References:**
 
-> *Regarding this requirement we understand that it relates to...*
+This functionality has no dependencies.
 
 ## 3. Analysis
 
@@ -89,12 +87,7 @@ jobs:   # after this block, jobs will indicate the different phases of the autom
 
 With this knowledge, it is possible to analyse and automate processes of the team's workflow to save time.
 
-
 ## 4. Design
-
->*In this sections, the team should present the solution design that was adopted to solve the requirement.*
-> 
->*This should include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (presenting the classes that support the functionality), the identification and rational behind the applied design patterns and the specification of the main tests used to validade the functionality.*
 
 The following topics describe the solution to the opposing problem and justifications.
 
@@ -131,10 +124,6 @@ within the CI Server are under the 2 minutes mark.
 ![commit_time_and_success_error](commit_time.svg)
 
 ## 5. Implementation
-
->*In this section the team should present, if necessary, some evidencies that the implementation is according to the design. It should also describe and explain other important artifacts necessary to fully understand the implementation like, for instance, configuration files.*
->
->*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
 
 The main code to implement this feature is included on the YAML file of the project.
 
@@ -203,12 +192,12 @@ regarding each commit, below the workflows applied to such.
 
 Below there is a listing of the major commits, and its brief descriptions, of this functionality.
 
-| Commit  | Description                             |
-|:-------:|:----------------------------------------|
-| a4d0fc8 | First Iteration of G004's Documentation |
-| 2a552b4 | First Implementation of the YAML File   |
-| 1151680 | Optimization of the YAML File           |
-|         |                                         |
+| Commit  | Description                                                                                         |
+|:-------:|:----------------------------------------------------------------------------------------------------|
+| a4d0fc8 | First iteration of G004's Documentation                                                             |
+| 2a552b4 | First implementation of the YAML file                                                               |
+| 1151680 | Optimization of the YAML File                                                                       |
+| 7f7322d | Conclusion of the documentation (Implementation, Spelling and Images) and Updatate of the YAML file |
 
 ## 6. Integration/Demonstration
 
