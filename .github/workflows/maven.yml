@@ -31,12 +31,13 @@ jobs:
         fetch-depth: 0
 
     # loads within the virtual machine environment the specified version of the JDK
-    - name: Set up JDK 11
+    - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'temurin'
         cache: 'maven'  #load dependencies specified on the pom file
+
     - name: Build with Maven
       # The verify phase is executed, which typically compiles the source code, runs tests, and packages the application if the build is successful.
       run: |
@@ -51,17 +52,6 @@ jobs:
         path: artifacts
         if-no-files-found: warn
         overwrite: true
-
-    # finds the sure-fire report and puts it in a zip
-#    - name: Upload Sure-fire Reports
-#      uses: actions/upload-artifact@v4
-#      with:
-#        name: surefire-reports
-#        path: target/surefire-reports
-#        if-no-files-found: warn
-#        overwrite: true
-#
-#       Lets see
 
   # the artifacts are available for download on GitHub, on Actions - simply click on the commit and then on Artifacts
 

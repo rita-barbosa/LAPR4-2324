@@ -13,6 +13,7 @@ The user story G004 is first presented in Sprint A.
 **Acceptance Criteria:**
 
 - G004.1. GitHub Actions/Workflows should be used.
+- G004.2. The process executed by the Continuous Integration Server for each push cannot exceed the 2 minutes mark.
 
 **Dependencies/References:**
 
@@ -37,7 +38,7 @@ Workflows are sets of actions that are frequently done within a project's contex
 
 Let's see an example:
 
-![workflow_exemplo](workflow%20exemplo%20bg.svg)
+![workflow_exemplo](workflow_exemplo_bg.svg)
 
 In this picture, we can see a simple workflow constituted from a single job of 3 actions. This job's aim is to fetch the repository, set up the JDK (JAVA Development Kit) used
 and build the project with Maven.
@@ -111,41 +112,23 @@ After reflecting on the team workflow, certain steps were found to be frequent a
 
 These small processes must be automated so that, when a triggering event is noted, the developer does not need to spend time with them.
 
-### 4.2. Class Diagram
+Now we can break down this workflow in two jobs: building the project and uploading the artifacts.
 
-![a class diagram](class-diagram-01.svg "A Class Diagram")
+The possible solution found to the implementation of US G004 is similar to the following one:
 
-### 4.3. Applied Patterns
+![job_dependency](job_dependency.svg)
 
+### 4.2. Tests
 
+In US G004, unlike most functionalities, it is not possible to pre-plan the various scenarios that the code may encounter.
 
-### 4.4. Tests
+The testing phase of functionality does not use the JUnit framework. Instead, the testing is made by committing code and checking
+the response of GitHub (Actions tab) and the active workflows and its phases.
 
->Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.
+Following the requirement specified in requisite [G004.2](#2-requirements), the following images prove that all the processes
+within the CI Server are under the 2 minutes mark.
 
-[//]: # (**Test 1:** *Verifies that it is not possible to ...*)
-
-[//]: # ()
-[//]: # (**Refers to Acceptance Criteria:** G002.1)
-
-[//]: # ()
-[//]: # ()
-[//]: # (```)
-
-[//]: # (@Test&#40;expected = IllegalArgumentException.class&#41;)
-
-[//]: # (public void ensureXxxxYyyy&#40;&#41; {)
-
-[//]: # (	...)
-
-[//]: # (})
-
-[//]: # (````)
-
-The testing phase of functionality does not use the JUnit framework. Instead, the testing is made committing code and checking
-the response of GitHub and the active workflows and its phases.
-
-**Show images of a successful commit and an unsuccessful commit status on GitHub and Workflow stages**
+![commit_time_and_success_error](commit_time.svg)
 
 ## 5. Implementation
 
@@ -155,6 +138,30 @@ the response of GitHub and the active workflows and its phases.
 
 The main code to implement this feature is included on the YAML file of the project.
 
+Unfortunately, it was not possible to implement the solution presented in the [Design](#4-design) phase. The problem was
+that the artifacts built in the first job weren't available to the second job without duplicating code and adding the step
+to upload artifacts.
+
+To avoid duplicated code, US G004 was implemented in a single job within the YAML file.
+
+![single_job](actual_workflow_job.svg)
+
+* **Getting the Repository and Setting up the JDK**
+
+```
+  - uses: actions/checkout@v3
+    with:
+    ref: 'main'
+    fetch-depth: 0
+
+  - name: Set up JDK 17
+    uses: actions/setup-java@v3
+    with:
+    java-version: '17'
+    distribution: 'temurin'
+    cache: 'maven'
+```
+
 * **Dependency Managing**
 
 `cache: 'maven'`
@@ -163,39 +170,45 @@ The main code to implement this feature is included on the YAML file of the proj
 
 ```
   - name: Build with Maven
-    run: mvn --batch-mode --update-snapshots verify
+    run: |
+          mvn --batch-mode --update-snapshots verify
+          mkdir artifacts && cp */target/*.jar artifacts
 ````
 
-* Dependency between Jobs
+The pipeline symbol ( | ) indicates the execution of more than one command.
 
-`needs: test_and_build # Dependency on 1st job
-`
+The initial command triggers Maven to operate in batch mode, updating snapshots and verifying the project. It encompasses
+building the project, executing tests, and ensuring overall functionality.
 
-* Upload of Artifacts
-* JAR file
+The second command establishes a directory named "artifacts" and copies all discovered JAR files (*.jar) from every target
+directory into this newly created folder.
+
+* **Upload of Artifacts (JAR files)**
+
   ```
     - uses: actions/upload-artifact@v4
       with:
         name: sem4pi_23_24_2dg2_jar
         path: artifacts
+        if-no-files-found: warn
+        overwrite: true
   ````
-  * Test and Compilation Reports
-    ```
-      - uses: actions/upload-artifact@v4
-        with:
-          name: surefire-reports
-          path: target/surefire-reports
-    ````
 
+All the JAR files will be in a zip called **"sem4pi_23_24_2dg2_jar"**, which will be available on GitHub (Actions tab),
+regarding each commit, below the workflows applied to such.
 
-* **Commit List**
+![github_artifacts](artifacts.svg)
 
-Below there is a listing of the major commits of this functionality.
+### **Commit List**
 
-| Commit | Description |
-|:------:|:-----------:|
-|        |             |
+Below there is a listing of the major commits, and its brief descriptions, of this functionality.
 
+| Commit  | Description                             |
+|:-------:|:----------------------------------------|
+| a4d0fc8 | First Iteration of G004's Documentation |
+| 2a552b4 | First Implementation of the YAML File   |
+| 1151680 | Optimization of the YAML File           |
+|         |                                         |
 
 ## 6. Integration/Demonstration
 
