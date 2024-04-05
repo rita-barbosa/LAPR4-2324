@@ -118,8 +118,8 @@ In US G004, unlike most functionalities, it is not possible to pre-plan the vari
 The testing phase of functionality does not use the JUnit framework. Instead, the testing is made by committing code and checking
 the response of GitHub (Actions tab) and the active workflows and its phases.
 
-Following the requirement specified in requisite [G004.2](#2-requirements), the following images prove that all the processes
-within the CI Server are under the 2 minutes mark.
+Following the requirement specified in requisite [G004.2](#2-requirements), the following images prove that processes within the CI 
+Server are under the 2 minutes mark.
 
 ![commit_time_and_success_error](commit_time.svg)
 
