@@ -42,21 +42,24 @@ public final class CandidateApp {
     }
 
     public static void main(final String[] args) {
-        System.out.println("=====================================");
-        System.out.println("Base POS");
-        System.out.println("(C) 2016, 2017, 2018");
-        System.out.println("=====================================");
+        System.out.println("+= Candidate Application =======");
 
-        AuthzRegistry.configure(PersistenceContext.repositories().users(),
-                new BasePasswordPolicy(), new PlainTextEncoder());
-
-        // login and go to main menu
-        if (new LoginAction(BaseRoles.CASHIER).execute()) {
-            final MainMenu menu = new MainMenu();
-            menu.mainLoop();
-        }
-
-        // exiting the application, closing all threads
-        System.exit(0);
+//        System.out.println("=====================================");
+//        System.out.println("Base POS");
+//        System.out.println("(C) 2016, 2017, 2018");
+//        System.out.println("=====================================");
+//
+//
+//        AuthzRegistry.configure(PersistenceContext.repositories().users(),
+//                new BasePasswordPolicy(), new PlainTextEncoder());
+//
+//        // login and go to main menu
+//        if (new LoginAction(BaseRoles.CASHIER).execute()) {
+//            final MainMenu menu = new MainMenu();
+//            menu.mainLoop();
+//        }
+//
+//        // exiting the application, closing all threads
+//        System.exit(0);
     }
 }
