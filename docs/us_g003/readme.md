@@ -25,7 +25,8 @@
 > For the usage of ANTLR we'll be using ANTLR, version 2.7.7, due to the already existing documentation for it. The dependencies should be added to the POM files in order to support said technology.
 
 > The usage of an already existing plugin is also recommended (ANTLR v4) for a better and more understandable development with ANTLR4.
-
+>![ANTLR_plugin.png](ANTLR_plugin.png)
+> 
 > For the envisioned servers we'll be using H2 databases. The dependencies should be added to the POM files in order to support said technology.
 
 ## 4. Design
@@ -34,7 +35,12 @@
 
 ## 5. Implementation
 
-> For the setup of the ANTLR the dependencies and plugins were added to the POM file according to already existing and recommend documentation from the LPROG recommended reading. (![ANTLR Mega Tutorial](ANTLR_Mega_Tutorial.pdf)
+> For the setup of the ANTLR the dependencies and plugins were added to the POM file according to already existing and recommend documentation from the LPROG recommended reading. ([ANTLR Mega Tutorial](ANTLR_Mega_Tutorial.pdf)):
+> ![ANTLR_dependency.png](ANTLR_dependency.png)
+> 
+> For the setup concerning the H2 databases the dependency was implemented:
+> ![H2_database.png](H2_database.png)
+> ![H2_database_creation.png](H2_database_creation.png)
 
 ## 6. Observations
 

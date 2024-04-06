@@ -104,8 +104,8 @@
 
 **Justification and Evidences:**
 > The integration was successful and no problems were created:
-> ![H2_database.png](H2_database.png)
-> ![ANTLR_dependency.png](ANTLR_dependency.png)
+> ![H2_database.png](../../../us_g003/H2_database.png)
+> ![ANTLR_dependency.png](../../../us_g003/ANTLR_dependency.png)
 > The documentation describes well the user story and is complete.
 
 ## Req. Satisfaction
