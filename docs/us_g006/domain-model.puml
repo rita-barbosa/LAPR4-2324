@@ -11,40 +11,54 @@ skinparam ArrowColor #222222
 'SHARED VALUE OBJETS
     class JobReference <<(V,#FF8B40) value object>> {}
     class Address <<(V,#FF8B40) value object>> {}
+    class CompanyName <<(V,#FF8B40) value object>> {}
 
-package "<<aggregate>> JobOpening" {
+'SERVICES
+    class RequirementEvaluator <<(S,#4d91f7) service>> {}
+    class InterviewEvaluator <<(S,#4d91f7) service>> {}
+
+'AGGREGATES
+package "<<aggregate>> Job Opening" {
     entity JobOpening <<entity>> <<root>> {
     - numberVacancy
     }
-    class Function <<(V,#FF8B40) value object>> {}
+    class JobFunction <<(V,#FF8B40) value object>> {}
     class ContractType <<(V,#FF8B40) value object>> {}
     class Mode <<(V,#FF8B40) value object>> {}
 
-    class Company <<(V,#FF8B40) value object>> {}
     class RequirementSpecification <<(V,#FF8B40) value object>> {}
+     class InterviewModel <<(V,#FF8B40) value object>> {}
     class Description <<(V,#FF8B40) value object>> {}
 }
-
-    entity Administrator <<entity>>  {}
-    entity CustomerManager <<entity>>  {}
-
+package "<<aggregate>> Administrator" {
+    entity Administrator <<entity>> <<root>>  {}
+}
+package "<<aggregate>> Customer Manager" {
+    entity CustomerManager <<entity>> <<root>>  {}
+}
 package "<<aggregate>> Entity" {
-    entity Entity <<entity>>  {}
-    class CompanyName <<(V,#FF8B40) value object>> {}
+    entity Entity <<entity>> <<root>>  {}
     class CustomerCode <<(V,#FF8B40) value object>> {}
 }
-
-    entity Customer <<entity>>  {}
-    entity Operator <<entity>>  {}
-    entity Candidate <<entity>>  {}
-
+package "<<aggregate>> Customer" {
+    entity Customer <<entity>> <<root>> {}
+    }
+package "<<aggregate>> Operator" {
+    entity Operator <<entity>> <<root>> {}
+}
+    package "<<aggregate>> Candidate" {
+    entity Candidate <<entity>>  <<root>>{}
+}
 
 package "<<aggregate>> Application" {
-    entity Application <<entity>>  {}
-    class Interview <<(V,#FF8B40) value object>> {}
-    class CandidateEmail <<(V,#FF8B40) value object>> {}
+    entity Application <<entity>><<root>>  {}
+    class Email <<(V,#FF8B40) value object>> {}
+    class ApplicationStatus <<(V,#FF8B40) value object>> {}
     class CandidateName <<(V,#FF8B40) value object>> {}
-    class CandidatePhoneNumber <<(V,#FF8B40) value object>> {}
+    class PhoneNumber <<(V,#FF8B40) value object>> {}
+    class Interview <<(V,#FF8B40) value object>>   {}
+    class Schedule <<(V,#FF8B40) value object>> {}
+     class File <<(V,#FF8B40) value object>> {}
 }
 
 package "<<aggregate>> Recruitment Process" {
@@ -52,54 +66,72 @@ package "<<aggregate>> Recruitment Process" {
     class RecruitmentPeriod <<(V,#FF8B40) value object>> {}
     entity Phase <<entity>> {}
     class PhasePeriod <<(V,#FF8B40) value object>> {}
+    class PhaseDescription <<(V,#FF8B40) value object>> {}
     class PhaseType <<(V,#FF8B40) value object>> {}
+    class PhaseStatus <<(V,#FF8B40) value object>> {}
 }
 
 
-
+'ASSOCIATIONS
 Administrator -> "1..*" Entity: manages
 Administrator --> "1..*" CustomerManager : manages
+Administrator -> "1..*" Operator : manages
 Administrator -> "1..*" Customer : registers
-
+'--
 Entity --> "1..*" JobOpening : sends
-Entity --> "1" CompanyName
-Entity --> "1" Address
-Entity --> "1" CustomerCode
-
-CustomerManager ---> "1..*" Entity: manages
+Entity --> "1" CompanyName : is described by
+Entity --> "1" Address : is located at
+Entity --> "1" CustomerCode : is identified by
+'--
+CustomerManager --> "1..*" Entity: manages
 CustomerManager -> "1..*" JobOpening: registers
-
 CustomerManager ---> "0..*" Application : overseas
 CustomerManager --> "1..*" RecruitmentProcess : sets up
-
-
+CustomerManager --> "1..*" Candidate : manages
+'--
 Operator --> "0..*" Candidate : registers
 Operator --> "0..*" Application : registers
-
+'--
 Candidate --> "1..*" Application : submits
 Candidate --> "1..*" JobOpening : applies for
-
+'--
+Customer --> "1" Entity :  represents
+'--
 JobOpening ---> "1"  JobReference : includes
 JobOpening --> "1"  Mode : includes
 JobOpening ---> "1"  Address : includes
-JobOpening --> "1"  Function : includes
+JobOpening --> "1"  JobFunction : includes
 JobOpening ---> "1"  Description : includes
 JobOpening ---> "1"  ContractType : includes
-JobOpening --> "1"  Company : includes
+JobOpening --> "1"  CompanyName : includes
 JobOpening ---> "1"  RequirementSpecification : includes
-
+JobOpening ---> "1"  InterviewModel : includes
+JobOpening --> "1"  RecruitmentProcess : includes
+JobOpening --> "1"  Application : associated to <
+'--
 RecruitmentProcess --> "1" RecruitmentPeriod : goes on for
 RecruitmentProcess ---> "5..6" Phase : encompasses
+'--
 Phase --> "1" PhasePeriod :  goes on for
-Phase --> "1" PhaseType : categorizes
-
-Customer --> Entity :  represents
-Interview --> Application : is part of
-
-Application --> JobReference
-Application --> CandidateEmail
-Application -> CandidateName
-Application --> CandidatePhoneNumber
-
+Phase --> "1" PhaseType : categorizes <
+Phase --> "1" PhaseStatus : categorizes <
+Phase --> "1" PhaseDescription : describes <
+'--
+Application ---> "0..1" Interview : includes
+Application --> "1" JobReference : includes
+Application --> "1" Email: includes
+Application -> "1" CandidateName: includes
+Application --> "1" PhoneNumber: includes
+Application -> "1..*" File : describes <
+Application --> "1" ApplicationStatus : categorizes <
+'--
+RequirementEvaluator .-> Application
+RequirementEvaluator .-> JobOpening
+'--
+InterviewEvaluator .--> Application
+InterviewEvaluator .--> JobOpening
+'--
+Interview ---> "1" File: described in
+Interview --> "1" Schedule : follows a
 
 @enduml
