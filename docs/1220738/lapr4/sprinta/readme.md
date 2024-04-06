@@ -13,7 +13,21 @@
 | 4 – Correct      | 	The engineering process is correct. Code and design are completely aligned. Failures in the application of good practices and techniques are almost meaningless.                                                                                                                                                               |
 | 5 - Exceptional  | 	The engineering process is correct (order of activities). Code and design are completely aligned. Very good justification of the process followed/applied. Application of good practices and techniques is exemplary.                                                                                                          |
 
-**Selected Level:** 5
+**Selected Level:** 4
+
+ > The engineering process was followed in the best way possible considering the objective of this user story.
+> 
+> That being said, some parts of this process were not achievable, again, due to the nature of the user story, for example:
+> - Tests
+> - Class Diagrams
+> - Sequence Diagrams
+>
+> However, the order of activities was followed as show by the following commits<sup>1</sup>: 
+> ![order_of_commits](order_of_commits.png)
+ >
+> More proof can be found in the related [documentation](docs/us_g003/readme.md) and in the commits sent to the GitHub repository.
+> 
+> <sup>1</sup> The last commit is not being considered in the process as it updates the auto-evaluation and the read.me file associated with my work in this sprint.
 
 ## Issues and Version Control
 
@@ -26,7 +40,13 @@
 | 4 – Correct       | Frequent use of the repository: messages that are mostly significant but sometimes fail to connect to issues/tasks. Use task/issue management boards correctly.                    |
 | 5 - Exceptional   | 	Frequent use of the repository: mostly significant messages and (virtually) no failures in connection to issues/tasks. They use task/issue management boards in an exemplary way. |
 
-**Selected Level:** 5
+**Selected Level:** 3
+
+> The commits are not frequent, as most of the documentation and research was done throughout the first 2-3 weeks of this sprint. The documentation was done slowly but commits were not done with every change since it would only include some paragraphs or updates to existing info in the documentation.
+> 
+> Not only that but the commit messages and titles were not explicit enough and should've been clearer, however, all commits have their issue number associated and use the correct tags to show what kind of work was done and committed:
+> ![usage_of_tags.png](usage_of_tags.png)
+> ![usage_of_the_number_of_issue](usage_of_the_number_of_issue.png)
 
 ## Team Work
 
@@ -43,7 +63,11 @@
 
 **Justification and Evidences:**
  > Multiple meetings were set up with the team to discuss a large amount of subject regarding this project.
-
+> 
+> Also, the images below show the division of work and tasks using GitHub in a timely manner:
+> ![timely_division_of_tasks1.png](timely_division_of_tasks1.png)
+ > ![timely_division_of_tasks2.png](timely_division_of_tasks2.png)
+ 
 ## Deployment
 
 | Level             | Description                                                                                                                                                                                                                                                                                   |
@@ -59,6 +83,12 @@
 
 **Justification and Evidences:**
 
+> The images below show that the app being used in the IDE and the command line:
+> ![IDE_program.png](IDE_program.png)
+> ![Command_line_program.png](Command_line_program.png)
+> 
+> The only reason the backoffice app only shows the title is because we dont have data on logins, so it was agreed that the code that used login data would be commented to avoid disruption, while everything else was not.
+
 ## Integration
 
 | Level             | Description                                                                                                                                                   |
@@ -73,6 +103,10 @@
 **Selected Level:** 5
 
 **Justification and Evidences:**
+> The integration was successful and no problems were created:
+> ![H2_database.png](H2_database.png)
+> ![ANTLR_dependency.png](ANTLR_dependency.png)
+> The documentation describes well the user story and is complete.
 
 ## Req. Satisfaction
 
@@ -85,6 +119,12 @@
 | 4 – Correct       | All requirements have been met in full, and any options related to the interpretation/analysis of the problem are correctly justified and are evidence of your understanding of the problem domain. Very complete definition of acceptance criteria. Most criteria are reflected in tests.         |
 | 5 - Exceptional   | The above is true and alternatives are also discussed that are supported by a rich understanding of the problem domain. These alternatives may be related to the problem domain or the high-level architecture of the solution. Exemplary acceptance criteria and excellent connection to testing. |
 
-**Selected Level:** 5
+**Selected Level:** 4
 
 **Justification and Evidences:**
+> The user story asked that the necessary setup is to be done so the project can handle future applications such as ANTLR and also support the envisioned architecture that is shown in chapter 4.
+> Both were met.
+> 
+> The read.me file describes in a concussive way how this user story was thought out and implemented.
+> 
+> No other alternatives were discussed.
