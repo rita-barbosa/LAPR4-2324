@@ -140,12 +140,12 @@ It is the first time this task was assigned, seeing as this is the first sprint.
 
 ## 4. Observations
 
-+ In the domain model, _Entity_ refers to the r companies or entities that need to recruit human resources. However,
-  _Customer_ refers to the person of the companies/entities that is assigned as user, so they will be responsible for
++ In the domain model, _Entity_ refers to the companies or entities that need to recruit human resources. However,
+  _Customer_ refers to the person of the companies/entities that are assigned as user, so they will be responsible for
   following the job openings.
 + The aggregate _RecruitmentProcess_ refers to the sequence of phases setup by the Customer Manager,
   defining the dates for the phases
   and if the process includes interviews.
 + The aggregate _Application_ refers to the application submitted by a Candidate. The value object _File_ refers to the
   files attached to the email sent by the Candidate. Additionally, the value object _Interview_ is also related to
-  _File_ which in this case refers to the candidate responses of the interview.
+  _File_ which in this case refers to the candidate responses of the interview, although they follow the same business rules.
