@@ -36,7 +36,7 @@ The assignment of tasks (requirements/user stories/use cases) during the project
 | **[1220683](1220683/readme.md)** | Matilde Varela | [1220683 - Justification](1220683/lapr4/sprinta/readme.md) | 4                   | 3                          | 5         | 4          | 5           | 4                 |
 | **[1220738](1220738/readme.md)** | José Santos    | [1220738 - Justification](1220738/lapr4/sprinta/readme.md) | 4                   | 3                          | 5         | 5          | 5           | 4                 |
 | **[1221933](1221933/readme.md)** | Ana Guterres   | [1221933 - Justification](1221933/lapr4/sprinta/readme.md) | 4                   | 3                          | 5         | 4          | 5           | 4                 |
-| **[1211273](1211273/readme.md)** | Vitor Fardilha | [1211273 - Justification](1211273/lapr4/sprinta/readme.md) |                     |                            |           |            |             |                   |
+| **[1211273](1211273/readme.md)** | Vitor Fardilha | [1211273 - Justification](1211273/lapr4/sprinta/readme.md) | 4                   | 3                          | 4         | 4          | 5           | 4                 |
 
 ### Sprint B
 
