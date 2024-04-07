@@ -33,11 +33,3 @@ This approach serves as a crucial step in validating the effectiveness of the to
 ## 5. Implementation
 
 The link for the created project is: [GitHub Project Tool Management](https://github.com/orgs/Departamento-de-Engenharia-Informatica/projects/184)
-
-## 6. Integration/Demonstration
-
-`[N/A]`
-
-## 7. Observations
-
-`[N/A]` 
