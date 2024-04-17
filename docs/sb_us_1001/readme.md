@@ -16,7 +16,8 @@ that customer
 - **1001.2.** The customer code must be unique and have a maximum of 10 characters.
 
 - **1001.3.** The user must have associated the following information: email, name and phone number.
-- **1001.4.** The password must have a minimum of 8 characters, including both upper and lowercase letters, digits, and at least one non-alphanumeric character.
+- **1001.4.** The password must have a minimum of 8 characters, including both upper and lowercase letters, digits, and
+  at least one non-alphanumeric character.
 
 **Dependencies/References:**
 
@@ -29,9 +30,19 @@ _Reference 1001.1:_ Alternatively, this can be achieved by a bootstrap process.
 
 ## 3. Analysis
 
-*In this section, the team should report the study/analysis/comparison that was done in order to take the best design
-decisions for the requirement. This section should also include supporting diagrams/artifacts (such as domain model; use
-case diagrams, etc.)*
+Since the primary function is to register a customer, the information that the Customer Manager will need to input
+includes:
+
+* Company Name
+* Customer Code
+* Address
+
+Once all this information has been successfully submitted, the system should proceed with registering the Customer and
+automatically creating a user.
+
+**Domain Model:**
+
+![Domain-Model-US-1001](domain-model-us-1001.svg)
 
 ## 4. Design
 
