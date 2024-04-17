@@ -101,10 +101,12 @@ Entity --> "1" Address : is located at
 Entity --> "1" CustomerCode : is identified by
 '--
 CustomerManager --> "1..*" Entity: manages
-CustomerManager -> "1..*" JobOpening: registers
+CustomerManager --> "1..*" JobOpening: registers
 CustomerManager ---> "0..*" Application : overseas
 CustomerManager --> "1..*" RecruitmentProcess : sets up
 CustomerManager --> "1..*" Candidate : manages
+CustomerManager --> "1..*" InterviewModel : selects
+CustomerManager ---> "1..*" RequirementSpecification : selects
 '--
 Operator --> "0..*" Candidate : registers
 Operator --> "0..*" Application : registers
