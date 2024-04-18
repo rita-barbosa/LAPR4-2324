@@ -2,47 +2,33 @@
 
 ## 1. Context
 
-This is the first time this user story is being requested.
+*Explain the context for this task. It is the first time the task is assigned to be developed or this tasks was
+incomplete in a previous sprint and is to be completed in this sprint? Are we fixing some bug?*
 
 ## 2. Requirements
 
-**US 1001** As {Customer Manager}, I want to register a customer and that the system automatically creates a user for
-that customer
+*In this section you should present the functionality that is being developed, how do you understand it, as well as
+possible correlations to other requirements (i.e., dependencies). You should also add acceptance criteria.*
+
+*Example*
+
+**US G007** As {Ator} I Want...
 
 **Acceptance Criteria:**
 
-- **1001.1.** Each customer must have associated their company name, an address and a customer code.
+- G002.1. The system should...Blá Blá Blá ...
 
-- **1001.2.** The customer code must be unique and have a maximum of 10 characters.
-
-- **1001.3.** The user must have associated the following information: email, name and phone number.
-- **1001.4.** The password must have a minimum of 8 characters, including both upper and lowercase letters, digits, and
-  at least one non-alphanumeric character.
+- G002.2. Blá Blá Blá ...
 
 **Dependencies/References:**
 
-This functionality has a dependency on [_US G007_](../us_g007) that pertains to the authentication and authorization for
-all users and functionalities.
-Moreover, it is linked to [_US 2000a_](../sb_us_2000a) in the sense that the information required for user registration
-is identical, as clarified by the client.
-
-_Reference 1001.1:_ Alternatively, this can be achieved by a bootstrap process.
+*Regarding this requirement we understand that it relates to...*
 
 ## 3. Analysis
 
-Since the primary function is to register a customer, the information that the Customer Manager will need to input
-includes:
-
-* Company Name
-* Customer Code
-* Address
-
-Once all this information has been successfully submitted, the system should proceed with registering the Customer and
-automatically creating a user.
-
-**Domain Model:**
-
-![Domain-Model-US-1001](domain-model-us-1001.svg)
+*In this section, the team should report the study/analysis/comparison that was done in order to take the best design
+decisions for the requirement. This section should also include supporting diagrams/artifacts (such as domain model; use
+case diagrams, etc.)*
 
 ## 4. Design
 
@@ -80,8 +66,7 @@ public void ensureXxxxYyyy() {
 design. It should also describe and explain other important artifacts necessary to fully understand the implementation
 like, for instance, configuration files.*
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this
-requirement.*
+*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
 
 ## 6. Integration/Demonstration
 

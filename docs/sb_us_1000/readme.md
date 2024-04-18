@@ -47,6 +47,10 @@ _Reference 1000.1:_ Alternatively, this can be achieved by a bootstrap process.
 > minimum of 8 characters, include both upper and lowercase letters, digits, and at least one non-alphanumeric
 > character.
 
+> **Question:** Can a user be enabled/disabled multiple times?
+>
+> **Answer:** Yes.
+
 ## 3. Analysis
 
 This functionality centers around three main points: registration, enable/disable, and listing. In essence, this user

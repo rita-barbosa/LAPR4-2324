@@ -1,4 +1,4 @@
-# US 1001
+# US 1009
 
 ## 1. Context
 
@@ -6,43 +6,49 @@ This is the first time this user story is being requested.
 
 ## 2. Requirements
 
-**US 1001** As {Customer Manager}, I want to register a customer and that the system automatically creates a user for
-that customer
+**US 1009** As {Customer Manager}, I want to select the requirement specification to be used for a job opening.
 
 **Acceptance Criteria:**
 
-- **1001.1.** Each customer must have associated their company name, an address and a customer code.
-
-- **1001.2.** The customer code must be unique and have a maximum of 10 characters.
-
-- **1001.3.** The user must have associated the following information: email, name and phone number.
-- **1001.4.** The password must have a minimum of 8 characters, including both upper and lowercase letters, digits, and
-  at least one non-alphanumeric character.
+- 1009.1. The system must maintain consistency at all times.
 
 **Dependencies/References:**
 
-This functionality has a dependency on [_US G007_](../us_g007) that pertains to the authentication and authorization for
-all users and functionalities.
-Moreover, it is linked to [_US 2000a_](../sb_us_2000a) in the sense that the information required for user registration
-is identical, as clarified by the client.
+This user story is directly dependent on [US_1008](../sb_us_1008/readme.md) because the requirements specification
+plugin must already be uploaded into the system for the selection process to begin, as it requires data to make
+selections from.
 
-_Reference 1001.1:_ Alternatively, this can be achieved by a bootstrap process.
+The support for this functionality must follow specific technical requirements, specified in LPROG (until 17/04/2024 no
+additional requirements were presented).
+The ANTLR tool should be used (https://www.antlr.org/).
+
+**Client Clarifications:**
+
+> **Question:** When it comes to choosing the Job Requirement Specification for a Job Opening, is it permissible for a
+> Customer
+> Manager to opt for a Specification that has already been assigned?
+>
+> **Answer:** This scenario may arise, even for similar functionalities, though
+> it's essential to ensure the system remains consistently maintained.
 
 ## 3. Analysis
 
-Since the primary function is to register a customer, the information that the Customer Manager will need to input
-includes:
+The primary goal of this functionality is to choose a requirement specification from among those uploaded for a Job
+Opening.
 
-* Company Name
-* Customer Code
-* Address
+Concerning the Job Opening, clarification is required regarding the client's preferred approach. Currently, our
+understanding is that upon request, the Customer Manager will input the Job Reference of the Job Opening to proceed with
+the selection of the requirement specification.
 
-Once all this information has been successfully submitted, the system should proceed with registering the Customer and
-automatically creating a user.
+Given that the name of the requirement specification acts as its identifier, this information should be displayed along
+with a description to offer clarity for each.
+
+Subsequently, the Customer Manager should select the most appropriate requirement specification based on the provided
+information.
 
 **Domain Model:**
 
-![Domain-Model-US-1001](domain-model-us-1001.svg)
+![Domain-Model-US-1009](domain-model-us-1009.svg)
 
 ## 4. Design
 
