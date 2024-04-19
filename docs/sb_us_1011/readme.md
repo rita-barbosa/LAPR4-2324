@@ -1,8 +1,7 @@
 # US 1011
 
 ## 1. Context
-
-When a job opening is created, we need to select the requirements, the recruitment process and the interview model. This US allow us to select the interview model to the job opening.
+*This is the first time this user story is being requested.*
 
 ## 2. Requirements
 
@@ -11,17 +10,21 @@ When a job opening is created, we need to select the requirements, the recruitme
 **Acceptance Criteria:**
 
 - **1011.1.** The system should have at least one interview model created.
+- **1011.2.** Just include interview models to recruitment processes that include interviews
 
 **Dependencies/References:**
 
-This functionality has a dependency on [_US 1008_](../sb_us_1008) that consists in deploying and configure a plugin (Job Requirement Specification or Interview Model) to be used in the system.
+*This functionality has a dependency on [_US 1008_](../sb_us_1008) that consists
+in deploying and configure a plugin (Job Requirement Specification or Interview Model)
+to be used in the system.*
 
 ## 3. Analysis
+*When a job opening is created, we need to select the requirements, the recruitment process and the interview model. 
+With this functionality, the Customer Manager will select the interview model to be used.*
 
-*In this section, the team should report the study/analysis/comparison that was done in order to take the best design
-decisions for the requirement. This section should also include supporting diagrams/artifacts (such as domain model; use
-case diagrams, etc.)*
+**Domain Model:**
 
+![Domain-Model-US-1011](domain-model-us-1011.svg)
 
 ## 4. Design
 
