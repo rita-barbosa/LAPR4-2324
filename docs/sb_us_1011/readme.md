@@ -2,29 +2,19 @@
 
 ## 1. Context
 
-It is the first time this task was assigned.
+When a job opening is created, we need to select the requirements, the recruitment process and the interview model. This US allow us to select the interview model to the job opening.
 
 ## 2. Requirements
 
-**US 1012:** As Customer Manager, I want to generate and export a template text file to help collect the candidate 
-answers during thew interviews.
-
+**US 1011:** As Customer Manager, I want to select the interview model to use for the interviews of a job opening (for their evaluation/grading)
 
 **Acceptance Criteria:**
 
-- **1012.1.** The system should...Blá Blá Blá ...
-
-- **1012.2.** Blá Blá Blá ...
-
+- **1011.1.** The system should have at least one interview model created.
 
 **Dependencies/References:**
 
-This functionality has a dependency on [_US G003_](../us_g003) that consists in initial configuration of the project
-structure, where was made the setup for the ANTLR.
-
-_Reference 1012.1:_ Requirement Specifications and Interview Models The support for this functionality must follow 
-specific technical requirements, specified in LPROG. The ANTLR tool should be used (https://www.antlr.org/).
-
+This functionality has a dependency on [_US 1008_](../sb_us_1008) that consists in deploying and configure a plugin (Job Requirement Specification or Interview Model) to be used in the system.
 
 ## 3. Analysis
 
