@@ -1,0 +1,21 @@
+@startuml US1005_SSD
+autonumber
+
+actor "Operator" as USER
+participant "System" as SYS
+
+activate USER
+
+USER -> SYS : asks to register a candidate
+activate SYS
+SYS --> USER : asks for name, email and phone number
+deactivate SYS
+
+USER -> SYS : insert the asked information
+activate SYS
+SYS --> USER : create candidate and corresponding user
+deactivate SYS
+
+deactivate USER
+
+@enduml
