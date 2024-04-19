@@ -1,28 +1,29 @@
-# US 1001
+# US 1006
 
 ## 1. Context
 
-*Explain the context for this task. It is the first time the task is assigned to be developed or this tasks was
-incomplete in a previous sprint and is to be completed in this sprint? Are we fixing some bug?*
+This is the first time this US is being worked on. It is related to an action of the Customer Manager.
 
 ## 2. Requirements
 
-*In this section you should present the functionality that is being developed, how do you understand it, as well as
-possible correlations to other requirements (i.e., dependencies). You should also add acceptance criteria.*
-
-*Example*
-
-**US G007** As {Ator} I Want...
+**US 1006:** As Customer Manager, I want to display all the personal data of a candidate.
 
 **Acceptance Criteria:**
 
-- G002.1. The system should...Blá Blá Blá ...
+- **1006.1.** The system should not try to show candidate data of a candidate that does not have data. If such a situation were to happen the system should return an error and inform the user of what occurred.
 
-- G002.2. Blá Blá Blá ...
+
+- **1006.2.** The system should show the name, phone number and email address of the candidate. In case one of the parameters does not have information it should show the message **"NO DATA FOUND"**. 
 
 **Dependencies/References:**
 
-*Regarding this requirement we understand that it relates to...*
+In US1006 it is asked of us to display all the personal information related to a chosen candidate, in this case, we consider personal information to be all the details in the candidature that relate to only himself, not the applications.
+
+***Dependency with US 1006b:*** This user story is dependent on US 1006 as it will use the same system, only show more data.
+
+***Dependency with US 2000a:*** To be able to choose the preferred candidate it must exist in the system, so this user story is essential.
+
+***Dependency with US 2000c:*** To be able to choose the preferred candidate it will show the user all the candidates available to be chosen.
 
 ## 3. Analysis
 
