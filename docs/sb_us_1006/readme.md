@@ -60,9 +60,33 @@ In US1006 it is asked of us to display all the personal information related to a
 
 ## 3. Analysis
 
-*In this section, the team should report the study/analysis/comparison that was done in order to take the best design
-decisions for the requirement. This section should also include supporting diagrams/artifacts (such as domain model; use
-case diagrams, etc.)*
+Since this user story's main focus is on the Customer Manager being able of showing the personal details of the candidate, we focused on 2 questions:
+
+- **What's considered the personal data of a candidate?**
+
+
+- **How can the Customer Manager choose the candidate?**
+
+After asking those questions, the client was able to effectively answer our doubts. With that in mind we now know important information for the design and implementation of this task:
+
+- **Personal data is considered to be ONLY the name, email address and phone number of the candidate.**
+
+
+- **The Customer Manager will be able to choose the candidate in specific through it's email, that is shown when the system lists all the available candidates.**
+
+Not only that but checking other questions related to this user story or that are dependent on this user story has revealed to us even more information:
+
+- **The name to be displayed is the entire name, as received in the application the candidate made.**
+
+
+- **The phone number and postal code are all considered to be portuguese.**
+
+
+- **The Customer Manager can access and consult the information of ALL candidates.**
+
+### Domain Model Related
+
+![Domain Model Excerpt](domain-model-excerpt.svg)
 
 ## 4. Design
 
