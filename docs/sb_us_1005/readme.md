@@ -9,7 +9,7 @@ It is necessary for the customer manager to ble able to list all the existing jo
 **US 1005:** As Customer Manager, I want to list all applications for a job opening.
 
 
-**Dependencies/References:**
+**Acceptance Criteria:**
 
 - **1005.1.** It's necessary to exist at least one job application.
 
@@ -20,20 +20,28 @@ It is necessary for the customer manager to ble able to list all the existing jo
 
 **Dependencies/References:**
 
-This functionality has a dependency on [_US 2002_](../sb_us_2002) since the data to be imported is going to be processed
-first by the Application File Bot.
+This functionality has a dependency on [_US G007_](../us_g007) that pertains to the authentication and authorization for
+all users and functionalities.
+Furthermore, this functionality has a dependency on [_US 2002_](../sb_us_2002) since the data to be imported is going to be 
+processed first by the Application File Bot.
 
 
 **Client Clarifications:**
 
 > **Question:** Regarding the criteria for listing applications: Should the ongoing applications appear, or the 
-> applications made in the past can be included?
-> Can any applications appear or only the ones that have been accepted? What information should be displayed for 
-> each application?
+> applications made in the past can be included? Can any applications appear or only the ones that have been accepted? 
+> What information should be displayed for each application?
 >
 > **Answer:** As stated in the US description, all applications for a job opening should be listed. 
 > It makes sense to display all applications, regardless of their status.
 > Therefore, for each application, the candidate and the status of their application should be identified.
+
+> **Question:** The list should contain applications that haven't concluded all the selecting process defined for the
+> Job Opening setup? If so, the list should contain the state/phase of each application?
+> 
+> **Answer:** The selecting/recruitment process ends only in the "end", so the first questions doesn't make much sense.
+> For the second question, makes sense to include the application state, so the Customer Manager is able to understand
+> which applications were rejected for not have the right requirements.
 
 
 ## 3. Analysis
@@ -47,6 +55,11 @@ more than one job opening in the system.
 ### 3.1 System Sequence Diagram
 
 ![system sequence diagram](US1005_SSD.svg)
+
+
+### 3.2 Domain Model Related
+
+![domain model related](domain-model-excerpt.svg)
 
 
 ## 4. Design
