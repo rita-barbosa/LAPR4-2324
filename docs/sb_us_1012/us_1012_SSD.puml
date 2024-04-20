@@ -1,0 +1,65 @@
+@startuml US2003_SSD
+autonumber
+
+actor "Operator" as OP
+participant "System" as SYS
+
+activate OP
+
+OP -> SYS : asks to generate a new interview model file
+
+activate SYS
+
+
+loop Until the user wants
+|||
+
+    SYS --> OP : presents the questions type list and asks to select an option
+    deactivate SYS
+
+    OP -> SYS : selects the question type
+
+    alt New question type
+        activate SYS
+
+                SYS --> OP : asks to introduce the new question type
+                deactivate SYS
+
+                OP -> SYS : defines the question type
+
+                activate SYS
+
+                SYS --> SYS : registers the new question \ntype in the questions type list
+
+    end alt
+
+        SYS --> OP : asks to define the question
+        deactivate SYS
+
+        OP -> SYS : defines the question
+        activate SYS
+
+        SYS --> OP : asks to define the question answer
+        deactivate SYS
+
+        OP -> SYS : defines the answer
+        activate SYS
+
+        SYS --> OP : confirm that the requirement was successfully set within the file
+        deactivate SYS
+|||
+end loop
+
+OP -> SYS : ask to export the file
+
+activate SYS
+
+SYS --> SYS : exports the interview model file
+
+SYS --> OP : confirms the success of the exportation of the file
+deactivate SYS
+
+
+deactivate OP
+
+@enduml

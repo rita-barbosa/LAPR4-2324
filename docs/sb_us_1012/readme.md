@@ -12,15 +12,19 @@ answers during thew interviews.
 
 **Acceptance Criteria:**
 
-- **1012.1.** The system should...Blá Blá Blá ...
+- **1012.1.** The file should have the questions to be asked in the interview and the possible answers for each question.
 
-- **1012.2.** Blá Blá Blá ...
+- **1012.2.** The exported file should be in .txt format.
+
+- **1012.3.** It is necessary the use of ANTLR.
 
 
 **Dependencies/References:**
 
-This functionality has a dependency on [_US G003_](../us_g003) that consists in initial configuration of the project
-structure, where was made the setup for the ANTLR.
+This functionality has a dependency on [_US G007_](../us_g007) that pertains to the authentication and authorization for
+all users and functionalities.
+In addition, this functionality has a dependency on [_US G003_](../us_g003) that consists in initial configuration of 
+the project structure, where was made the setup for the ANTLR.
 
 _Reference 1012.1:_ Requirement Specifications and Interview Models The support for this functionality must follow 
 specific technical requirements, specified in LPROG. The ANTLR tool should be used (https://www.antlr.org/).
@@ -28,10 +32,34 @@ specific technical requirements, specified in LPROG. The ANTLR tool should be us
 
 ## 3. Analysis
 
-*In this section, the team should report the study/analysis/comparison that was done in order to take the best design
-decisions for the requirement. This section should also include supporting diagrams/artifacts (such as domain model; use
-case diagrams, etc.)*
+The objective of this user story is to create a template file, that will be used as a model for the job interviews done 
+in the future. 
 
+To be able to reach that objective, the file should contain the questions and examples of answers for
+them.
+
+There are some type of questions that should be supported, such as:
+* True/False
+* Short Text Answer
+* Choice, with Single-Answer
+* Choice, with Multiple-Answer
+* Integer Number
+* Decimal Number
+* Date
+* Time
+* Numeric Scale
+
+For each question chosen, the Operator will define the possible answers, to be used as comparison with the answers
+given by the candidates.
+
+
+### 3.1 System Sequence Diagram
+
+![system sequence diagram](US1012_SSD.svg)
+
+### 3.2 Domain Model Related
+
+![domain model related](domain-model-excerpt.svg)
 
 ## 4. Design
 
