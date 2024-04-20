@@ -16,7 +16,7 @@ This is the first time this user story is being requested.
 
 This user story is directly dependent on [US_1008](../sb_us_1008/readme.md) because the requirements specification
 plugin must already be uploaded into the system for the selection process to begin, as it requires data to make
-selections from.
+selections from. Additionally, it's also related to [US_1002](../sb_us_1002).
 
 The support for this functionality must follow specific technical requirements, specified in LPROG (until 17/04/2024 no
 additional requirements were presented).
@@ -36,15 +36,13 @@ The ANTLR tool should be used (https://www.antlr.org/).
 The primary goal of this functionality is to choose a requirement specification from among those uploaded for a Job
 Opening.
 
-Concerning the Job Opening, clarification is required regarding the client's preferred approach. Currently, our
-understanding is that upon request, the Customer Manager will input the Job Reference of the Job Opening to proceed with
-the selection of the requirement specification.
+The Customer Manager will choose the requirement specification for the Job Opening they're registering
+from [US_1002](../sb_us_1002). This approach is deemed the most reliable as every Job Opening must have a respective
+Requirement Specification.
 
 Given that the name of the requirement specification acts as its identifier, this information should be displayed along
-with a description to offer clarity for each.
-
-Subsequently, the Customer Manager should select the most appropriate requirement specification based on the provided
-information.
+with a description to offer clarity for each. Subsequently, the Customer Manager should select the most appropriate
+requirement specification based on the provided information by the customer.
 
 **Domain Model:**
 
