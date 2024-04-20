@@ -2,40 +2,87 @@
 
 ## 1. Context
 
-*Explain the context for this task. It is the first time the task is assigned to be developed or this tasks was
-incomplete in a previous sprint and is to be completed in this sprint? Are we fixing some bug?*
+This is the first time this user story is being requested.
 
 ## 2. Requirements
 
-*In this section you should present the functionality that is being developed, how do you understand it, as well as
-possible correlations to other requirements (i.e., dependencies). You should also add acceptance criteria.*
-
-*Example*
-
-**US G007** As {Ator} I Want...
+**US 1003** As {Customer Manager}, I want to list job openings.
 
 **Acceptance Criteria:**
 
-- G002.1. The system should...Blá Blá Blá ...
-
-- G002.2. Blá Blá Blá ...
+**1003.1** Listing by both costumer code or company name must be supported.
+**1003.2** The Costumer Manager can only list the job openings of the costumers that manages.
 
 **Dependencies/References:**
 
-*Regarding this requirement we understand that it relates to...*
+**US1002** | This functionality is dependent on US1002, regarding the creation of job openings to list.
+
+There are no references for this user story.
+
+**Client Clarifications:**
+
+> **Question:** It was mentioned that "you can filter by Customer" in this US. In this case, what form will the Customer Manager
+> use to filter Job Openings by Customer (name, email,...)? And when you say "you can filter by date", do you mean a specific
+> date or a time interval?
+>
+> **Answer:** The Customer is typically a company and has a name. The existence of a customer code has also been mentioned.
+> For the Customer filter, the Customer Manager will probably use the company name (or the customer code, if applicable)
+> to select the Job Openings related to that specific customer. As for filtering by date, if you are in the role of a Customer
+> Manager who needs to check job openings, does it make sense to filter for a single day? In other words, would the Customer
+> Manager need to know on which specific day the job opening being searched for was registered?
+
+
+> **Question:** Is there any criteria to define which ones to list? Or should it list all job openings in the entire system?
+>
+> **Answer:** I suppose it would be useful to be able to filter by Customer and date. It also seems useful to filter
+> by only active job openings or to list all job openings.
+
+
+> **Question:** At what point does a job opening become active? Is it when it is created and has a set of associated requirements?
+> Is it when it is linked to an ongoing recruitment process?
+>
+> **Answer:** The reference to "active" relates to dates. A job opening that has already completed its recruitment process
+> is not considered active.
+
+
+> **Question:** Regarding the listing of job openings, can a customer manager list all job openings or only those assigned
+> to them? In other words, are job openings assigned to a specific customer manager, and can they only access their list
+> of job openings?
+>
+> **Answer:** I think it makes sense to list only "their" job openings.
+
 
 ## 3. Analysis
 
-*In this section, the team should report the study/analysis/comparison that was done in order to take the best design
-decisions for the requirement. This section should also include supporting diagrams/artifacts (such as domain model; use
-case diagrams, etc.)*
+This functionality aims to list and, if desired, filter all the job openings. Below there's a list of the mentioned 
+filtering criteria:
+
+* Company Name
+* Costumer Code
+* Time Interval
+* {Active} Status
+
+If no criteria is selected, then all the job openings, regardless of their status, will be displayed. Otherwise, only the
+job openings that comply with the selected criteria will be available.
+
+Below there's a System Sequence Diagram (SSD) illustrating the expected behaviour of this functionality. After this diagram
+is a partial domain model, with emphasis on US1003's concepts.
+
+**US1003 System Sequence Diagram**
+
+![system sequence diagram](./SSD/US1003_SSD.svg)
+
+
+**US1003 Domain Model**
+
+![partial domain model](./US1003_Domain_Model/domain-model-us-1003.svg)
 
 ## 4. Design
 
 *In this sections, the team should present the solution design that was adopted to solve the requirement. This should
 include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
 presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+patterns and the specification of the main tests used to validate the functionality.*
 
 ### 4.1. Realization
 

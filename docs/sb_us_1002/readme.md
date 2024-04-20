@@ -2,40 +2,144 @@
 
 ## 1. Context
 
-*Explain the context for this task. It is the first time the task is assigned to be developed or this tasks was
-incomplete in a previous sprint and is to be completed in this sprint? Are we fixing some bug?*
+This is the first time this user story is being requested.
 
 ## 2. Requirements
 
-*In this section you should present the functionality that is being developed, how do you understand it, as well as
-possible correlations to other requirements (i.e., dependencies). You should also add acceptance criteria.*
-
-*Example*
-
-**US G007** As {Ator} I Want...
+**US 1002** As {Customer Manager}, I want to register a job opening.
 
 **Acceptance Criteria:**
 
-- G002.1. The system should...Blá Blá Blá ...
+- **1002.1** The "Number of Vacancies" must not be less than or equal to 0.
+- **1002.2** The job reference is based on a costumer code that must be unique, which is limited to 10 characters, followed by a sequential number.
+- **1002.3** Regarding the "Company" field in a job opening, it should be the company/costumer's name, but when storing it within
+the database, the costumer code representing said company should be used.
+- **1002.4** A job opening is only managed by a single Costumer Manager, the one that is in charge of the company/costumer
+of said job opening.
+- **1002.5** The job opening must have a title/function.
+- **1002.6** The job opening must have a contract type, which must be amongst the types defined.
+- **1002.7** The job opening must have a work mode, which must be amongst the types defined.
+- **1002.8** The company's address is obligatory in a job opening.
 
-- G002.2. Blá Blá Blá ...
 
 **Dependencies/References:**
 
-*Regarding this requirement we understand that it relates to...*
+**US1008** | The Job Requirement Specification plugin configured and deployed in US1008 is essential to associate a set of
+requirements to a certain job opening.
+
+ **US2003** | This functionality has a dependency with US2003, which generates and exports a template text file to help collect the
+candidates' data based on the job opening specifications/requirements. The data will be used to evaluate the candidate and
+check if they are who the company/costumer wishes for.
+
+_Reference **1002.1**:_ Alternatively, this can be achieved by a bootstrap process.
+
+
+**Client Clarifications:**
+
+> **Question:** In the context where the Customer Manager registers a job opening, how are the requirements for that job offer selected/defined?
+>
+> **Answer:** The Customer Manager registers the job opening (US 1002) and then typically selects which requirements 
+> specification is suitable for that job opening. The requirements specification will be one of those "created" by the language
+> engineer and registered in the system.
+
+
+> **Question:** Regarding the Job Opening (section 2.2.2), the job reference states that it should be generated
+> by the system based on a customer code. What is this customer code and are there any rules for its creation?
+>
+> **Answer:** I would say that every customer must have a unique identifying code, which could be a sort of abbreviation 
+> of their name with a limited number of characters. For example, for the customer "Instituto Superior de Engenharia do Porto",
+> the customer code could be "ISEP" and no other customer could have this customer code. A reasonable limit might be 8 to 10
+> characters; let's define it as 10. This code is manually entered when creating the customer in the system.
+
+
+> **Question:** Are all fields in the job opening mandatory or are there optional ones?
+>
+> **Answer:** The fields mentioned in section 2.2.2 are mandatory to fill out. The requirements will be dynamic as they
+> depend on the requirements specification selected for that job opening (which is based on a language).
+
+
+> **Question:** Regarding the job specification, is it the client's responsibility to provide the requirements
+> or is it the responsibility of the customer manager? What is the concept of a job specification?
+>
+> **Answer:** Typically, it will be the client who informs the customer manager of the minimum requirements for a job opening.
+> The customer manager checks if there is already a suitable requirements specification available.
+> If none exists, with the help of the Language Engineer, a new one is created.
+
+
+> **Question:** In the job opening (section 2.2.2), for the "company" field, should it be the customer name 
+> or the customer code, considering the customer code is unique and manually entered?
+>
+> **Answer:** The information related to the job opening appearing at the end of page 5 should be seen as something 
+> used for job advertisement. In that context, it makes more sense to display the company name (customer name) for the "Company"
+> field rather than its code. However, for database storage purposes, the unique code (customer code) may be used.
+
+
+> **Question:** Does a job opening follows only one interview model?
+>
+> **Answer:** The Customer Manager selects the interview model to be used in interviews for a job opening. Therefore, there
+> will be only one interview model used in the interviews for that job opening.
+
+
+> **Question:** Does a job opening have only one customer manager?
+>
+> **Answer:** Yes, typically one customer manager handles all job openings for a client (customer). Consequently, there 
+> is only one customer manager for each job opening.
+
+
+> **Question:** "As Customer Manager, I want to register a job opening", are there any acceptance criteria not yet mentioned
+> related to the attributes? Or is it left to the development team's discretion based on best practices and common sense? Some examples:
+> - The "Number of Vacancies" must not be less than or equal to 0 or can it be optional;
+> - The "Description" should have a character limit or can it be optional.
+>
+> **Answer:** Regarding whether there are acceptance criteria not mentioned, I will not comment. It's part of the process
+> to discover them. I would suggest using more than just common sense.
+
+
+> **Question:** Are the phases of the Job Opening and the application status separate concepts or do they refer to the same thing?
+>
+> **Answer:** They are related but are different concepts.
+
+
+> **Question:** When the Customer Manager registers a job offer, does he create the requirement specifications and the interview
+> models or is he given a list of these to select from?
+>
+> **Answer:** There is US1002, US1009 and US1011. I think it's clear what each one is responsible for. The creation
+> of interview templates and requirements is a specific use case with a specific US to register in the system
+> the respective plugins (US1008).
+
 
 ## 3. Analysis
 
-*In this section, the team should report the study/analysis/comparison that was done in order to take the best design
-decisions for the requirement. This section should also include supporting diagrams/artifacts (such as domain model; use
-case diagrams, etc.)*
+To register a job opening, some information must be provided:
+
+* **Job Reference** - based on a unique costumer code followed by a sequential number
+* **Title or Function** - indicating the position that people are applying for
+* **Contract Type** - one of the defined types (full-time or part-time)
+* **Mode** - one of the defined types (remote, hybrid, onsite)
+* **Address** - address of the company
+* **Company** - costumer Name
+* **Number of vacancies** - number of people that will be employed
+* **Description** - a brief message from the company
+* **Requirements** - the job opening specifications, retrieved from a plugin (Job Requirement Specification Module)
+
+After inserting all this information, the job opening becomes valid and eligible to be part of a recruitment process.
+
+Below there's a System Sequence Diagram (SSD) illustrating the expected behaviour of this functionality. After this diagram
+is a partial domain model, with emphasis on US1002's concepts.
+
+**US1002 System Sequence Diagram**
+![system sequence diagram](./SSD/US1002_SSD.svg)
+> For now, the selection of requirements and the description are mandatory.
+
+**US1002 Domain Model**
+![partial domain model](./US1002_Domain_Model/domain-model-us-1002.svg)
 
 ## 4. Design
 
 *In this sections, the team should present the solution design that was adopted to solve the requirement. This should
 include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
 presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+patterns and the specification of the main tests used to validate the functionality.*
 
 ### 4.1. Realization
 

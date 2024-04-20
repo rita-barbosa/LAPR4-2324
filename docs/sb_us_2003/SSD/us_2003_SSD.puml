@@ -1,0 +1,60 @@
+@startuml US2003_SSD
+autonumber
+
+actor "Operator" as OP
+participant "System" as SYS
+
+activate OP
+
+OP -> SYS : asks to generate a new requirements specification file
+
+activate SYS
+
+
+loop Until the user wishes so
+|||
+    SYS --> OP : presents the requirements list and asks to select an option
+    deactivate SYS
+
+    OP -> SYS : selects the desired option
+
+    opt New Requirement
+
+        activate SYS
+
+        SYS --> OP : asks to define the new requirement
+        deactivate SYS
+
+        OP -> SYS : defines the requirement
+
+        activate SYS
+
+        SYS --> SYS : registers the new requirement in the requirements list
+
+    end opt
+
+        SYS --> OP : asks to define the requirement desired answer set
+        deactivate SYS
+
+        OP -> SYS : defines the answer set for the chosen requirement
+
+        activate SYS
+
+        SYS --> OP : confirm that the requirement was successfully set within the file
+        deactivate SYS
+|||
+end loop
+
+OP -> SYS : ask to export the file
+
+activate SYS
+
+SYS --> SYS : exports the requirements specification file
+
+SYS --> OP : confirms the successful exportation of the file
+deactivate SYS
+
+
+deactivate OP
+
+@enduml
