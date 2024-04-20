@@ -63,33 +63,38 @@ access to the customer app.
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+With the team's decision to construct our project using the Eapli framework and project as a foundation, it was
+collectively determined to leverage the existing authentication/authorization system, albeit with some necessary
+adjustments to harmonize with our business regulations. Consequently, our application mirrors the workflow of the
+current Eapli project.
+
+Primarily, the applications use the framework services such as AuthenticationService and AuthorizationService to
+handle user authentication and authorization.
+
+The key divergence from the Eapli project lies in the roles employed, the utilization of email addresses as usernames,
+and alterations to the password policy. However, apart from these adjustments, the instructional flow of the
+applications remains the same.
 
 ### 4.1. Realization
 
+**Note:** This sequence diagram provides a rough outline of the instructional sequence within the backoffice
+application.
+While there may be slight modifications, the other applications maintain a similar structure.
+
+![Sequence Diagram](sequence-diagram.svg)
+
 ### 4.2. Class Diagram
 
-![a class diagram]()
+#### Authentication/Authorization
 
-### 4.3. Applied Patterns
+![Authentication/Authorization - Class Diagram](class-diagram.svg)
+
+**Reference:** This diagram is from: eapli.framework-Tech-Description. Available on the framework repository.
 
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
-
-**Test 1:** Verifies that it is not possible to ...
-
-**Refers to Acceptance Criteria:** G002.1
-
-````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
-...
-}
-````
+Since we're using the [eapli.framework](https://bitbucket.org/pag_isep/eapliframework/src/master/), all tests related to
+the mentioned acceptance criteria are located within it.
 
 ## 5. Implementation
 
