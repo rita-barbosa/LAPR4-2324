@@ -60,6 +60,9 @@ The assignment of tasks (requirements/user stories/use cases) during the project
 
 ## 4. Technical Decisions
 
+The team opted to use the Eapli framework and project for establishing the project's initial structure.
+Furthermore, we'll integrate the existing code for UIs and authentication/authorization into the applications. However,
+this latter aspect will undergo modifications to align with the client's requirements and business domain.
 The team reached a unanimous decision to enhance organization by adding tags to the beginning of the user stories
 folders, indicating the sprint they belong to. However, user stories that are addressed globally throughout the
 project's duration will not need this additional identification.
