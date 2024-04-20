@@ -11,6 +11,7 @@ This is the first time this user story is being requested.
 **Acceptance Criteria:**
 
 **1003.1** Listing by both costumer code or company name must be supported.
+**1003.2** The Costumer Manager can only list the job openings of the costumers that manages.
 
 **Dependencies/References:**
 
@@ -36,6 +37,21 @@ There are no references for this user story.
 > **Answer:** I suppose it would be useful to be able to filter by Customer and date. It also seems useful to filter
 > by only active job openings or to list all job openings.
 
+
+> **Question:** At what point does a job opening become active? Is it when it is created and has a set of associated requirements?
+> Is it when it is linked to an ongoing recruitment process?
+>
+> **Answer:** The reference to "active" relates to dates. A job opening that has already completed its recruitment process
+> is not considered active.
+
+
+> **Question:** Regarding the listing of job openings, can a customer manager list all job openings or only those assigned
+> to them? In other words, are job openings assigned to a specific customer manager, and can they only access their list
+> of job openings?
+>
+> **Answer:** I think it makes sense to list only "their" job openings.
+
+
 ## 3. Analysis
 
 This functionality aims to list and, if desired, filter all the job openings. Below there's a list of the mentioned 
@@ -45,7 +61,6 @@ filtering criteria:
 * Costumer Code
 * Time Interval
 * {Active} Status
-> YET TO BE CLARIFIED !!!
 
 If no criteria is selected, then all the job openings, regardless of their status, will be displayed. Otherwise, only the
 job openings that comply with the selected criteria will be available.
