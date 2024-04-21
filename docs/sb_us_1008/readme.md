@@ -1,34 +1,40 @@
-# US 1001
+# US 1008
 
 ## 1. Context
 
-*Explain the context for this task. It is the first time the task is assigned to be developed or this tasks was
-incomplete in a previous sprint and is to be completed in this sprint? Are we fixing some bug?*
+It is the first time in this project that this US is worked on.
 
 ## 2. Requirements
 
-*In this section you should present the functionality that is being developed, how do you understand it, as well as
-possible correlations to other requirements (i.e., dependencies). You should also add acceptance criteria.*
+**US 1008:** As Language Engineer, I want to deploy and configure a plugin (i.e., Job Requirement Specification or Interview Model) to be used by the system.
 
-*Example*
+### Acceptance Criteria:
 
-**US G007** As {Ator} I Want...
+- **1008.1.** Requirement Specifications and Interview Models The support for this functionality must follow specific technical requirements, specified in LPROG. The ANTLR tool should be used (https://www.antlr.org/).
 
-**Acceptance Criteria:**
+### Client Clarifications:
 
-- G002.1. The system should...Blá Blá Blá ...
+>**(Partially Related) Question:** Who informs the Customer manager of the type of interview/questions?
+>
+>**Answer:** This can be obtained by the Customer manager in dialogue with the Customer. After that, with the help of the Language engineer, support for the interview is created.
 
-- G002.2. Blá Blá Blá ...
+>**Question:** How does Language Engineer create the interview model and job requirements? Is it text? Or does he select questions for the interview and requirements for the job opening? And this is when you are creating an interview or a job opening or do you stop in the middle of doing that and then continue?
+>
+>**Answer:** The language engineer, with information provided by the customer manager (which he obtained from the customer), will develop a jar in Java corresponding to the module/plugin. For this development you will have to use grammar/language development techniques such as antlr. This code will be in a jar that the language engineer then “installs/registers” in the application (US1008, for example, associating a name to the jar in a configuration file – “5 anos experiencia java”, “req-model-5-years-java .jar”). The application with this information dynamically loads this jar. The grammar used in the jar will reflect the structure of the questions to be used in this model and their evaluation. These activities must be done before US1008 can be done. This work is done “outside” the system, simply by registering the model (when ready) in US1008. US 1009 and US1011 allow you to select models to use (from those that have been duly registered in the system).
 
-**Dependencies/References:**
+### Dependencies/References:
 
-*Regarding this requirement we understand that it relates to...*
+#### Dependency with US 1009:
+> This user story is dependent on US 1008 as it will use the Requirements Specification created by this US.
+
+#### Dependency with US 1011:
+> This user story is dependent on US 1008 as it will use the Interview Model created by this US.
 
 ## 3. Analysis
 
-*In this section, the team should report the study/analysis/comparison that was done in order to take the best design
-decisions for the requirement. This section should also include supporting diagrams/artifacts (such as domain model; use
-case diagrams, etc.)*
+### Domain Model Excerpt Related
+
+![Helpful-Domain-Model-Excerpt.svg](Helpful-Domain-Model-Excerpt.svg)
 
 ## 4. Design
 
