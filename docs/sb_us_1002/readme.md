@@ -167,7 +167,7 @@ The further topics illustrate and explain this functionality usage flow, and the
 
 ### 4.2. Class Diagram
 
-**US1002 Class Diagram**
+**US1002 Class Diagram** 
 
 ![US1002 Class Diagram](./US1002_SD/US1002_SD_split.svg)
 
