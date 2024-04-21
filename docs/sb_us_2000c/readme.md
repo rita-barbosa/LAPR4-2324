@@ -2,33 +2,38 @@
 
 ## 1. Context
 
-*Explain the context for this task. It is the first time the task is assigned to be developed or this tasks was
-incomplete in a previous sprint and is to be completed in this sprint? Are we fixing some bug?*
+*This is the first time this user story is being requested.*
 
 ## 2. Requirements
 
-*In this section you should present the functionality that is being developed, how do you understand it, as well as
-possible correlations to other requirements (i.e., dependencies). You should also add acceptance criteria.*
+**US 2000c:** As Operator, I want to list all candidates.
 
-*Example*
-
-**US G007** As {Ator} I Want...
 
 **Acceptance Criteria:**
+- 2000c.1. The system should have at least one candidate
+- 2000c.2. The candidates list should be listed in alphabetical order of name
 
-- G002.1. The system should...Blá Blá Blá ...
 
-- G002.2. Blá Blá Blá ...
+**Client Clarifications**
+
+> **Question:** At US 2000c we are asked to implement the function of listing all candidates. Is it necessary to sort candidates (for example in alphabetical order of name)? If so, what criteria should we follow?
+>
+> **Answer:** Yes the listing can be in alphabetical order of name.
+
 
 **Dependencies/References:**
 
-*Regarding this requirement we understand that it relates to...*
+*This functionality has a dependency on [_US 2000a_](../sb_us_2000a) and on [_US_2002_](../sb_us_2002) that consists
+in creating a candidate manually or imported from an external file.*
 
 ## 3. Analysis
 
-*In this section, the team should report the study/analysis/comparison that was done in order to take the best design
-decisions for the requirement. This section should also include supporting diagrams/artifacts (such as domain model; use
-case diagrams, etc.)*
+*This functionality is for the Operator, so the user needs to be authenticated first to be able to see all the candidates list.*
+
+**System Sequence Diagram:**
+
+![SSD-US-2000c](ssd-us-2000c.svg)
+
 
 ## 4. Design
 
