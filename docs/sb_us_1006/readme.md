@@ -84,9 +84,9 @@ Not only that but checking other questions related to this user story or that ar
 
 - **The Customer Manager can access and consult the information of ALL candidates.**
 
-### Domain Model Related
+### System Sequence Diagram Related
 
-![Domain Model Excerpt](domain-model-excerpt.svg)
+![Helpful-System-Sequence-Diagram.svg](Helpful-System-Sequence-Diagram.svg)
 
 ## 4. Design
 
