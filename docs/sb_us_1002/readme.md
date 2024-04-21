@@ -20,6 +20,7 @@ of said job opening.
 - **1002.6** The job opening must have a contract type, which must be amongst the types defined.
 - **1002.7** The job opening must have a work mode, which must be amongst the types defined.
 - **1002.8** The company's address is obligatory in a job opening.
+- **1002.9** A 4-stage development process {MVC + persistence} must be done.
 
 
 **Dependencies/References:**
@@ -128,26 +129,58 @@ Below there's a System Sequence Diagram (SSD) illustrating the expected behaviou
 is a partial domain model, with emphasis on US1002's concepts.
 
 **US1002 System Sequence Diagram**
-![system sequence diagram](./SSD/US1002_SSD.svg)
+
+![system sequence diagram](./US1002_SSD/US1002_SSD.svg)
 > For now, the selection of requirements and the description are mandatory.
 
 **US1002 Domain Model**
+
 ![partial domain model](./US1002_Domain_Model/domain-model-us-1002.svg)
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validate the functionality.*
+The solution for this functionality is to have 4 stages, starting with the MVC development architecture.
+
+> * **Model:** represents the application's data and business logic. It manages data storage, implements business rules, and 
+responds to data requests from other components like the View and Controller.
+
+> * **Controller:** bridges the Model and the View. It handles user input, updates the Model based on this input, and refreshes
+the View to reflect any changes in the Model. Additionally, the Controller encapsulates application logic, such as input
+validation and data transformation.
+
+> * **View:** displays data from the Model to users and forwards user inputs to the Controller. It remains passive and doesn't
+directly interact with the Model; instead, it receives data from the Model and relays user interactions to the Controller
+for processing.
+
+In addition to implementing the MVC architecture, it's essential to incorporate persistence to store and retain application
+data. Persistence ensures that all data created during the application's usage is stored in a database, allowing it to 
+persist even after the application is closed. This means that when the application is reopened, the same data can be 
+retrieved seamlessly, ensuring continuity and preserving user data across sessions.
+
+The further topics illustrate and explain this functionality usage flow, and the correlation between its components.
 
 ### 4.1. Realization
 
+**US1002 Sequence Diagram**
+
+[US1002 Split Sequence Diagram]()
+
 ### 4.2. Class Diagram
 
-![a class diagram]()
+**US1002 Class Diagram**
+
+![US1002 Class Diagram](./US1002_SD/US1002_SD_split.svg)
+
+> Fazer os SD's das referências
+
 
 ### 4.3. Applied Patterns
+
+The following table justifies the design decisions taken through the applied design patters.
+
+**US1002 Rational**
+
+> DO THE RATIONAL TABLE
 
 ### 4.4. Tests
 
@@ -188,3 +221,7 @@ alternative solutioons or related works*
 
 *The team should include in this section statements/references regarding third party works that were used in the
 development this work.*
+
+### 7.1 References
+
+* [MVC architecture](https://www.geeksforgeeks.org/mvc-design-pattern/)
