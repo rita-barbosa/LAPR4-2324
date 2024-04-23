@@ -109,6 +109,37 @@ _Reference **1002.1**:_ Alternatively, this can be achieved by a bootstrap proce
 > the respective plugins (US1008).
 
 
+> **Question:** Options in Title/Function of Job Opening – I would like to ask whether the "Title of function" field in 
+> the Job Opening (Section 2.2.2) can have only a limited number of options. If so, what are they (besides "front end programmer")?
+>
+> **Answer:** It is free text. The purpose is to allow describing the role to be performed by the candidate in this job opening.
+
+
+> **Question:** In a job opening, are the contract type and work mode fixed elements, meaning the types listed in the documentation
+> are static and do not change, or could there be more types of these two elements?
+>
+> **Answer:** The most "common" types are those listed in the documentation. However, I think it makes sense for the system
+> to accept different types if the Customer Manager desires so.
+
+
+> **Question:** A customer manager is responsible for creating job openings for the customers they oversee. When creating
+> a job opening, how does the customer manager indicate which customer the job opening is for? Do they select a customer
+> from those they are responsible for?
+>
+> **Answer:** Yes, it can be as you indicated.
+
+
+> **Question:** Regarding a Customer (company), it was mentioned that one piece of information to collect would be the 
+> address (physical, not email) related to a job opening. The question is, if a company has multiple branches in different
+> locations, would it then have multiple addresses, or would it be better to consider each of these branches as an individual
+> Customer? However, if each branch were to be considered an individual Customer, would the email (as the identifier) have
+> to be the same, or would it be possible to have a different email for each branch of the company?
+>
+> **Answer:** You should consider that the company (Customer) has a primary address associated with its registration. In
+> the context of a job opening, the address that "appears" in that job offer is the address associated with that specific
+> job, which could be in a different location of the company.
+
+
 ## 3. Analysis
 
 To register a job opening, some information must be provided:

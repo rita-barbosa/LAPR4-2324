@@ -13,6 +13,13 @@ CM -> SYS : asks to register a new job opening
 
 activate SYS
 
+SYS --> CM : asks to select a costumer
+deactivate SYS
+
+CM -> SYS : selects a costumer
+
+activate SYS
+
 SYS --> CM : asks for the title/function
 deactivate SYS
 
@@ -38,13 +45,6 @@ SYS --> CM : asks for the company's address
 deactivate SYS
 
 CM -> SYS : provides the company's address
-
-activate SYS
-
-SYS --> CM : asks for costumer name (company)
-deactivate SYS
-
-CM -> SYS : provides the costumer name
 
 activate SYS
 
