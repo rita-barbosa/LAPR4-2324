@@ -32,7 +32,7 @@ in creating a candidate manually or imported from an external file.*
 
 **System Sequence Diagram:**
 
-![SSD-US-2000c](ssd-us-2000c.svg)
+![SSD-US-2000c](US2000c_SSD/ssd-us-2000c.svg)
 
 
 ## 4. Design

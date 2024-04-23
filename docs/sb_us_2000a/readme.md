@@ -34,7 +34,7 @@
 
 **System Sequence Diagram:**
 
-![SSD-US-2000a](ssd-us-2000a.svg)
+![SSD-US-2000a](US2000a_SSD/ssd-us-2000a.svg)
 
 
 ## 4. Design
