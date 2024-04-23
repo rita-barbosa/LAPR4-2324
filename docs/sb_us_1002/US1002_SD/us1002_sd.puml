@@ -22,29 +22,55 @@ UI -> CTRL : create()
 activate CTRL
 deactivate CTRL
 
+UI -> CTRL : getCostumersList()
+activate CTRL
+
+CTRL -> Persistence : create()
+
+    activate Persistence
+
+    Persistence -> RepositoryFactory : create()
+    deactivate Persistence
+
+    activate RepositoryFactory
+
+        RepositoryFactory -> CostumerRepository : create()
+        activate CostumerRepository
+        deactivate CostumerRepository
+
+    deactivate RepositoryFactory
+
+    CTRL -> CostumerRepository : getAssignedCostumerCodesList(username)
+    activate CostumerRepository
+    deactivate CostumerRepository
+
+    CTRL -> CTRL : toDTO(assignedCostumerCodesList)
+    ref over CTRL
+        assigned costumers list to DTO
+    end ref
+
+    CTRL --> UI : costumerListDTO
+
+deactivate CTRL
+
 UI -> CTRL : getJobOpeningContractTypesList()
 
 'Getting the Contract Type
 activate CTRL
 
-    CTRL -> Persistence : create()
 
-    activate Persistence
-
-    Persistence --> RepositoryFactory : create()
-    deactivate Persistence
-
-    activate RepositoryFactory
+   CTRL -> RepositoryFactory : getContractTypes()
+  activate RepositoryFactory
 
         RepositoryFactory -> JobOpeningRepository : create()
         activate JobOpeningRepository
         deactivate JobOpeningRepository
 
-    deactivate RepositoryFactory
+  deactivate RepositoryFactory
 
-    CTRL -> JobOpeningRepository : getContractTypes()
-    activate JobOpeningRepository
-    deactivate JobOpeningRepository
+
+'    activate JobOpeningRepository
+'    deactivate JobOpeningRepository
 
     CTRL -> CTRL : toDTO(className, contractTypeList)
 
@@ -83,15 +109,6 @@ UI -> CTRL : getJobOpeningRequirementsSpecificationsList()
 
 'Getting Costumer ID
 activate CTRL
-
-    CTRL -> RepositoryFactory : getCostumerCodeByCompanyName(companyName)
-    activate RepositoryFactory
-
-        RepositoryFactory -> CostumerRepository : create()
-        activate CostumerRepository
-        deactivate CostumerRepository
-
-    deactivate RepositoryFactory
 
     'Getting the requirements specifications made for specified costumer
     CTRL -> RepositoryFactory : getCostumerRequirementsSpecificationsFileList(costumerCode)

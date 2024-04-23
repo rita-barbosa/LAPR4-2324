@@ -12,6 +12,14 @@ class JobOpeningMapper {
 class JobOpeningDTO {
 + create(e: element)
 }
+
+class EntityMapper {
++ convertToDTO(list)
+}
+
+class EntityDTO {
++ create() : Entity
+}
 '}
 
 
@@ -38,6 +46,19 @@ class RequirementSpecification <<Domain>> <<Aggregate Root>> {
 - fileName : String
 + requirementsFileName()
 }
+
+package <<Authentication_and_Users>> {
+class AuthenticationService <<Application>> <<Service>> {
+}
+class Session <<Domain>> <<Value Object>> {}
+class SystemUser <<Domain>> <<Aggregate Root>> {}
+class Username <<Domain>> <<Value Object>> <<ID>> {
+- value : String
+}
+}
+
+class CostumerManager <<Domain>> <<Aggregate Root>> {}
+
 
 'Address
 class AddressFactory <<Domain>> <<Factory>> {
@@ -67,6 +88,7 @@ class JobOpening <<Domain>> <<Aggregate Root>> {
 - numVacancies : Integer
 - description : String
 - requirementsSpecificationsFile : File
++ create()
 }
 
 class WorkMode <<Domain>> <<Value Object>> {
@@ -79,6 +101,13 @@ class ContractType <<Domain>> <<Value Object>> {
 - contractTypeDenomination : String
 + valueOf()
 + type()
+}
+
+class Entity <<Aggregate Root>> <<Entity>> {
+- companyName : String
+- costumerCode : String
++ companyName()
++ costumerCode()
 }
 '}
 
@@ -93,7 +122,7 @@ class JobOpeningRepository <<Persistence>> <<Repository>> {
 
 class CostumerRepository <<Persistence>> <<Repository>> {
 + save(Costumer: entity)
-+ getCostumerCodeByCompanyName(companyName)
++ getAssignedCostumerList(username)
 }
 
 class RequirementsSpecificationsRepository <<Persistence>> <<Repository>> {
@@ -101,13 +130,19 @@ class RequirementsSpecificationsRepository <<Persistence>> <<Repository>> {
 + getCostumerRequirementsSpecificationsFileList(costumerCode)
 }
 
-interface EntityRepository <<**Interface**>> {
+class EntityRepository  <<Persistence>> <<Repository>>  {
 + save(e: Entity)
++ getEntityByCostumerCode(costumerCode)
+}
+
+interface RepositoryDatabase <<Persistence>> {
++ save(Entity: Entity)
 }
 '}
 
 'Associations
 'Basic Flow
+CostumerManager ..> RegisterJobOpeningController
 RegisterJobOpeningUI ..> RegisterJobOpeningController
 RegisterJobOpeningController ...> RequirementsSpecificationsRepository
 RegisterJobOpeningController .> CostumerRepository
@@ -122,6 +157,7 @@ Address "1" --> "*" JobOpening : locates
 WorkMode "1" --> "*" JobOpening : characterizes
 ContractType "1" --> "*" JobOpening  : characterizes
 RequirementSpecification "*" --> "1" JobOpening : specifies
+Entity --> "1..*" JobOpening : sends
 
 'Persistence Layer
 JobOpeningRepository "1" --> "*" ContractType : rebuilds
@@ -130,16 +166,29 @@ JobOpeningRepository <.. JobOpening : persisted by
 RequirementsSpecificationsRepository "1" -> "*" RequirementSpecification : aggregates
 
 'Interface implementation
-EntityRepository <|.. JobOpeningRepository : implements
-EntityRepository <|.. CostumerRepository : implements
-EntityRepository <|.. RequirementsSpecificationsRepository : implements
+RepositoryDatabase <|.. JobOpeningRepository : implements
+RepositoryDatabase <|.. CostumerRepository : implements
+RepositoryDatabase <|.. RequirementsSpecificationsRepository : implements
+RepositoryDatabase <|.. EntityRepository : implements
 
 'DTO
 JobOpeningMapper ..> JobOpeningDTO
-RegisterJobOpeningController ..left> JobOpeningMapper
+EntityMapper ..> EntityDTO
+EntityMapper ..> Entity
+RegisterJobOpeningController ..> EntityMapper
+RegisterJobOpeningController ...> JobOpeningMapper
 JobOpeningMapper ..> ContractType
 JobOpeningMapper ..> WorkMode
 JobOpeningMapper ..> RequirementSpecification
 RegisterJobOpeningUI ..> JobOpeningDTO
+RegisterJobOpeningUI ..> EntityDTO
+
+'Authentication
+Session --> SystemUser
+SystemUser -> Username
+AuthenticationService ..> Username
+AuthenticationService ..> Session
+AuthenticationService ..> RegisterJobOpeningController
+CostumerManager --|> SystemUser
 
 @enduml

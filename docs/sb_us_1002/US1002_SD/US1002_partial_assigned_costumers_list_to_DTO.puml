@@ -1,0 +1,62 @@
+@startuml US1002_partial_assigned_costumers_list_to_DTO
+'https://plantuml.com/sequence-diagram
+
+title [US1002 - Partial SD] Assigned Costumers List to DTO
+
+control "<<application>>\n:RegisterJobOpeningController" as CTRL
+database "<<repository>>\n:EntityRepository" as EntityRepository
+participant "<<service>>\n:EntityMapper" as EntityMapper
+participant "<<domain>>\nEntity" as Entity
+participant "<<application>>\nList<EntityDTO>" as DTOList
+participant "<<application>>\nEntityDTO" as DTO
+
+
+-> CTRL : toDTO(assignedCostumerCodesList)
+
+activate CTRL
+
+    loop for all the codes in the list
+    CTRL -> EntityRepository : getEntityByCostumerCode(costumerCode)
+        activate EntityRepository
+        deactivate EntityRepository
+    end loop
+
+    CTRL -> EntityMapper : convertToDTO(entityList)
+    activate EntityMapper
+
+        EntityMapper -> DTOList : create()
+        activate DTOList
+        deactivate DTOList
+
+        loop For all the entities in the list
+
+            EntityMapper -> Entity : companyName()
+            activate Entity
+            deactivate Entity
+
+            EntityMapper -> Entity : costumerCode()
+            activate Entity
+            deactivate Entity
+
+            EntityMapper -> DTO : create(costumerCode, companyName)
+            activate DTO
+            deactivate DTO
+
+            EntityMapper -> DTOList : add(entityDTO)
+            activate DTOList
+            deactivate DTOList
+
+        end loop
+
+
+
+
+        EntityMapper --> CTRL
+
+    deactivate EntityMapper
+
+<-- CTRL : listDTO
+
+deactivate CTRL
+
+@enduml

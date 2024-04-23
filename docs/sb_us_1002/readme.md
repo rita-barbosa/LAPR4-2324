@@ -146,8 +146,8 @@ To register a job opening, some information must be provided:
 
 * **Job Reference** - based on a unique costumer code followed by a sequential number
 * **Title or Function** - indicating the position that people are applying for
-* **Contract Type** - one of the defined types (full-time or part-time)
-* **Mode** - one of the defined types (remote, hybrid, onsite)
+* **Contract Type** - one of the defined types
+* **Mode** - one of the defined types
 * **Address** - address of the company
 * **Company** - costumer Name
 * **Number of vacancies** - number of people that will be employed
@@ -178,8 +178,11 @@ requirement specifications to select. These objects must be within repositories.
 
 In order to enhance encapsulation between layers, the usage of DTO's to the previously mentioned objects should be applied.
 
+To get the costumers that are assigned only to the costumer manager in the session, access to the Authentication Service
+is required.
 
-**Domain Layer Classes**
+
+**New Domain Layer Classes**
 * AddressFactory
 * Address
 * JobOpeningFactory
@@ -187,23 +190,27 @@ In order to enhance encapsulation between layers, the usage of DTO's to the prev
 * WorkMode
 * ContractType
 * RequirementSpecification
+* Entity
 
-> * JobOpening is a different aggregate than RequirementSpecification
+> * JobOpening is a different aggregate than RequirementSpecification and Entity
 > * Address is a value object that belongs to a JobOpening
 
-**Persistence Layer Classes**
+**New Persistence Layer Classes**
 * RepositoryFactory
 * JobOpeningRepository
 * CostumerRepository
 * CostumerRepository
 * RequirementsSpecificationsRepository
+* EntityRepository
 
-**Application Layer Classes**
+**New Application Layer Classes**
 * RegisterJobOpeningController
 * JobOpeningMapper
 * JobOpeningDTO
+* EntityMapper
+* EntityDTO
 
-**Presentation Layer Classes**
+**New Presentation Layer Classes**
 * RegisterJobOpeningUI
 
 The further topics illustrate and explain this functionality usage flow, and the correlation between its components.
@@ -217,6 +224,11 @@ The further topics illustrate and explain this functionality usage flow, and the
 * **[US1002 Partial SD] Job 0pening Attribute List to DTO**
 
 ![US1002 Job Opening Attribute List to DTO](./US1002_SD/US1002_partial_job_opening_attribute_list_to_DTO.svg)
+
+
+* **[US1002 Partial SD] Assigned Costumers List to DTO**
+
+![US1002 Assigned Costumers List to DTO](./US1002_SD/US1002_partial_assigned_costumers_list_to_DTO.svg)
 
 ### 4.2. Class Diagram
 
@@ -281,7 +293,7 @@ This topic presents the classes with the patterns applied to them along with jus
 > 
 > **Justifications**
 > 
-> * A DTO's responsibility is to transfer data between layers without behavior or business logic.
+> * A DTO's responsibility is to transfer data between layers without behavior or business logic, promoting encapsulation.
 
 ### 4.4. Tests
 
