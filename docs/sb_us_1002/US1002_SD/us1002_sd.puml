@@ -1,0 +1,167 @@
+@startuml US1002_SD
+
+title [US1002 - Sequence Diagram Split]
+
+participant "<<presentation>>\n:RegisterJobOpeningUI" as UI
+control "<<application>>\n:RegisterJobOpeningController" as CTRL
+participant "<<persistence>>\n:PersistenceContext" as Persistence
+participant "<<factory>>\n:RepositoryFactory" as RepositoryFactory
+database "<<repository>>\n:JobOpeningRepository" as JobOpeningRepository
+database "<<repository>>\n:CostumerRepository" as CostumerRepository
+database "<<repository>>\n:RequirementsSpecificationsRepository" as RequirementsSpecificationsRepository
+participant "<<factory>>\n:AddressFactory" as AddressFactory
+participant "<<domain>>\n:Address" as Address
+participant "<<factory>>\n:JobOpeningFactory" as JobOpeningFactory
+participant "<<domain>>\n<<Entity>>\n:JobOpening" as JobOpening
+
+
+activate UI
+
+UI -> CTRL : create()
+
+activate CTRL
+deactivate CTRL
+
+UI -> CTRL : getJobOpeningContractTypesList()
+
+'Getting the Contract Type
+activate CTRL
+
+    CTRL -> Persistence : create()
+
+    activate Persistence
+
+    Persistence --> RepositoryFactory : create()
+    deactivate Persistence
+
+    activate RepositoryFactory
+
+        RepositoryFactory -> JobOpeningRepository : create()
+        activate JobOpeningRepository
+        deactivate JobOpeningRepository
+
+    deactivate RepositoryFactory
+
+    CTRL -> JobOpeningRepository : getContractTypes()
+    activate JobOpeningRepository
+    deactivate JobOpeningRepository
+
+    CTRL -> CTRL : toDTO(className, contractTypeList)
+
+    ref over CTRL
+        job opening attribute list to DTO
+    end ref
+
+    CTRL --> UI : contractTypeListDTO
+
+deactivate CTRL
+
+UI -> UI : doShow()
+
+'Getting the Work Mode
+UI -> CTRL : getJobOpeningWorkModesList()
+
+activate CTRL
+
+    CTRL -> JobOpeningRepository : getWorkModes()
+    activate JobOpeningRepository
+    deactivate JobOpeningRepository
+
+    CTRL -> CTRL : toDTO(className, workModeList)
+    ref over CTRL
+        job opening attribute list to DTO
+    end ref
+
+    CTRL --> UI : workModeListDTO
+
+deactivate CTRL
+
+UI -> UI : doShow()
+
+
+UI -> CTRL : getJobOpeningRequirementsSpecificationsList()
+
+'Getting Costumer ID
+activate CTRL
+
+    CTRL -> RepositoryFactory : getCostumerCodeByCompanyName(companyName)
+    activate RepositoryFactory
+
+        RepositoryFactory -> CostumerRepository : create()
+        activate CostumerRepository
+        deactivate CostumerRepository
+
+    deactivate RepositoryFactory
+
+    'Getting the requirements specifications made for specified costumer
+    CTRL -> RepositoryFactory : getCostumerRequirementsSpecificationsFileList(costumerCode)
+    note right: The process of selecting the requirements specifications is not a responsibility of\n US1002, rather from US1009, which will be integrated in this functionality.
+
+    activate RepositoryFactory
+
+    RepositoryFactory -> RequirementsSpecificationsRepository : create()
+    activate RequirementsSpecificationsRepository
+    deactivate RequirementsSpecificationsRepository
+
+    deactivate RepositoryFactory
+
+    CTRL -> CTRL : toDTO(className, costumerRequirementsSpecificationsFileList)
+    ref over CTRL
+        job opening attribute list to DTO
+    end ref
+
+
+    CTRL --> UI
+
+deactivate CTRL
+
+UI -> UI : doShow()
+
+UI -> CTRL : registerJobOpening(function, contractType, workMode,\n streetName, city, district, state, zipcode, companyName,\n numVacancies, description, requirementsFileName)
+
+'Register a new Job Opening
+activate CTRL
+
+    'Generate new job reference (sequential)
+    CTRL -> JobOpeningRepository : getCostumerLastJobReference(costumerCode)
+    note right: JobOpeningFactory does not have access to the previous job opening\n reference if it was made in another session, so this step is necessary.
+    activate JobOpeningRepository
+    deactivate JobOpeningRepository
+
+    CTRL -> JobOpeningFactory : getJobReference(lastJobReference)
+    activate JobOpeningFactory
+    deactivate JobOpeningFactory
+
+    'Address Encapsulation
+    CTRL -> AddressFactory : create(streetName, city, district, state, zipcode)
+
+    activate AddressFactory
+
+    AddressFactory -> Address : create(streetName, city,\n district, state, zipcode)
+    activate Address
+    deactivate Address
+
+    deactivate AddressFactory
+
+    'Job Opening Encapsulation
+    CTRL -> JobOpeningFactory : create(function, contractType, workMode, companyAddress, costumerCode, companyName, numVacancies, description, requirementsSpecificationsFile)
+
+    activate JobOpeningFactory
+
+    JobOpeningFactory -> JobOpening : create(function, contractType, workMode,\n companyAddress, costumerCode,\n companyName, numVacancies, description,\n requirementsSpecificationsFile)
+    activate JobOpening
+    deactivate JobOpening
+
+    deactivate JobOpeningFactory
+
+    CTRL -> JobOpeningRepository : save(jobOpening)
+    activate JobOpeningRepository
+    deactivate JobOpeningRepository
+
+    CTRL --> UI
+
+deactivate CTRL
+
+deactivate UI
+
+@enduml

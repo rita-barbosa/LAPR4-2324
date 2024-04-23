@@ -139,46 +139,60 @@ is a partial domain model, with emphasis on US1002's concepts.
 
 ## 4. Design
 
-The solution for this functionality is to have 4 stages, starting with the MVC development architecture.
+The solution for this functionality is to have 4 stages, following the DDD development architecture.
 
-> * **Model:** represents the application's data and business logic. It manages data storage, implements business rules, and 
-responds to data requests from other components like the View and Controller.
+> **Presentation Layer**
+> 
+>    This layer is responsible for presenting the user interface to users. It includes components such as controllers that 
+>    interact directly with users.
+> 
+> **Application Layer**
+> 
+>    This layer implements the use cases and business logic of the application. It comprises components like services, use
+>    case controllers, and Data Transfer Objects (DTOs) used for data exchange between layers.
+> 
+> **Domain Layer**
+> 
+>    This layer defines the business rules and domain objects of the application. It encompasses entities representing
+>    business concepts, value objects for immutable values, and domain services encapsulating domain-specific logic.
+> 
+> **Persistence Layer**
+> 
+>    This layer handles data storage and retrieval from the database. It consists of components like repositories, facilitating
+>    interaction with the database. 
 
-> * **Controller:** bridges the Model and the View. It handles user input, updates the Model based on this input, and refreshes
-the View to reflect any changes in the Model. Additionally, the Controller encapsulates application logic, such as input
-validation and data transformation.
+In a layered architecture, data flow between these layers typically follows a unidirectional pattern, where each layer
+communicates with the layer directly below or above it. This layered structure promotes separation of concerns, modularity,
+and maintainability by organizing components based on their responsibilities and interactions within the application.
 
-> * **View:** displays data from the Model to users and forwards user inputs to the Controller. It remains passive and doesn't
-directly interact with the Model; instead, it receives data from the Model and relays user interactions to the Controller
-for processing.
-
-In addition to implementing the MVC architecture, it's essential to incorporate persistence to store and retain application
-data. Persistence ensures that all data created during the application's usage is stored in a database, allowing it to 
-persist even after the application is closed. This means that when the application is reopened, the same data can be 
-retrieved seamlessly, ensuring continuity and preserving user data across sessions.
+Each layer focuses on specific aspects of the application's functionality, contributing to a structured and scalable 
+software design.
 
 The further topics illustrate and explain this functionality usage flow, and the correlation between its components.
 
 ### 4.1. Realization
 
-**US1002 Sequence Diagram**
+* **US1002 Sequence Diagram (Split)**
 
-[US1002 Split Sequence Diagram]()
+![US1002 Split Sequence Diagram](./US1002_SD/US1002_SD.svg)
+
+* **[US1002 Partial SD] Job 0pening Attribute List to DTO**
+
+![US1002 Job Opening Attribute List to DTO](./US1002_SD/US1002_partial_job_opening_attribute_list_to_DTO.svg)
 
 ### 4.2. Class Diagram
 
-**US1002 Class Diagram** 
+* **US1002 Class Diagram** 
 
-![US1002 Class Diagram](./US1002_SD/US1002_SD_split.svg)
-
-> Fazer os SD's das referências
-
+![US1002 Class Diagram](./US1002_Class_Diagram/US1002_class_diagram.svg)
 
 ### 4.3. Applied Patterns
 
 The following table justifies the design decisions taken through the applied design patters.
 
-**US1002 Rational**
+* **US1002 Rational**
+
+
 
 > DO THE RATIONAL TABLE
 
@@ -224,4 +238,4 @@ development this work.*
 
 ### 7.1 References
 
-* [MVC architecture](https://www.geeksforgeeks.org/mvc-design-pattern/)
+* [DDD architecture]( https://ddd-practitioners.com/home/glossary/layered-architecture/#:~:text=In%20Domain%2DDriven%20Design%20(DDD,layer%2C%20and%20an%20infrastructure%20layer. )
