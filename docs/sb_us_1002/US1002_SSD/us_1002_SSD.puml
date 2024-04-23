@@ -1,4 +1,7 @@
 @startuml US1002_SSD
+
+title US1002 System Sequence Diagram
+
 autonumber
 
 actor "Customer Manager" as CM
