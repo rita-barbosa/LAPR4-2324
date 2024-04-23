@@ -32,6 +32,7 @@ package "<<aggregate>> Requirement Specification" {
 package "<<aggregate>> Job Opening" {
     entity JobOpening <<entity>> <<root>> {}
     class JobFunction <<(V,#FF8B40) value object>> {}
+    class JobOpeningStatus <<(V,#FF8B40) value object>> {}
     class ContractType <<(V,#FF8B40) value object>> {}
     class Mode <<(V,#FF8B40) value object>> {}
     class NumberVacancy <<(V,#FF8B40) value object>> {}
@@ -123,6 +124,7 @@ JobOpening ---> "1"  Address : includes
 JobOpening --> "1"  JobFunction : includes
 JobOpening ---> "1"  Description : includes
 JobOpening ---> "1"  ContractType : includes
+JobOpening --> "1" JobOpeningStatus : classified by
 JobOpening ---> "1"  RequirementSpecification : includes
 JobOpening -> "1"  InterviewModel : includes
 JobOpening --> "1"  RecruitmentProcess : includes
