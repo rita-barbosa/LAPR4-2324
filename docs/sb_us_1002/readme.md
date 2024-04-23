@@ -139,34 +139,23 @@ is a partial domain model, with emphasis on US1002's concepts.
 
 ## 4. Design
 
-The solution for this functionality is to have 4 stages, following the DDD development architecture.
+The solution for this functionality is to have 4 layers, following DDD development architecture: Presentation, Application,
+Domain and Persistence. A link in [references](#71-references) explains this topic in-depth.
 
-> **Presentation Layer**
-> 
->    This layer is responsible for presenting the user interface to users. It includes components such as controllers that 
->    interact directly with users.
-> 
-> **Application Layer**
-> 
->    This layer implements the use cases and business logic of the application. It comprises components like services, use
->    case controllers, and Data Transfer Objects (DTOs) used for data exchange between layers.
-> 
-> **Domain Layer**
-> 
->    This layer defines the business rules and domain objects of the application. It encompasses entities representing
->    business concepts, value objects for immutable values, and domain services encapsulating domain-specific logic.
-> 
-> **Persistence Layer**
-> 
->    This layer handles data storage and retrieval from the database. It consists of components like repositories, facilitating
->    interaction with the database. 
+To register a job opening, plenty of information must be retrieved from databases to be displayed: contract types, work modes and
+requirement specifications to select. These objects must be within repositories.
 
-In a layered architecture, data flow between these layers typically follows a unidirectional pattern, where each layer
-communicates with the layer directly below or above it. This layered structure promotes separation of concerns, modularity,
-and maintainability by organizing components based on their responsibilities and interactions within the application.
+In order to enhance encapsulation between layers, the usage of DTO's to the previously mentioned objects should be applied.
 
-Each layer focuses on specific aspects of the application's functionality, contributing to a structured and scalable 
-software design.
+As per requested, the job reference that identifies the job opening should have the costumer code as a base, and be sequential.
+If the previous job opening from the same costumer was made in a different session, then the current session does not have
+access to its job reference, so it must be retrieved from the job openings' repository.
+
+Address is a complex object, but the structure of its instances is all the same, there is no distinctions, so an address factory
+seems appropriate to build it.
+
+For the exact same reasons as an address, job openings' structure is immutable, so instances of this class will come from
+a job opening factory. The job opening repository is in charge of persisting the job opening instance created.
 
 The further topics illustrate and explain this functionality usage flow, and the correlation between its components.
 
@@ -191,6 +180,21 @@ The further topics illustrate and explain this functionality usage flow, and the
 The following table justifies the design decisions taken through the applied design patters.
 
 * **US1002 Rational**
+
+
+| Interaction ID                                                                                 | Question: Which class is responsible for...                | Answer                      | Justification (with patterns)                                                                                 |
+|:-----------------------------------------------------------------------------------------------|:-----------------------------------------------------------|:----------------------------|:--------------------------------------------------------------------------------------------------------------|
+| Step 1 : asks to divide set of Agencies into two subsets                                       | ... interacting with the actor?                            | SubdivideAgenciesUI         | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model. |
+|                                                                                                | ... coordinating the US?                                   | SubdivideAgenciesController | Controller                                                                                                    |
+|                                                                                                | ... obtaining data of each agency?                         | AgencyRepository            | Information Expert: knows all the registered agencies.                                                        |
+|                                                                                                | ... getting the agency id?                                 | Agency                      | Information Expert: an agency knows its own data.                                                             |
+|                                                                                                | ... verifying if the announcement is a deal?               | Announcement                | Information Expert: an announcement knows its own data.                                                       |
+|                                                                                                | ... instantiating a new Partition instance?                | AgencyRepository            | Creator (Rule 4): the AgencyRepository has the necessary data to instantiate Partition.                       |
+|                                                                                                | ... calculating the partitions of the agencies (subsets)?  | Partition                   | Information Expert: has the necessary data for such operation.                                                |
+|                                                                                                | ... obtaining the sublists of the agencies?                | Partition                   | Information Expert: knows its own data.                                                                       |
+|                                                                                                | ... adding the necessary information to a list ?           | Partition                   | Information Expert: knows its own data.                                                                       |
+| Step 2 : shows sublists, difference of the number of properties and displays operation success | ... displaying all the necessary information?              | SubdivideAgenciesUI         | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model. |
+|                                                                                                | ... informing operation success?                           | SubdivideAgenciesUI         | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model. |
 
 
 
