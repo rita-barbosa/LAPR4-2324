@@ -59,7 +59,7 @@ UI -> CTRL : getJobOpeningContractTypesList()
 activate CTRL
 
 
-   CTRL -> RepositoryFactory : getContractTypes()
+   CTRL -> RepositoryFactory : create()
   activate RepositoryFactory
 
         RepositoryFactory -> JobOpeningRepository : create()
@@ -68,9 +68,9 @@ activate CTRL
 
   deactivate RepositoryFactory
 
-
-'    activate JobOpeningRepository
-'    deactivate JobOpeningRepository
+  CTRL -> JobOpeningRepository : getContractTypes()
+    activate JobOpeningRepository
+    deactivate JobOpeningRepository
 
     CTRL -> CTRL : toDTO(className, contractTypeList)
 
@@ -111,8 +111,7 @@ UI -> CTRL : getJobOpeningRequirementsSpecificationsList()
 activate CTRL
 
     'Getting the requirements specifications made for specified costumer
-    CTRL -> RepositoryFactory : getCostumerRequirementsSpecificationsFileList(costumerCode)
-    note right: The process of selecting the requirements specifications is not a responsibility of\n US1002, rather from US1009, which will be integrated in this functionality.
+    CTRL -> RepositoryFactory : create()
 
     activate RepositoryFactory
 
@@ -121,6 +120,11 @@ activate CTRL
     deactivate RequirementsSpecificationsRepository
 
     deactivate RepositoryFactory
+
+    CTRL -> RequirementsSpecificationsRepository : getCostumerRequirementsSpecificationsFileList(costumerCode)
+    note right: The process of selecting the requirements specifications is not a responsibility of\n US1002, rather from US1009, which will be integrated in this functionality.
+    activate RequirementsSpecificationsRepository
+    deactivate RequirementsSpecificationsRepository
 
     CTRL -> CTRL : toDTO(className, costumerRequirementsSpecificationsFileList)
     ref over CTRL

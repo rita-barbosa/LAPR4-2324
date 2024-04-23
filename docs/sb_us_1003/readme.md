@@ -70,7 +70,7 @@ is a partial domain model, with emphasis on US1003's concepts.
 
 **US1003 System Sequence Diagram**
 
-![system sequence diagram](./SSD/US1003_SSD.svg)
+![system sequence diagram](./US1003_SSD/US1003_SSD.svg)
 
 
 **US1003 Domain Model**
@@ -79,18 +79,108 @@ is a partial domain model, with emphasis on US1003's concepts.
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validate the functionality.*
+
+The solution for this functionality is to have 4 layers, following DDD development architecture: Presentation, Application,
+Domain and Persistence. A link in [references](#71-references) explains this topic in-depth.
+
+To list a job opening, they must be first filtered, so that the only ones the Costumer Managers have access to are the ones
+that have been assigned to them. For this purpose, access to the Authentication Service is required.
+
+Both costumer code and company name are to be criteria when filtering the list, all this data is in the Entity represented
+by the Costumer.
+
+In order to enhance encapsulation between layers, the usage of DTO's is required.
+
+
+**New Domain Layer Classes**
+* JobOpening
+* Entity
+* Criteria
+
+**New Persistence Layer Classes**
+* RepositoryFactory
+* JobOpeningRepository
+* CostumerRepository
+* CriteriaRepository
+* EntityRepository
+
+**New Application Layer Classes**
+* ListJobOpeningController
+* ListCriteriaDTOService
+* ListJobOpeningDTOService
+* JobOpeningMapper
+* JobOpeningDTO
+* CriteriaMapper
+* CriteriaDTO
+
+**New Presentation Layer Classes**
+* ListJobOpeningUI
+
+The further topics illustrate and explain this functionality usage flow, and the correlation between its components.
 
 ### 4.1. Realization
 
+* **US1003 Sequence Diagram**
+
+![US1003 Sequence Diagram](./US1003_SD/US1003_SD.svg)
+
 ### 4.2. Class Diagram
 
-![a class diagram]()
+* **US1003 Class Diagram**
+
+![US1003 Class Diagram](./US1003_Class_Diagram/US1003_class_diagram.svg)
 
 ### 4.3. Applied Patterns
+
+This topic presents the classes with the patterns applied to them along with justifications.
+
+
+>**Repository Pattern**
+> * CostumerRepository
+> * EntityRepository
+> * JobOpeningRepository
+>
+> **Justifications**
+>
+> * The job opening repository is in charge of persisting the job opening instance created. It is also responsible for
+    rebuilding the contract types and work modes that characterize a job opening, information it has kept in its database.
+>
+> * As per requested, the job reference that identifies the job opening should have the costumer code as a base, and be
+    sequential. If the previous job opening from the same costumer was made in a different session, then the current session
+    does not have access to its job reference, so it must be retrieved from the job openings' repository database.
+>
+> * Because the company name's is an attribute of JobOpening, we need the entities to retrieve their name, so there is a
+    need to access the entities database.
+
+
+>**Service Pattern**
+> * ListJobOpeningController
+> * ListJobOpeningUI
+> * ListJobOpeningDTOService
+> * ListCriteriaDTOService
+> * JobOpeningMapper
+> * CriteriaMapper
+>
+> **Justifications**
+>
+> * The controller acts as a bridge between the UI and the Domain and Persistence Layer, processing UI requests and asking
+    the classes with assigned responsibilities to solve the issue, returning to the UI with the answer.
+>
+> * The UI does not correspond to any concept in the problem domain, and there is no justification for assigning certain
+    responsibilities to any existing class within the Domain Model.
+>
+> * The responsibilities of the Mapper consist of converting domain object to a dto, encapsulation of mapping logic, Data
+    format adaptation and integration with the Application Layer (Controller).
+
+
+>**DTO pattern**
+> * JobOpeningDTO
+> * CriteriaDTO
+>
+> **Justifications**
+>
+> * A DTO's responsibility is to transfer data between layers without behavior or business logic, promoting encapsulation.
+
 
 ### 4.4. Tests
 
@@ -131,3 +221,7 @@ alternative solutioons or related works*
 
 *The team should include in this section statements/references regarding third party works that were used in the
 development this work.*
+
+### 7.1 References
+
+* [DDD architecture]( https://ddd-practitioners.com/home/glossary/layered-architecture/#:~:text=In%20Domain%2DDriven%20Design%20(DDD,layer%2C%20and%20an%20infrastructure%20layer. )

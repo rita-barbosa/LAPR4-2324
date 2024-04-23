@@ -1,0 +1,124 @@
+@startuml US1003_SD
+
+title [US1003 - Sequence Diagram]
+
+participant "<<presentation>>\n:RegisterJobOpeningUI" as UI
+control "<<application>>\n:ListJobOpeningController" as CTRL
+participant "<<persistence>>\n:PersistenceContext" as Persistence
+participant "<<factory>>\n:RepositoryFactory" as RepositoryFactory
+database "<<repository>>\n:CriteriaRepository" as CriteriaRepository
+database "<<repository>>\n:CostumerRepository" as CostumerRepository
+database "<<repository>>\n:EntityRepository" as EntityRepository
+database "<<repository>>\n:JobOpeningRepository" as JobOpeningRepository
+participant "<<service>>\n:ListCriteriaDTOService" as CriteriaDTOSvc
+participant "<<service>>\n:ListJobOpeningDTOService" as JobOpeningDTOSvc
+
+activate UI
+
+UI -> CTRL : create()
+
+activate CTRL
+deactivate CTRL
+
+UI -> CTRL : getCriteria()
+activate CTRL
+
+
+    CTRL -> Persistence : repositories()
+    activate Persistence
+
+        Persistence -> RepositoryFactory : create()
+        deactivate Persistence
+        activate RepositoryFactory
+
+            RepositoryFactory -> CriteriaRepository : create()
+            deactivate RepositoryFactory
+            activate CriteriaRepository
+
+            CriteriaRepository -[#white]> CriteriaRepository
+            deactivate CriteriaRepository
+
+
+    CTRL -> CriteriaRepository : jobOpeningCriteria()
+    activate CriteriaRepository
+    deactivate CriteriaRepository
+
+    CTRL -> CriteriaDTOSvc : toDTO(criteriaList)
+
+    activate CriteriaDTOSvc
+    deactivate CriteriaDTOSvc
+
+    CTRL --> UI : criteriaListDTO
+    deactivate CTRL
+
+UI -> UI : doShow()
+
+UI -> CTRL : getJobOpeningList()
+activate CTRL
+
+CTRL -> Persistence : repositories()
+
+    activate Persistence
+
+    Persistence -> RepositoryFactory : create()
+    deactivate Persistence
+
+    activate RepositoryFactory
+
+        RepositoryFactory -> CostumerRepository : create()
+        deactivate RepositoryFactory
+
+        activate CostumerRepository
+
+        CostumerRepository -[#white]> CostumerRepository
+        deactivate CostumerRepository
+
+
+    CTRL -> CostumerRepository : getAssignedCostumerCodesList(username)
+    activate CostumerRepository
+    deactivate CostumerRepository
+
+    CTRL -> Persistence : repositories()
+    activate Persistence
+
+    Persistence -> EntityRepository : create()
+    deactivate Persistence
+
+    activate EntityRepository
+
+    EntityRepository -[#white]> EntityRepository
+    deactivate EntityRepository
+
+    CTRL -> EntityRepository : getCompaniesNamesByCostumerCodesList(assignedCostumerCodesList)
+    activate EntityRepository
+    deactivate EntityRepository
+
+    CTRL -> JobOpeningRepository : getJobOpeningsFromCompaniesNames(companiesNamesList)
+    activate JobOpeningRepository
+    deactivate JobOpeningRepository
+
+    opt criteria was selected
+
+        loop for all criteria selected
+
+            CTRL -> JobOpeningRepository : filterJobOpeningList(criteria)
+            activate JobOpeningRepository
+            deactivate JobOpeningRepository
+
+        end loop
+
+    end alt
+
+    CTRL -> JobOpeningDTOSvc : toDTO(jobOpeningList)
+    activate JobOpeningDTOSvc
+    deactivate JobOpeningDTOSvc
+
+    CTRL --> UI : jobOpeningListDTO
+deactivate CTRL
+
+UI -> UI : doShow()
+UI -[#white]-> UI
+
+deactivate UI
+
+@enduml

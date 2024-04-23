@@ -1,0 +1,144 @@
+@startuml US1003_class_diagram
+'https://plantuml.com/class-diagram
+
+title US1003 Class Diagram
+
+'DTO
+class JobOpeningMapper {
++ convertToDTO(JobOpening: entity)
+}
+
+class JobOpeningDTO {
++ create(e: element)
+}
+
+class CriteriaMapper {
++ convertToDTO(list)
+}
+
+class CriteriaDTO {
++ create() : Criteria
+}
+
+class ListCriteriaDTOService <<Service>> {
++ toDTO(criteriaList)
+}
+
+class ListJobOpeningDTOService <<Service>> {
++ toDTO(jobOpeningList)
+}
+
+
+
+class ListJobOpeningUI <<Presentation>> {
++ doShow()
+}
+
+
+class ListJobOpeningController <<Application>> {
++ getCriteria()
++ getJobOpeningList()
+}
+
+
+
+class Criteria <<Domain>> {
+- denomination : String
+- value : Boolean
+}
+
+
+package <<Authentication_and_Users>> {
+class AuthenticationService <<Application>> <<Service>> {
+}
+class Session <<Domain>> <<Value Object>> {}
+class SystemUser <<Domain>> <<Aggregate Root>> {}
+class Username <<Domain>> <<Value Object>> <<ID>> {
+- value : String
+}
+}
+
+class CostumerManager <<Domain>> <<Aggregate Root>> {}
+
+class JobOpening <<Domain>> <<Aggregate Root>> {
+- function : String
+- contractType : ContractType
+- workMode : WorkMode
+- companyAddress : Address
+- costumerCode : String
+- companyName : String
+- numVacancies : Integer
+- description : String
+- requirementsSpecificationsFile : File
+}
+
+
+class Entity <<Aggregate Root>> <<Entity>> {
+- companyName : String
+- costumerCode : String
++ companyName()
++ costumerCode()
+}
+
+
+class JobOpeningRepository <<Persistence>> <<Repository>> {
++ rebuild(JobOpening: entity)
++ getJobOpeningsFromCompaniesNames(companiesNamesList)
++ filterJobOpeningList(criteria)
+}
+
+class CostumerRepository <<Persistence>> <<Repository>> {
++ save(Costumer: entity)
++ getAssignedCostumerCodesList(username)
+}
+
+class EntityRepository  <<Persistence>> <<Repository>>  {
++ save(e: Entity)
++ getEntityByCostumerCode(costumerCode)
+}
+
+interface RepositoryDatabase <<Persistence>> {
++ save(Entity: Entity)
+}
+
+
+'Associations
+'Basic Flow
+CostumerManager ..> ListJobOpeningController
+ListJobOpeningUI ..> ListJobOpeningController
+ListJobOpeningController .> CostumerRepository
+ListJobOpeningController .> EntityRepository
+ListJobOpeningController ..> JobOpeningRepository
+
+'Domain Layer
+Entity --> "1..*" JobOpening : sends
+
+'Persistence Layer
+JobOpeningRepository ..> JobOpening : rebuilds
+
+'Interface implementation
+RepositoryDatabase <|.. JobOpeningRepository : implements
+RepositoryDatabase <|.. CostumerRepository : implements
+RepositoryDatabase <|.. EntityRepository : implements
+
+'DTO
+JobOpeningMapper ..> JobOpeningDTO
+CriteriaMapper ..> CriteriaDTO
+CriteriaMapper ..> Criteria
+ListCriteriaDTOService ..> CriteriaMapper
+ListJobOpeningController ..> ListCriteriaDTOService
+ListJobOpeningController ...> ListJobOpeningDTOService
+ListJobOpeningDTOService ...> JobOpeningMapper
+JobOpeningMapper ..> JobOpening
+ListJobOpeningUI ..> JobOpeningDTO
+ListJobOpeningUI ..> CriteriaDTO
+
+'Authentication
+Session --> SystemUser
+SystemUser -> Username
+AuthenticationService ..> Username
+AuthenticationService ..> Session
+AuthenticationService ..> ListJobOpeningController
+CostumerManager --|> SystemUser
+
+@enduml
