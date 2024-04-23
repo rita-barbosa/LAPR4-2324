@@ -24,7 +24,7 @@ With this functionality, the Customer Manager will select the interview model to
 
 **Domain Model:**
 
-![Domain-Model-US-1011](domain-model-us-1011.svg)
+![Domain-Model-US-1011](US1011_Domain_Model/domain-model-us-1011.svg)
 
 ## 4. Design
 

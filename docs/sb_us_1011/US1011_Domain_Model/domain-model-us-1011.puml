@@ -6,7 +6,10 @@ hide empty attributes
 skinparam classBackgroundColor beige
 skinparam ArrowColor #222222
 
+title US1011 Domain Model
+
 'SHARED VALUE OBJETS
+ class Address <<(V,#FF8B40) value object>> {}
 
  class PluginJarFile <<(V,#FF8B40) value object>> {}
 
@@ -25,8 +28,10 @@ package "<<aggregate>> Job Opening" {
     class ContractType <<(V,#FF8B40) value object>> {}
     class Mode <<(V,#FF8B40) value object>> {}
     class NumberVacancy <<(V,#FF8B40) value object>> {}
-       class Description <<(V,#FF8B40) value object>> {}
-      class Rank <<(V,#FF8B40) value object>>{}
+    class Description <<(V,#FF8B40) value object>> {}
+    class Rank <<(V,#FF8B40) value object>>{}
+    class JobReference <<(V,#FF8B40) value object>> <<identifier>> {}
+
 }
 package "<<aggregate>> Customer Manager" {
     entity CustomerManager <<entity>> <<root>>  {}
@@ -41,10 +46,13 @@ InterviewModel --> "1" PluginJarFile: configures <
 
 '--
 JobOpening --> "1"  Mode : includes
+JobOpening ---> "1"  JobReference : includes
 JobOpening --> "1"  NumberVacancy : includes
 JobOpening --> "1"  JobFunction : includes
 JobOpening ---> "1"  Description : includes
 JobOpening ---> "1"  ContractType : includes
 JobOpening -> "1"  InterviewModel : includes
+JobOpening ---> "1"  Address : includes
+
 JobOpening ---> "*"  Rank : includes
 @enduml
