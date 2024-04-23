@@ -147,15 +147,7 @@ requirement specifications to select. These objects must be within repositories.
 
 In order to enhance encapsulation between layers, the usage of DTO's to the previously mentioned objects should be applied.
 
-As per requested, the job reference that identifies the job opening should have the costumer code as a base, and be sequential.
-If the previous job opening from the same costumer was made in a different session, then the current session does not have
-access to its job reference, so it must be retrieved from the job openings' repository.
 
-Address is a complex object, but the structure of its instances is all the same, there is no distinctions, so an address factory
-seems appropriate to build it.
-
-For the exact same reasons as an address, job openings' structure is immutable, so instances of this class will come from
-a job opening factory. The job opening repository is in charge of persisting the job opening instance created.
 
 The further topics illustrate and explain this functionality usage flow, and the correlation between its components.
 
@@ -177,28 +169,51 @@ The further topics illustrate and explain this functionality usage flow, and the
 
 ### 4.3. Applied Patterns
 
-The following table justifies the design decisions taken through the applied design patters.
+This topic presents the classes with the patterns applied to them along with justifications.
 
-* **US1002 Rational**
-
-
-| Interaction ID                                                                                 | Question: Which class is responsible for...                | Answer                      | Justification (with patterns)                                                                                 |
-|:-----------------------------------------------------------------------------------------------|:-----------------------------------------------------------|:----------------------------|:--------------------------------------------------------------------------------------------------------------|
-| Step 1 : asks to divide set of Agencies into two subsets                                       | ... interacting with the actor?                            | SubdivideAgenciesUI         | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model. |
-|                                                                                                | ... coordinating the US?                                   | SubdivideAgenciesController | Controller                                                                                                    |
-|                                                                                                | ... obtaining data of each agency?                         | AgencyRepository            | Information Expert: knows all the registered agencies.                                                        |
-|                                                                                                | ... getting the agency id?                                 | Agency                      | Information Expert: an agency knows its own data.                                                             |
-|                                                                                                | ... verifying if the announcement is a deal?               | Announcement                | Information Expert: an announcement knows its own data.                                                       |
-|                                                                                                | ... instantiating a new Partition instance?                | AgencyRepository            | Creator (Rule 4): the AgencyRepository has the necessary data to instantiate Partition.                       |
-|                                                                                                | ... calculating the partitions of the agencies (subsets)?  | Partition                   | Information Expert: has the necessary data for such operation.                                                |
-|                                                                                                | ... obtaining the sublists of the agencies?                | Partition                   | Information Expert: knows its own data.                                                                       |
-|                                                                                                | ... adding the necessary information to a list ?           | Partition                   | Information Expert: knows its own data.                                                                       |
-| Step 2 : shows sublists, difference of the number of properties and displays operation success | ... displaying all the necessary information?              | SubdivideAgenciesUI         | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model. |
-|                                                                                                | ... informing operation success?                           | SubdivideAgenciesUI         | Pure Fabrication: there is no reason to assign this responsibility to any existing class in the Domain Model. |
+>**Factory Pattern**
+>* AddressFactory
+>* JobOpeningFactory
+>
+>**Justifications**
+> 
+> * Address is a complex object, but the structure of its instances is all the same, there is no distinctions, so an address
+    factory seems appropriate to build it.
+>
+> * For the exact same reasons as an address, job openings' structure is immutable, so instances of this class will come
+    from a job opening factory.
 
 
+>**Repository Pattern**
+> * CostumerRepository
+> * RequirementsSpecificationsRepository
+> * JobOpeningRepository
+> 
+> **Justifications**
+>
+> * The job opening repository is in charge of persisting the job opening instance created. It is also responsible for
+    rebuilding the contract types and work modes that characterize a job opening, information it has kept in its database.
+> 
+> * As per requested, the job reference that identifies the job opening should have the costumer code as a base, and be 
+    sequential. If the previous job opening from the same costumer was made in a different session, then the current session
+    does not have access to its job reference, so it must be retrieved from the job openings' repository database.
+> 
+> * To have access to the requirements specifications file names, access to a database containing registers of them is
+    necessary, therefore the existence of a repository database that is shared amongst various applications is necessary.
 
-> DO THE RATIONAL TABLE
+
+>**Service Pattern**
+> * RegisterJobOpeningController
+> * RegisterJobOpeningUI
+> 
+> **Justifications**
+> 
+> * The controller acts as a bridge between the UI and the Domain and Persistence Layer, processing UI requests and asking
+    the classes with assigned responsibilities to solve the issue, returning to the UI with the answer.
+> 
+> * The UI does not correspond to any concept in the problem domain, and there is no justification for assigning certain
+    responsibilities to any existing class within the Domain Model.
+
 
 ### 4.4. Tests
 
