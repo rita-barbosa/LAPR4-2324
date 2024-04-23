@@ -64,6 +64,7 @@ package "<<aggregate>> Operator" {
 package "<<aggregate>> Application" {
     entity Application <<entity>><<root>>  {}
     class Email <<(V,#FF8B40) value object>> {}
+    class ApplicationDate <<(V,#FF8B40) value object>> {}
     class ApplicationStatus <<(V,#FF8B40) value object>> {}
     class CandidateName <<(V,#FF8B40) value object>> {}
     class PhoneNumber <<(V,#FF8B40) value object>> {}
@@ -146,6 +147,7 @@ Application ---> "1" Email: includes
 Application --> "1" CandidateName: includes
 Application ---> "1" PhoneNumber: includes
 Application ---> "1..*" File : describes <
+Application ---> "1" ApplicationDate : registered by
 Application --> "1" ApplicationStatus : categorizes <
 '--
 RequirementEvaluator .--> Application
