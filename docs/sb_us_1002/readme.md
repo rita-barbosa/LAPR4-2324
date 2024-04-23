@@ -20,7 +20,7 @@ of said job opening.
 - **1002.6** The job opening must have a contract type, which must be amongst the types defined.
 - **1002.7** The job opening must have a work mode, which must be amongst the types defined.
 - **1002.8** The company's address is obligatory in a job opening.
-- **1002.9** A 4-stage development process {MVC + persistence} must be done.
+- **1002.9** A 4-layer development process {MVC + persistence} must be done.
 
 
 **Dependencies/References:**
@@ -131,7 +131,7 @@ is a partial domain model, with emphasis on US1002's concepts.
 **US1002 System Sequence Diagram**
 
 ![system sequence diagram](./US1002_SSD/US1002_SSD.svg)
-> For now, the selection of requirements and the description are mandatory.
+
 
 **US1002 Domain Model**
 
@@ -148,6 +148,32 @@ requirement specifications to select. These objects must be within repositories.
 In order to enhance encapsulation between layers, the usage of DTO's to the previously mentioned objects should be applied.
 
 
+**Domain Layer Classes**
+* AddressFactory
+* Address
+* JobOpeningFactory
+* JobOpening
+* WorkMode
+* ContractType
+* RequirementSpecification
+
+> * JobOpening is a different aggregate than RequirementSpecification
+> * Address is a value object that belongs to a JobOpening
+
+**Persistence Layer Classes**
+* RepositoryFactory
+* JobOpeningRepository
+* CostumerRepository
+* CostumerRepository
+* RequirementsSpecificationsRepository
+
+**Application Layer Classes**
+* RegisterJobOpeningController
+* JobOpeningMapper
+* JobOpeningDTO
+
+**Presentation Layer Classes**
+* RegisterJobOpeningUI
 
 The further topics illustrate and explain this functionality usage flow, and the correlation between its components.
 
@@ -205,6 +231,7 @@ This topic presents the classes with the patterns applied to them along with jus
 >**Service Pattern**
 > * RegisterJobOpeningController
 > * RegisterJobOpeningUI
+> * JobOpeningMapper
 > 
 > **Justifications**
 > 
@@ -213,7 +240,17 @@ This topic presents the classes with the patterns applied to them along with jus
 > 
 > * The UI does not correspond to any concept in the problem domain, and there is no justification for assigning certain
     responsibilities to any existing class within the Domain Model.
+> 
+> * The responsibilities of the Mapper consist of converting domain object to a dto, encapsulation of mapping logic, Data 
+  format adaptation and integration with the Application Layer (Controller).
 
+
+>**DTO pattern**
+> * JobOpeningDTO
+> 
+> **Justifications**
+> 
+> * A DTO's responsibility is to transfer data between layers without behavior or business logic.
 
 ### 4.4. Tests
 

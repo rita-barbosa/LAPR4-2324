@@ -8,7 +8,7 @@ participant "<<service>>\n:JobOpeningMapper" as JobOpMapper
 participant "<<domain>>\n<<Value Object>>\n:WorkMode" as Work
 participant "<<domain>>\n<<Value Object>>\n:ContractType" as Contract
 participant "<<domain>>\n<<Entity>>\n:RequirementSpecification" as ReqSpe
-participant "<<application>>\nJobOpeningDTOList\n:List<JobOpeningDTO>" as DTOList
+participant "<<application>>\nList<JobOpeningDTO>" as DTOList
 participant "<<application>>\nJobOpeningDTO" as DTO
 
 
