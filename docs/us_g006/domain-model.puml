@@ -102,7 +102,7 @@ Entity --> "1" CompanyName : is described by
 Entity --> "1" Address : is located at
 Entity --> "1" CustomerCode : is identified by
 '--
-CustomerManager --> "1..*" Entity: manages
+CustomerManager "1" <--  Entity: manages >
 CustomerManager --> "1..*" JobOpening: registers
 CustomerManager ---> "0..*" Application : overseas
 CustomerManager --> "1..*" RecruitmentProcess : sets up
