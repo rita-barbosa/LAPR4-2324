@@ -1,0 +1,137 @@
+@startuml
+autonumber
+
+
+actor "Customer Manager" as USER
+
+participant "RegisterCustomerUI" as UI <<presentation>>
+participant "RegisterCustomerController" as CTRL <<controller>>
+participant "RandomPassword" as PG <<domain>>
+participant "AuthorizationService" as AUTHZ <<service>>
+participant "EntityManagementService" as EMS <<service>>
+participant "EntityFactory" as EF <<domain>>
+participant "Entity" as ENTITY <<domain>>
+participant "EntityRepository" as ER <<domain>>
+participant "EventPublisher" as EP <<domain>>
+participant "NewEntity\nRegisteredEvent" as EVENT <<domain>>
+participant "NewEntityUser\nRegisteredEvent" as EVENT_2 <<domain>>
+participant "NewEntityRegistered\nWatchDog" as WD <<domain>>
+participant "NewEntityUser\nRegisteredWatchDog" as WD_2 <<domain>>
+participant "AddUserOnNewEntity\nRegisteredController" as CTRL_EVENT <<domain>>
+participant "AddClientUserOnNew\nEntityRegisteredController" as CTRL_EVENT_2 <<domain>>
+participant "ClientUser\nManagementService" as CUMS <<service>>
+participant "UserManagementService" as UMS <<service>>
+
+
+
+note right UMS
+The UserManagementService and
+AuthorizationService are implemented
+in the eapli framework and will
+be used in this functionality.
+end note
+
+activate USER
+
+USER -> UI: wants to register new customer
+activate UI
+
+UI -> CTRL**: create
+
+
+
+UI --> USER: asks for necessary information
+
+
+USER -> UI: companyName, address, customerCode,\nuserEmail, userName, phoneNumber
+UI -> CTRL: registerCustomer(companyName, address, customerCode,\nuserEmail, userName, phoneNumber)
+activate CTRL
+
+CTRL -> PG**: create()
+activate PG
+
+PG --> CTRL: password
+deactivate PG
+
+CTRL -> AUTHZ:  loggedinUserWithPermissions(roles)
+activate AUTHZ
+
+AUTHZ -> CTRL:  customerManagerUser
+deactivate AUTHZ
+
+CTRL -> EMS: registerCustomer(companyName, address, customerCode,\nuserEmail, userName, phoneNumber, password,customerManagerUser)
+activate EMS
+
+
+
+
+
+EMS -> EF: createEntity(companyName, address,\ncustomerCode, customerManageruser)
+activate EF
+
+EF -> ENTITY**: create
+activate ENTITY
+
+ENTITY --> EF: entity
+deactivate ENTITY
+
+EF --> EMS: entity
+deactivate EF
+
+EMS -> ER: save(entity)
+activate ER
+deactivate ER
+
+EMS -> EVENT**: create(userEmail, userName, phoneNumber, password)
+
+
+EMS -> EP : publish
+activate EP
+
+EP -> WD: onEvent()
+activate WD
+
+WD -> CTRL_EVENT: addUser(newEntityRegisteredEvent)
+activate CTRL_EVENT
+
+CTRL_EVENT -> UMS: registerNewUser(email, password, name,  roles)
+activate UMS
+
+UMS --> CTRL_EVENT: user
+deactivate UMS
+
+
+CTRL_EVENT -> EP: publish()
+deactivate CTRL_EVENT
+deactivate WD
+
+EP -> WD_2: onEvent()
+activate WD_2
+
+WD_2 -> CTRL_EVENT_2: addClientUser(newEntityUserRegisteredEvent)
+activate CTRL_EVENT_2
+
+CTRL_EVENT_2 -> CUMS: registerNewUser(email, password, name,  roles)
+activate CUMS
+
+deactivate CUMS
+deactivate CTRL_EVENT_2
+deactivate WD_2
+deactivate EP
+deactivate CTRL_EVENT
+
+
+
+EMS --> CTRL: success
+deactivate EMS
+
+CTRL --> UI: success
+deactivate CTRL
+
+
+
+UI --> USER: success
+
+deactivate USER
+
+@enduml
