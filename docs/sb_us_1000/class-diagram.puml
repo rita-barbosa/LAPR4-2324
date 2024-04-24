@@ -1,0 +1,40 @@
+@startuml
+
+
+' Services
+
+class RegisterUserUI <<domain>> {
+# doShow()
+- showRoles()
+- buildRoles()
+}
+
+class AddUserController <<domain>> {
+- addUser(email,name, role, password)
++ getBackofficeRoleTypes()
++ addUser(email,name, role, password)
++ addUser(email,name, role)
+}
+
+class AuthorizationService <<service>> {
++ ensureAuthenticatedUserHasAnyOf(roles)
+}
+
+class UserManagementService <<service>> {
++ registerNewUser(email, password, firstName, lastName, email, roles)
+}
+
+class RandomPassword <<domain>> {
+- rawPassword
++ RandomPassword()
+- RandomPassword(int)
+}
+
+RegisterUserUI .--> AddUserController
+AddUserController --> AuthorizationService
+AddUserController --> UserManagementService
+AddUserController -> RandomPassword
+
+
+
+@enduml
