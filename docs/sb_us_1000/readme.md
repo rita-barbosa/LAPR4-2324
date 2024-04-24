@@ -75,8 +75,7 @@ are not met, the password must be rejected. In terms of the automation process, 
 that adhere to these requirements.
 
 The enable and disable status of the user determines their access to the application. If they are disabled, the login
- process will fail, even if they are a valid user. Upon registration, all users will be enabled by default.
-
+process will fail, even if they are a valid user. Upon registration, all users will be enabled by default.
 
 ## 4. Design
 
@@ -85,13 +84,52 @@ include, at least, a diagram of the realization of the functionality (e.g., sequ
 presenting the classes that support the functionality), the identification and rational behind the applied design
 patterns and the specification of the main tests used to validade the functionality.*
 
+As recommended, we used the base project and eapli framework as an initial support. Taking this into account, basic
+functionalities, like registering, listing, disabling, etc users, were already available. Despite this, some
+modifications will
+need to be done, such as:
+
+* Password management, where we will have tobe able to generate a password that follows the client requirements.
+* Enabling users, we will need to develop a way to enable users that were disabled
+
 ### 4.1. Realization
+
+#### Register User
+
+![SD - Register User](sequence-diagram-register-user.svg)
+
+#### Disable/Enable Users
+
+![SD - Disable/Enable User](sequence-diagram-disable-enable-user.svg)
+
+#### List Users
+
+![SD - List User](sequence-diagram-list-user.svg)
 
 ### 4.2. Class Diagram
 
-![a class diagram]()
+#### Register User
+
+![SD - Register User](sequence-diagram-register-user.svg)
+
+#### Disable/Enable Users
+
+![SD - Disable/Enable User](sequence-diagram-disable-enable-user.svg)
+
+#### List Users
+
+![SD - List User](sequence-diagram-list-user.svg)
+
 
 ### 4.3. Applied Patterns
+
+Although, most of the functionalities were already in the base project and eapli framework, some patterns were
+identified while investigating the code, such as:
+
+| Applied Pattern | Context           | Justification                                                                                                       |
+|-----------------|-------------------|---------------------------------------------------------------------------------------------------------------------|
+| Builder         | Registering Users | It allows the registration of a user where the construction process may vary based on the type of user being built. |
+| Visitor         | Listing Users     | It allows to introduce a new behaviour to the SystemUser class, in this case it is printing the user information.   |
 
 ### 4.4. Tests
 
