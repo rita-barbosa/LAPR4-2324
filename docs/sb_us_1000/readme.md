@@ -79,11 +79,6 @@ process will fail, even if they are a valid user. Upon registration, all users w
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
-
 As recommended, we used the base project and eapli framework as an initial support. Taking this into account, basic
 functionalities, like registering, listing, disabling, etc users, were already available. Despite this, some
 modifications will
