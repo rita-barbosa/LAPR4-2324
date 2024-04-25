@@ -1,0 +1,166 @@
+@startuml
+
+
+
+abstract class AbstractUI {
+    # doShow()
+    # show()
+    # mainLoop()
+}
+
+class AuthorizationService {
+    + loggedinUserWithPermissions(roles)
+}
+
+class UserManagementService {
+    + registerNewUser(email, password, name, email, roles)
+}
+class ClientUserManamentService {
+    + registerNewUser(user, phoneNumber)
+}
+
+interface EventPublisher{
+    + publish()
+}
+interface EventHandler{
+    + onEvent()
+}
+interface DomainEvent{
+    + occurredAt()
+    + registeredAt()
+}
+interface DomainRepository{
++ save(entity)
+}
+
+
+
+class RegisterCustomerUI {
+
+}
+
+class RegisterCustomerController{
++ registerCustomer(companyName, address, customerCode,\nuserEmail, userName, phoneNumber)
+}
+class AddUserOnNewEntityRegisteredController{
++ addUser(newEntityRegisteredEvent)
+}
+class AddClientUserOnNewEntityRegisteredController{
++ addClientUser(newEntityUserRegisteredEvent)
+}
+class GeneratePasswordService {
++ generatePassword(): RandomPassword
+}
+
+class RandomPassword{
+- rawPassword
++ RandomPassword() : RandomPassword
+- RandomPassword(int) : RandomPassword
+}
+
+class Entity{
++ Entity(companyName, address,\ncustomerCode, customerManageruser)
+}
+
+
+interface EntityRepository {
++ Entity(companyName, address,\ncustomerCode, customerManageruser)
+}
+interface UserRepository {
++ofIdentity(email)
+}
+
+class CustomerCode <<(V,#FF8B40) value object>>  {
+- code
++ CustomerCode(code)
+}
+class CompanyName <<(V,#FF8B40) value object>> {
+- name
++ CompanyName(name)
+}
+class Address <<(V,#FF8B40) value object>> {
+- streetName
+- streetNumber
+- postalCode
+- district
+- city
++ Address(streetName, streetNumber, postalCode, district, city)
+}
+class NewEntityRegisteredEvent{
++ NewEntityRegisteredEvent(userEmail, userName,\nphoneNumber, password)
+}
+class NewEntityUserRegisteredEvent{
++ NewEntityRegisteredEvent(email, phoneNumber)
+}
+abstract class DomainEventBase {
+}
+
+class NewEntityRegisteredWatchDog{
+}
+class NewEntityUserRegisteredWatchDog{
+}
+class ClientUser {
+
+}
+class PhoneNumber <<(V,#FF8B40) value object>> {
+- countryCode
+- number
+}
+
+class SystemUser {
+- phoneNumber
+}
+
+
+AbstractUI <|-- RegisterCustomerUI
+RegisterCustomerUI .-> RegisterCustomerController
+
+
+NewEntityRegisteredEvent --|> DomainEventBase
+NewEntityUserRegisteredEvent --|> DomainEventBase
+NewEntityRegisteredEvent .--|> DomainEvent
+NewEntityUserRegisteredEvent .--|> DomainEvent
+
+
+NewEntityRegisteredWatchDog .-up|> EventHandler
+NewEntityUserRegisteredWatchDog .-|> EventHandler
+NewEntityRegisteredWatchDog .--> AddUserOnNewEntityRegisteredController
+NewEntityUserRegisteredWatchDog .--> AddClientUserOnNewEntityRegisteredController
+
+EventPublisher .-> EventHandler
+
+Entity --> CompanyName
+Entity --> CustomerCode
+Entity --> Address
+EntityRepository .--> DomainRepository
+EntityRepository --> Entity
+
+RegisterCustomerController --> AuthorizationService
+RegisterCustomerController -> UserManagementService
+RegisterCustomerController ---> EntityRepository
+RegisterCustomerController ---> Entity
+RegisterCustomerController ---> GeneratePasswordService
+RegisterCustomerController --> NewEntityRegisteredEvent
+
+
+GeneratePasswordService .--> RandomPassword
+
+
+AddUserOnNewEntityRegisteredController .-up-> NewEntityRegisteredEvent
+AddUserOnNewEntityRegisteredController .--> NewEntityUserRegisteredEvent
+AddUserOnNewEntityRegisteredController .-> UserManagementService
+
+AddClientUserOnNewEntityRegisteredController .--> NewEntityUserRegisteredEvent
+AddClientUserOnNewEntityRegisteredController .--> ClientUserManamentService
+AddClientUserOnNewEntityRegisteredController .--> UserRepository
+
+
+ClientUserManamentService .--> SystemUser
+ClientUserManamentService .--> ClientUser
+ClientUser --> SystemUser
+ClientUser --> PhoneNumber
+
+
+
+
+@enduml
