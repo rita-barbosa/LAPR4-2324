@@ -65,12 +65,72 @@ Considering that customer users should possess the same information as candidate
 
 ![Sequence diagram](sequence-diagram-register-customer.svg)
 
-
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![a class diagram](class-diagram.svg)
 
 ### 4.3. Applied Patterns
+
+* **Observer**
+* **Repository**
+* **Service**
+
+> **Repository Pattern**
+> * EntityRepository
+> * UserRepository
+> * ClientUserRepository
+>
+> **Justifications**
+>
+> * The repositories were employed to persist users and entities, as well as to reconstruct objects from the
+    persistence.
+
+
+> **Service Pattern**
+> * UserManagementService
+> * AuthorizationService
+> * ClientUserManagementService
+> * EntityManagementService
+> * GeneratePasswordService
+>
+>
+> **Justifications**
+>
+> The UserManagementService and AuthorizationService, pre-existing services within the Eapli.Framework were used here
+> to register users and retrieve the logged-in user with Admin or Customer Manager roles.
+> Furthermore, the ClientUserManagementService was used to register client users, particularly those categorized as
+> customer users. This additional registration step is necessary as these users also require the inclusion of their
+> phoneNumber.
+> 
+> **[REVIEW] The EntityManagementService is employed to register customers/entities, tasked with the responsibility of
+entity/customer creation.**
+> 
+> The mentioned services were developed because the functionalities they offer will be utilized across multiple use
+> cases. The EntityManagementService will also serve for various other functionalities, such as listing, among others.
+
+> **Observer**
+> * EventPublisher
+> * NewEntityRegisteredEvent
+> * NewEntityUserRegisteredEvent
+> * NewEntityRegisteredWatchDog
+> * NewEntityUserRegisteredWatchDog
+> * AddUserOnNewEntityRegisteredController
+> * AddClientUserOnNewEntityRegisteredController
+>
+>
+> All the mentioned objects are components of the applied observer pattern. This pattern was implemented to ensure
+> that when a new customer is registered, a user is automatically registered as well. Following this procedure, upon the
+> registration of a customer, a NewEntityRegisteredEvent instance is generated, and the EventPublisher is utilized
+> to notify the WatchDog (Observer).
+>
+> Upon receiving this notification, the WatchDog triggers the registration of the
+> user through the AddUserOnNewEntityRegisteredController. Similarly, for the creation of a ClientUser, a comparable
+> approach is adopted.
+>
+> In this case, an instance of NewEntityUserRegisteredEvent is used to inform the specific WatchDog,
+> which then invokes the AddClientUserOnNewEntityRegisteredController for the registration of the ClientUser.
+>
+>
 
 ### 4.4. Tests
 
