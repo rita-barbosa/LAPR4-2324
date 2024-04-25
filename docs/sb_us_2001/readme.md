@@ -13,8 +13,8 @@ so that they can be imported into the system by initiative of the {Operator}.
 
 - **2001.1** The programing language to be used is C.
 - **2001.2** The usage of processes, signals and pipes is required.
-- **2001.3** To terminate the application, the parent process must handle the SIGINT signal.
-- **2001.4** Upon the reception of SIGINT by the parent process, it should terminate all children and wait for their
+- **2001.3** To terminate the application, the parent process must handle the **SIGINT** signal.
+- **2001.4** Upon the reception of **SIGINT** by the parent process, it should terminate all children and wait for their
 termination.
 - **2001.5** Child workers do not terminate unless they are specifically terminated by the parent process.
 - **2001.6** The number of children processes must be configurable.
@@ -113,20 +113,28 @@ These configurations can be adjusted either during application runtime or by rea
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
+>*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
 include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
 presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+patterns and the specification of the main tests used to validate the functionality.*
 
 ### 4.1. Realization
 
-### 4.2. Class Diagram
+Below there is a simple diagram illustrating the flow of the functionality.
 
-![a class diagram]()
+**US2001 Simple Flow Diagram**
 
-### 4.3. Applied Patterns
+![US2001 Simple Flow Diagram](./US2001_Design_Diagrams/US2001_Informal.svg)
 
-### 4.4. Tests
+
+The next diagram follows a more technical approach to the flow of the functionality, along with its description in steps
+and their location within the diagram.
+
+**US2001 Technical Flow Diagram**
+
+![US2001 Technical Flow Diagram](./US2001_Design_Diagrams/US2001_SCOMP_Diagram.svg)
+
+### 4.2. Tests
 
 *Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
 
