@@ -6,19 +6,19 @@ actor "Customer Manager" as USER
 
 participant "RegisterCustomerUI" as UI <<presentation>>
 participant "RegisterCustomerController" as CTRL <<controller>>
+participant "GeneratePasswordService" as GPS <<service>>
 participant "RandomPassword" as PG <<domain>>
 participant "AuthorizationService" as AUTHZ <<service>>
-participant "EntityManagementService" as EMS <<service>>
-participant "EntityFactory" as EF <<domain>>
 participant "Entity" as ENTITY <<domain>>
-participant "EntityRepository" as ER <<domain>>
+participant "EntityRepository" as ER <<repository>>
 participant "EventPublisher" as EP <<domain>>
 participant "NewEntity\nRegisteredEvent" as EVENT <<domain>>
-participant "NewEntityUser\nRegisteredEvent" as EVENT_2 <<domain>>
 participant "NewEntityRegistered\nWatchDog" as WD <<domain>>
 participant "NewEntityUser\nRegisteredWatchDog" as WD_2 <<domain>>
 participant "AddUserOnNewEntity\nRegisteredController" as CTRL_EVENT <<domain>>
 participant "AddClientUserOnNew\nEntityRegisteredController" as CTRL_EVENT_2 <<domain>>
+participant "UserRepository" as REPO <<repository>>
+participant "NewEntityUser\nRegisteredEvent" as EVENT_2 <<domain>>
 participant "ClientUser\nManagementService" as CUMS <<service>>
 participant "UserManagementService" as UMS <<service>>
 
@@ -47,45 +47,34 @@ USER -> UI: companyName, address, customerCode,\nuserEmail, userName, phoneNumbe
 UI -> CTRL: registerCustomer(companyName, address, customerCode,\nuserEmail, userName, phoneNumber)
 activate CTRL
 
-CTRL -> PG**: create()
+CTRL -> GPS: generatePassword()
+activate GPS
+
+GPS -> PG**: create()
 activate PG
 
-PG --> CTRL: password
+PG --> GPS: password
 deactivate PG
+
+GPS --> CTRL: password
+deactivate GPS
 
 CTRL -> AUTHZ:  loggedinUserWithPermissions(roles)
 activate AUTHZ
 
-AUTHZ -> CTRL:  customerManagerUser
+AUTHZ --> CTRL:  customerManagerUser
 deactivate AUTHZ
 
-CTRL -> EMS: registerCustomer(companyName, address, customerCode,\ncustomerManagerUser)
-activate EMS
-
-
-
-
-
-EMS -> EF: createEntity(companyName, address,\ncustomerCode, customerManageruser)
-activate EF
-
-EF -> ENTITY**: create
+CTRL -> ENTITY**: create(companyName, address,\ncustomerCode, customerManageruser)
 activate ENTITY
 
-ENTITY --> EF: entity
+ENTITY --> CTRL: entity
 deactivate ENTITY
 
-EF --> EMS: entity
-deactivate EF
-
-EMS -> ER: save(entity)
+CTRL -> ER: save(entity)
 activate ER
 deactivate ER
 
-
-
-EMS --> CTRL: success
-deactivate EMS
 
 
 
@@ -102,11 +91,13 @@ activate WD
 WD -> CTRL_EVENT: addUser(newEntityRegisteredEvent)
 activate CTRL_EVENT
 
-CTRL_EVENT -> UMS: registerNewUser(email, password, name,  roles)
+CTRL_EVENT -> UMS: registerNewUser(email, password, name,email,  roles)
 activate UMS
 
 UMS --> CTRL_EVENT: user
 deactivate UMS
+
+CTRL_EVENT -> EVENT_2**: create(email, phoneNumber)
 
 deactivate WD
 
@@ -119,7 +110,13 @@ activate WD_2
 WD_2 -> CTRL_EVENT_2: addClientUser(newEntityUserRegisteredEvent)
 activate CTRL_EVENT_2
 
-CTRL_EVENT_2 -> CUMS: registerNewUser(email, password, name,  roles)
+CTRL_EVENT_2 -> REPO : ofIdentity(email)
+activate REPO
+
+REPO --> CTRL_EVENT_2: user
+deactivate REPO
+
+CTRL_EVENT_2 -> CUMS: registerNewUser(user, phoneNumber)
 activate CUMS
 
 deactivate CUMS
