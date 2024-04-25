@@ -2,38 +2,102 @@
 
 
 ' Services
+package Framework {
+abstract class AbstractUI {
+    # doShow()
+    # show()
+    # mainLoop()
+}
+abstract class AbstractListUI{
+    # elements()
+    # elementPrinter();
+}
 
-class RegisterUserUI <<domain>> {
-# doShow()
+class AuthorizationService {
+    + ensureAuthenticatedUserHasAnyOf(roles)
+}
+
+class UserManagementService {
+    + registerNewUser(email, password, name, email, roles)
+    + deactivatedUsers()
+    + activeUsers()
+    + deactivateUser(user)
+    + activateUser(user)
+}
+
+}
+
+
+class RegisterUserUI {
 - showRoles()
 - buildRoles()
 }
+class ListUsersUI {
 
-class AddUserController <<domain>> {
+}
+class EnableDisableUserUI {
+
+}
+
+
+class AddUserController{
 - addUser(email,name, role, password)
 + getBackofficeRoleTypes()
 + addUser(email,name, role, password)
 + addUser(email,name, role)
 }
-
-class AuthorizationService <<service>> {
-+ ensureAuthenticatedUserHasAnyOf(roles)
+class ListUsersController  {
++ allUsers()
 }
 
-class UserManagementService <<service>> {
-+ registerNewUser(email, password, firstName, lastName, email, roles)
+class EnableDisableUserController  {
++ deactivatedUsers()
++ activeUsers()
++ deactivateUser(user)
++ activateUser(user)
 }
 
-class RandomPassword <<domain>> {
+class GeneratePasswordService {
++ generatePassword(): RandomPassword
+}
+
+class FilterService{
++ filterBackofficeUsers(users) : Iterable<SystemUser>
+}
+
+class RandomPassword{
 - rawPassword
-+ RandomPassword()
-- RandomPassword(int)
++ RandomPassword() : RandomPassword
+- RandomPassword(int) : RandomPassword
 }
+
+AbstractUI <|--- RegisterUserUI
+AbstractUI <|-- AbstractListUI
+AbstractListUI <|-- ListUsersUI
+AbstractUI <|- EnableDisableUserUI
+
 
 RegisterUserUI .--> AddUserController
-AddUserController --> AuthorizationService
-AddUserController --> UserManagementService
-AddUserController -> RandomPassword
+AddUserController ---> AuthorizationService
+AddUserController ---> UserManagementService
+AddUserController ---> GeneratePasswordService
+GeneratePasswordService .-> RandomPassword
+
+ListUsersUI .-> ListUsersController
+ListUsersController --> AuthorizationService
+ListUsersController ---> UserManagementService
+ListUsersController --> FilterService
+
+EnableDisableUserUI .--> EnableDisableUserController
+EnableDisableUserController ---> AuthorizationService
+EnableDisableUserController ---> UserManagementService
+
+
+
+
+
+
+
 
 
 
