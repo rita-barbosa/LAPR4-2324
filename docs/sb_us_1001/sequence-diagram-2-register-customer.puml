@@ -1,0 +1,48 @@
+@startuml
+autonumber
+
+title [US1001] Register Customer - 2
+
+
+participant "EventPublisher" as EP <<domain>>
+participant "NewCustomerUserRegistered\nWatchDog" as WD <<domain>>
+participant "AddEntityOnNewCustomerUser\nRegisteredController" as CTRL_EVENT <<domain>>
+'participant "EntityManagementService" as EMS <<service>>
+participant "Entity" as ENTITY <<domain>>
+participant "EntityRepository" as ER <<domain>>
+
+
+
+
+ -> EP : publish()
+activate EP
+
+EP -> WD: onEvent()
+activate WD
+
+WD -> CTRL_EVENT: registerNewEntity(newCustomerUserRegisteredEvent)
+activate CTRL_EVENT
+
+'CTRL_EVENT -> EMS: registerNewEntity(companyName, address,\ncustomerCode, customerManageruser)
+'activate EMS
+
+CTRL_EVENT -> ENTITY**: create
+activate ENTITY
+
+ENTITY --> CTRL_EVENT: entity
+deactivate ENTITY
+
+CTRL_EVENT -> ER: save(entity)
+activate ER
+deactivate ER
+
+
+deactivate WD
+deactivate EP
+deactivate CTRL_EVENT
+'deactivate EMS
+
+
+@enduml
+
+

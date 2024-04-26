@@ -63,7 +63,8 @@ Considering that customer users should possess the same information as candidate
 
 ### 4.1. Realization
 
-![Sequence diagram](sequence-diagram-register-customer.svg)
+![Sequence diagram - 1](sequence-diagram-register-customer.svg)
+![Sequence diagram - 2](sequence-diagram-2-register-customer.svg)
 
 ### 4.2. Class Diagram
 
@@ -78,18 +79,16 @@ Considering that customer users should possess the same information as candidate
 > **Repository Pattern**
 > * EntityRepository
 > * UserRepository
-> * ClientUserRepository
 >
 > **Justifications**
 >
-> * The repositories were employed to persist users and entities, as well as to reconstruct objects from the
+>The repositories were employed to persist users and entities, as well as to reconstruct objects from the
     persistence.
 
 
 > **Service Pattern**
 > * UserManagementService
 > * AuthorizationService
-> * ClientUserManagementService
 > * EntityManagementService
 > * GeneratePasswordService
 >
@@ -101,22 +100,20 @@ Considering that customer users should possess the same information as candidate
 > Furthermore, the ClientUserManagementService was used to register client users, particularly those categorized as
 > customer users. This additional registration step is necessary as these users also require the inclusion of their
 > phoneNumber.
-> 
-> **[REVIEW] The EntityManagementService is employed to register customers/entities, tasked with the responsibility of
-entity/customer creation.**
-> 
+>
+> The EntityManagementService is employed to register customers/entities, tasked with the responsibility of
+entity/customer creation.
+>
 > The mentioned services were developed because the functionalities they offer will be utilized across multiple use
 > cases. The EntityManagementService will also serve for various other functionalities, such as listing, among others.
 
 > **Observer**
 > * EventPublisher
-> * NewEntityRegisteredEvent
-> * NewEntityUserRegisteredEvent
-> * NewEntityRegisteredWatchDog
-> * NewEntityUserRegisteredWatchDog
-> * AddUserOnNewEntityRegisteredController
-> * AddClientUserOnNewEntityRegisteredController
+> * NewCustomerUserRegisteredEvent
+> * NewCustomerUserRegisteredWatchDog
+> * AddCustomerOnNewCustomerUserRegisteredController
 >
+> **Justifications**
 >
 > All the mentioned objects are components of the applied observer pattern. This pattern was implemented to ensure
 > that when a new customer is registered, a user is automatically registered as well. Following this procedure, upon the
@@ -130,7 +127,9 @@ entity/customer creation.**
 > In this case, an instance of NewEntityUserRegisteredEvent is used to inform the specific WatchDog,
 > which then invokes the AddClientUserOnNewEntityRegisteredController for the registration of the ClientUser.
 >
->
+> Finally, this responsibility pattern was implemented within the service, as we required registration of entities in
+> the bootstrap. To maintain consistency in the creation process, we used the EventPublisher within the service to
+> ensure that both the customer and its user were created, thus preserving the system's valid state.
 
 ### 4.4. Tests
 
