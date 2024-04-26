@@ -140,6 +140,17 @@ _Reference **1002.1**:_ Alternatively, this can be achieved by a bootstrap proce
 > job, which could be in a different location of the company.
 
 
+> **Question:** Regarding a Customer (company), it was mentioned that one piece of information to collect would be the
+> physical address (not email) related to a job opening. The question is, if a company has multiple branches in different
+> locations, would it then have multiple addresses, or would it be better to consider each of these branches as an individual
+> Customer? Furthermore, if each of these branches were to be considered an individual Customer, would the email (as the
+> identifier) need to be the same, or would it be possible to have a different email for each branch of the company?
+>
+> **Answer:** You should consider that the company (Customer) has a primary address associated with its registration. In
+> the context of a job opening, the address that "appears" in that job offer is the address associated with that specific
+> job, which could be at a different location within the company.
+
+
 ## 3. Analysis
 
 To register a job opening, some information must be provided:
