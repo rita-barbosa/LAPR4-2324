@@ -16,7 +16,7 @@ class UserManagementService {
     + registerNewUser(email, password, name, email, roles)
 }
 class EntityManagementService {
-    + registerNewEntity(companyName, address, customerCode,\ncustomerManagerUser)
+    +  registerNewEntity(companyName, address, customerCode,\ncustomerManagerUser,email,password)
 }
 
 interface EventPublisher{

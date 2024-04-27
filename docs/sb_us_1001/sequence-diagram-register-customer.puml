@@ -59,7 +59,7 @@ activate AUTHZ
 AUTHZ -> CTRL:  customerManagerUser
 deactivate AUTHZ
 
-CTRL -> EMS: registerNewEntity(companyName, address, customerCode,\ncustomerManagerUser)
+CTRL -> EMS: registerNewEntity(companyName, address, customerCode,\ncustomerManagerUser,email,password)
 activate EMS
 
 
