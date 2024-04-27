@@ -61,8 +61,9 @@ class GeneratePasswordService {
 + generatePassword(): RandomPassword
 }
 
-class FilterService{
-+ filterBackofficeUsers(users) : Iterable<SystemUser>
+class ListUserService{
++ backofficeUsers() : Iterable<SystemUser>
+- filterBackofficeUsers(users) : Iterable<SystemUser>
 }
 
 class RandomPassword{
@@ -78,19 +79,19 @@ AbstractUI <|- EnableDisableUserUI
 
 
 RegisterUserUI .--> AddUserController
-AddUserController ---> AuthorizationService
-AddUserController ---> UserManagementService
-AddUserController ---> GeneratePasswordService
+AddUserController .--> AuthorizationService
+AddUserController .--> UserManagementService
+AddUserController .--> GeneratePasswordService
 GeneratePasswordService .-> RandomPassword
 
 ListUsersUI .-> ListUsersController
-ListUsersController --> AuthorizationService
-ListUsersController ---> UserManagementService
-ListUsersController --> FilterService
+ListUsersController .--> AuthorizationService
+ListUserService .-> UserManagementService
+ListUsersController .-> ListUserService
 
 EnableDisableUserUI .--> EnableDisableUserController
-EnableDisableUserController ---> AuthorizationService
-EnableDisableUserController ---> UserManagementService
+EnableDisableUserController .--> AuthorizationService
+EnableDisableUserController .--> UserManagementService
 
 
 
