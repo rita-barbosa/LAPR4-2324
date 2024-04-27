@@ -4,14 +4,16 @@ title [US1003 - Sequence Diagram]
 
 participant "<<presentation>>\n:RegisterJobOpeningUI" as UI
 control "<<application>>\n:ListJobOpeningController" as CTRL
-participant "<<persistence>>\n:PersistenceContext" as Persistence
-participant "<<factory>>\n:RepositoryFactory" as RepositoryFactory
 database "<<repository>>\n:CriteriaRepository" as CriteriaRepository
-database "<<repository>>\n:CostumerRepository" as CostumerRepository
+participant "<<domain>>\n:Criteria" as Criteria
+participant "<<service>>\n:AuthorizationService" as AuthSvc
+participant "<<service>>\n:EntityManagementService" as EntityManagement
 database "<<repository>>\n:EntityRepository" as EntityRepository
+participant "<<domain>>\n:Entity" as Entity
+participant "<<service>>\n:JobOpeningManagementService" as JobManagement
+participant "<<service>>\n:JobOpeningListDTOService" as JobOpeningListDTO
 database "<<repository>>\n:JobOpeningRepository" as JobOpeningRepository
-participant "<<service>>\n:ListCriteriaDTOService" as CriteriaDTOSvc
-participant "<<service>>\n:ListJobOpeningDTOService" as JobOpeningDTOSvc
+participant "<<domain>>\n:JobOpening" as JobOpening
 
 activate UI
 
@@ -24,29 +26,17 @@ UI -> CTRL : getCriteria()
 activate CTRL
 
 
-    CTRL -> Persistence : repositories()
-    activate Persistence
-
-        Persistence -> RepositoryFactory : create()
-        deactivate Persistence
-        activate RepositoryFactory
-
-            RepositoryFactory -> CriteriaRepository : create()
-            deactivate RepositoryFactory
-            activate CriteriaRepository
-
-            CriteriaRepository -[#white]> CriteriaRepository
-            deactivate CriteriaRepository
-
-
     CTRL -> CriteriaRepository : jobOpeningCriteria()
     activate CriteriaRepository
     deactivate CriteriaRepository
 
-    CTRL -> CriteriaDTOSvc : toDTO(criteriaList)
+    loop for all criteria
 
-    activate CriteriaDTOSvc
-    deactivate CriteriaDTOSvc
+        CTRL -> Criteria : toDTO()
+        activate Criteria
+        deactivate Criteria
+
+    end loop
 
     CTRL --> UI : criteriaListDTO
     deactivate CTRL
@@ -56,62 +46,50 @@ UI -> UI : doShow()
 UI -> CTRL : getJobOpeningList()
 activate CTRL
 
-CTRL -> Persistence : repositories()
+    CTRL -> AuthSvc : loggedinUserWithPermissions(BaseRole.CUSTOMER_MANAGER)
+    activate AuthSvc
+    deactivate AuthSvc
 
-    activate Persistence
+    CTRL -> EntityManagement : getAssignedCustomerCodesList(username)
+    activate EntityManagement
 
-    Persistence -> RepositoryFactory : create()
-    deactivate Persistence
+        EntityManagement -> EntityRepository : getCustomersByUsername(username)
+        note right: Username is the Customer\n Manager's email
+        activate EntityRepository
+        deactivate EntityRepository
 
-    activate RepositoryFactory
-
-        RepositoryFactory -> CostumerRepository : create()
-        deactivate RepositoryFactory
-
-        activate CostumerRepository
-
-        CostumerRepository -[#white]> CostumerRepository
-        deactivate CostumerRepository
-
-
-    CTRL -> CostumerRepository : getAssignedCostumerCodesList(username)
-    activate CostumerRepository
-    deactivate CostumerRepository
-
-    CTRL -> Persistence : repositories()
-    activate Persistence
-
-    Persistence -> EntityRepository : create()
-    deactivate Persistence
-
-    activate EntityRepository
-
-    EntityRepository -[#white]> EntityRepository
-    deactivate EntityRepository
-
-    CTRL -> EntityRepository : getCompaniesNamesByCostumerCodesList(assignedCostumerCodesList)
-    activate EntityRepository
-    deactivate EntityRepository
-
-    CTRL -> JobOpeningRepository : getJobOpeningsFromCompaniesNames(companiesNamesList)
-    activate JobOpeningRepository
-    deactivate JobOpeningRepository
-
-    opt criteria was selected
-
-        loop for all criteria selected
-
-            CTRL -> JobOpeningRepository : filterJobOpeningList(criteria)
-            activate JobOpeningRepository
-            deactivate JobOpeningRepository
-
+        loop for all codes
+            EntityManagement -> Entity : customerCode()
+            activate Entity
+            deactivate Entity
         end loop
 
-    end alt
+    deactivate EntityManagement
 
-    CTRL -> JobOpeningDTOSvc : toDTO(jobOpeningList)
-    activate JobOpeningDTOSvc
-    deactivate JobOpeningDTOSvc
+    CTRL -> JobManagement : getJobOpeningsFromCustomerCodes(assignedCustomerCodesList)
+    activate JobManagement
+        loop for each code
+        JobManagement -> JobOpeningRepository : getJobOpeningListMatchingCustomerCode(customerCode)
+        activate JobOpeningRepository
+        deactivate JobOpeningRepository
+        end loop
+    deactivate JobManagement
+
+    opt criteria was selected
+        CTRL -> JobManagement : filterJobOpeningList(criteriaList)
+        activate JobManagement
+        deactivate JobManagement
+    end opt
+
+    CTRL -> JobOpeningListDTO : convertToDTO(jobOpeningList)
+    activate JobOpeningListDTO
+
+        loop for each JobOpening
+            JobOpeningListDTO -> JobOpening : toDTO()
+            activate JobOpening
+            deactivate JobOpening
+        end loop
+    deactivate JobOpeningListDTO
 
     CTRL --> UI : jobOpeningListDTO
 deactivate CTRL
