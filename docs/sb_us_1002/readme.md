@@ -11,10 +11,10 @@ This is the first time this user story is being requested.
 **Acceptance Criteria:**
 
 - **1002.1** The "Number of Vacancies" must not be less than or equal to 0.
-- **1002.2** The job reference is based on a costumer code that must be unique, which is limited to 10 characters, followed by a sequential number.
-- **1002.3** Regarding the "Company" field in a job opening, it should be the company/costumer's name, but when storing it within
-the database, the costumer code representing said company should be used.
-- **1002.4** A job opening is only managed by a single Costumer Manager, the one that is in charge of the company/costumer
+- **1002.2** The job reference is based on a customer code that must be unique, which is limited to 10 characters, followed by a sequential number.
+- **1002.3** Regarding the "Company" field in a job opening, it should be the company/customer's name, but when storing it within
+the database, the customer code representing said company should be used.
+- **1002.4** A job opening is only managed by a single Customer Manager, the one that is in charge of the company/customer
 of said job opening.
 - **1002.5** The job opening must have a title/function.
 - **1002.6** The job opening must have a contract type, which must be amongst the types defined.
@@ -30,7 +30,7 @@ requirements to a certain job opening.
 
  **US2003** | This functionality has a dependency with US2003, which generates and exports a template text file to help collect the
 candidates' data based on the job opening specifications/requirements. The data will be used to evaluate the candidate and
-check if they are who the company/costumer wishes for.
+check if they are who the company/customer wishes for.
 
 _Reference **1002.1**:_ Alternatively, this can be achieved by a bootstrap process.
 
@@ -140,16 +140,27 @@ _Reference **1002.1**:_ Alternatively, this can be achieved by a bootstrap proce
 > job, which could be in a different location of the company.
 
 
+> **Question:** Regarding a Customer (company), it was mentioned that one piece of information to collect would be the
+> physical address (not email) related to a job opening. The question is, if a company has multiple branches in different
+> locations, would it then have multiple addresses, or would it be better to consider each of these branches as an individual
+> Customer? Furthermore, if each of these branches were to be considered an individual Customer, would the email (as the
+> identifier) need to be the same, or would it be possible to have a different email for each branch of the company?
+>
+> **Answer:** You should consider that the company (Customer) has a primary address associated with its registration. In
+> the context of a job opening, the address that "appears" in that job offer is the address associated with that specific
+> job, which could be at a different location within the company.
+
+
 ## 3. Analysis
 
 To register a job opening, some information must be provided:
 
-* **Job Reference** - based on a unique costumer code followed by a sequential number
+* **Job Reference** - based on a unique customer code followed by a sequential number
 * **Title or Function** - indicating the position that people are applying for
 * **Contract Type** - one of the defined types
 * **Mode** - one of the defined types
 * **Address** - address of the company
-* **Company** - costumer Name
+* **Company** - customer Name
 * **Number of vacancies** - number of people that will be employed
 * **Description** - a brief message from the company
 * **Requirements** - the job opening specifications, retrieved from a plugin (Job Requirement Specification Module)
@@ -173,42 +184,37 @@ is a partial domain model, with emphasis on US1002's concepts.
 The solution for this functionality is to have 4 layers, following DDD development architecture: Presentation, Application,
 Domain and Persistence. A link in [references](#71-references) explains this topic in-depth.
 
-To register a job opening, plenty of information must be retrieved from databases to be displayed: contract types, work modes and
-requirement specifications to select. These objects must be within repositories.
+To register a job opening, plenty of information must be retrieved from databases to be displayed: entities, contract types, work
+modes and requirement specifications to select. These objects must be within repositories.
 
 In order to enhance encapsulation between layers, the usage of DTO's to the previously mentioned objects should be applied.
 
-To get the costumers that are assigned only to the costumer manager in the session, access to the Authentication Service
+To get the customers that are assigned only to the Customer Manager in the session, access to the AuthorizationService
 is required.
 
 
 **New Domain Layer Classes**
-* AddressFactory
 * Address
-* JobOpeningFactory
 * JobOpening
 * WorkMode
 * ContractType
 * RequirementSpecification
-* Entity
+* EntityListDTOService
+* EntityManagementService
+* JobOpeningManagementService
+* AuthorizationService
 
-> * JobOpening is a different aggregate than RequirementSpecification and Entity
-> * Address is a value object that belongs to a JobOpening
+> * Address, ContractType, WorkMode and RequirementSpecification (a file) are a value object that belongs to a JobOpening.
 
 **New Persistence Layer Classes**
-* RepositoryFactory
 * JobOpeningRepository
-* CostumerRepository
-* CostumerRepository
+* WorkModesRepository
+* ContractTypesRepository
 * RequirementsSpecificationsRepository
 * EntityRepository
 
 **New Application Layer Classes**
 * RegisterJobOpeningController
-* JobOpeningMapper
-* JobOpeningDTO
-* EntityMapper
-* EntityDTO
 
 **New Presentation Layer Classes**
 * RegisterJobOpeningUI
@@ -217,18 +223,10 @@ The further topics illustrate and explain this functionality usage flow, and the
 
 ### 4.1. Realization
 
-* **US1002 Sequence Diagram (Split)**
+* **US1002 Sequence Diagram**
 
-![US1002 Split Sequence Diagram](./US1002_SD/US1002_SD.svg)
+![US1002 Sequence Diagram](./US1002_SD/US1002_SD.svg)
 
-* **[US1002 Partial SD] Job 0pening Attribute List to DTO**
-
-![US1002 Job Opening Attribute List to DTO](./US1002_SD/US1002_partial_job_opening_attribute_list_to_DTO.svg)
-
-
-* **[US1002 Partial SD] Assigned Costumers List to DTO**
-
-![US1002 Assigned Costumers List to DTO](./US1002_SD/US1002_partial_assigned_costumers_list_to_DTO.svg)
 
 ### 4.2. Class Diagram
 
@@ -240,60 +238,51 @@ The further topics illustrate and explain this functionality usage flow, and the
 
 This topic presents the classes with the patterns applied to them along with justifications.
 
->**Factory Pattern**
->* AddressFactory
->* JobOpeningFactory
->
->**Justifications**
-> 
-> * Address is a complex object, but the structure of its instances is all the same, there is no distinctions, so an address
-    factory seems appropriate to build it.
->
-> * For the exact same reasons as an address, job openings' structure is immutable, so instances of this class will come
-    from a job opening factory.
-
-
 >**Repository Pattern**
-> * CostumerRepository
+> * ContractTypesRepository
+> * WorkModesRepository
 > * RequirementsSpecificationsRepository
+> * EntityRepository
 > * JobOpeningRepository
 > 
 > **Justifications**
 >
-> * The job opening repository is in charge of persisting the job opening instance created. It is also responsible for
-    rebuilding the contract types and work modes that characterize a job opening, information it has kept in its database.
+> * According to the client, there can be more contract types and work modes in the future, so repositories are ideal to 
+    store the different instances of these classes.
 > 
-> * As per requested, the job reference that identifies the job opening should have the costumer code as a base, and be 
-    sequential. If the previous job opening from the same costumer was made in a different session, then the current session
+> * As per requested, the job reference that identifies the job opening should have the customer code as a base, and be 
+    sequential. If the previous job opening from the same customer was made in a different session, then the current session
     does not have access to its job reference, so it must be retrieved from the job openings' repository database.
+    The newly created jobOpening instance will be saved/preserved in its repository.
 > 
 > * To have access to the requirements specifications file names, access to a database containing registers of them is
     necessary, therefore the existence of a repository database that is shared amongst various applications is necessary.
+> 
+> * The customers assigned to the Customer Manager are stored within the EntityRepository, persisting and rebuilding them
+    between sessions.
 
 
 >**Service Pattern**
-> * RegisterJobOpeningController
-> * RegisterJobOpeningUI
-> * JobOpeningMapper
+> * EntityListDTOService
+> * EntityManagementService
+> * JobOpeningManagementService
+> * AuthorizationService
 > 
 > **Justifications**
 > 
-> * The controller acts as a bridge between the UI and the Domain and Persistence Layer, processing UI requests and asking
-    the classes with assigned responsibilities to solve the issue, returning to the UI with the answer.
+> * EntityManagementService is used in more than one functionality, and its in charge of managing request regarding entities,
+>   serving as encapsulation between the controller and the EntityRepository along with the domain classes.
+>
+> * JobOpeningManagementService is used in more than one functionality, and its in charge of managing request regarding 
+>   jobOpenings, serving as encapsulation between the controller and the JobOpeningRepository along with the domain classes.
 > 
-> * The UI does not correspond to any concept in the problem domain, and there is no justification for assigning certain
-    responsibilities to any existing class within the Domain Model.
+> * In order to enforce encapsulation amongst layers and adequate responsibility assigment, the EntityListDTOService was
+>   created, besides being a set of instructions that is used in other functionalities.
 > 
-> * The responsibilities of the Mapper consist of converting domain object to a dto, encapsulation of mapping logic, Data 
-  format adaptation and integration with the Application Layer (Controller).
+> * To get the customers that are assigned to the current Customer Manager in-session, we must get something to identify them.
+>   The AuthorizationService allows to get the username (user's email), which is essential to then filter the EntityRepository
+>   to the desired customers. This set of instructions is used in other functionalities too.
 
-
->**DTO pattern**
-> * JobOpeningDTO
-> 
-> **Justifications**
-> 
-> * A DTO's responsibility is to transfer data between layers without behavior or business logic, promoting encapsulation.
 
 ### 4.4. Tests
 

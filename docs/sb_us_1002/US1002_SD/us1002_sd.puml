@@ -4,15 +4,21 @@ title [US1002 - Sequence Diagram Split]
 
 participant "<<presentation>>\n:RegisterJobOpeningUI" as UI
 control "<<application>>\n:RegisterJobOpeningController" as CTRL
-participant "<<persistence>>\n:PersistenceContext" as Persistence
-participant "<<factory>>\n:RepositoryFactory" as RepositoryFactory
-database "<<repository>>\n:JobOpeningRepository" as JobOpeningRepository
-database "<<repository>>\n:CostumerRepository" as CostumerRepository
+participant "<<service>>\n:AuthorizationService" as AuthSvc
+participant "<<service>>\n:EntityManagementService" as EntityManagement
+database "<<repository>>\n:ContractTypesRepository" as ContractTypesRepository
+database "<<repository>>\n:WorkModesRepository" as WorkModesRepository
 database "<<repository>>\n:RequirementsSpecificationsRepository" as RequirementsSpecificationsRepository
-participant "<<factory>>\n:AddressFactory" as AddressFactory
+participant "<<domain>>\n:RequirementSpecification" as RequirementSpecification
+database "<<repository>>\n:EntityRepository" as EntityRepository
+participant "<<service>>\n:EntityListDTOService" as EntityListDTO
+participant "<<service>>\n:JobOpeningManagementService" as JobManagement
+database "<<repository>>\n:JobOpeningRepository" as JobOpeningRepository
+participant "<<domain>>\n:JobOpening" as JobOpening
+participant "<<domain>>\n:ContractType" as ContractType
+participant "<<domain>>\n:WorkMode" as WorkMode
 participant "<<domain>>\n:Address" as Address
-participant "<<factory>>\n:JobOpeningFactory" as JobOpeningFactory
-participant "<<domain>>\n<<Entity>>\n:JobOpening" as JobOpening
+
 
 
 activate UI
@@ -22,81 +28,69 @@ UI -> CTRL : create()
 activate CTRL
 deactivate CTRL
 
-UI -> CTRL : getCostumersList()
+UI -> CTRL : getCustomersList()
 activate CTRL
 
-CTRL -> Persistence : create()
+    CTRL -> AuthSvc : loggedinUserWithPermissions(BaseRole.CUSTOMER_MANAGER)
+    activate AuthSvc
+    deactivate AuthSvc
 
-    activate Persistence
+    CTRL -> EntityManagement : getAssignedCustomerCodesList(username)
+    activate EntityManagement
 
-    Persistence -> RepositoryFactory : create()
-    deactivate Persistence
+        EntityManagement -> EntityRepository : getCustomersByUsername(username)
+        note right: Username is the Customer\n Manager's email
+        activate EntityRepository
+        deactivate EntityRepository
 
-    activate RepositoryFactory
+            EntityManagement -> EntityListDTO : convertToDTO(customersList)
+            activate EntityListDTO
+            deactivate EntityListDTO
 
-        RepositoryFactory -> CostumerRepository : create()
-        activate CostumerRepository
-        deactivate CostumerRepository
+    deactivate EntityManagement
 
-    deactivate RepositoryFactory
-
-    CTRL -> CostumerRepository : getAssignedCostumerCodesList(username)
-    activate CostumerRepository
-    deactivate CostumerRepository
-
-    CTRL -> CTRL : toDTO(assignedCostumerCodesList)
-    ref over CTRL
-        assigned costumers list to DTO
-    end ref
-
-    CTRL --> UI : costumerListDTO
+    CTRL --> UI : customerListDTO
 
 deactivate CTRL
 
-UI -> CTRL : getJobOpeningContractTypesList()
+UI -> CTRL : getContractTypesList()
 
 'Getting the Contract Type
 activate CTRL
 
+CTRL -> ContractTypesRepository : getContractTypes()
+activate ContractTypesRepository
+deactivate ContractTypesRepository
 
-   CTRL -> RepositoryFactory : create()
-  activate RepositoryFactory
+ loop for all contract types
+    CTRL -> ContractType : toDTO()
+    activate ContractType
+    deactivate ContractType
+ end loop
 
-        RepositoryFactory -> JobOpeningRepository : create()
-        activate JobOpeningRepository
-        deactivate JobOpeningRepository
 
-  deactivate RepositoryFactory
 
-  CTRL -> JobOpeningRepository : getContractTypes()
-    activate JobOpeningRepository
-    deactivate JobOpeningRepository
-
-    CTRL -> CTRL : toDTO(className, contractTypeList)
-
-    ref over CTRL
-        job opening attribute list to DTO
-    end ref
-
-    CTRL --> UI : contractTypeListDTO
+  CTRL --> UI : contractTypeListDTO
 
 deactivate CTRL
 
 UI -> UI : doShow()
 
 'Getting the Work Mode
-UI -> CTRL : getJobOpeningWorkModesList()
+UI -> CTRL : getWorkModesList()
 
 activate CTRL
 
-    CTRL -> JobOpeningRepository : getWorkModes()
-    activate JobOpeningRepository
-    deactivate JobOpeningRepository
+    CTRL -> WorkModesRepository : getWorkModes()
 
-    CTRL -> CTRL : toDTO(className, workModeList)
-    ref over CTRL
-        job opening attribute list to DTO
-    end ref
+    activate WorkModesRepository
+    deactivate WorkModesRepository
+
+    loop for all work modes
+        CTRL -> WorkMode : toDTO()
+        activate WorkMode
+        deactivate WorkMode
+    end loop
 
     CTRL --> UI : workModeListDTO
 
@@ -105,31 +99,22 @@ deactivate CTRL
 UI -> UI : doShow()
 
 
-UI -> CTRL : getJobOpeningRequirementsSpecificationsList()
+UI -> CTRL : getRequirementsSpecificationsList()
 
-'Getting Costumer ID
+'Getting Customer ID
 activate CTRL
 
-    'Getting the requirements specifications made for specified costumer
-    CTRL -> RepositoryFactory : create()
-
-    activate RepositoryFactory
-
-    RepositoryFactory -> RequirementsSpecificationsRepository : create()
-    activate RequirementsSpecificationsRepository
-    deactivate RequirementsSpecificationsRepository
-
-    deactivate RepositoryFactory
-
-    CTRL -> RequirementsSpecificationsRepository : getCostumerRequirementsSpecificationsFileList(costumerCode)
+    CTRL -> RequirementsSpecificationsRepository : getCustomerRequirementsSpecificationsFileList(customerCode)
     note right: The process of selecting the requirements specifications is not a responsibility of\n US1002, rather from US1009, which will be integrated in this functionality.
     activate RequirementsSpecificationsRepository
     deactivate RequirementsSpecificationsRepository
 
-    CTRL -> CTRL : toDTO(className, costumerRequirementsSpecificationsFileList)
-    ref over CTRL
-        job opening attribute list to DTO
-    end ref
+    loop for all requirements specifications file
+
+        CTRL -> RequirementSpecification : toDTO()
+        activate RequirementSpecification
+        deactivate RequirementSpecification
+    end loop
 
 
     CTRL --> UI
@@ -138,46 +123,49 @@ deactivate CTRL
 
 UI -> UI : doShow()
 
-UI -> CTRL : registerJobOpening(function, contractType, workMode,\n streetName, city, district, state, zipcode, companyName,\n numVacancies, description, requirementsFileName)
+UI -> CTRL : registerJobOpening(function, contractTypeDenomination,\n workModeDenomination, streetName, city, district, state,\n zipcode, numVacancies, description, requirementsFileName)
 
 'Register a new Job Opening
 activate CTRL
 
-    'Generate new job reference (sequential)
-    CTRL -> JobOpeningRepository : getCostumerLastJobReference(costumerCode)
-    note right: JobOpeningFactory does not have access to the previous job opening\n reference if it was made in another session, so this step is necessary.
-    activate JobOpeningRepository
-    deactivate JobOpeningRepository
-
-    CTRL -> JobOpeningFactory : getJobReference(lastJobReference)
-    activate JobOpeningFactory
-    deactivate JobOpeningFactory
-
-    'Address Encapsulation
-    CTRL -> AddressFactory : create(streetName, city, district, state, zipcode)
-
-    activate AddressFactory
-
-    AddressFactory -> Address : create(streetName, city,\n district, state, zipcode)
-    activate Address
-    deactivate Address
-
-    deactivate AddressFactory
+        CTRL -> RequirementsSpecificationsRepository : getFileByName(requirementsFileName)
+        activate RequirementsSpecificationsRepository
+        deactivate RequirementsSpecificationsRepository
 
     'Job Opening Encapsulation
-    CTRL -> JobOpeningFactory : create(function, contractType, workMode, companyAddress, costumerCode, companyName, numVacancies, description, requirementsSpecificationsFile)
+    CTRL -> JobManagement : registerJobOpening(streetName, city, district, state, zipcode, function, contractTypeDenomination, workModeDenomination, customerCode, numVacancies, description, requirementsSpecificationsFile)
+    activate JobManagement
 
-    activate JobOpeningFactory
+        JobManagement -> JobOpeningRepository : lastJobReference(customerCode)
+        note left: The system does not have access to the previous job opening\n reference if it was made in another session, so this step is necessary.
+        activate JobOpeningRepository
+        deactivate JobOpeningRepository
 
-    JobOpeningFactory -> JobOpening : create(function, contractType, workMode,\n companyAddress, costumerCode,\n companyName, numVacancies, description,\n requirementsSpecificationsFile)
+    JobManagement -> JobOpening : create(function, contractTypeDenomination, workModeDenomination, streetName, city,\n district, state, zipcode, customerCode, numVacancies, description,\n requirementsSpecificationsFile)
     activate JobOpening
+
+        JobOpening -> JobOpening : jobReference(lastJobReference)
+
+        JobOpening -> ContractType : valueOf(contractTypeDenomination)
+        activate ContractType
+        deactivate ContractType
+
+        JobOpening -> WorkMode : valueOf(workModeDenomination)
+        activate WorkMode
+        deactivate WorkMode
+
+        JobOpening -> Address : create(city, district, state, zipcode)
+        activate Address
+        deactivate Address
+
     deactivate JobOpening
 
-    deactivate JobOpeningFactory
-
-    CTRL -> JobOpeningRepository : save(jobOpening)
+    JobManagement -> JobOpeningRepository : save(jobOpening)
     activate JobOpeningRepository
     deactivate JobOpeningRepository
+
+    deactivate JobManagement
+
 
     CTRL --> UI
 

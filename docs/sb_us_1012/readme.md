@@ -30,6 +30,22 @@ _Reference 1012.1:_ Requirement Specifications and Interview Models The support 
 specific technical requirements, specified in LPROG. The ANTLR tool should be used (https://www.antlr.org/).
 
 
+**Client Clarifications:**
+
+> **Question:** Is it possible to clarify whether the questions to be asked for the Interview Models and the Requirement
+> Specifications are the ones provided in the documentation example or if there is any group of questions that you would 
+> like us to use?
+> 
+> 
+> **Answer:** The specification document provides, as mentioned, examples. They are just indicative examples. You can use
+> the examples as test cases and as a start point to define others. However, the solution should support more than just
+> the examples provided in the document. In any of the plugins, the type of questions that should be supported is what is
+> presented on the page 8 of the document. As the product owner, I would like a functional demonstration of the system
+> to include at least 2 plugins of each type, so that we can demonstrate, at least minimally, support for more than one 
+> plugin used (of each type) simultaneously.
+
+
+
 ## 3. Analysis
 
 The objective of this user story is to create a template file, that will be used as a model for the job interviews done 

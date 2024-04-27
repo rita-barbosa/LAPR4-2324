@@ -10,8 +10,8 @@ This is the first time this user story is being requested.
 
 **Acceptance Criteria:**
 
-**1003.1** Listing by both costumer code or company name must be supported.
-**1003.2** The Costumer Manager can only list the job openings of the costumers that manages.
+**1003.1** Listing by both customer code or company name must be supported.
+**1003.2** The Customer Manager can only list the job openings of the customers that manages.
 
 **Dependencies/References:**
 
@@ -52,13 +52,24 @@ There are no references for this user story.
 > **Answer:** I think it makes sense to list only "their" job openings.
 
 
+> **Question:** The client clarified the status aspect of a job opening in questions Q68 and Q95. It was mentioned that 
+> a job opening becomes inactive when its recruitment process ends. However, in what state are job openings that have been
+> registered but do not yet have a recruitment process associated with them?
+>
+> **Answer:** Regarding the state (name of the state) of job openings after being registered but not yet associated with
+> a recruitment process, I am unsure how to respond. However, I can add that if they do not have a process associated with
+> them, they do not have dates for the process phases, and therefore, it seems to me that they have not yet entered the 
+> application phase. Therefore, no one officially knows about this job opening, and there should not be any applications
+> for this opening.
+
+
 ## 3. Analysis
 
 This functionality aims to list and, if desired, filter all the job openings. Below there's a list of the mentioned 
 filtering criteria:
 
 * Company Name
-* Costumer Code
+* Customer Code
 * Time Interval
 * {Active} Status
 
@@ -83,35 +94,29 @@ is a partial domain model, with emphasis on US1003's concepts.
 The solution for this functionality is to have 4 layers, following DDD development architecture: Presentation, Application,
 Domain and Persistence. A link in [references](#71-references) explains this topic in-depth.
 
-To list a job opening, they must be first filtered, so that the only ones the Costumer Managers have access to are the ones
-that have been assigned to them. For this purpose, access to the Authentication Service is required.
+To list a job opening, they must be first filtered, so that the only ones the Customer Managers have access to are the ones
+related to the customer that have been assigned to them. For this purpose, access to the AuthorizationService is required.
 
-Both costumer code and company name are to be criteria when filtering the list, all this data is in the Entity represented
-by the Costumer.
+Both customers code and company name are to be criteria when filtering the list, all this data is in the Entity represented
+by the Customer.
 
 In order to enhance encapsulation between layers, the usage of DTO's is required.
 
-
 **New Domain Layer Classes**
-* JobOpening
 * Entity
 * Criteria
+* JobOpeningListDTOService
+* JobOpeningManagementService
+* EntityManagementService
+* AuthorizationService
 
 **New Persistence Layer Classes**
-* RepositoryFactory
 * JobOpeningRepository
-* CostumerRepository
 * CriteriaRepository
 * EntityRepository
 
 **New Application Layer Classes**
 * ListJobOpeningController
-* ListCriteriaDTOService
-* ListJobOpeningDTOService
-* JobOpeningMapper
-* JobOpeningDTO
-* CriteriaMapper
-* CriteriaDTO
 
 **New Presentation Layer Classes**
 * ListJobOpeningUI
@@ -134,52 +139,47 @@ The further topics illustrate and explain this functionality usage flow, and the
 
 This topic presents the classes with the patterns applied to them along with justifications.
 
-
 >**Repository Pattern**
-> * CostumerRepository
+> * CriteriaRepository
 > * EntityRepository
 > * JobOpeningRepository
 >
 > **Justifications**
 >
-> * The job opening repository is in charge of persisting the job opening instance created. It is also responsible for
-    rebuilding the contract types and work modes that characterize a job opening, information it has kept in its database.
+> * The JobOpeningRepository has stored all the jobOpening instances created in all sessions in its database, it's where
+>   the instances can be rebuilt.
+> 
+> * Due to the existence of having plenty of criterion, a repository is ideal to persist and build the different instances
+>   of this class.
 >
-> * As per requested, the job reference that identifies the job opening should have the costumer code as a base, and be
-    sequential. If the previous job opening from the same costumer was made in a different session, then the current session
+> * As per requested, the job reference that identifies the job opening should have the customer code as a base, and be
+    sequential. If the previous job opening from the same customer was made in a different session, then the current session
     does not have access to its job reference, so it must be retrieved from the job openings' repository database.
 >
-> * Because the company name's is an attribute of JobOpening, we need the entities to retrieve their name, so there is a
-    need to access the entities database.
+> * Entities have their Customer Manager email as an attribute, so by using the email we can track which entities are assigned
+>   to said user and retrieve their costumer codes. This is all stored in the database represented by the repository.
 
 
 >**Service Pattern**
-> * ListJobOpeningController
-> * ListJobOpeningUI
-> * ListJobOpeningDTOService
-> * ListCriteriaDTOService
-> * JobOpeningMapper
-> * CriteriaMapper
+> * JobOpeningListDTOService
+> * JobOpeningManagementService
+> * EntityManagementService
+> * AuthorizationService
 >
 > **Justifications**
 >
-> * The controller acts as a bridge between the UI and the Domain and Persistence Layer, processing UI requests and asking
-    the classes with assigned responsibilities to solve the issue, returning to the UI with the answer.
+> * EntityManagementService is used in more than one functionality, and its in charge of managing request regarding entities,
+    serving as encapsulation between the controller and the EntityRepository along with the domain classes.
 >
-> * The UI does not correspond to any concept in the problem domain, and there is no justification for assigning certain
-    responsibilities to any existing class within the Domain Model.
+> * JobOpeningManagementService is used in more than one functionality, and its in charge of managing request regarding
+    jobOpenings, serving as encapsulation between the controller and the JobOpeningRepository along with the domain classes.
 >
-> * The responsibilities of the Mapper consist of converting domain object to a dto, encapsulation of mapping logic, Data
-    format adaptation and integration with the Application Layer (Controller).
-
-
->**DTO pattern**
-> * JobOpeningDTO
-> * CriteriaDTO
+> * In order to enforce encapsulation amongst layers and adequate responsibility assigment, the JobOpeningListDTOService was
+    created, besides being a set of instructions that is used in other functionalities.
 >
-> **Justifications**
->
-> * A DTO's responsibility is to transfer data between layers without behavior or business logic, promoting encapsulation.
+> * To get the customers that are assigned to the current Customer Manager in-session, we must get something to identify them.
+    The AuthorizationService allows to get the username (user's email), which is essential to then filter the EntityRepository
+    to the desired customers. This set of instructions is used in other functionalities too.
 
 
 ### 4.4. Tests

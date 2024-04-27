@@ -117,10 +117,42 @@ When the candidate doesn't exist in the system, it should be created, using the 
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+To develop this functionality, it's needed to use a four-layered approach based on DDD (Domain-Driven Design)
+architecture: Presentation, Application, Domain and Persistence.
+
+To register an application, it is important to use the information present on the files produced by the Application File
+Bot and to go to the repository to gather the information related to the job opening.
+
+To be able to promote encapsulation between layers, it will be used DTOs.
+
+**_Classes Used_**
+
+**Domain Layer Classes**
+
+* JobOpening
+* Application
+* Candidate
+
+**Persistence Layer Classes**
+
+* RepositoryFactory
+* JobOpeningRepository
+* ApplicationRepository
+
+
+**Application Layer Classes**
+
+* RegisterApplicationController
+* JobOpeningMapper
+* JobOpeningDTO
+* ApplicationMapper
+* ApplicationDTO
+
+
+**Presentation Layer Classes**
+
+* RegisterApplicationUI
+
 
 ### 4.1. Realization
 

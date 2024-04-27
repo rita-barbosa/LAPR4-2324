@@ -3,98 +3,73 @@
 
 title US1003 Class Diagram
 
-'DTO
-class JobOpeningMapper {
-+ convertToDTO(JobOpening: entity)
+interface AbstractUI{
+# doShow()
 }
 
-class JobOpeningDTO {
-+ create(e: element)
+class EntityManagementService <<Service>> {
++ getAssignedCostumerCodesList(EmailAddress username)
 }
 
-class CriteriaMapper {
-+ convertToDTO(list)
+class Entity <<Domain>> <<Aggregate Root>> {
+- String customerCode
+- String companyName
+- EmailAddress costumerManagerEmail
++ customerCode()
++ companyName()
 }
 
-class CriteriaDTO {
-+ create() : Criteria
+class JobOpeningManagementService <<Service>> {
++ getJobOpeningsFromCostumerCodes(List<String> assignedCostumerCodesList)
++ filterJobOpeningList(List<Criteria> criteriaList)
 }
 
-class ListCriteriaDTOService <<Service>> {
-+ toDTO(criteriaList)
+class JobOpeningListDTOService <<Service>> {
++ convertToDTO(List<JobOpening> jobOpeningList)
 }
-
-class ListJobOpeningDTOService <<Service>> {
-+ toDTO(jobOpeningList)
-}
-
-
 
 class ListJobOpeningUI <<Presentation>> {
 + doShow()
 }
-
 
 class ListJobOpeningController <<Application>> {
 + getCriteria()
 + getJobOpeningList()
 }
 
-
-
 class Criteria <<Domain>> {
 - denomination : String
-- value : Boolean
++ toDTO()
 }
 
-
-package <<Authentication_and_Users>> {
-class AuthenticationService <<Application>> <<Service>> {
+class AuthorizationService <<Service>> {
++ loggedinUserWithPermissions(Role ... Action BaseRole.CUSTOMER_MANAGER)
 }
-class Session <<Domain>> <<Value Object>> {}
-class SystemUser <<Domain>> <<Aggregate Root>> {}
-class Username <<Domain>> <<Value Object>> <<ID>> {
-- value : String
-}
-}
-
-class CostumerManager <<Domain>> <<Aggregate Root>> {}
 
 class JobOpening <<Domain>> <<Aggregate Root>> {
-- function : String
-- contractType : ContractType
-- workMode : WorkMode
-- companyAddress : Address
-- costumerCode : String
-- companyName : String
-- numVacancies : Integer
-- description : String
-- requirementsSpecificationsFile : File
+- String function
+- ContractType contractType
+- WorkMode workMode
+- Address jobOpeningAddress
+- String jobReference
+- Integer numVacancies
+- String description
+- File requirementsSpecificationsFile
 }
-
-
-class Entity <<Aggregate Root>> <<Entity>> {
-- companyName : String
-- costumerCode : String
-+ companyName()
-+ costumerCode()
-}
-
 
 class JobOpeningRepository <<Persistence>> <<Repository>> {
 + rebuild(JobOpening: entity)
-+ getJobOpeningsFromCompaniesNames(companiesNamesList)
-+ filterJobOpeningList(criteria)
++ getJobOpeningListMatchingCostumerCode(String costumerCode)
 }
 
-class CostumerRepository <<Persistence>> <<Repository>> {
-+ save(Costumer: entity)
-+ getAssignedCostumerCodesList(username)
+class CriteriaRepository <<Persistence>> <<Repository>> {
++ save(Criteria: entity)
++ jobOpeningCriteria()
 }
 
 class EntityRepository  <<Persistence>> <<Repository>>  {
 + save(e: Entity)
-+ getEntityByCostumerCode(costumerCode)
++ getCostumersByUsername(EmailAddress username)
 }
 
 interface RepositoryDatabase <<Persistence>> {
@@ -104,41 +79,33 @@ interface RepositoryDatabase <<Persistence>> {
 
 'Associations
 'Basic Flow
-CostumerManager ..> ListJobOpeningController
 ListJobOpeningUI ..> ListJobOpeningController
-ListJobOpeningController .> CostumerRepository
-ListJobOpeningController .> EntityRepository
-ListJobOpeningController ..> JobOpeningRepository
+ListJobOpeningController .> CriteriaRepository
+ListJobOpeningController .> Criteria
+ListJobOpeningController ..> EntityManagementService
+ListJobOpeningController ..> JobOpeningManagementService
+ListJobOpeningController ..> JobOpeningListDTOService
 
 'Domain Layer
-Entity --> "1..*" JobOpening : sends
+EntityManagementService -down-> EntityRepository
+EntityManagementService --> Entity
+JobOpeningManagementService --> JobOpeningRepository
+JobOpeningManagementService --> JobOpening
+JobOpeningListDTOService --> JobOpening
+
 
 'Persistence Layer
-JobOpeningRepository ..> JobOpening : rebuilds
+CriteriaRepository --> Criteria
+JobOpeningRepository --> JobOpening
 
 'Interface implementation
 RepositoryDatabase <|.. JobOpeningRepository : implements
-RepositoryDatabase <|.. CostumerRepository : implements
+RepositoryDatabase <|.. CriteriaRepository : implements
 RepositoryDatabase <|.. EntityRepository : implements
 
-'DTO
-JobOpeningMapper ..> JobOpeningDTO
-CriteriaMapper ..> CriteriaDTO
-CriteriaMapper ..> Criteria
-ListCriteriaDTOService ..> CriteriaMapper
-ListJobOpeningController ..> ListCriteriaDTOService
-ListJobOpeningController ...> ListJobOpeningDTOService
-ListJobOpeningDTOService ...> JobOpeningMapper
-JobOpeningMapper ..> JobOpening
-ListJobOpeningUI ..> JobOpeningDTO
-ListJobOpeningUI ..> CriteriaDTO
+AbstractUI <|.. ListJobOpeningUI : implements
 
 'Authentication
-Session --> SystemUser
-SystemUser -> Username
-AuthenticationService ..> Username
-AuthenticationService ..> Session
-AuthenticationService ..> ListJobOpeningController
-CostumerManager --|> SystemUser
+AuthorizationService .right.> ListJobOpeningController
 
 @enduml

@@ -2,7 +2,7 @@
 
 ## 1. Context
 
-It is necessary for the customer manager to ble able to list all the existing job applications.
+It is necessary for the customer manager to be able to list all the existing job applications.
 
 ## 2. Requirements
 
@@ -64,18 +64,114 @@ more than one job opening in the system.
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+To address this functionality, we are going to adopt a four-layered approach based on DDD (Domain-Driven Design)
+architecture: Presentation, Application, Domain and Persistence.
+
+To list the applications for a job opening it's necessary to search in the database the existing job openings and
+the respective applications.
+
+To be able to promote encapsulation between layers, it will be used DTOs.
+
+**_Classes Used_**
+
+**Domain Layer Classes**
+
+* JobOpening
+* Application
+
+
+**Persistence Layer Classes**
+
+* RepositoryFactory
+* JobOpeningRepository
+* ApplicationRepository
+
+
+**Application Layer Classes**
+
+* ListJobOpeningApplicationsController
+* JobOpeningMapper
+* JobOpeningDTO
+* ApplicationMapper
+* ApplicationDTO
+
+
+**Presentation Layer Classes**
+
+* ListJobOpeningApplicationsUI
+
 
 ### 4.1. Realization
 
+
+* **US1005 Sequence Diagram (Split)**
+
+![US1005 Split Sequence Diagram](US1005_sd_split.svg)
+
+* **[US1005 Partial SD] Convert Job Opening List to DTO**
+
+![US1005 Convert Job Opening List to DTO](US1005_partial_convert_job_opening_list_to_DTO.svg)
+
+
+* **[US1005 Partial SD] Convert Application List to DTO**
+
+![US1002 Convert Application List to DTO](US1005_partial_convert_application_list_to_DTO.svg)
+
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![a class diagram](us1005_class_diagram.svg)
 
 ### 4.3. Applied Patterns
+
+To make the design of this user story, were used the following patterns:
+
+>**_Factory Pattern_**
+>* Classes
+>  * JobOpeningFactory
+>  * ApplicationFactory
+>
+>* Justification
+>
+>  The JobOpening is immutable, so the instances of this class will come from a job opening factory. The same thing
+>happens with Application.
+
+
+>**_Repository Pattern_**
+>* Classes
+>  * JobOpeningRepository
+>  * ApplicationFactory
+>
+>* Justification
+>
+>  The JobOpening and Application repository have the purpose of keeping the persistence of the job opening and
+>application instances created. 
+
+  
+>**_Service Pattern_**
+>* Classes
+>  * ListJobOpeningApplicationsUI
+>  * ListJobOpeningApplicationsController
+>  * JobOpeningMapper
+>  * ApplicationMapper
+>
+>* Justification
+>* 
+>  The UI is considered a service, since it is not a concept in the domain, and there is no justification to assign these
+>responsibilities to a domain class.
+>  The controller is used as a bridge between the UI and the domain classes, processing the UI requests and assigning the
+>responsibilities to the respective domain class.
+>  The Mappers have the responsibility of converting a domain object in a DTO.
+
+
+>**_DTO Pattern_**
+>* Classes
+>  * JobOpeningDTO
+>  * ApplicationDTO
+>
+>* Justification
+>
+> The DTO's is used to transfer the data between layers without behavior or business logic, promoting encapsulation.
+
 
 ### 4.4. Tests
 

@@ -1,0 +1,76 @@
+@startuml US1005_partial_convert_job_opening_list_to_DTO
+'https://plantuml.com/sequence-diagram
+
+title [US1005 - Partial SD] Convert Job Opening List to DTO
+
+participant "<<application>>\n:ListJobOpeningApplicationsController" as CTRL
+participant "<<service>>\n:JobOpeningMapper" as JobOpMapper
+participant "<<domain>>\n:JobOpening" as JobOp
+participant "<<application>>\nList<JobOpeningDTO>" as DTOList
+participant "<<application>>\nJobOpeningDTO" as DTO
+
+
+-> CTRL : toDTO(jobOpeningList)
+
+activate CTRL
+
+    CTRL -> JobOpMapper : convertToDTO(jobOpeningList)
+    activate JobOpMapper
+
+        JobOpMapper -> DTOList : create()
+        activate DTOList
+        deactivate DTOList
+
+        loop For all the job openings in the list
+
+            JobOpMapper -> JobOp : jobFunction()
+            activate JobOp
+            deactivate JobOp
+
+            JobOpMapper -> JobOp : jobOpeningStatus()
+            activate JobOp
+            deactivate JobOp
+
+            JobOpMapper -> JobOp : contractType()
+            activate JobOp
+            deactivate JobOp
+
+            JobOpMapper -> JobOp : mode()
+            activate JobOp
+            deactivate JobOp
+
+            JobOpMapper -> JobOp : numberVacancy()
+            activate JobOp
+            deactivate JobOp
+
+            JobOpMapper -> JobOp : description()
+            activate JobOp
+            deactivate JobOp
+
+            JobOpMapper -> JobOp : jobReference()
+            activate JobOp
+            deactivate JobOp
+
+            JobOpMapper -> JobOp : rank()
+            activate JobOp
+            deactivate JobOp
+
+            JobOpMapper -> DTO : create(jobFunction, jobOpeningStatus, contractType, mode,\n numberVacancy, description, jobReference, rank)
+            activate DTO
+            deactivate DTO
+
+            JobOpMapper -> DTOList : add(jobOpeningDTO)
+            activate DTOList
+            deactivate DTOList
+
+        end loop
+
+        JobOpMapper --> CTRL
+
+    deactivate JobOpMapper
+
+<-- CTRL : listDTO
+
+deactivate CTRL
+
+@enduml
