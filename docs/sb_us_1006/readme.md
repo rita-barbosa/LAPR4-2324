@@ -86,22 +86,52 @@ Not only that but checking other questions related to this user story or that ar
 
 ### System Sequence Diagram Related
 
-![Helpful-System-Sequence-Diagram.svg](Helpful-System-Sequence-Diagram.svg)
+![Helpful-System-Sequence-Diagram.svg](SSD/Helpful-System-Sequence-Diagram.svg)
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+For this User Story, following the **DDD pattern, a 4-layer system (Presentation, Application, Domain, Infrastructure)** was chosen to best fit the envisioned designed of this functionality.
+
+Because of the usage and display of the information of already existing objects, in this case CustomerManager and Candidate, **these must be stored in repositories and serialized for future usage of this US and others.**
+
+**The usage of DTOs was considered, however it was deemed unnecessary** since the data needed is held in a single entity stored inside its repository.
+#### New Persistence Layer Classes:
+- CandidateRepository
+
+#### New Domain Layer Classes:
+- Candidate
+- CandidateName
+- PhoneNumber
+- Email
+
+*CandidateName, PhoneNumber and Email are value objects belonging to the Candidate entity.*
+
+#### New Application Layer Classes:
+- ListCandidateDataController
+
+#### New Presentation Layer Classes:
+- ListCandidateDataUI
 
 ### 4.1. Realization
 
+#### Sequence Diagram Related
+![Sequence-Diagram.svg](SD%2FSequence-Diagram.svg)
+
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![Class-Diagram.svg](CD%2FClass-Diagram.svg)
 
 ### 4.3. Applied Patterns
+
+This section is focused on the patterns used for this US:
+
+#### Repository Pattern
+
+For the envisioned structure and usage of this functionality, the usage of a serializable repository is essential for the Customer Manager to access the list of existing candidates and choose which one they want to view the data of.
+
+#### Service Pattern
+
+To create a layer of abstraction between the Domain layer and the Application layer, the usage of a specific service was deemed necessary for this user story.
 
 ### 4.4. Tests
 
