@@ -52,6 +52,17 @@ There are no references for this user story.
 > **Answer:** I think it makes sense to list only "their" job openings.
 
 
+> **Question:** The client clarified the status aspect of a job opening in questions Q68 and Q95. It was mentioned that 
+> a job opening becomes inactive when its recruitment process ends. However, in what state are job openings that have been
+> registered but do not yet have a recruitment process associated with them?
+>
+> **Answer:** Regarding the state (name of the state) of job openings after being registered but not yet associated with
+> a recruitment process, I am unsure how to respond. However, I can add that if they do not have a process associated with
+> them, they do not have dates for the process phases, and therefore, it seems to me that they have not yet entered the 
+> application phase. Therefore, no one officially knows about this job opening, and there should not be any applications
+> for this opening.
+
+
 ## 3. Analysis
 
 This functionality aims to list and, if desired, filter all the job openings. Below there's a list of the mentioned 
