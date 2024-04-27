@@ -50,18 +50,48 @@ requirement specification based on the provided information by the customer.
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
-
 ### 4.1. Realization
+
+![Sequence Diagram](sequence-diagram-select-requirement-specification.svg)
 
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![Class Diagram](class-diagram.svg)
 
 ### 4.3. Applied Patterns
+
+* **DTO**
+* **Repository**
+* **Service**
+
+> **Repository Pattern**
+> * JobOpeningRepository
+> * RequirementSpecificationRepository
+>
+> **Justifications**
+>
+> The repositories were employed to retrieve the job openings and requirement specifications persisted.
+
+> **DTO**
+> * JobOpeningDto
+> * RequirementSpecificationDto
+>
+> We opted for DTOs due to the significant amount of domain information required for this functionality. Recognizing the
+> benefits of encapsulation and layer decoupling offered by DTOs, we concluded that applying this pattern was advantageous
+> in this context.
+
+> **Service Pattern**
+> * JobOpeningManagementService
+> * JobOpeningDtoService
+> * RequirementSpecificationManagementService
+> * RequirementSpecificationDtoService
+>
+> **Justifications**
+>
+> The services were used to gather job openings and their specifications to display them to the user, essentially
+> listing them. Recognizing the potential for this functionality to be used in various use cases, we opted to
+> develop a service with the primary responsibility of: obtaining the persisted instances using their repository and using
+> the DtoService to transform these instances into DTOs.
 
 ### 4.4. Tests
 
