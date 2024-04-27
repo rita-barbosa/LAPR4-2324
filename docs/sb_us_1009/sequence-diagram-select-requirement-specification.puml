@@ -115,10 +115,10 @@ CTRL -> AUTH:  ensureAuthenticatedUserHasAnyOf(roles)
 activate AUTH
 deactivate AUTH
 
-CTRL -> JOMS: updateRequirementSpecification(jobOpeningDto, requirementSpecificationDto)
-activate JOMS
+CTRL -> CTRL: updateRequirementSpecification(jobOpeningDto, requirementSpecificationDto)
+activate CTRL
 
-JOMS -> JO_REPO: ofIdentity(jobReference)
+CTRL -> JO_REPO: ofIdentity(jobReference)
 activate JO_REPO
 
 note right JO_REPO
@@ -128,10 +128,10 @@ method will return the JobOpening
 instance.
 end note
 
-JO_REPO --> JOMS: jobOpening
+JO_REPO --> CTRL: jobOpening
 deactivate JO_REPO
 
-JOMS -> RS_REPO: ofIdentity(requirementName)
+CTRL -> RS_REPO: ofIdentity(requirementName)
 activate RS_REPO
 
 note right RS_REPO
@@ -141,19 +141,19 @@ method will return the
 RequirementSpecification instance.
 end note
 
-RS_REPO --> JOMS: requirementSpecification
+RS_REPO --> CTRL: requirementSpecification
 deactivate RS_REPO
 
-JOMS -> JO: changeRequirementSpecification(requirementSpecification)
+CTRL -> JO: changeRequirementSpecification(requirementSpecification)
 activate JO
 deactivate JO
 
-JOMS -> JO_REPO: save(jobOpening)
+CTRL -> JO_REPO: save(jobOpening)
 activate JO_REPO
 deactivate JO_REPO
 
-JOMS --> CTRL: success
-deactivate JOMS
+CTRL --> CTRL: jobOpening
+deactivate CTRL
 
 CTRL --> UI: success
 deactivate CTRL
