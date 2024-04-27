@@ -10,7 +10,8 @@ This is the first time this user story is being requested.
 
 **Acceptance Criteria:**
 
-- 1009.1. The system must maintain consistency at all times.
+- **1009.1.** The system must maintain consistency at all times.
+- **1009.2.** Requirement specificatios should only be selected for job openings where the recruitment process has not yet started or hasn't been set up.
 
 **Dependencies/References:**
 
@@ -95,15 +96,15 @@ requirement specification based on the provided information by the customer.
 
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
+#### JobOpeningTests
 
-**Test 1:** Verifies that it is not possible to ...
+**Test 1:** Verifies that it is not possible to select a requirement specification for a job opening that is already in the recruitment process.
 
-**Refers to Acceptance Criteria:** G002.1
+**Refers to Acceptance Criteria:** 1009.2
 
 ````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
+@Test
+public void ensureSelectReqSpecificationBeforeRecruitmentProccess() {
 ...
 }
 ````
