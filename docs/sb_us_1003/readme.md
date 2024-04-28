@@ -183,15 +183,48 @@ This topic presents the classes with the patterns applied to them along with jus
 
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
 
-**Test 1:** Verifies that it is not possible to ...
+**Test 1:** Verifies that listing by costumer code is supported
 
-**Refers to Acceptance Criteria:** G002.1
+**Refers to Acceptance Criteria:** 1003.1
 
 ````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
+@Test
+public void ensureListingByCostumerCodeIsValid() {
+...
+}
+````
+
+**Test 2:** Verifies that listing by company name is supported
+
+**Refers to Acceptance Criteria:** 1003.1
+
+````
+@Test
+public void ensureListingByCompanyNameIsValid() {
+...
+}
+````
+
+**Test 3:** Verifies that the only job openings listed are from costumers assigned to the Costumer Manager in session
+
+**Refers to Acceptance Criteria:** 1003.2
+
+````
+@Test
+public void ensureListedJobOpeningsAreFromAssignedCostumers() {
+...
+}
+````
+
+**Test 4:** Verifies that it is not possible to access job openings from others costumers that are not assigned to the
+Costumer Manager in session
+
+**Refers to Acceptance Criteria:** 1003.2
+
+````
+@Test
+public void ensureOtherCostumersJobOpeningsAccessIsDenied() {
 ...
 }
 ````
