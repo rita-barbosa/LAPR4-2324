@@ -18,8 +18,6 @@ This is the first time this user story is being requested.
 
 - **1000.3.** After deactivated, a user must not have access to application until further alteration.
 
-- **1000.4.** ...
-
 **Dependencies/References:**
 
 This functionality has a dependency on [_US G007_](../us_g007) that pertains to the authentication and authorization for
@@ -115,28 +113,85 @@ need to be done, such as:
 
 ![SD - List User](sequence-diagram-list-user.svg)
 
-
 ### 4.3. Applied Patterns
 
-Although, most of the functionalities were already in the base project and eapli framework, some patterns were
-identified while investigating the code, such as:
+While many functionalities were pre-existing in the base project and EAPLI framework, our investigation of the code
+uncovered several patterns, including:
 
-| Applied Pattern | Context           | Justification                                                                                                       |
-|-----------------|-------------------|---------------------------------------------------------------------------------------------------------------------|
-| Builder         | Registering Users | It allows the registration of a user where the construction process may vary based on the type of user being built. |
-| Visitor         | Listing Users     | It allows to introduce a new behaviour to the SystemUser class, in this case it is printing the user information.   |
+* **Builder**
+* **Visitor**
+* **Service**
+* **Repository**
+
+The only pattern we directly applied was:
+
+* **Service**
+
+This pattern was specifically implemented for tasks such as password creation, which is a recurring process across
+various use cases. Additionally, it was employed in the listing of backoffice users, named 
+`ListUserService`.
 
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
+Since we leveraged the base project and EAPLI framework for initial support, the tests to validate acceptance criteria
+1000.1 and 1000.3 are already integrated into the framework.
+However, for acceptance criterion 1000.2, we have developed a password generator, enabling us to conduct tests.
+Subsequently, in all the following tests, we will generate password instances to ensure compliance with the client's
+specified criteria.
 
-**Test 1:** Verifies that it is not possible to ...
+#### RandomPasswordTests
 
-**Refers to Acceptance Criteria:** G002.1
+**Test 1:** Verifies that it is not possible to have a password without eight characters.
+
+**Refers to Acceptance Criteria:** 1000.2
 
 ````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
+@Test
+public void ensurePasswordHasEightCharacters() {
+...
+}
+````
+
+**Test 2:** Verifies that it is not possible to have a password without lower letters.
+
+**Refers to Acceptance Criteria:** 1000.2
+
+````
+@Test
+public void ensurePasswordHasLowerLetters() {
+...
+}
+````
+
+**Test 3:** Verifies that it is not possible to have a password without upper letters.
+
+**Refers to Acceptance Criteria:** 1000.2
+
+````
+@Test
+public void ensurePasswordHasUpperLetters() {
+...
+}
+````
+
+**Test 4:** Verifies that it is not possible to have a password without digits.
+
+**Refers to Acceptance Criteria:** 1000.2
+
+````
+@Test
+public void ensurePasswordHasDigits() {
+...
+}
+````
+
+**Test 5:** Verifies that it is not possible to have a password without alphanumeric characters.
+
+**Refers to Acceptance Criteria:** 1000.2
+
+````
+@Test
+public void ensurePasswordHasNonAlphanumeric() {
 ...
 }
 ````
