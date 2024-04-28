@@ -1,0 +1,7 @@
+REQUIREMENT #1
+[Single Choice] "Do you know Java?"
+1) "Yes"
+2) "No"
+
+REQUIREMENT #2
+[Whole Number] "How many years of work experience do you have?"

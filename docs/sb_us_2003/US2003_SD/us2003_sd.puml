@@ -1,0 +1,100 @@
+@startuml US2003_SD
+
+title [US2003 - Sequence Diagram]
+
+participant "<<presentation>>\n:GenerateRequirementsTemplateFileUI" as UI
+control "<<application>>\n:GenerateRequirementsTemplateFileController" as CTRL
+participant "<<service>>\n:RequirementsTemplateManagerService" as Manager
+participant "<<builder>>\n:RequirementsTemplateBuilder" as TempBuilder
+participant "<<builder>>\n:QuestionBuilder" as QuestionBuilder
+participant "<<domain>>\n:Question" as Question
+participant "<<domain>>\n:QuestionType" as QuestionType
+participant "<<domain>>\n:RequirementsTemplate" as Template
+participant "<<service>>\n:RequirementsTemplateEvaluatorService" as TempEvaluator
+
+activate UI
+
+
+UI -> CTRL : create()
+activate CTRL
+
+UI -> CTRL : defineTemplateFileName(filename)
+
+CTRL -> Manager : questionTypes()
+activate Manager
+    loop for all question types
+        Manager -> QuestionType : toDTO()
+    deactivate Manager
+    activate QuestionType
+        QuestionType -[#white]> QuestionType
+    deactivate QuestionType
+    end loop
+
+loop as long as the user wants
+
+CTRL --> UI : questionTypeListDTO
+deactivate CTRL
+
+UI -> UI : doShow()
+
+opt multiple_choice || single_choice
+    
+    loop while the user wants to
+    UI -> UI : newOptionText()
+    end loop
+end opt
+
+UI -> CTRL : addNewQuestion(questionTypeDenomination,\n questionDescription, optionsList)
+activate CTRL
+
+
+CTRL -> Manager : createQuestion(questionTypeDenomination,\n questionDescription, optionsList)
+deactivate CTRL
+activate Manager
+
+    Manager -> QuestionBuilder : build()
+    deactivate Manager
+    activate QuestionBuilder
+
+    QuestionBuilder -> Question: Question(questionTypeDenomination,\n questionDescription, optionsList)
+    deactivate QuestionBuilder
+    activate Question
+        Question -> QuestionType : valueOf(questionTypeDenomination)
+        deactivate Question
+        activate QuestionType
+           QuestionType -[#white]> QuestionType
+        deactivate QuestionType
+|||
+end loop
+
+
+UI -> CTRL : exportTemplateFile()
+activate CTRL
+
+    CTRL -> Manager : generateNewTemplate(filename)
+    activate Manager
+
+        Manager -> TempBuilder : build()
+    activate TempBuilder
+
+        TempBuilder -> Template : RequirementsTemplate(filename, questionsList)
+    deactivate TempBuilder
+    activate Template
+        Template -[#white]> Template
+    deactivate Template
+
+    Manager -> TempEvaluator : evaluateWithGrammar(templateFile)
+    note left: With a lexer, a parser and\n other associated classes\n along with the requirements\n template grammar.
+    activate TempEvaluator
+    deactivate TempEvaluator
+
+    Manager -> Manager : exportTemplate()
+    Manager --> CTRL
+    deactivate Manager
+
+    CTRL --> UI : confirmation
+    deactivate CTRL
+
+deactivate UI
+
+@enduml

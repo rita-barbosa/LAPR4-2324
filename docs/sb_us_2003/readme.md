@@ -69,6 +69,7 @@ Further requirements can be delineated as needed, such as:
 * Work methodology proficiency
 * Others...
 
+
 Requirements can have different natures:
 
 * **True/False** - A question with only a true or false answer.
@@ -97,22 +98,165 @@ is a partial domain model, with emphasis on US2003's concepts.
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+The solution for this functionality is to have 4 layers, following DDD development architecture: Presentation, Application,
+Domain and Persistence. A link in [references](#71-references) explains this topic in-depth.
+
+To generate a requirements specification template we need a file name and to define questions that define who is eligible
+for the position/title in mind.
+
+The questions types are the ones defined in the documentation, and there are no other ones, so no database will be needed
+to store these.
+
+In order to enhance encapsulation between layers, the usage of DTO's to the previously mentioned objects should be applied.
+
+**New Domain Layer Classes**
+* Question
+* QuestionType
+* RequirementsTemplate
+* RequirementsTemplateManagerService
+* RequirementsTemplateEvaluatorService
+* RequirementsTemplateBuilder
+* QuestionBuilder
+
+**New Persistence Layer Classes**
+* `No new classes`
+
+**New Application Layer Classes**
+* GenerateRequirementsTemplateFileController
+
+**New Presentation Layer Classes**
+* GenerateRequirementsTemplateFileUI
+
+The further topics illustrate and explain this functionality usage flow, and the correlation between its components.
 
 ### 4.1. Realization
 
+**US2003 Sequence diagram**
 
+![US2003 Sequence diagram](./US2003_SD/US2003_SD.svg)
 
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![US2003 Class Diagram](./US2003_Class_Diagram/US2003_class_diagram.svg)
 
 ### 4.3 Grammar
 
+The following text represents the grammar that defines the format of the requirement template.
+
+```
+grammar RequirementsTemplate;
+
+//Parser rules
+start: template;
+
+//Costitution of the template
+template: requirement+;
+
+//Costitution of a requirement
+requirement : REQUIREMENT_NUMBER NEWLINE question+;
+
+//Types of questions
+question: single_choice_question
+| multiple_choice_question
+| integer_question
+| true_false_question
+| numeric_scale_question
+| decimal_question
+| short_answer_question
+| date_question
+| time_question
+;
+
+
+//Questions Format
+single_choice_question: SINGLE_CHOICE WHITESPACE DESCRIPTION_TEXT NEWLINE option+;
+multiple_choice_question: MULTIPLE_CHOICE WHITESPACE DESCRIPTION_TEXT NEWLINE option+;
+integer_question: INTEGER WHITESPACE DESCRIPTION_TEXT NEWLINE*;
+true_false_question: TRUE_FALSE WHITESPACE DESCRIPTION_TEXT NEWLINE*;
+numeric_scale_question: NUMERIC_SCALE WHITESPACE DESCRIPTION_TEXT WHITESPACE SCALE_FORMAT NEWLINE*;
+decimal_question: DECIMAL WHITESPACE DESCRIPTION_TEXT NEWLINE*;
+short_answer_question: SHORT_ANSWER WHITESPACE DESCRIPTION_TEXT NEWLINE*;
+date_question: DATE WHITESPACE DESCRIPTION_TEXT WHITESPACE DATE_FORMAT NEWLINE*;
+time_question: TIME WHITESPACE DESCRIPTION_TEXT WHITESPACE TIME_FORMAT NEWLINE*;
+
+// Option format
+option : OPTION WHITESPACE DESCRIPTION_TEXT NEWLINE+;
+
+//Formatters
+OPTION : NUMBER')';
+REQUIREMENT_NUMBER : 'REQUIREMENT #'NUMBER;
+SCALE_FORMAT : '['NUMBER'-'NUMBER']';
+DATE_FORMAT : '[DD/MM/YYYY]';
+TIME_FORMAT : '[HH:MM]';
+TRUE_FALSE_FORMAT : 'Write "True" or "False".';
+
+//Lexer rules
+//Types of questions identifiers
+TRUE_FALSE : '[True|False]';
+SINGLE_CHOICE : '[Single Choice]';
+MULTIPLE_CHOICE : '[Multiple Choice]';
+INTEGER : '[Whole Number]';
+NUMERIC_SCALE : '[Numeric Scale]';
+DECIMAL : '[Decimal Number]';
+SHORT_ANSWER : '[Short Answer]';
+DATE : '[Date]';
+TIME : '[Time]';
+
+WHITESPACE: ' ';
+DESCRIPTION_TEXT: '"' (~["\r\n])* '"';
+NUMBER: [0-9]+;
+NEWLINE: '\r'?'\n';
+```
+
+Table of token used in the template file grammar:
+
+| Tokens            | Lexemes              |
+|:------------------|:---------------------|
+| TRUE_FALSE        | [True/False]         |
+| SINGLE_CHOICE     | [Single Choice]      |
+| MULTIPLE_CHOICE   | [Multiple Choice]    |
+| INTEGER           | [Whole Number]       |
+| NUMERIC_SCALE     | [Numeric Scale]      |
+| DECIMAL           | [Decimal Number]     |
+| SHORT_ANSWER      | [Short Answer]       |
+| DATE              | [Date]               |
+| TIME              | [Time]               |
+| WHITESPACE        | ' '                  |
+| DESCRIPTION_TEXT  | '"' (~["\r\n])* '"'  |
+| NUMBER            | [0-9]+               |
+| NEWLINE           | \r'?'\n              |
+
+
 ### 4.4. Applied Patterns
+
+This topic presents the classes with the patterns applied to them along with justifications.
+
+>**Builder Pattern**
+> * RequirementsTemplateBuilder
+> * QuestionBuilder
+>
+> **Justifications**
+>
+> * A template's structure is not linear, it can vary, in number of questions and its typologies. To face this diversity,
+>   a builder is a must.
+>
+> * A question can have many types, and its structure changes with it, so a builder is necessary to work around the different
+>   variations of a question.
+
+
+>**Service Pattern**
+> * RequirementsTemplateEvaluatorService
+> * RequirementsTemplateManagerService
+>
+> **Justifications**
+>
+> * RequirementsTemplateManagerService is necessary because it manages a set of operations and responsibilities that don't
+>   belong to any class. It's in charge of managing the process of creating a requirement specification template file.
+>
+> * RequirementsTemplateEvaluatorService is necessary because it comprises a set of operations and responsibilities that
+>   don't belong to any class. It's in charge of checking if the template generated by the system is formatted according
+>   to a certain grammar defined.
+
 
 ### 4.5. Tests
 
@@ -153,3 +297,8 @@ alternative solutioons or related works*
 
 *The team should include in this section statements/references regarding third party works that were used in the
 development this work.*
+
+
+### 7.1 References
+
+* [DDD architecture]( https://ddd-practitioners.com/home/glossary/layered-architecture/#:~:text=In%20Domain%2DDriven%20Design%20(DDD,layer%2C%20and%20an%20infrastructure%20layer. )
