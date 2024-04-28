@@ -275,7 +275,53 @@ This topic presents the classes with the patterns applied to them along with jus
 
 ### 4.5. Tests
 
+**Test 1:** Grammar verifies correctly formatted requirement is valid.
 
+**Refers to Acceptance Criteria:** 2003.1
+
+````
+@Test
+public void ensureCorrectFormatIsValid() {
+...
+}
+````
+
+**Test 2:** Grammar verifies incorrect formatted requirement is invalid.
+
+**Refers to Acceptance Criteria:** 2003.1
+
+````
+@Test
+public void ensureIncorrectFormatIsInvalid() {
+...
+}
+````
+
+**Test 3:** Verifies that is not possible for a question to have a type that is not defined in the system
+
+**Refers to Acceptance Criteria:** 2003.2
+
+````
+@Test
+public void ensureValidQuestionType() {
+...
+}
+````
+
+**Test 4:** Verifies that is not possible for a template file to not have a requirement entry
+
+**Refers to Acceptance Criteria:** 2003.1 and 2003.3
+
+````
+@Test
+public void ensureTemplateHasAtLeastOneRequirement() {
+...
+}
+````
+
+> **Note:** Even though the answers to the questions must match their defined types (and tests must be made to ensure those
+> scenarios), it is not US2003 responsibility to define the answers to the template and their validity, so those tests won't
+> appear in this document.
 
 ## 5. Implementation
 
