@@ -20,8 +20,6 @@ of said job opening.
 - **1002.6** The job opening must have a contract type, which must be amongst the types defined.
 - **1002.7** The job opening must have a work mode, which must be amongst the types defined.
 - **1002.8** The company's address is obligatory in a job opening.
-- **1002.9** A 4-layer development process {MVC + persistence} must be done.
-
 
 **Dependencies/References:**
 
@@ -286,18 +284,95 @@ This topic presents the classes with the patterns applied to them along with jus
 
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
 
-**Test 1:** Verifies that it is not possible to ...
+**Test 1:** Verifies that is not possible to have the number of vacancies be zero or below, or a decimal
 
-**Refers to Acceptance Criteria:** G002.1
+**Refers to Acceptance Criteria:** 1002.1
 
 ````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
+@Test
+public void ensureNumberVacanciesValid() {
 ...
 }
 ````
+
+**Test 2:** Verifies that is not possible to have two job references that are the same
+
+**Refers to Acceptance Criteria:** 1002.2
+
+````
+@Test
+public void ensureJobReferenceIsUnique() {
+...
+}
+````
+
+**Test 3:** Verifies when saving a job opening, on the company field it appears the costumer code
+
+**Refers to Acceptance Criteria:** 1002.3
+
+````
+@Test
+public void ensureJobOpeningCompanyFieldIsCostumerCode() {
+...
+}
+````
+
+**Test 4:** Verifies that other Costumer Manager cannot access a job opening of another Costumer Manager
+
+**Refers to Acceptance Criteria:** 1002.4
+
+````
+@Test
+public void ensureOtherCostumerManagerJobOpeningAccessIsDenied() {
+...
+}
+````
+
+**Test 5:** Verifies a job opening cannot exist without a title/function
+
+**Refers to Acceptance Criteria:** 1002.5
+
+````
+@Test
+public void ensureJobOpeningWithoutTitleIsInvalid() {
+...
+}
+````
+
+**Test 6:** Verifies a job opening's contract type cannot be different from established contract types
+
+**Refers to Acceptance Criteria:** 1002.6
+
+````
+@Test
+public void ensureJobOpeningHasEstablishedContractType() {
+...
+}
+````
+
+**Test 7:** Verifies a job opening's work mode cannot be different from established work modes
+
+**Refers to Acceptance Criteria:** 1002.7
+
+````
+@Test
+public void ensureJobOpeningHasEstablishedWorkMode() {
+...
+}
+````
+
+**Test 8:** Verifies a job opening's without an address is not valid
+
+**Refers to Acceptance Criteria:** 1002.8
+
+````
+@Test
+public void ensureJobOpeningHasValidAdress() {
+...
+}
+````
+
 
 ## 5. Implementation
 
