@@ -1,6 +1,6 @@
 @startuml US1002_SD
 
-title [US1002 - Sequence Diagram Split]
+title [US1002 - Sequence Diagram]
 
 participant "<<presentation>>\n:RegisterJobOpeningUI" as UI
 control "<<application>>\n:RegisterJobOpeningController" as CTRL

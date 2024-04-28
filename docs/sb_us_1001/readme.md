@@ -13,8 +13,8 @@ that customer
 
 - **1001.1.** Each customer must have associated their company name, an address and a customer code.
 
-- **1001.2.** The customer code must be unique and have a maximum of 10 characters.
-
+- **1001.2.** The customer code must be unique and have a maximum of 10 characters, having at least one character.
+- 
 - **1001.3.** The user must have associated the following information: email, name and phone number.
 - **1001.4.** The password must have a minimum of 8 characters, including both upper and lowercase letters, digits, and
   at least one non-alphanumeric character.
@@ -133,18 +133,139 @@ entity/customer creation.
 
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
+The tests for the acceptance criteria 1001.3 are within the eapli.framework, since we use SystemUser for the user registration.
 
-**Test 1:** Verifies that it is not possible to ...
 
-**Refers to Acceptance Criteria:** G002.1
+#### EntityTests
+
+**Test 1:** Verifies that it is not possible to create an Entity without a name.
+
+**Refers to Acceptance Criteria:** 1001.1
 
 ````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
+@Test
+public void ensureMustHaveName() {
 ...
 }
 ````
+
+**Test 2:** Verifies that it is not possible to create an Entity without a code.
+
+**Refers to Acceptance Criteria:** 1001.1
+
+````
+@Test
+public void ensureMustHaveCode() {
+...
+}
+````
+
+**Test 3:** Verifies that it is not possible to create an Entity without an address.
+
+**Refers to Acceptance Criteria:** 1001.1
+
+````
+@Test
+public void ensureMustHaveAddress() {
+...
+}
+````
+
+#### CustomerCodeTests
+
+**Test 1:** Verifies that it is not possible to create an entity code with more than 10 characters.
+
+**Refers to Acceptance Criteria:** 1001.2
+
+````
+@Test(expected = IllegalArgumentException.class)
+public void ensureDoesntHaveMoreThanTenCharacters() {
+...
+}
+````
+
+**Test 2:** Verifies that it is not possible to create a null entity code.
+
+**Refers to Acceptance Criteria:** 1001.2
+
+````
+@Test
+public void ensureMustNotBeNull() {
+...
+}
+````
+
+**Test 3:** Verifies that it is not possible to create an empty entity code.
+
+**Refers to Acceptance Criteria:** 1001.2
+
+````
+@Test
+public void ensureMustNotBeEmpty() {
+...
+}
+````
+
+#### RandomPasswordTests
+
+**Test 1:** Verifies that it is not possible to have a password without eight characters.
+
+**Refers to Acceptance Criteria:** 1001.4
+
+````
+@Test
+public void ensurePasswordHasEightCharacters() {
+...
+}
+````
+
+**Test 2:** Verifies that it is not possible to have a password without lower letters.
+
+**Refers to Acceptance Criteria:** 1001.4
+
+````
+@Test
+public void ensurePasswordHasLowerLetters() {
+...
+}
+````
+
+**Test 3:** Verifies that it is not possible to have a password without upper letters.
+
+**Refers to Acceptance Criteria:** 1001.4
+
+````
+@Test
+public void ensurePasswordHasUpperLetters() {
+...
+}
+````
+
+**Test 4:** Verifies that it is not possible to have a password without digits.
+
+**Refers to Acceptance Criteria:** 1001.4
+
+````
+@Test
+public void ensurePasswordHasDigits() {
+...
+}
+````
+
+**Test 5:** Verifies that it is not possible to have a password without alphanumeric characters.
+
+**Refers to Acceptance Criteria:** 1001.4
+
+````
+@Test
+public void ensurePasswordHasNonAlphanumeric() {
+...
+}
+````
+
+
+
+
 
 ## 5. Implementation
 

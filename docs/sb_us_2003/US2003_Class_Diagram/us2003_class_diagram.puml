@@ -1,0 +1,75 @@
+@startuml US2003_class_diagram
+'https://plantuml.com/class-diagram
+
+title 2003 Class Diagram
+
+interface AbstractUI {
+# doShow()
+}
+
+class GenerateRequirementsTemplateFileUI <<presentation>>  {
++ doShow()
++ newOptionText()
+}
+
+class GenerateRequirementsTemplateFileController <<application>> {
++ create()
++ defineTemplateFileName(String filename)
++ addNewQuestion(String questionTypeDenomination,\n String questionDescription, List<String> optionsList)
++ exportTemplateFile()
+}
+
+
+class RequirementsTemplateManagerService <<service>> {
++ questionTypes()
++ createQuestion(String questionTypeDenomination,\n String questionDescription, List<String> optionsList)
++ generateNewTemplate(String filename)
+}
+
+class RequirementsTemplateEvaluatorService <<service>> {
++ evaluateWithGrammar(RequirementsTemplate templateFile)
+}
+
+class QuestionType <<domain>> {
++ toDTO()
++ valueOf(String questionTypeDenomination)
+}
+
+
+class RequirementsTemplateBuilder <<builder>> {
++ build()
+}
+
+class QuestionBuilder <<builder>> {
++ build()
+}
+
+class Question <<domain>> {
++ Question(String questionTypeDenomination,\n String questionDescription, List<String> optionsList)
+}
+
+
+class RequirementsTemplate <<domain>> {
++ RequirementsTemplate(String filename, List<Question> questionsList)
+}
+
+
+'Associations
+AbstractUI <|.up. GenerateRequirementsTemplateFileUI
+
+
+GenerateRequirementsTemplateFileUI .left.> GenerateRequirementsTemplateFileController
+GenerateRequirementsTemplateFileController ..> RequirementsTemplateManagerService
+RequirementsTemplateManagerService ..> RequirementsTemplateEvaluatorService
+
+RequirementsTemplateManagerService ..> QuestionType
+RequirementsTemplateManagerService ..> QuestionBuilder
+RequirementsTemplateManagerService ..> RequirementsTemplateBuilder
+RequirementsTemplateEvaluatorService ..> RequirementsTemplate
+
+RequirementsTemplateBuilder --> RequirementsTemplate
+QuestionBuilder --> Question
+Question -left-> QuestionType
+RequirementsTemplate --> Question
+
+@enduml

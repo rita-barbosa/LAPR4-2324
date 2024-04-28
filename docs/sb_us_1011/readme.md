@@ -28,18 +28,49 @@ With this functionality, the Customer Manager will select the interview model to
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+*The main functionallity of this us is to select an interview model to a specific job opening. 
+To do that, first the customer manager selects the job opening that he wants to choose the interview model, then the system shows all the interview models availables.
+After that, the customer manager chooses an interview model and do the update on the job opening.*
 
 ### 4.1. Realization
+![SD](US1011_SD/sd-us-1011.svg)
 
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![a class diagram](US1011_Class_Diagram/class-diagram-us-1011.svg)
 
 ### 4.3. Applied Patterns
+* **Repository**
+* **DTO**
+* **Service**
+
+> **Repository Pattern**
+> * JobOpeningRepository
+> * InterviewModelRepository
+>
+> **Justifications**
+>
+> The repositories were employed to retrieve the job openings and inteview models persistence.
+
+> **DTO**
+> * JobOpeningDto
+> * InterviewModelDto
+>
+> We choose DTOs because we have a big amount of domain data required for this functionality. Recognizing the
+> benefits of encapsulation and layer decoupling offered by DTOs, we decided applying this pattern to our project.
+
+> **Service Pattern**
+> * JobOpeningManagementService
+> * JobOpeningDtoService
+> * InterviewModelManagementService
+> * IntervewModelDtoService
+>
+> **Justifications**
+>
+> The services were designed to collect job openings and their details for presentation to users, essentially 
+> compiling a list of available positions. Acknowledging the versatility of this feature for different purposes,
+> we decided to create a service primarily responsible for retrieving saved instances through their repository
+> and utilizing the DtoService.
 
 ### 4.4. Tests
 

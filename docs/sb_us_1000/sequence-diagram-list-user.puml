@@ -6,7 +6,7 @@ actor "Admin" as AD
 
 participant "ListUsersUI" as UI <<presentation>>
 participant "ListUsersController" as CTRL <<controller>>
-participant "FilterService" as FS <<service>>
+participant "ListUserService" as FS <<service>>
 participant "UserManagementService" as UMS <<service>>
 participant "AuthorizationService" as AUTHZ <<service>>
 
@@ -35,14 +35,22 @@ activate AUTHZ
 deactivate AUTHZ
 
 
-CTRL -> UMS: allUsers()
+CTRL -> FS: backofficeUsers()
+activate FS
+
+
+FS -> UMS: allUsers()
 activate UMS
 
-UMS --> CTRL: users
+UMS --> FS: users
 deactivate UMS
 
-CTRL -> FS: filterBackofficeUsers(users)
+FS -> FS: filterBackofficeUsers(users)
 activate FS
+
+FS --> FS: backofficeUsers
+deactivate FS
+
 
 FS --> CTRL: backofficeUsers
 deactivate FS
