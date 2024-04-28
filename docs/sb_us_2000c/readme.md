@@ -28,7 +28,7 @@ in creating a candidate manually or imported from an external file.*
 
 ## 3. Analysis
 
-*This functionality is for the Operator, so the user needs to be authenticated first to be able to see all the candidates list.*
+*This functionality is for the Operator, so the user needs to be authenticated first to be able to see all the candidates list oredered by name.*
 
 **System Sequence Diagram:**
 
@@ -37,18 +37,46 @@ in creating a candidate manually or imported from an external file.*
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+*This functionality is to list all the candidates in the system ordered by name.*
 
 ### 4.1. Realization
 
+![SD-US-2000c](US2000c_SD/sd-us-2000c.svg)
+
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![Class-Diagram-US-2000c](US2000c_Class_Diagram/class-diagram-2000c.svg)
+
+### 4.2. Domain Model
+
+![Domain-Model-US-2000c](US2000c_Domain_Model/domain-model-us-2000c.svg)
 
 ### 4.3. Applied Patterns
+>**Repository Pattern**
+> * CandidateRepository
+>
+> **Justifications**
+>
+> * The CandidateRepository has stored all the Candidates instances created in all sessions in its database, it's where
+>  the instances can be rebuilt.
+
+
+>**Service Pattern**
+> * AuthorizationService
+> * CandidateManagementService
+> * ListCandidatesDTOService
+>
+> **Justifications**
+>
+> * CandidateManagementService is used in more than one functionality, and its in charge of managing 
+> candidates, serving as encapsulation between the controller and the CandidateRepository along with 
+> the domain classes.
+>
+> * The AuthorizationService, pre-existing services within the Eapli.
+> Framework were used here to retrieve the logged-in user with Operator roles.
+> 
+> * In order to enforce encapsulation amongst layers and adequate responsibility assigment, the
+> ListCandidatesDTOService was created, besides being a set of instructions that is used in other functionalities.
 
 ### 4.4. Tests
 
