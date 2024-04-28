@@ -52,9 +52,8 @@ There are no references for this user story.
 > **Answer:** I think it makes sense to list only "their" job openings.
 
 
-> **Question:** The client clarified the status aspect of a job opening in questions Q68 and Q95. It was mentioned that 
-> a job opening becomes inactive when its recruitment process ends. However, in what state are job openings that have been
-> registered but do not yet have a recruitment process associated with them?
+> **Question:** It was mentioned that a job opening becomes inactive when its recruitment process ends. However, in what
+> state are job openings that have been registered but do not yet have a recruitment process associated with them?
 >
 > **Answer:** Regarding the state (name of the state) of job openings after being registered but not yet associated with
 > a recruitment process, I am unsure how to respond. However, I can add that if they do not have a process associated with

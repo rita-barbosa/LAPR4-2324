@@ -34,35 +34,61 @@ must follow specific technical requirements, specified in LPROG. The _**ANTLR**_
 > **Answer:** The Operator will fill in the answers, and as part of US2004, they will submit the completed file in the system.
 
 
+> **Question:** After the applications are filtered during the screening process, I'm unsure about who manages the results
+> and oversees this phase. Could you please clarify if the responsibility for managing the screening results falls under
+> the customer manager, the operators, or both?
+>
+> **Answer:** In US2003 and US2004, it is the Operator who downloads a template file to register the requirements,
+> records the answers for the requirements in the file, and then uploads the file. Subsequently, the Customer Manager
+> executes the verification process (US1015) and performs the notification of the results (US1016).
+
+
+> **Question:** Can you clarify the usage of ANTLR within user story 2003? You've stated that US2003 simply generates the
+> file, while in US2004 the Operator defines the answers and uploads the file. Where is this file uploaded to? Given this,
+> where is the usage of ANTLR in US2003 directed to?
+>
+> **Answer:** Regarding the first question, it is possible to generate the template text file using ANTLR, although this
+> might be challenging. This would be where the usage of ANTLR comes into play. However, unless there is a specific requirement
+> from LPROG for evaluation purposes, it is acceptable to have the template file hardcoded in the plugin without the need for
+> any complex generation process or function. Regarding the second question, the file is uploaded to the system. The response
+> to the last question was provided earlier.
+
+
 ## 3. Analysis
 
 This functionality aims generate and export a template text file with the requirements to be evaluated and the possible
 answers for each requirement, regarding a job opening.
 
-A few basic requirements and their answers can be defined:
-* Number of years of experience
-  * Natural number (years >= 0)
-* Degree
-
 Further requirements can be delineated as needed, such as:
+* Number of years of experience
+* Degree
 * Candidate personal qualities
 * Programming languages proficiency
 * Specific software proficiency
 * Specific knowledge
 * Work methodology proficiency
+* Others...
 
-To all of these, an input must be defined, either by a condition (number inputted above a certain limit), or a set of pre-defined
-answers, such as in Degree = {None; Bachelor; Master; PhD}.
+Requirements can have different natures:
 
-The Operator fills the desired answers, reflecting what the costumer desires. These answers will later, in US2004, be submitted,
-so that there is a comparison to the candidates answers, and it's possible to see if they are eligible to the job opening.
+* **True/False** - A question with only a true or false answer.
+* **Short Text Answer** - A question with a short text answer. The limit of the answer should the specified by a regular expression.
+* **Choice, with Single-Answer** - A question with a set of choices where only one can be selected
+* **Choice, with Multiple-Answer** - A question with a set of choices where many can be selected
+* **Integer Number** - A question which answer is an integer number
+* **Decimal Number** - A question which answer is a decimal number
+* **Date** - A question which answer is a date
+* **Time** - A question which answer is a time
+* **Numeric Scale** - A question which answer is one option in a range of integers (ex: 1-5)
+
+The answers to this template are to be defined in US2004 and then uploaded to the system, out of scope for this functionality.
 
 Below there's a System Sequence Diagram (SSD) illustrating the expected behaviour of this functionality. After this diagram
 is a partial domain model, with emphasis on US2003's concepts.
 
 **US2003 System Sequence Diagram**
 
-![system sequence diagram](./SSD/US2003_SSD.svg)
+![system sequence diagram](./US2003_SSD/US2003_SSD.svg)
 
 
 **US2003 Domain Model**
@@ -78,13 +104,17 @@ patterns and the specification of the main tests used to validade the functional
 
 ### 4.1. Realization
 
+
+
 ### 4.2. Class Diagram
 
 ![a class diagram]()
 
-### 4.3. Applied Patterns
+### 4.3 Grammar
 
-### 4.4. Tests
+### 4.4. Applied Patterns
+
+### 4.5. Tests
 
 *Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
 
