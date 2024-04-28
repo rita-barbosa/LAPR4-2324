@@ -12,6 +12,9 @@ of a job opening (so the data is used to verify the requirements of the job open
 **Acceptance Criteria:**
 
 - **2003.1** The usage of **_ANTLR_** tool is required.
+- **2003.2** The question type are to be one of the established types: True/False, Short Text Answer, Choice with Single-Answer,
+  Choice with Multiple-Answer, Integer Number, Decimal Number, Date, Time and Numeric Scale.
+- **2003.3** A requirement template must have at least one requirement entry.
 
 **Dependencies/References:**
 
@@ -52,6 +55,18 @@ must follow specific technical requirements, specified in LPROG. The _**ANTLR**_
 > from LPROG for evaluation purposes, it is acceptable to have the template file hardcoded in the plugin without the need for
 > any complex generation process or function. Regarding the second question, the file is uploaded to the system. The response
 > to the last question was provided earlier.
+
+
+> **Question:** Could you clarify whether the questions to be used for Interview Models and Requirement Specifications are
+> those shown in the documentation examples, or is there a specific set of questions you would like us to use?
+>
+> **Answer:** The specification document provides examples, as mentioned. These are only indicative examples. You can use
+> these examples as test cases and as a starting point to define others. However, the solution is expected to support more
+> than just the examples in the document. In either plugin, the types of questions to be supported are those presented on
+> page 8 of the document. As the product owner, I would like a functional demonstration of the system to include at least
+> 2 plugins of each type, to demonstrate minimal support for more than one plugin used simultaneously (of each type). It
+> should also demonstrate the use of all types of questions presented on page 8 (updated on 2024-04-27).
+
 
 
 ## 3. Analysis
@@ -260,18 +275,7 @@ This topic presents the classes with the patterns applied to them along with jus
 
 ### 4.5. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
 
-**Test 1:** Verifies that it is not possible to ...
-
-**Refers to Acceptance Criteria:** G002.1
-
-````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
-...
-}
-````
 
 ## 5. Implementation
 
