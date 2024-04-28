@@ -1,0 +1,67 @@
+@startuml US2003_SSD
+autonumber
+
+actor "Operator" as OP
+participant "System" as SYS
+
+activate OP
+
+OP -> SYS : asks to generate a new requirements specification file
+
+activate SYS
+
+    SYS --> OP : asks for template file name
+deactivate SYS
+
+OP -> SYS : writes the file name
+activate SYS
+
+loop Until the user wishes so
+|||
+
+    SYS --> OP : presents the requirements type list and asks to select an option
+    deactivate SYS
+
+    OP -> SYS : selects the desired option
+
+    activate SYS
+
+    SYS --> OP : asks to define the requirement header
+    deactivate SYS
+
+    OP -> SYS : defines the header for the chosen requirement
+
+    activate SYS
+
+    opt requirement type is multiple_choice or single_choice
+        loop as long as the user wants
+            SYS --> OP : asks for option's text
+            deactivate SYS
+
+            OP -> SYS : defines the option's text
+            activate SYS
+        end loop
+    end opt
+
+    activate SYS
+
+    SYS --> OP : confirm that the requirement was successfully set within the file
+    deactivate SYS
+|||
+end loop
+
+OP -> SYS : ask to export the file
+
+activate SYS
+
+SYS --> SYS : validates file with grammar
+
+SYS --> SYS : exports the requirements specification file
+
+SYS --> OP : confirms the successful exportation of the file
+deactivate SYS
+
+
+deactivate OP
+
+@enduml
