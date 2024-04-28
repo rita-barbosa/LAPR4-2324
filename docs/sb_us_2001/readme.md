@@ -113,10 +113,7 @@ These configurations can be adjusted either during application runtime or by rea
 
 ## 4. Design
 
->*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validate the functionality.*
+
 
 ### 4.1. Realization
 
@@ -136,18 +133,7 @@ and their location within the diagram.
 
 ### 4.2. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
-
-**Test 1:** Verifies that it is not possible to ...
-
-**Refers to Acceptance Criteria:** G002.1
-
-````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
-...
-}
-````
+> Test will be done after the implementation is done, to ensure the functionality proper behaviour.
 
 ## 5. Implementation
 
