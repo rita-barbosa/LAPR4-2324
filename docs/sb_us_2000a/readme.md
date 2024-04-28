@@ -38,20 +38,74 @@
 
 
 ## 4. Design
+The principal function is to register a candidate, the input for the Operator consists of:
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+* Candidate Name
+* Candidate Email
+* Candidate Phone Number
+
+After successfully submitting this information, the system should create a candidate and the corresponding user.
 
 ### 4.1. Realization
 
+![Sequence diagram](US2000a_SD/sd-us-2000a.svg)
+
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![a class diagram](US2000a_Class_Diagram/class-diagram-us-2000a.svg)
 
 ### 4.3. Applied Patterns
+* **Observer**
+* **Repository**
+* **Service**
 
+> **Repository Pattern**
+> * CandidateRepository
+>
+> **Justifications**
+>
+>The repositories were employed to persist candidates and usercandidates, as well as to reconstruct objects from the
+persistence.
+
+
+> **Service Pattern**
+> * AuthorizationService
+> * CandidateManagementService
+> * UserManagementService
+>
+> **Justifications**
+>
+> The UserManagementService and AuthorizationService, pre-existing services within the Eapli.Framework were used here
+> to register users and retrieve the logged-in user with Operator roles.
+>
+> The CandidateManagementService is employed to register candidates, tasked with the responsibility of
+candidate creation.
+>
+> The mentioned services were developed because the functionalities they offer will be utilized across multiple use
+> cases.
+
+> **Observer**
+> * EventPublisher
+> * NewCandidateUserRegisteredEvent
+> * NewCandidateUserRegisteredWatchDog
+> * AddCandidateOnNewCandidateUserRegisteredController
+>
+> **Justifications**
+>
+> All the mentioned objects are components of the applied observer pattern. This pattern was implemented to ensure
+> that when a new candidate is registered, a user is automatically registered as well. Following this procedure, upon the
+> registration of a candidate, a NewCandidateUserRegisteredEvent instance is generated, and the EventPublisher is utilized
+> to notify the WatchDog (Observer).
+>
+> Upon receiving this notification, the WatchDog triggers the registration of the
+> user through the AddCandidateOnNewCandidateUserRegisteredController. 
+>
+> In this case, an instance of NewCandidateUserRegisteredEvent is used to inform the specific WatchDog,
+> which then invokes the AddCandidateOnNewCandidateUserRegisteredController for the registration of the CandidateUser.
+>
+> To maintain consistency in the creation process, we used the EventPublisher within the service to
+> ensure that both the candidate and its user were created, thus preserving the system's valid state.
+>
 ### 4.4. Tests
 
 *Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*

@@ -59,15 +59,16 @@ package "<<aggregate>> Operator" {
 }
     package "<<aggregate>> Candidate" {
     entity Candidate <<entity>>  <<root>>{}
+    class CandidateName <<(V,#FF8B40) value object>> {}
+    class PhoneNumber <<(V,#FF8B40) value object>> {}
+    class Email <<(V,#FF8B40) value object>> {}
+
 }
 
 package "<<aggregate>> Application" {
     entity Application <<entity>><<root>>  {}
-    class Email <<(V,#FF8B40) value object>> {}
     class ApplicationDate <<(V,#FF8B40) value object>> {}
     class ApplicationStatus <<(V,#FF8B40) value object>> {}
-    class CandidateName <<(V,#FF8B40) value object>> {}
-    class PhoneNumber <<(V,#FF8B40) value object>> {}
     class Interview <<(V,#FF8B40) value object>>   {}
     class InterviewAnswer <<(V,#FF8B40) value object>>   {}
     class InterviewResult <<(V,#FF8B40) value object>>   {}
@@ -115,6 +116,9 @@ Operator --> "0..*" Application : registers
 '--
 Candidate --> "1..*" Application : submits
 Candidate --> "1..*" JobOpening : applies for
+Candidate ---> "1" Email: identified by
+Candidate --> "1" CandidateName: has
+Candidate ---> "1" PhoneNumber: has
 '--
 Customer --> "1" Entity :  represents
 '--
@@ -143,9 +147,6 @@ Phase --> "1" PhaseDescription : describes <
 Application ---> "0..1" Interview : includes
 Application --> "1" RequirementAnswer : includes
 Application ---> "1" RequirementResult : includes
-Application ---> "1" Email: includes
-Application --> "1" CandidateName: includes
-Application ---> "1" PhoneNumber: includes
 Application ---> "1..*" File : describes <
 Application ---> "1" ApplicationDate : registered by
 Application --> "1" ApplicationStatus : categorizes <
