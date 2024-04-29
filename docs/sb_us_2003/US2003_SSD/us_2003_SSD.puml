@@ -1,12 +1,15 @@
 @startuml US2003_SSD
 autonumber
 
+title US2003 System Sequence Diagram
+
 actor "Operator" as OP
 participant "System" as SYS
+participant "Plugin" as PLU
 
 activate OP
 
-OP -> SYS : asks to generate a new requirements specification file
+OP -> SYS : asks to generate a new requirements\n specification file
 
 activate SYS
 
@@ -16,49 +19,25 @@ deactivate SYS
 OP -> SYS : writes the file name
 activate SYS
 
-loop Until the user wishes so
-|||
+SYS --> OP : asks for the job position
+deactivate SYS
 
-    SYS --> OP : presents the requirements type list and asks to select an option
-    deactivate SYS
-
-    OP -> SYS : selects the desired option
-
-    activate SYS
-
-    SYS --> OP : asks to define the requirement header
-    deactivate SYS
-
-    OP -> SYS : defines the header for the chosen requirement
-
-    activate SYS
-
-    opt requirement type is multiple_choice or single_choice
-        loop as long as the user wants
-            SYS --> OP : asks for option's text
-            deactivate SYS
-
-            OP -> SYS : defines the option's text
-            activate SYS
-        end loop
-    end opt
-
-    activate SYS
-
-    SYS --> OP : confirm that the requirement was successfully set within the file
-    deactivate SYS
-|||
-end loop
-
-OP -> SYS : ask to export the file
-
+OP -> SYS : selects the job position
 activate SYS
 
-SYS --> SYS : validates file with grammar
+SYS -> PLU : generate and export template file
+activate PLU
 
-SYS --> SYS : exports the requirements specification file
+PLU -> PLU : generates file
 
-SYS --> OP : confirms the successful exportation of the file
+PLU -> PLU : validates the generated template\n file with a specific grammar
+
+PLU -> PLU : exports the requirements\n specification file
+
+PLU --> SYS : confirms exportation
+deactivate PLU
+
+SYS --> OP : confirms the successful\n exportation of the file
 deactivate SYS
 
 
