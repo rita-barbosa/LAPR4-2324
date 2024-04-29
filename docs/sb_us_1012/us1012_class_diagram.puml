@@ -1,0 +1,69 @@
+@startuml US1012_class_diagram
+'https://plantuml.com/class-diagram
+
+title 1012 Class Diagram
+
+class GenerateInterviewTemplateFileUI <<presentation>>  {
++ doShow()
++ newOptionText()
+}
+
+class GenerateInterviewTemplateFileController <<application>> {
++ create()
++ defineTemplateFileName(filename)
++ registerQuestionType(questionTypeDenomination)
++ addNewQuestion(questionTypeDenomination,\n questionDescription, optionsList)
++ exportTemplateFile()
+}
+
+
+class InterviewTemplateManagerService <<service>> {
++ questionTypes()
++ createQuestion(questionTypeDenomination,\n  questionDescription,  optionsList)
++ generateNewTemplate(filename)
+}
+
+class InterviewTemplateEvaluatorService <<service>> {
++ evaluateWithGrammar(InterviewTemplate templateFile)
+}
+
+class QuestionType <<domain>> {
++ toDTO()
++ valueOf(questionTypeDenomination)
+}
+
+
+class InterviewTemplateBuilder <<builder>> {
++ build()
+}
+
+class QuestionBuilder <<builder>> {
++ build()
+}
+
+class Question <<domain>> {
++ Question(questionTypeDenomination,\n questionDescription, optionsList)
+}
+
+
+class InterviewTemplate <<domain>> {
++ RequirementsTemplate(filename, questionsList)
+}
+
+
+'Associations
+GenerateInterviewTemplateFileUI ..> GenerateInterviewTemplateFileController
+GenerateInterviewTemplateFileController ..> InterviewTemplateManagerService
+InterviewTemplateManagerService ..> InterviewTemplateEvaluatorService
+
+InterviewTemplateManagerService ..> QuestionType
+InterviewTemplateManagerService ..> QuestionBuilder
+InterviewTemplateManagerService ..> InterviewTemplateBuilder
+InterviewTemplateEvaluatorService ..> InterviewTemplate
+
+InterviewTemplateBuilder --> InterviewTemplate
+QuestionBuilder --> Question
+Question -right-> QuestionType
+InterviewTemplate -right-> Question
+
+@enduml

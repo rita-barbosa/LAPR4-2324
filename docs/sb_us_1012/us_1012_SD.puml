@@ -1,0 +1,156 @@
+@startuml
+
+title US1012 Sequence Diagram
+
+actor "Operator" as USER
+
+participant "<<presentation>>\n:GenerateInterviewModelTemplateFileUI" as UI
+participant "<<application>>\n:GenerateInterviewModelTemplateFileController" as CTRL
+participant "<<service>>\n:InterviewTemplateManagerService" as InterviewService
+participant "<<builder>>\n:InterviewTemplateBuilder" as InterviewBuilder
+participant "<<builder>>\n:QuestionBuilder" as QuestionBuilder
+participant "<<domain>>\n:Question" as Question
+participant "<<domain>>\n:QuestionType" as QuestionType
+participant "<<domain>>\n:InterviewTemplate" as InterviewTemplate
+participant "<<builder>>\n:InterviewTemplateEvaluator" as InterviewEvaluator
+
+
+activate USER
+
+USER -> UI : asks to generate a new interview model file
+activate UI
+
+UI --> USER : asks for template file name
+deactivate UI
+
+
+USER -> UI : writes the file name
+activate UI
+
+UI -> CTRL : create()
+activate CTRL
+
+UI -> CTRL : definesTemplateFileName(fileName)
+
+CTRL -> InterviewService :  questionTypes()
+activate InterviewService
+
+
+    loop for all question types
+        InterviewService -> QuestionType : toDTO()
+    deactivate InterviewService
+    activate QuestionType
+        QuestionType -[#white]> QuestionType
+    deactivate QuestionType
+    end loop
+
+loop until the user wants
+
+CTRL --> UI : questionTypeListDTO
+deactivate CTRL
+
+UI --> USER : presents the questions type list and asks to select an option
+deactivate UI
+
+USER -> UI : selects the question type
+
+ alt New question type
+        activate UI
+
+                UI --> USER : asks to introduce the new question type
+                deactivate UI
+
+                USER -> UI : defines the question type
+
+                activate UI
+
+'                UI --> UI : registers the new question type in the questions type list
+
+    end alt
+
+
+UI -> CTRL : registerQuestionType(questionTypeDenomination)
+activate CTRL
+
+CTRL -> QuestionType : create(questionTypeDenomination)
+activate QuestionType
+deactivate QuestionType
+
+deactivate CTRL
+
+UI --> USER : asks to define the question
+deactivate UI
+
+USER -> UI : defines the question
+activate UI
+
+UI --> USER : asks to define the question answer
+deactivate UI
+
+USER -> UI : defines the answer
+activate UI
+
+
+UI -> CTRL : addNewQuestion(questionTypeDenomination,\n questionDescription, optionsList)
+activate CTRL
+
+
+CTRL -> InterviewService : createQuestion(questionTypeDenomination,\n questionDescription, optionsList)
+deactivate CTRL
+activate InterviewService
+
+    InterviewService -> QuestionBuilder : build()
+    deactivate InterviewService
+    activate QuestionBuilder
+
+    QuestionBuilder -> Question: createQuestion(questionTypeDenomination,\n questionDescription, optionsList)
+    deactivate QuestionBuilder
+    activate Question
+        Question -> QuestionType : valueOf(questionTypeDenomination)
+        deactivate Question
+        activate QuestionType
+           QuestionType -[#white]> QuestionType
+        deactivate QuestionType
+|||
+
+UI --> USER : confirm that the question was successfully set within the file
+deactivate UI
+
+
+end loop
+
+USER -> UI : asks to export the file
+activate UI
+
+UI -> CTRL : exportTemplateFile()
+activate CTRL
+
+    CTRL -> InterviewService : generateNewTemplate(filename)
+    activate InterviewService
+
+        InterviewService -> InterviewBuilder : build()
+    activate InterviewBuilder
+
+        InterviewBuilder -> InterviewTemplate : RequirementsTemplate(filename, questionsList)
+    deactivate InterviewBuilder
+    activate InterviewTemplate
+        InterviewTemplate -[#white]> InterviewTemplate
+    deactivate InterviewTemplate
+
+    InterviewService -> InterviewEvaluator : evaluateWithGrammar(templateFile)
+    note left: With a lexer, a parser and\n other associated classes\n along with the requirements\n template grammar.
+    activate InterviewEvaluator
+    deactivate InterviewEvaluator
+
+    InterviewService -> InterviewService : exportTemplate()
+    InterviewService --> CTRL
+    deactivate InterviewService
+
+    CTRL --> UI : confirmation
+    deactivate CTRL
+
+UI --> USER : confirms the success of the exportation of the file
+deactivate UI
+
+
+@enduml
