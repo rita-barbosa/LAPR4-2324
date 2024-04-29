@@ -2,98 +2,79 @@
 
 title [US2003 - Sequence Diagram]
 
+box System #LightBlue
 participant "<<presentation>>\n:GenerateRequirementsTemplateFileUI" as UI
 control "<<application>>\n:GenerateRequirementsTemplateFileController" as CTRL
 participant "<<service>>\n:RequirementsTemplateManagerService" as Manager
-participant "<<builder>>\n:RequirementsTemplateBuilder" as TempBuilder
-participant "<<builder>>\n:QuestionBuilder" as QuestionBuilder
-participant "<<domain>>\n:Question" as Question
-participant "<<domain>>\n:QuestionType" as QuestionType
-participant "<<domain>>\n:RequirementsTemplate" as Template
-participant "<<service>>\n:RequirementsTemplateEvaluatorService" as TempEvaluator
+database "<<repository>>\n:RequirementSpecificationRepository" as ReqRep
+participant "<<domain>>\n:RequirementSpecification" as Requirement
+end box
+
+box Plugin #LightPink
+participant "<<Plugin>>\n:RequirementsTemplatePlugin" as Plugin
+participant "<<Parser/Interpreter>>\n:RequirementsTemplateParser" as Parser
+end box
+
 
 activate UI
 
-
 UI -> CTRL : create()
 activate CTRL
+deactivate CTRL
 
-UI -> CTRL : defineTemplateFileName(filename)
+UI -> CTRL : choosePlugin()
 
-CTRL -> Manager : questionTypes()
+'get job positions/plugins
+activate CTRL
+
+CTRL -> Manager : requirementPluginsList()
 activate Manager
-    loop for all question types
-        Manager -> QuestionType : toDTO()
-    deactivate Manager
-    activate QuestionType
-        QuestionType -[#white]> QuestionType
-    deactivate QuestionType
-    end loop
 
-loop as long as the user wants
+Manager -> ReqRep : requirementPlugins()
+activate ReqRep
+deactivate ReqRep
 
-CTRL --> UI : questionTypeListDTO
+loop for all the entries
+    Manager -> Requirement : toDTO()
+    activate Requirement
+    deactivate Requirement
+end loop
+
+Manager --> CTRL : pluginsDTOList
+
+deactivate Manager
+
+CTRL --> UI : pluginsDTOList
 deactivate CTRL
 
 UI -> UI : doShow()
 
-opt multiple_choice || single_choice
-    
-    loop while the user wants to
-    UI -> UI : newOptionText()
-    end loop
-end opt
-
-UI -> CTRL : addNewQuestion(questionTypeDenomination,\n questionDescription, optionsList)
+UI -> CTRL : exportTemplateFile(pluginFileName)
 activate CTRL
 
-
-CTRL -> Manager : createQuestion(questionTypeDenomination,\n questionDescription, optionsList)
-deactivate CTRL
-activate Manager
-
-    Manager -> QuestionBuilder : build()
-    deactivate Manager
-    activate QuestionBuilder
-
-    QuestionBuilder -> Question: Question(questionTypeDenomination,\n questionDescription, optionsList)
-    deactivate QuestionBuilder
-    activate Question
-        Question -> QuestionType : valueOf(questionTypeDenomination)
-        deactivate Question
-        activate QuestionType
-           QuestionType -[#white]> QuestionType
-        deactivate QuestionType
-|||
-end loop
-
-
-UI -> CTRL : exportTemplateFile()
-activate CTRL
-
-    CTRL -> Manager : generateNewTemplate(filename)
+    CTRL -> Manager : generateNewTemplate(pluginFileName)
     activate Manager
 
-        Manager -> TempBuilder : build()
-    activate TempBuilder
+        Manager -> Plugin : newRequirementsSpecificationsTemplate()
+    activate Plugin
 
-        TempBuilder -> Template : RequirementsTemplate(filename, questionsList)
-    deactivate TempBuilder
-    activate Template
-        Template -[#white]> Template
-    deactivate Template
+        Plugin -> Plugin : generateFile()
 
-    Manager -> TempEvaluator : evaluateWithGrammar(templateFile)
-    note left: With a lexer, a parser and\n other associated classes\n along with the requirements\n template grammar.
-    activate TempEvaluator
-    deactivate TempEvaluator
+        Plugin -> Parser : checkFileSyntax(templateFile)
+        note left: Along with the requirements\n template grammar.
 
-    Manager -> Manager : exportTemplate()
-    Manager --> CTRL
+        activate Parser
+        deactivate Parser
+
+        Plugin -> Plugin : export()
+       Plugin --> Manager : filepath
+    deactivate Plugin
+
+    Manager --> CTRL : filepath
     deactivate Manager
 
-    CTRL --> UI : confirmation
-    deactivate CTRL
+    CTRL --> UI : filepath
+deactivate CTRL
 
 deactivate UI
 

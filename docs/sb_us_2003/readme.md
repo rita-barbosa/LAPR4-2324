@@ -83,7 +83,6 @@ Further requirements can be delineated as needed, such as:
 * Work methodology proficiency
 * Others...
 
-
 Requirements can have different natures:
 
 * **True/False** - A question with only a true or false answer.
@@ -114,31 +113,28 @@ is a partial domain model, with emphasis on US2003's concepts.
 The solution for this functionality is to have 4 layers, following DDD development architecture: Presentation, Application,
 Domain and Persistence. A link in [references](#71-references) explains this topic in-depth.
 
-To generate a requirements specification template that defines who is eligible for the job, we need a file name which will
-be sent as a parameter to the plugin, along with the indications to the job opening's title/position.
+To generate a requirements specification template that defines who is eligible for the job we need to get the plugins from
+the database, show them to the user, which will select one. Upon this choice, a service will be in charge of serving as a
+bridge between the system and the plugin.
 
-The questions types are the ones defined in the documentation, and there are no other ones, so no database will be needed
-to store these.
-
-Because this functionality will not run in the system, but in a plugin instead
+To display the requirement specification plugins available, DTO's must be used to enhance encapsulation between layers.
 
 **New Domain Layer Classes**
-* Question
-* QuestionType
-* RequirementsTemplate
 * RequirementsTemplateManagerService
-* RequirementsTemplateEvaluatorService
-* RequirementsTemplateBuilder
-* QuestionBuilder
+* RequirementSpecification
 
 **New Persistence Layer Classes**
-* `No new classes`
+* RequirementSpecificationRepository
 
 **New Application Layer Classes**
 * GenerateRequirementsTemplateFileController
 
 **New Presentation Layer Classes**
 * GenerateRequirementsTemplateFileUI
+
+**Plugin Classes**
+* RequirementsTemplatePlugin
+* RequirementsTemplateParser
 
 The further topics illustrate and explain this functionality usage flow, and the correlation between its components.
 
@@ -170,32 +166,35 @@ requirement : REQUIREMENT_NUMBER NEWLINE question+;
 
 //Types of questions
 question: single_choice_question
-| multiple_choice_question
-| integer_question
-| true_false_question
-| numeric_scale_question
-| decimal_question
-| short_answer_question
-| date_question
-| time_question
-;
-
+        | multiple_choice_question
+        | integer_question
+        | true_false_question
+        | numeric_scale_question
+        | decimal_question
+        | short_answer_question
+        | date_question
+        | time_question
+        ;
 
 //Questions Format
-single_choice_question: SINGLE_CHOICE WHITESPACE DESCRIPTION_TEXT NEWLINE option+;
-multiple_choice_question: MULTIPLE_CHOICE WHITESPACE DESCRIPTION_TEXT NEWLINE option+;
-integer_question: INTEGER WHITESPACE DESCRIPTION_TEXT NEWLINE*;
-true_false_question: TRUE_FALSE WHITESPACE DESCRIPTION_TEXT NEWLINE*;
-numeric_scale_question: NUMERIC_SCALE WHITESPACE DESCRIPTION_TEXT WHITESPACE SCALE_FORMAT NEWLINE*;
-decimal_question: DECIMAL WHITESPACE DESCRIPTION_TEXT NEWLINE*;
-short_answer_question: SHORT_ANSWER WHITESPACE DESCRIPTION_TEXT NEWLINE*;
-date_question: DATE WHITESPACE DESCRIPTION_TEXT WHITESPACE DATE_FORMAT NEWLINE*;
-time_question: TIME WHITESPACE DESCRIPTION_TEXT WHITESPACE TIME_FORMAT NEWLINE*;
+single_choice_question: SINGLE_CHOICE WHITESPACE DESCRIPTION_TEXT NEWLINE option+ answer;
+multiple_choice_question: MULTIPLE_CHOICE WHITESPACE DESCRIPTION_TEXT NEWLINE option+ answer+;
+integer_question: INTEGER WHITESPACE DESCRIPTION_TEXT NEWLINE answer;
+true_false_question: TRUE_FALSE WHITESPACE DESCRIPTION_TEXT NEWLINE answer;
+numeric_scale_question: NUMERIC_SCALE WHITESPACE DESCRIPTION_TEXT WHITESPACE SCALE_FORMAT NEWLINE answer;
+decimal_question: DECIMAL WHITESPACE DESCRIPTION_TEXT NEWLINE answer;
+short_answer_question: SHORT_ANSWER WHITESPACE DESCRIPTION_TEXT NEWLINE answer;
+date_question: DATE WHITESPACE DESCRIPTION_TEXT WHITESPACE DATE_FORMAT NEWLINE answer;
+time_question: TIME WHITESPACE DESCRIPTION_TEXT WHITESPACE TIME_FORMAT NEWLINE answer;
 
-// Option format
-option : OPTION WHITESPACE DESCRIPTION_TEXT NEWLINE+;
+//Option Format
+option : OPTION WHITESPACE DESCRIPTION_TEXT NEWLINE;
+
+//Answer Format
+answer : ANSWER WHITESPACE DESCRIPTION_TEXT NEWLINE*;
 
 //Formatters
+ANSWER : 'ANSWER';
 OPTION : NUMBER')';
 REQUIREMENT_NUMBER : 'REQUIREMENT #'NUMBER;
 SCALE_FORMAT : '['NUMBER'-'NUMBER']';
@@ -205,7 +204,7 @@ TRUE_FALSE_FORMAT : 'Write "True" or "False".';
 
 //Lexer rules
 //Types of questions identifiers
-TRUE_FALSE : '[True|False]';
+TRUE_FALSE : '[True/False]';
 SINGLE_CHOICE : '[Single Choice]';
 MULTIPLE_CHOICE : '[Multiple Choice]';
 INTEGER : '[Whole Number]';
@@ -221,54 +220,54 @@ NUMBER: [0-9]+;
 NEWLINE: '\r'?'\n';
 ```
 
-Table of token used in the template file grammar:
+Table of some tokens used with concrete lexemes in the template file grammar:
 
-| Tokens            | Lexemes              |
-|:------------------|:---------------------|
-| TRUE_FALSE        | [True/False]         |
-| SINGLE_CHOICE     | [Single Choice]      |
-| MULTIPLE_CHOICE   | [Multiple Choice]    |
-| INTEGER           | [Whole Number]       |
-| NUMERIC_SCALE     | [Numeric Scale]      |
-| DECIMAL           | [Decimal Number]     |
-| SHORT_ANSWER      | [Short Answer]       |
-| DATE              | [Date]               |
-| TIME              | [Time]               |
-| WHITESPACE        | ' '                  |
-| DESCRIPTION_TEXT  | '"' (~["\r\n])* '"'  |
-| NUMBER            | [0-9]+               |
-| NEWLINE           | \r'?'\n              |
+| Tokens          | Lexemes           |
+|:----------------|:------------------|
+| TRUE_FALSE      | [True/False]      |
+| SINGLE_CHOICE   | [Single Choice]   |
+| MULTIPLE_CHOICE | [Multiple Choice] |
+| INTEGER         | [Whole Number]    |
+| NUMERIC_SCALE   | [Numeric Scale]   |
+| DECIMAL         | [Decimal Number]  |
+| SHORT_ANSWER    | [Short Answer]    |
+| DATE            | [Date]            |
+| TIME            | [Time]            |
+| WHITESPACE      | ' '               |
+| DATE_FORMAT     | [DD/MM/YYYY]      |
+| TIME_FORMAT     | [HH:MM]           |
+| ANSWER          | ANSWER            |
 
 
 ### 4.4. Applied Patterns
 
 This topic presents the classes with the patterns applied to them along with justifications.
 
->**Builder Pattern**
-> * RequirementsTemplateBuilder
-> * QuestionBuilder
->
-> **Justifications**
->
-> * A template's structure is not linear, it can vary, in number of questions and its typologies. To face this diversity,
-    >   a builder is a must.
->
-> * A question can have many types, and its structure changes with it, so a builder is necessary to work around the different
-    >   variations of a question.
-
-
 >**Service Pattern**
-> * RequirementsTemplateEvaluatorService
 > * RequirementsTemplateManagerService
 >
 > **Justifications**
 >
 > * RequirementsTemplateManagerService is necessary because it manages a set of operations and responsibilities that don't
-    >   belong to any class. It's in charge of managing the process of creating a requirement specification template file.
+    >   belong to any class. It's in charge of managing the process of getting the plugins available from their repository,
+    >   overseeing the conversion of the data into DTOs and bridging the system to the chosen plugin.
+
+>**Repository Pattern**
+> * RequirementsSpecificationsRepository
 >
-> * RequirementsTemplateEvaluatorService is necessary because it comprises a set of operations and responsibilities that
-    >   don't belong to any class. It's in charge of checking if the template generated by the system is formatted according
-    >   to a certain grammar defined.
+> **Justifications**
+>
+> * Many plugins can exist, so they must be stored and persisted in a repository. It is from here that the plugins available
+    >   to generate a requirements specifications template file are.
+
+
+>**Interpreter Pattern**
+> * RequirementsTemplateParser
+>
+> **Justifications**
+>
+> * This class serves as an Interpreter to the grammar defined within the plugin. It is it that will check if the template
+    >   generated is syntactically correct and can be exported.
 
 
 ### 4.5. Tests
@@ -317,10 +316,6 @@ public void ensureTemplateHasAtLeastOneRequirement() {
 }
 ````
 
-> **Note:** Even though the answers to the questions must match their defined types (and tests must be made to ensure those
-> scenarios), it is not US2003 responsibility to define the answers to the template and their validity, so those tests won't
-> appear in this document.
-
 ## 5. Implementation
 
 *In this section the team should present, if necessary, some evidencies that the implementation is according to the
@@ -350,3 +345,4 @@ development this work.*
 ### 7.1 References
 
 * [DDD architecture]( https://ddd-practitioners.com/home/glossary/layered-architecture/#:~:text=In%20Domain%2DDriven%20Design%20(DDD,layer%2C%20and%20an%20infrastructure%20layer. )
+* [Software Design Patterns](https://www.geeksforgeeks.org/software-design-patterns/?ref=lbp)

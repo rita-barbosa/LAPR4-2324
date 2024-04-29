@@ -9,49 +9,37 @@ interface AbstractUI {
 
 class GenerateRequirementsTemplateFileUI <<presentation>>  {
 + doShow()
-+ newOptionText()
 }
 
 class GenerateRequirementsTemplateFileController <<application>> {
 + create()
-+ defineTemplateFileName(String filename)
-+ addNewQuestion(String questionTypeDenomination,\n String questionDescription, List<String> optionsList)
-+ exportTemplateFile()
++ choosePlugin()
++ exportTemplateFile(String pluginFileName)
 }
-
 
 class RequirementsTemplateManagerService <<service>> {
-+ questionTypes()
-+ createQuestion(String questionTypeDenomination,\n String questionDescription, List<String> optionsList)
-+ generateNewTemplate(String filename)
++ requirementPluginsList()
++ generateNewTemplate(String pluginFileName)
 }
 
-class RequirementsTemplateEvaluatorService <<service>> {
-+ evaluateWithGrammar(RequirementsTemplate templateFile)
+class RequirementSpecificationRepository <<persistence>>\n<<repository>> {
++ requirementPlugins()
 }
 
-class QuestionType <<domain>> {
+class RequirementSpecification <<domain>> {
 + toDTO()
-+ valueOf(String questionTypeDenomination)
 }
 
-
-class RequirementsTemplateBuilder <<builder>> {
-+ build()
+class RequirementsTemplatePlugin <<plugin>> {
++ newRequirementsSpecificationsTemplate()
++ generateFile()
++ export()
 }
 
-class QuestionBuilder <<builder>> {
-+ build()
+class RequirementsTemplateParser <<parser>> {
++ checkFileSyntax(File templateFile)
 }
 
-class Question <<domain>> {
-+ Question(String questionTypeDenomination,\n String questionDescription, List<String> optionsList)
-}
-
-
-class RequirementsTemplate <<domain>> {
-+ RequirementsTemplate(String filename, List<Question> questionsList)
-}
 
 
 'Associations
@@ -60,16 +48,9 @@ AbstractUI <|.up. GenerateRequirementsTemplateFileUI
 
 GenerateRequirementsTemplateFileUI .left.> GenerateRequirementsTemplateFileController
 GenerateRequirementsTemplateFileController ..> RequirementsTemplateManagerService
-RequirementsTemplateManagerService ..> RequirementsTemplateEvaluatorService
-
-RequirementsTemplateManagerService ..> QuestionType
-RequirementsTemplateManagerService ..> QuestionBuilder
-RequirementsTemplateManagerService ..> RequirementsTemplateBuilder
-RequirementsTemplateEvaluatorService ..> RequirementsTemplate
-
-RequirementsTemplateBuilder --> RequirementsTemplate
-QuestionBuilder --> Question
-Question -left-> QuestionType
-RequirementsTemplate --> Question
+RequirementsTemplateManagerService ..> RequirementSpecificationRepository
+RequirementSpecificationRepository --> RequirementSpecification
+RequirementsTemplateManagerService ..> RequirementsTemplatePlugin
+RequirementsTemplatePlugin ..> RequirementsTemplateParser
 
 @enduml
