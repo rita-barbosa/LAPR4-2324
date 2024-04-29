@@ -10,6 +10,12 @@ OP -> SYS : asks to generate a new interview model file
 
 activate SYS
 
+SYS --> OP : asks for template file name
+deactivate SYS
+
+OP -> SYS : writes the file name
+activate SYS
+
 
 loop Until the user wants
 |||
@@ -45,14 +51,16 @@ loop Until the user wants
         OP -> SYS : defines the answer
         activate SYS
 
-        SYS --> OP : confirm that the requirement was successfully set within the file
+        SYS --> OP : confirm that the question was successfully set within the file
         deactivate SYS
 |||
 end loop
 
-OP -> SYS : ask to export the file
+OP -> SYS : asks to export the file
 
 activate SYS
+
+SYS --> SYS : validates file with grammar
 
 SYS --> SYS : exports the interview model file
 
