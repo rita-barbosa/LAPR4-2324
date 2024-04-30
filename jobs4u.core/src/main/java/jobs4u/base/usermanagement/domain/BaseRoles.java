@@ -29,25 +29,10 @@ import eapli.framework.infrastructure.authz.domain.model.Role;
  * @author Paulo Gandra Sousa
  */
 public final class BaseRoles {
-    /**
-     * Utente
-     */
     public static final Role CUSTOMER_USER = Role.valueOf("CUSTOMER_USER");
-    /**
-     * Base Administrator
-     */
     public static final Role ADMIN = Role.valueOf("ADMIN");
-    /**
-     *
-     */
     public static final Role CUSTOMER_MANAGER = Role.valueOf("CUSTOMER_MANAGER");
-    /**
-     *
-     */
     public static final Role OPERATOR = Role.valueOf("OPERATOR");
-    /**
-     *
-     */
     public static final Role CANDIDATE_USER = Role.valueOf("CANDIDATE_USER");
     public static final Role LANGUAGE_ENGINEER = Role.valueOf("LANGUAGE_ENGINEER");
 

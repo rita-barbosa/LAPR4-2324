@@ -45,39 +45,26 @@ public class BasePasswordPolicy implements PasswordPolicy {
      * @see eapli.framework.infrastructure.authz.domain.model.PasswordPolicy#
      * meetsRequeriments(java.lang.String)
      */
-//   Change the following code so that : the password must have a minimum of 8 characters,
-//   including both upper and lowercase letters, digits, and
-//    at
-//    least one non-alphanumeric character.
     @Override
     public boolean isSatisfiedBy(final String rawPassword) {
-        // sanity check
         if (StringPredicates.isNullOrEmpty(rawPassword)) {
             return false;
         }
-
-        // at least 6 characters long
         if (rawPassword.length() < 8) {
             return false;
         }
-
-        // at least one digit
         if (!StringPredicates.containsDigit(rawPassword)) {
             return false;
         }
-
         if (!StringPredicates.containsAlpha(rawPassword)) {
             return false;
         }
-
         boolean containsNonAlphanumeric = false;
         for (char c : rawPassword.toCharArray()) {
             if (!Character.isLetterOrDigit(c)) {
                 containsNonAlphanumeric = true;
             }
         }
-
-
         return StringPredicates.containsCapital(rawPassword) && containsNonAlphanumeric;
     }
 
