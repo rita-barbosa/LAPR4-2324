@@ -1,5 +1,5 @@
-prog: get_new_candidates.o delegate_work.o main.o
-	gcc get_new_candidates.o delegate_work.o main.o -z noexecstack -o prog
+us2001_prog: get_new_candidates.o delegate_work.o check_new_files.o main.o
+	gcc get_new_candidates.o delegate_work.o check_new_files.o main.o -z noexecstack -o us2001_prog
 
 get_new_candidates.o: get_new_candidates.c
 	gcc -g -Wall -Wextra -fanalyzer -c get_new_candidates.c  -o get_new_candidates.o
@@ -7,11 +7,15 @@ get_new_candidates.o: get_new_candidates.c
 delegate_work.o: delegate_work.c
 	gcc -g -Wall -Wextra -fanalyzer -c delegate_work.c  -o delegate_work.o
 
+
+check_new_files.o: check_new_files.c
+	gcc -g -Wall -Wextra -fanalyzer -c check_new_files.c  -o check_new_files.o
+
 main.o: main.c fnc.h
 	gcc -g -Wall -Wextra -fanalyzer -c main.c  -o main.o
 
-run: prog
-	./prog
+run: us2001_prog
+	./us2001_prog
 
 clean:
-	rm -f *.o prog
+	rm -f *.o us2001_prog
