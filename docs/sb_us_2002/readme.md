@@ -131,23 +131,18 @@ To be able to promote encapsulation between layers, it will be used DTOs.
 
 * JobOpening
 * Application
+* Interview
 * Candidate
+* ApplicationManagementService
 
 **Persistence Layer Classes**
 
-* RepositoryFactory
-* JobOpeningRepository
+* CandidateRepository
 * ApplicationRepository
-
 
 **Application Layer Classes**
 
 * RegisterApplicationController
-* JobOpeningMapper
-* JobOpeningDTO
-* ApplicationMapper
-* ApplicationDTO
-
 
 **Presentation Layer Classes**
 
@@ -156,23 +151,86 @@ To be able to promote encapsulation between layers, it will be used DTOs.
 
 ### 4.1. Realization
 
+* **US2002 Sequence Diagram**
+
+![US2002 Split Sequence Diagram](us2002_sd.svg)
+
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![a class diagram](us_2002_class_diagram.svg)
 
 ### 4.3. Applied Patterns
 
+In this functionality are applied two different patterns:
+
+>**_Repository Pattern_**
+> * CandidateRepository
+> * ApplicationRepository
+>
+>* Justification
+>
+>  The Candidate and Application repository have the purpose of keeping the persistence of the candidates and
+>application instances created.
+
+
+>**_Service Pattern_**
+> * RegisterApplicationUI
+> * RegisterApplicationController
+> * ApplicationManagementService
+>
+>* Justification
+>*
+>  The UI is considered a service, since it is not a concept in the domain, and there is no justification to assign these
+>responsibilities to a domain class.
+>  The controller is used as a bridge between the UI and the domain classes, processing the UI requests and assigning the
+>responsibilities to the respective domain class.
+> The service is in charge of managing requests about applications entities.
+
+
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
+Here will be the tests used to validate the functionality, and its acceptance criteria.
 
-**Test 1:** Verifies that it is not possible to ...
+**Test 1:** Verifies that the data as imported
 
-**Refers to Acceptance Criteria:** G002.1
+**Refers to Acceptance Criteria:** 2002.2
 
 ````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
+@Test
+public void ensureDataWasImported() {
+...
+}
+````
+
+**Test 2:** Verifies that the files are in the correct folder
+
+**Refers to Acceptance Criteria:** 2002.3
+
+````
+@Test
+public void ensureFolderIsCorrect() {
+...
+}
+````
+
+**Test 3:** Verifies that the application was created
+
+**Refers to Acceptance Criteria:** 2002.4
+
+````
+@Test
+public void ensureApplicationWasCreated() {
+...
+}
+````
+
+**Test 4:** Verifies that the candidate is created
+
+**Refers to Acceptance Criteria:** 2002.5
+
+````
+@Test
+public void ensureCandidateWasCreated() {
 ...
 }
 ````

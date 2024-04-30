@@ -79,7 +79,6 @@ To be able to promote encapsulation between layers, it will be used DTOs.
 * JobOpening
 * Application
 
-
 **Persistence Layer Classes**
 
 * RepositoryFactory
@@ -139,7 +138,7 @@ To make the design of this user story, were used the following patterns:
 >**_Repository Pattern_**
 >* Classes
 >  * JobOpeningRepository
->  * ApplicationFactory
+>  * ApplicationRepository
 >
 >* Justification
 >
@@ -175,18 +174,40 @@ To make the design of this user story, were used the following patterns:
 
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
 
-**Test 1:** Verifies that it is not possible to ...
+**Test 1:** Verifies that exist an application
 
-**Refers to Acceptance Criteria:** G002.1
+**Refers to Acceptance Criteria:** 1005.1
 
 ````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
+@Test
+public void ensureListApplication() {
 ...
 }
 ````
+
+**Test 2:** Verifies that all applications are listed, regardless of the status
+
+**Refers to Acceptance Criteria:** 1005.2
+
+````
+@Test
+public void ensureAllApplicationAreListed() {
+...
+}
+````
+
+**Test 3:** Verifies that the application has the candidate and the status
+
+**Refers to Acceptance Criteria:** 1005.3
+
+````
+@Test
+public void ensureListedJobOpeningsAreFromAssignedCostumers() {
+...
+}
+````
+
 
 ## 5. Implementation
 
