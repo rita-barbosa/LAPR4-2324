@@ -27,17 +27,12 @@ import eapli.framework.infrastructure.authz.domain.model.Role;
 
 /**
  * @author Paulo Gandra Sousa
- *
  */
 public final class BaseRoles {
     /**
-     * poweruser
-     */
-    public static final Role POWER_USER = Role.valueOf("POWER_USER");
-    /**
      * Utente
      */
-    public static final Role CLIENT_USER = Role.valueOf("CLIENT_USER");
+    public static final Role CUSTOMER_USER = Role.valueOf("CUSTOMER_USER");
     /**
      * Base Administrator
      */
@@ -45,15 +40,16 @@ public final class BaseRoles {
     /**
      *
      */
-    public static final Role KITCHEN_MANAGER = Role.valueOf("KITCHEN_MANAGER");
+    public static final Role CUSTOMER_MANAGER = Role.valueOf("CUSTOMER_MANAGER");
     /**
      *
      */
-    public static final Role MENU_MANAGER = Role.valueOf("MENU_MANAGER");
+    public static final Role OPERATOR = Role.valueOf("OPERATOR");
     /**
      *
      */
-    public static final Role CASHIER = Role.valueOf("CASHIER");
+    public static final Role CANDIDATE_USER = Role.valueOf("CANDIDATE_USER");
+    public static final Role LANGUAGE_ENGINEER = Role.valueOf("LANGUAGE_ENGINEER");
 
     /**
      * get available role types for adding new users
@@ -61,10 +57,10 @@ public final class BaseRoles {
      * @return
      */
     public static Role[] nonUserValues() {
-        return new Role[] { ADMIN, KITCHEN_MANAGER, MENU_MANAGER, CASHIER };
+        return new Role[]{ADMIN, CUSTOMER_MANAGER, OPERATOR, CANDIDATE_USER, CUSTOMER_USER, LANGUAGE_ENGINEER};
     }
 
-    public boolean isCollaborator(final Role role) {
-        return role != CLIENT_USER;
+    public static Role[] nonBackOfficeUserValues() {
+        return new Role[]{ADMIN, CUSTOMER_MANAGER, OPERATOR, LANGUAGE_ENGINEER};
     }
 }

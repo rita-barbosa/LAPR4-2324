@@ -34,37 +34,37 @@ import java.util.Set;
 public class BackofficeUsersBootstrapper extends UsersBootstrapperBase implements Action {
 
     @SuppressWarnings("squid:S2068")
-    private static final String PASSWORD1 = "Password1";
+    private static final String PASSWORD1 = "Password-1";
 
     @Override
     public boolean execute() {
-        registerCashier("cashier", PASSWORD1, "Johny", "Cash", "johny.doe@emai.l.com");
-        registerKitchenManager("kitchen", PASSWORD1, "Oven", "Stove", "Oven.and.stove@emai.l.com");
-        registerMenuManager("chef", PASSWORD1, "Master", "Chef", "master.chef@emai.l.com");
+        registerCustomerManager("customerM@email.com", PASSWORD1, "Johny", "Cash");
+        registerOperator("operator@email.com", PASSWORD1, "Master", "Chef");
+        registerLanguageEngineer("lang.engineer@email.com", PASSWORD1, "Lang", "Neer");
         return true;
     }
 
-    private void registerCashier(final String username, final String password,
-            final String firstName, final String lastName, final String email) {
+    private void registerCustomerManager(final String email, final String password,
+                                         final String firstName, final String lastName) {
         final Set<Role> roles = new HashSet<>();
-        roles.add(BaseRoles.CASHIER);
+        roles.add(BaseRoles.CUSTOMER_MANAGER);
 
-        registerUser(username, password, firstName, lastName, email, roles);
+        registerUser(email, password, firstName, lastName, roles);
     }
 
-    private void registerKitchenManager(final String username, final String password,
-            final String firstName, final String lastName, final String email) {
+    private void registerOperator(final String email, final String password,
+                                  final String firstName, final String lastName) {
         final Set<Role> roles = new HashSet<>();
-        roles.add(BaseRoles.KITCHEN_MANAGER);
+        roles.add(BaseRoles.OPERATOR);
 
-        registerUser(username, password, firstName, lastName, email, roles);
+        registerUser(email, password, firstName, lastName, roles);
     }
 
-    private void registerMenuManager(final String username, final String password,
-            final String firstName, final String lastName, final String email) {
+    private void registerLanguageEngineer(final String email, final String password,
+                                          final String firstName, final String lastName) {
         final Set<Role> roles = new HashSet<>();
-        roles.add(BaseRoles.MENU_MANAGER);
+        roles.add(BaseRoles.LANGUAGE_ENGINEER);
 
-        registerUser(username, password, firstName, lastName, email, roles);
+        registerUser(email, password, firstName, lastName, roles);
     }
 }

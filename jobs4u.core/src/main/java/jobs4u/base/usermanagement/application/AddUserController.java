@@ -33,7 +33,6 @@ import java.util.Calendar;
 import java.util.Set;
 
 /**
- *
  * Created by nuno on 21/03/16.
  */
 @UseCaseController
@@ -51,18 +50,19 @@ public class AddUserController {
         return BaseRoles.nonUserValues();
     }
 
-    public SystemUser addUser(final String username, final String password, final String firstName,
-            final String lastName,
-            final String email, final Set<Role> roles, final Calendar createdOn) {
-        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.POWER_USER, BaseRoles.ADMIN);
 
-        return userSvc.registerNewUser(username, password, firstName, lastName, email, roles,
+    public SystemUser addUser(final String email, final String password, final String firstName,
+                              final String lastName,
+                              final Set<Role> roles, final Calendar createdOn) {
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.ADMIN, BaseRoles.ADMIN);
+
+        return userSvc.registerNewUser(email, password, firstName, lastName, email, roles,
                 createdOn);
     }
 
-    public SystemUser addUser(final String username, final String password, final String firstName,
-            final String lastName,
-            final String email, final Set<Role> roles) {
-        return addUser(username, password, firstName, lastName, email, roles, CurrentTimeCalendars.now());
+    public SystemUser addUser(final String email, final String password, final String firstName,
+                              final String lastName,
+                              final Set<Role> roles) {
+        return addUser(email, password, firstName, lastName, roles, CurrentTimeCalendars.now());
     }
 }

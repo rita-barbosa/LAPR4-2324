@@ -43,23 +43,22 @@ public class UsersBootstrapperBase {
     }
 
     /**
-     * @param username
      * @param password
      * @param firstName
      * @param lastName
      * @param email
      * @param roles
      */
-    protected SystemUser registerUser(final String username, final String password, final String firstName,
-            final String lastName, final String email, final Set<Role> roles) {
+    protected SystemUser registerUser( final String email,final String password, final String firstName,
+                                      final String lastName, final Set<Role> roles) {
         SystemUser u = null;
         try {
-            u = userController.addUser(username, password, firstName, lastName, email, roles);
-            LOGGER.debug("»»» %s", username);
+            u = userController.addUser(email, password, firstName, lastName, roles);
+            LOGGER.debug("»»» %s", email);
         } catch (final IntegrityViolationException | ConcurrencyException e) {
             // assuming it is just a primary key violation due to the tentative
             // of inserting a duplicated user. let's just lookup that user
-            u = listUserController.find(Username.valueOf(username)).orElseThrow(() -> e);
+            u = listUserController.find(Username.valueOf(email)).orElseThrow(() -> e);
         }
         return u;
     }

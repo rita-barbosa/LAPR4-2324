@@ -36,7 +36,6 @@ import eapli.framework.strings.util.StringPredicates;
  * for example rules of password strength
  *
  * @author Paulo Gandra de Sousa 24/05/2019
- *
  */
 public class BasePasswordPolicy implements PasswordPolicy {
 
@@ -46,6 +45,10 @@ public class BasePasswordPolicy implements PasswordPolicy {
      * @see eapli.framework.infrastructure.authz.domain.model.PasswordPolicy#
      * meetsRequeriments(java.lang.String)
      */
+//   Change the following code so that : the password must have a minimum of 8 characters,
+//   including both upper and lowercase letters, digits, and
+//    at
+//    least one non-alphanumeric character.
     @Override
     public boolean isSatisfiedBy(final String rawPassword) {
         // sanity check
@@ -54,7 +57,7 @@ public class BasePasswordPolicy implements PasswordPolicy {
         }
 
         // at least 6 characters long
-        if (rawPassword.length() < 6) {
+        if (rawPassword.length() < 8) {
             return false;
         }
 
@@ -63,8 +66,19 @@ public class BasePasswordPolicy implements PasswordPolicy {
             return false;
         }
 
-        // at least one capital letter
-        return StringPredicates.containsCapital(rawPassword);
+        if (!StringPredicates.containsAlpha(rawPassword)) {
+            return false;
+        }
+
+        boolean containsNonAlphanumeric = false;
+        for (char c : rawPassword.toCharArray()) {
+            if (!Character.isLetterOrDigit(c)) {
+                containsNonAlphanumeric = true;
+            }
+        }
+
+
+        return StringPredicates.containsCapital(rawPassword) && containsNonAlphanumeric;
     }
 
     /**
@@ -75,9 +89,7 @@ public class BasePasswordPolicy implements PasswordPolicy {
      * https://documentation.cpanel.net/display/CKB/How+to+Determine+Password+Strength
      * for example rules of password strength
      *
-     * @param rawPassword
-     *            the string to check
-     *
+     * @param rawPassword the string to check
      * @return how strong a password is
      */
     public PasswordStrength strength(final String rawPassword) {

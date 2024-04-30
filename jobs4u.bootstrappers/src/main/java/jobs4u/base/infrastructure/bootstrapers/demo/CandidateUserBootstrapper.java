@@ -18,34 +18,37 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package jobs4u.base.infrastructure.bootstrapers;
+package jobs4u.base.infrastructure.bootstrapers.demo;
 
-import jobs4u.base.usermanagement.domain.BaseRoles;
+import jobs4u.base.infrastructure.bootstrapers.UsersBootstrapperBase;
 import eapli.framework.actions.Action;
-import eapli.framework.infrastructure.authz.domain.model.Role;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
- * @author Paulo Gandra Sousa
+ * @author Paulo Sousa
  */
-public class MasterUsersBootstrapper extends UsersBootstrapperBase implements Action {
+public class CandidateUserBootstrapper extends UsersBootstrapperBase implements Action {
+    private static final String PASSWORD1 = "Password-1";
 
     @Override
     public boolean execute() {
-        registerAdmin("admin@email.com", TestDataConstants.PASSWORD1, "Jane", "Doe Admin");
+
         return true;
     }
+//
+//    private void registerCandidate(final String email, final String password,
+//                                         final String firstName, final String lastName) {
+//        final Set<Role> roles = new HashSet<>();
+//        roles.add(BaseRoles.CANDIDATE_USER);
+//
+//        registerUser(email, password, firstName, lastName, roles);
+//    }
+//
+//    private void registerCustomer(final String email, final String password,
+//                                  final String firstName, final String lastName) {
+//        final Set<Role> roles = new HashSet<>();
+//        roles.add(BaseRoles.CUSTOMER_USER);
+//
+//        registerUser(email, password, firstName, lastName, roles);
+//    }
 
-    /**
-     *
-     */
-    private void registerAdmin(final String email, final String password, final String firstName,
-                               final String lastName) {
-        final Set<Role> roles = new HashSet<>();
-        roles.add(BaseRoles.ADMIN);
-
-        registerUser(email, password, firstName, lastName, roles);
-    }
 }

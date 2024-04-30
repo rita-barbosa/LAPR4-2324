@@ -50,8 +50,8 @@ public class BaseBootstrapper implements Action {
     private static final Logger LOGGER = LoggerFactory.getLogger(
             BaseBootstrapper.class);
 
-    private static final String POWERUSER_PWD = "poweruserA1";
-    private static final String POWERUSER = "poweruser";
+    private static final String ADMIN_PWD = "poweruserA-1";
+    private static final String ADMIN = "admin@email.com";
 
     private final AuthorizationService authz = AuthzRegistry.authorizationService();
     private final AuthenticationService authenticationService = AuthzRegistry.authenticationService();
@@ -59,18 +59,11 @@ public class BaseBootstrapper implements Action {
 
     @Override
     public boolean execute() {
-        // declare bootstrap actions
-        final Action[] actions = { new MasterUsersBootstrapper(), };
-
-        registerPowerUser();
-        authenticateForBootstrapping();
-
         // execute all bootstrapping
-        boolean ret = true;
-        for (final Action boot : actions) {
-            System.out.println("Bootstrapping " + nameOfEntity(boot) + "...");
-            ret &= boot.execute();
-        }
+        boolean ret;
+
+        ret = registerAdmin();
+        authenticateForBootstrapping();
         return ret;
     }
 
@@ -78,10 +71,10 @@ public class BaseBootstrapper implements Action {
      * register a power user directly in the persistence layer as we need to
      * circumvent authorisations in the Application Layer
      */
-    private boolean registerPowerUser() {
+    private boolean registerAdmin() {
         final SystemUserBuilder userBuilder = UserBuilderHelper.builder();
-        userBuilder.withUsername(POWERUSER).withPassword(POWERUSER_PWD).withName("joe", "power")
-                .withEmail("joe@email.org").withRoles(BaseRoles.POWER_USER);
+        userBuilder.withUsername(ADMIN).withPassword(ADMIN_PWD).withName("joe", "power")
+                .withEmail("admin@email.com").withRoles(BaseRoles.ADMIN);
         final SystemUser newUser = userBuilder.build();
 
         SystemUser poweruser;
@@ -100,10 +93,9 @@ public class BaseBootstrapper implements Action {
 
     /**
      * authenticate a super user to be able to register new users
-     *
      */
     protected void authenticateForBootstrapping() {
-        authenticationService.authenticate(POWERUSER, POWERUSER_PWD);
+        authenticationService.authenticate(ADMIN, ADMIN_PWD);
         Invariants.ensure(authz.hasSession());
     }
 
