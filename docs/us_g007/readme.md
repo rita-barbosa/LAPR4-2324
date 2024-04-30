@@ -98,26 +98,62 @@ the mentioned acceptance criteria are located within it.
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+As previously mentioned the main alteration made were to the class BaseRoles and BasePasswordPolicy, that trigger the
+other changes made accordingly do to the use of BaseRoles in a lot of controllers and bootstrap classes.
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this
-requirement.*
+### BaseRoles
+
+```
+public final class BaseRoles {
+    public static final Role CUSTOMER_USER = Role.valueOf("CUSTOMER_USER");
+    public static final Role ADMIN = Role.valueOf("ADMIN");
+    public static final Role CUSTOMER_MANAGER = Role.valueOf("CUSTOMER_MANAGER");
+    public static final Role OPERATOR = Role.valueOf("OPERATOR");
+    public static final Role CANDIDATE_USER = Role.valueOf("CANDIDATE_USER");
+    public static final Role LANGUAGE_ENGINEER = Role.valueOf("LANGUAGE_ENGINEER");
+}
+```
+
+### BasePasswordPolicy
+
+```
+public class BasePasswordPolicy implements PasswordPolicy {
+    @Override
+    public boolean isSatisfiedBy(final String rawPassword) {
+        // sanity check
+        if (StringPredicates.isNullOrEmpty(rawPassword)) {
+            return false;
+        }
+
+        // at least 6 characters long
+        if (rawPassword.length() < 8) {
+            return false;
+        }
+
+        // at least one digit
+        if (!StringPredicates.containsDigit(rawPassword)) {
+            return false;
+        }
+
+        if (!StringPredicates.containsAlpha(rawPassword)) {
+            return false;
+        }
+
+        boolean containsNonAlphanumeric = false;
+        for (char c : rawPassword.toCharArray()) {
+            if (!Character.isLetterOrDigit(c)) {
+                containsNonAlphanumeric = true;
+            }
+        }
+
+
+        return StringPredicates.containsCapital(rawPassword) && containsNonAlphanumeric;
+    }
+}
+```
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
-
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
-
-## 7. Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
+As we utilize the framework for authentication and authorization, we needed to adhere to the supported method
+declarations, particularly concerning user registration. This was necessary because our business rules deviated slightly
+from the existing implemented code.
