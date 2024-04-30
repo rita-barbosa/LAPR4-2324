@@ -66,8 +66,8 @@ Class "<<Application>>\nListCandidateDataController" as CTRL {
 Interface "<<Persistentence>>\nDomainRepository" as DREPO {
     ..
     - findAll()
-    - findAllById(Iterable<Email>: emails)
-    - findById(Email: email)
+    - findAllById(Iterable<Id>: id)
+    - findById(Id: id)
     - save(Entity: Entity)
 }
 Interface "<<Presentation>>\nAbstractUI" as ABUI {
