@@ -8,9 +8,16 @@
 #include <stdbool.h>
 #include "fnc.h"
 
-void handle_USR1(int signo)
-{
-    write(STDOUT_FILENO, "\nALERT: New file detected.\n", 27);
+//variable indicating reception of signal to terminate
+volatile sig_atomic_t time_to_terminate = 0;
+
+void handle_signal(int signo) {
+    if (signo == SIGUSR1) {
+        write(STDOUT_FILENO, "\nALERT: New file detected.\n", 27);
+    } else if (signo == SIGINT) {
+        write(STDOUT_FILENO, "\nOrder to terminate.", 21);
+        time_to_terminate = 1;
+    }
 }
 
 int main()
@@ -24,9 +31,15 @@ int main()
 
     // SETUP SIGNAL - SIGUSR1
     memset(&act, 0, sizeof(struct sigaction));
-    act.sa_sigaction = handle_USR1;
+    act.sa_handler = handle_signal;
     act.sa_flags = SA_SIGINFO;
     if (sigaction(SIGUSR1, &act, NULL) == -1)
+    {
+        perror("sigaction");
+        return 1;
+    }
+
+    if (sigaction(SIGINT, &act, NULL) == -1)
     {
         perror("sigaction");
         return 1;
@@ -41,9 +54,79 @@ int main()
     if (child_p[0] == 0)
     {
         // CHILD THAT WILL PERIODICALLY MONITOR THE INPUT DIRECTORY
-        printf("INFO: Monitor child going to signal \n");
-        sleep(5);
-        kill(getppid(), SIGUSR1);
+        int newFileLine = 0; //last line refering to a file
+        char returnNumberInChar; //line refering to a file after input directory check-in
+        int returnNumber = 0; //line refering to a file after input directory check-in
+        int status;
+        int newFilePipe[2]; //pipe between last sub-child and parent-child
+        int newFilePipeMidChildren[2]; //pipe between subchildren
+
+        if (chdir(directory) == -1){
+            perror("chdir");
+            exit(1);
+        }
+
+        if (pipe(newFilePipe) == -1) {
+                perror("pipe");
+                exit(1);
+        }
+
+        if (pipe(newFilePipeMidChildren) == -1) {
+            perror("pipe");
+            exit(1);
+        }
+
+
+        while(!time_to_terminate){
+            for(i = 0; i < 2; ++i){
+                pid_t pid = fork();
+                if(pid == 0){
+                    if(i == 0) {
+                        check_files_child_ls(newFilePipe, newFilePipeMidChildren);
+                    } else {
+                        check_files_child_wc(newFilePipe, newFilePipeMidChildren);
+                    }
+                    perror("execlp");
+                    exit(1);
+                }
+            }
+
+            //monitoring child will not write or read on sub-children pipe
+            close(newFilePipeMidChildren[0]);
+            close(newFilePipeMidChildren[1]);
+            close(newFilePipe[1]); //monitoring child will not write on new file pipe
+
+            //waits for the termination of all children
+            for(i = 0; i < 2; ++i){
+                wait(&status);
+                if (!WIFEXITED(status) && WEXITSTATUS(status) != 0) {
+                    printf("Something wrong happened with the new file sub-child process.\n");
+                }
+            }
+
+            //reads number of files currently on the input directory
+            n = read(newFilePipe[0], &returnNumberInChar, sizeof(returnNumberInChar));
+            if (n < 0){
+                perror("Couldn't read all the information.");
+                exit(1);
+            }
+
+            returnNumber = (int)returnNumberInChar - '0';
+
+            printf("Number of files in the directory: %d\n", returnNumber);
+
+            if (returnNumber > newFileLine) {
+                newFileLine = returnNumber;
+                printf("INFO: Monitor child going to signal.\n");
+                kill(getppid(), SIGUSR1);
+            }else{
+                printf("INFO: No new files in input folder.\n");
+            }
+
+            sleep(MONITORING_TIME);
+        }
+
+        close(newFilePipe[0]); //monitoring child will no longer read from new file pipe
         exit(0);
     }
 
