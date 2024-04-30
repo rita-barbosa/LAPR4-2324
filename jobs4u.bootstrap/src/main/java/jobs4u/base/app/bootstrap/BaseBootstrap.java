@@ -75,12 +75,8 @@ public final class BaseBootstrap extends BaseApplication {
     }
 
     private void handleArgs(final String[] args) {
-        isToRunSampleE2E = ArrayPredicates.contains(args, "-smoke:basic");
-        if (isToRunSampleE2E) {
-            isToBootstrapDemoData = true;
-        } else {
-            isToBootstrapDemoData = ArrayPredicates.contains(args, "-bootstrap:demo");
-        }
+        isToRunSampleE2E = true;
+        isToBootstrapDemoData = true;
     }
 
     @Override
