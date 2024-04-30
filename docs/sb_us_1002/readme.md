@@ -232,7 +232,15 @@ The further topics illustrate and explain this functionality usage flow, and the
 
 ![US1002 Class Diagram](./US1002_Class_Diagram/US1002_class_diagram.svg)
 
-### 4.3. Applied Patterns
+### 4.3. States Diagram
+
+A job opening can have many states when in certain scenarios.
+
+The following diagram illustrates the dynamics amongst states, and what each one means.
+
+![US1002 State Diagram](./US1002_State_Diagram/US1002_Job_Opening_State_Diagram.svg)
+
+### 4.4. Applied Patterns
 
 This topic presents the classes with the patterns applied to them along with justifications.
 
@@ -282,7 +290,7 @@ This topic presents the classes with the patterns applied to them along with jus
 >   to the desired customers. This set of instructions is used in other functionalities too.
 
 
-### 4.4. Tests
+### 4.5. Tests
 
 
 **Test 1:** Verifies that is not possible to have the number of vacancies be zero or below, or a decimal
