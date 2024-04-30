@@ -1,0 +1,123 @@
+@startuml US2002_SD
+
+skinparam monochrome true
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+autonumber
+
+title [US2002 - Sequence Diagram]
+
+actor "Operator" as OP
+participant "<<presentation>>\n:RegisterApplicationUI" as UI
+participant "<<application>>\n:RegisterApplicationController" as CTRL
+participant "<<domain>>\n:Candidate" as Candidate
+database "<<repository>>\n:CandidateRepository" as CandidateRepository
+participant "<<service>>\n:ApplicationManagementService" as AppManagement
+database "<<repository>>\n:ApplicationRepository" as ApplicationRepository
+participant "<<domain>>\n:Application" as Application
+participant "<<domain>>\n:Interview" as Interview
+
+activate OP
+
+OP -> UI : asks to register an application
+activate UI
+
+UI -> CTRL : create()
+
+activate CTRL
+deactivate CTRL
+
+UI --> OP : asks for the shared folder where the files used for the application are
+deactivate UI
+
+OP -> UI : selects the shared folder
+activate UI
+
+UI -> CTRL : registerApplication(sharedFolder)
+activate CTRL
+
+CTRL -> CTRL : getFiles(shareFolder)
+activate CTRL
+
+CTRL --> CTRL : files
+deactivate CTRL
+
+CTRL -> Candidate : checkCandidateExistence(file)
+activate Candidate
+
+'Candidate -> Candidate : find(email)
+'activate Candidate
+
+Candidate -> Candidate : getEmail(file)
+activate Candidate
+
+Candidate --> Candidate : email
+deactivate Candidate
+
+Candidate -> CandidateRepository : find(email)
+activate CandidateRepository
+
+'CandidateRepository --> Candidate : candidate
+deactivate CandidateRepository
+
+'Candidate --> Candidate : candidate
+'deactivate Candidate
+
+deactivate Candidate
+
+alt candidate == false
+
+
+CTRL -> Candidate : register(name, email, phoneNumber)
+activate Candidate
+deactivate Candidate
+
+'check what to put here for register the candidate and the user
+
+note right: The controller of the US2000a will be called, since the process\n of register the candidate is the same
+
+
+end alt
+
+
+'Candidate -> CTRL : candidate
+'deactivate Candidate
+
+CTRL -> Application : getInformationFromFile(file)
+activate Application
+
+
+deactivate Application
+
+CTRL -> AppManagement : registerApplication(applicationDate, applicationStatus, requirementAnswer, requirementResult, file,\n interview, schedule, interviewResult, interviewGrade, interviewAnswer, justification)
+activate AppManagement
+
+AppManagement -> Application : create(applicationDate, applicationStatus,\n requirementAnswer, requirementResult, file,\n interview, schedule, interviewResult,\n interviewGrade, interviewAnswer, justification)
+activate Application
+
+Application -> Interview : create(schedule, interviewResult,\n interviewGrade, interviewAnswer, justification)
+activate Interview
+
+AppManagement -> ApplicationRepository : save(application)
+activate ApplicationRepository
+deactivate ApplicationRepository
+
+'Application -> ApplicationRepository : create(applicationDate, applicationStatus,\n requirementAnswer, requirementResult, file,\n interview, schedule, interviewResult,\n interviewGrade, interviewAnswer, justification)
+'activate ApplicationRepository
+
+
+
+deactivate CTRL
+
+
+UI --> OP : shows operation success
+deactivate UI
+
+
+deactivate OP
+
+
+
+@enduml
+

@@ -99,18 +99,60 @@ After a discussion with the team, this user story was envisioned to be done in t
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+For this User Story, following the **DDD pattern, a 4-layer system (Presentation, Application, Domain, Infrastructure)** was chosen to best fit the envisioned designed of this functionality.
+
+Due to the need to create and serialize entities to be used later, the usage of repositories was essential for RecruitmentProcesses and JobOpenings. 
+
+#### New Persistence Layer Classes:
+- JobOpeningRepository
+- RecruitmentProcessRepository
+
+#### New Domain Layer Classes:
+- RepositoryFactory
+- RecruitmentProcess
+- RecruitmentPeriod
+- Phase
+- PhaseType
+- PhaseDescription
+- PhasePeriod
+- PhaseStatus
+- JobReference
+
+*RecruitmentPeriod and Phase are value objects belonging to the RecruitmentProcess entity.*
+*PhaseType, PhaseStatus, PhaseDescription and PhasePeriod are value objects belonging to the Phase entity.*
+*JobReference is a value object belonging to the JobOpening entity.*
+
+#### New Application Layer Classes:
+- SetupRecruitmentProcessController
+
+#### New Presentation Layer Classes:
+- SetupRecruitmentProcessUI
+- PhaseDTO
 
 ### 4.1. Realization
 
+#### Sequence Diagram Related
+![Sequence-Diagram.svg](SD%2FSequence-Diagram.svg)
+
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![Class-Diagram.svg](CD%2FClass-Diagram.svg)
 
 ### 4.3. Applied Patterns
+
+This section is focused on the patterns used for this US:
+
+#### Repository Pattern
+
+For the envisioned structure and usage of this functionality, the usage of a serializable repository is essential for the Customer Manager to access the data needed for this functionality.
+
+#### Service Pattern
+
+To create a layer of abstraction between the Domain layer and the Application layer, the usage of a specific service was deemed necessary for this user story.
+
+#### DTO Pattern
+
+Due to the data needed for this functionality being several entities in the Domain layer and also input from the user, the usage of the DTO pattern seemed to be the ideal solution for this problem. 
 
 ### 4.4. Tests
 

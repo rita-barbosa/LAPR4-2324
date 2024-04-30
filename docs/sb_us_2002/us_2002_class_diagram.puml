@@ -1,0 +1,121 @@
+@startuml US2002_class_diagram
+'https://plantuml.com/class-diagram
+
+title US2002 Class Diagram
+
+
+'package <<Presentation>> {
+class RegisterApplicationUI <<Presentation>> {
+}
+'}
+
+'package <<Application>> {
+class RegisterApplicationController <<Application>> {
++ registerApplication(sharedFolder)
++ getFiles(sharedFolder)
+}
+'}
+
+
+'package <<Domain>> {
+'Requirements
+package <<Authentication_and_Users>> {
+class AuthenticationService <<Application>> <<Service>> {
+}
+class Session <<Domain>> <<Value Object>> {}
+class SystemUser <<Domain>> <<Aggregate Root>> {}
+class Username <<Domain>> <<Value Object>> <<ID>> {
+- value : String
+}
+}
+
+class Candidate <<Domain>> <<Aggregate Root>> {
++ getEmail(file)
++ register(candidate)
+}
+
+class Operator <<Domain>> <<Aggregate Root>> {}
+
+
+class Application <<Domain>> <<Aggregate Root>> {
+- requirementAnswer : String
+- requirementResult : Integer
+- file : File
+- email : String
+- applicationDate : Date
+- applicationStatus : Boolean
+- candidateName : String
+- phoneNumber : Integer
+- interview : Interview
+
++ getInformationFromFile(file)
++ create(applicationDate, applicationStatus,\n requirementAnswer, requirementResult, file,\n interview, schedule, interviewResult,\n interviewGrade, interviewAnswer, justification)
+}
+
+class Interview <<Domain>> <<Value Object>> {
+- interviewTypeDenomination : String
+- schedule : Date
+- interviewResult : String
+- interviewGrade : Integer
+- justification : String
+- interviewAnswer :  String
++ valueOf()
+}
+
+'package <<Persistence>> {
+
+class ApplicationRepository <<Persistence>> <<Repository>> {
++ save(Application: entity)
+}
+
+class CandidateRepository <<Persistence>> <<Repository>> {
++ find(email)
+}
+
+interface RepositoryDatabase <<Persistence>> {
++ save(Entity: Entity)
+}
+
+class ApplicationManagementService <<Service>> {
++ registerApplication(applicationDate, applicationStatus,\n requirementAnswer, requirementResult,\n file, interview, schedule, interviewResult,\n interviewGrade, interviewAnswer, justification)
+}
+
+
+'}
+
+'Associations
+'Basic Flow
+Operator ..> RegisterApplicationController
+RegisterApplicationUI ..> RegisterApplicationController
+RegisterApplicationController ..> ApplicationRepository
+RegisterApplicationController ..> CandidateRepository
+RegisterApplicationController ..> ApplicationManagementService
+
+'Domain Layer
+Interview "1" --> "1" Application : characterizes
+
+
+''Persistence Layer
+ApplicationManagementService --> ApplicationRepository
+ApplicationManagementService --> Application
+ApplicationRepository <.. Application : persisted by
+ApplicationRepository "1" --> "*" Interview : rebuilds
+
+CandidateRepository <.. Candidate : persisted by
+
+
+'
+''Interface implementation
+RepositoryDatabase <|.. ApplicationRepository : implements
+RepositoryDatabase <|.. CandidateRepository : implements
+
+
+'Authentication
+Session --> SystemUser
+SystemUser -> Username
+AuthenticationService ..> Username
+AuthenticationService ..> Session
+AuthenticationService ..> RegisterApplicationController
+Operator --|> SystemUser
+
+@enduml

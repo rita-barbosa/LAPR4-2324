@@ -1,0 +1,81 @@
+@startuml US2003_SD
+
+title [US2003 - Sequence Diagram]
+
+box System #LightBlue
+participant "<<presentation>>\n:GenerateRequirementsTemplateFileUI" as UI
+control "<<application>>\n:GenerateRequirementsTemplateFileController" as CTRL
+participant "<<service>>\n:RequirementsTemplateManagerService" as Manager
+database "<<repository>>\n:RequirementSpecificationRepository" as ReqRep
+participant "<<domain>>\n:RequirementSpecification" as Requirement
+end box
+
+box Plugin #LightPink
+participant "<<Plugin>>\n:RequirementsTemplatePlugin" as Plugin
+participant "<<Parser/Interpreter>>\n:RequirementsTemplateParser" as Parser
+end box
+
+
+activate UI
+
+UI -> CTRL : create()
+activate CTRL
+deactivate CTRL
+
+UI -> CTRL : choosePlugin()
+
+'get job positions/plugins
+activate CTRL
+
+CTRL -> Manager : requirementPluginsList()
+activate Manager
+
+Manager -> ReqRep : requirementPlugins()
+activate ReqRep
+deactivate ReqRep
+
+loop for all the entries
+    Manager -> Requirement : toDTO()
+    activate Requirement
+    deactivate Requirement
+end loop
+
+Manager --> CTRL : pluginsDTOList
+
+deactivate Manager
+
+CTRL --> UI : pluginsDTOList
+deactivate CTRL
+
+UI -> UI : doShow()
+
+UI -> CTRL : exportTemplateFile(pluginFileName)
+activate CTRL
+
+    CTRL -> Manager : generateNewTemplate(pluginFileName)
+    activate Manager
+
+        Manager -> Plugin : newRequirementsSpecificationsTemplate()
+    activate Plugin
+
+        Plugin -> Plugin : generateFile()
+
+        Plugin -> Parser : checkFileSyntax(templateFile)
+        note left: Along with the requirements\n template grammar.
+
+        activate Parser
+        deactivate Parser
+
+        Plugin -> Plugin : export()
+       Plugin --> Manager : filepath
+    deactivate Plugin
+
+    Manager --> CTRL : filepath
+    deactivate Manager
+
+    CTRL --> UI : filepath
+deactivate CTRL
+
+deactivate UI
+
+@enduml

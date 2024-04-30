@@ -1,0 +1,56 @@
+@startuml US2003_class_diagram
+'https://plantuml.com/class-diagram
+
+title 2003 Class Diagram
+
+interface AbstractUI {
+# doShow()
+}
+
+class GenerateRequirementsTemplateFileUI <<presentation>>  {
++ doShow()
+}
+
+class GenerateRequirementsTemplateFileController <<application>> {
++ create()
++ choosePlugin()
++ exportTemplateFile(String pluginFileName)
+}
+
+class RequirementsTemplateManagerService <<service>> {
++ requirementPluginsList()
++ generateNewTemplate(String pluginFileName)
+}
+
+class RequirementSpecificationRepository <<persistence>>\n<<repository>> {
++ requirementPlugins()
+}
+
+class RequirementSpecification <<domain>> {
++ toDTO()
+}
+
+class RequirementsTemplatePlugin <<plugin>> {
++ newRequirementsSpecificationsTemplate()
++ generateFile()
++ export()
+}
+
+class RequirementsTemplateParser <<parser>> {
++ checkFileSyntax(File templateFile)
+}
+
+
+
+'Associations
+AbstractUI <|.up. GenerateRequirementsTemplateFileUI
+
+
+GenerateRequirementsTemplateFileUI .left.> GenerateRequirementsTemplateFileController
+GenerateRequirementsTemplateFileController ..> RequirementsTemplateManagerService
+RequirementsTemplateManagerService ..> RequirementSpecificationRepository
+RequirementSpecificationRepository --> RequirementSpecification
+RequirementsTemplateManagerService ..> RequirementsTemplatePlugin
+RequirementsTemplatePlugin ..> RequirementsTemplateParser
+
+@enduml

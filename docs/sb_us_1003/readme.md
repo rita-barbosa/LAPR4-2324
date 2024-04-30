@@ -52,9 +52,8 @@ There are no references for this user story.
 > **Answer:** I think it makes sense to list only "their" job openings.
 
 
-> **Question:** The client clarified the status aspect of a job opening in questions Q68 and Q95. It was mentioned that 
-> a job opening becomes inactive when its recruitment process ends. However, in what state are job openings that have been
-> registered but do not yet have a recruitment process associated with them?
+> **Question:** It was mentioned that a job opening becomes inactive when its recruitment process ends. However, in what
+> state are job openings that have been registered but do not yet have a recruitment process associated with them?
 >
 > **Answer:** Regarding the state (name of the state) of job openings after being registered but not yet associated with
 > a recruitment process, I am unsure how to respond. However, I can add that if they do not have a process associated with
@@ -184,15 +183,48 @@ This topic presents the classes with the patterns applied to them along with jus
 
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
 
-**Test 1:** Verifies that it is not possible to ...
+**Test 1:** Verifies that listing by costumer code is supported
 
-**Refers to Acceptance Criteria:** G002.1
+**Refers to Acceptance Criteria:** 1003.1
 
 ````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
+@Test
+public void ensureListingByCostumerCodeIsValid() {
+...
+}
+````
+
+**Test 2:** Verifies that listing by company name is supported
+
+**Refers to Acceptance Criteria:** 1003.1
+
+````
+@Test
+public void ensureListingByCompanyNameIsValid() {
+...
+}
+````
+
+**Test 3:** Verifies that the only job openings listed are from costumers assigned to the Costumer Manager in session
+
+**Refers to Acceptance Criteria:** 1003.2
+
+````
+@Test
+public void ensureListedJobOpeningsAreFromAssignedCostumers() {
+...
+}
+````
+
+**Test 4:** Verifies that it is not possible to access job openings from others costumers that are not assigned to the
+Costumer Manager in session
+
+**Refers to Acceptance Criteria:** 1003.2
+
+````
+@Test
+public void ensureOtherCostumersJobOpeningsAccessIsDenied() {
 ...
 }
 ````
