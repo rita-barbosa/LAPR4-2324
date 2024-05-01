@@ -28,6 +28,7 @@ import eapli.framework.infrastructure.authz.application.UserManagementService;
 import eapli.framework.infrastructure.authz.domain.model.Role;
 import eapli.framework.infrastructure.authz.domain.model.SystemUser;
 import eapli.framework.time.util.CurrentTimeCalendars;
+import jobs4u.base.usermanagement.domain.RandomPassword;
 
 import java.util.Calendar;
 import java.util.Set;
@@ -40,6 +41,7 @@ public class AddUserController {
 
     private final AuthorizationService authz = AuthzRegistry.authorizationService();
     private final UserManagementService userSvc = AuthzRegistry.userService();
+    private final GeneratePasswordService passSvc = new GeneratePasswordService();
 
     /**
      * Get existing RoleTypes available to the user.
@@ -50,10 +52,18 @@ public class AddUserController {
         return BaseRoles.nonUserValues();
     }
 
+    /**
+     * Get existing RoleTypes available to the backoffice user.
+     *
+     * @return a list of RoleTypes
+     */
+    public Role[] getBackofficeRoleTypes() {
+        return BaseRoles.nonBackOfficeUserValues();
+    }
 
-    public SystemUser addUser(final String email, final String password, final String firstName,
-                              final String lastName,
-                              final Set<Role> roles, final Calendar createdOn) {
+    private SystemUser addUser(final String email, final String password, final String firstName,
+                               final String lastName,
+                               final Set<Role> roles, final Calendar createdOn) {
         authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.ADMIN, BaseRoles.ADMIN);
 
         return userSvc.registerNewUser(email, password, firstName, lastName, email, roles,
@@ -64,5 +74,12 @@ public class AddUserController {
                               final String lastName,
                               final Set<Role> roles) {
         return addUser(email, password, firstName, lastName, roles, CurrentTimeCalendars.now());
+    }
+
+    public SystemUser addUser(final String email, final String firstName,
+                              final String lastName,
+                              final Set<Role> roles) {
+
+        return addUser(email, passSvc.generatePassword(), firstName, lastName, roles, CurrentTimeCalendars.now());
     }
 }

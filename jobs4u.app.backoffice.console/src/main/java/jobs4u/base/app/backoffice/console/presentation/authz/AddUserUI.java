@@ -36,12 +36,13 @@ import eapli.framework.presentation.console.menu.MenuItemRenderer;
 import eapli.framework.presentation.console.menu.MenuRenderer;
 import eapli.framework.presentation.console.menu.VerticalMenuRenderer;
 
+import javax.swing.*;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * UI for adding a user to the application.
- *
+ * <p>
  * Created by nuno on 22/03/16.
  */
 public class AddUserUI extends AbstractUI {
@@ -50,13 +51,11 @@ public class AddUserUI extends AbstractUI {
 
     @Override
     protected boolean doShow() {
-        // FIXME avoid duplication with SignUpUI. reuse UserDataWidget from
-        // UtenteApp
-        final String username = Console.readLine("Username");
-        final String password = Console.readLine("Password");
-        final String firstName = Console.readLine("First Name");
-        final String lastName = Console.readLine("Last Name");
-        final String email = Console.readLine("E-Mail");
+        final String email = Console.readLine("E-mail");
+        final String name = Console.readLine("Name");
+        String[] n = name.split(" ");
+        final String firstName = n[0];
+        final String lastName = n[n.length - 1];
 
         final Set<Role> roleTypes = new HashSet<>();
         boolean show;
@@ -64,17 +63,31 @@ public class AddUserUI extends AbstractUI {
             show = showRoles(roleTypes);
         } while (!show);
 
-        try {
-            this.theController.addUser(email, password, firstName, lastName, roleTypes);
-        } catch (final IntegrityViolationException | ConcurrencyException e) {
-            System.out.println("That username is already in use.");
+        final boolean wantPassword = Console.readBoolean("Do you want to insert a password? (y/n)");
+        if (wantPassword) {
+            final String password = Console.readLine("Password");
+            try {
+                if (this.theController.addUser(email, password, firstName, lastName, roleTypes) != null) {
+                    System.out.println("»»» User successfully registered");
+                }
+            } catch (final IntegrityViolationException | ConcurrencyException e) {
+                System.out.println("That username is already in use.");
+            }
+        } else {
+            try {
+                if (this.theController.addUser(email, firstName, lastName, roleTypes) != null) {
+                    System.out.println("»»» User successfully registered");
+                }
+            } catch (final IntegrityViolationException | ConcurrencyException e) {
+                System.out.println("That username is already in use.");
+            }
         }
+
 
         return false;
     }
 
     private boolean showRoles(final Set<Role> roleTypes) {
-        // TODO we could also use the "widget" classes from the framework...
         final Menu rolesMenu = buildRolesMenu(roleTypes);
         final MenuRenderer renderer = new VerticalMenuRenderer(rolesMenu, MenuItemRenderer.DEFAULT);
         return renderer.render();
@@ -84,7 +97,7 @@ public class AddUserUI extends AbstractUI {
         final Menu rolesMenu = new Menu();
         int counter = 0;
         rolesMenu.addItem(MenuItem.of(counter++, "No Role", Actions.SUCCESS));
-        for (final Role roleType : theController.getRoleTypes()) {
+        for (final Role roleType : theController.getBackofficeRoleTypes()) {
             rolesMenu.addItem(MenuItem.of(counter++, roleType.toString(), () -> roleTypes.add(roleType)));
         }
         return rolesMenu;
