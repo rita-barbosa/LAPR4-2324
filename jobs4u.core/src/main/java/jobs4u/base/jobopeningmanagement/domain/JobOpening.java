@@ -21,7 +21,7 @@ public class JobOpening implements AggregateRoot<JobReference> {
 
 
     public JobOpening(String function, ContractTypeDTO contractTypeDenomination, WorkModeDTO workModeDenomination,
-                      String streetName, String city, String district, String state, int zipcode, int numVacancies,
+                      String streetName, String city, String district, String state, String zipcode, int numVacancies,
                       String description, RequirementSpecification requirementsFile, JobReference lastReference) {
 
         this.jobReference = generateNewSequencialJobReference(lastReference);
