@@ -12,4 +12,7 @@ void available_child(int *child, int fd);
 void check_files_child_ls(int *newFilePipe, int *newFilePipeMidChildren);
 void check_files_child_wc(int *newFilePipe, int *newFilePipeMidChildren);
 
+//For each to copy files for a candidate
+void copy_files(int n, char *input_directory, char *output_directory);
+
 #endif
