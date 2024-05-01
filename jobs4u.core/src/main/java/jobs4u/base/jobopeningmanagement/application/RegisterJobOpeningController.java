@@ -1,11 +1,11 @@
 package jobs4u.base.jobopeningmanagement.application;
 
+import eapli.framework.application.UseCaseController;
 import eapli.framework.infrastructure.authz.application.AuthorizationService;
 import eapli.framework.infrastructure.authz.application.AuthzRegistry;
 import eapli.framework.infrastructure.authz.domain.model.SystemUser;
-import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
-import jobs4u.base.entitymanagement.dto.CustomerDTO;
-import jobs4u.base.entitymanagement.application.CustomerManagementService;
+import jobs4u.base.customermanagement.application.CustomerManagementService;
+import jobs4u.base.customermanagement.dto.CustomerDTO;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.domain.ContractType;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
@@ -14,37 +14,34 @@ import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
 import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
 import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
 import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
+import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 import jobs4u.base.requirementsmanagement.dto.RequirementSpecificationDTO;
 import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
 import jobs4u.base.usermanagement.domain.BaseRoles;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+@UseCaseController
 public class RegisterJobOpeningController {
 
     private final AuthorizationService authz = AuthzRegistry.authorizationService();
-
-    CustomerManagementService customerManagementService = new CustomerManagementService();
-    JobOpeningManagementService jobOpeningManagementService = new JobOpeningManagementService();
+    private final CustomerManagementService customerManagementService = new CustomerManagementService();
+    private final JobOpeningManagementService jobOpeningManagementService = new JobOpeningManagementService();
 
     private final ContractTypeRepository contractTypeRepository = PersistenceContext
             .repositories().contractTypes();
-
     private final WorkModeRepository workModeRepository = PersistenceContext
             .repositories().workModes();
-
     private final RequirementSpecificationRepository requirementSpecificationRepository = PersistenceContext
             .repositories().requirementSpecifications();
 
     public List<CustomerDTO> getCustomersList() {
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
         Optional<SystemUser> user = authz.loggedinUserWithPermissions(BaseRoles.CUSTOMER_MANAGER);
         if (user.isPresent()) {
             return customerManagementService.getAssignedCustomerCodesList(user.get().username());
         }
-        return Collections.emptyList();
+        throw new NoSuchElementException("You have no customers assigned to you.");
     }
 
     public List<ContractTypeDTO> getContractTypesList() {
@@ -63,9 +60,9 @@ public class RegisterJobOpeningController {
         return workModes;
     }
 
-    public List<RequirementSpecificationDTO> getRequirementsSpecificationsList(CustomerDTO companyInfo) {
+    public List<RequirementSpecificationDTO> getRequirementsSpecificationsList() {
         List<RequirementSpecificationDTO> requirementSpecifications = new ArrayList<>();
-        for (RequirementSpecification requirement : requirementSpecificationRepository.getCustomerRequirementsSpecificationsFileList(companyInfo.costumerCode())) {
+        for (RequirementSpecification requirement : requirementSpecificationRepository.requirementsSpecifications()) {
             requirementSpecifications.add(requirement.toDTO());
         }
         return requirementSpecifications;
@@ -78,9 +75,14 @@ public class RegisterJobOpeningController {
                                                    String description, RequirementSpecificationDTO requirementsFileName,
                                                    CustomerDTO companyInfo) {
 
+        Optional<RequirementSpecification> requirementSpecification = requirementSpecificationRepository.getFileByName(requirementsFileName.filename());
+
+        if (requirementSpecification.isEmpty()){
+            throw new NoSuchElementException("No requirement specifications where found.");
+        }
+
         return Optional.of(jobOpeningManagementService.registerJobOpening(function, contractTypeDenomination, workModeDenomination,
-                streetName, city, district, state, zipcode, numVacancies, description,
-                requirementSpecificationRepository.getFileByName(requirementsFileName.filename()), companyInfo));
+                streetName, city, district, state, zipcode, numVacancies, description, requirementSpecification.get(), companyInfo));
     }
 
 }

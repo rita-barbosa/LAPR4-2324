@@ -1,41 +1,45 @@
 package jobs4u.base.app.backoffice.console.presentation.registerJobOpening;
 
+import eapli.framework.domain.repositories.ConcurrencyException;
+import eapli.framework.domain.repositories.IntegrityViolationException;
 import eapli.framework.io.util.Console;
 import eapli.framework.presentation.console.AbstractUI;
 import eapli.framework.presentation.console.SelectWidget;
-import jobs4u.base.entitymanagement.dto.CustomerDTO;
+import jobs4u.base.customermanagement.dto.CustomerDTO;
 import jobs4u.base.jobopeningmanagement.application.RegisterJobOpeningController;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
 import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
 import jobs4u.base.requirementsmanagement.dto.RequirementSpecificationDTO;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class RegisterJobOpeningUI extends AbstractUI {
 
+    private final RegisterJobOpeningController controller = new RegisterJobOpeningController();
 
-    private static final RegisterJobOpeningController controller = new RegisterJobOpeningController();
+    @Override
+    protected boolean doShow() {
 
-    private static ContractTypeDTO contractTypeDenomination;
-    private static WorkModeDTO workModeDenomination;
-    private static RequirementSpecificationDTO requirementsFileName;
-    private static CustomerDTO companyInfo;
-
-    public void run(String[] args) {
-
-        this.doShow();
-
-        String function = Console.readNonEmptyLine("What's the job's title?", "Providing a job's title is obligatory.");
-        int numVacancies = 0;
-        while (numVacancies < 1) {
-            numVacancies = Console.readInteger("Provide the number of vacancies");
-            if (numVacancies < 1){
-                System.out.println("The number of vacancies must be above zero.");
-            }
+        //Selectable attributes
+        CustomerDTO companyInfo;
+        try {
+            companyInfo = showAndSelectCustomer();
+        }catch (NoSuchElementException e){
+            return false;
         }
+        ContractTypeDTO contractTypeDenomination = showAndSelectContractType();
+        WorkModeDTO workModeDenomination = showAndSelectWorkMode();
+        RequirementSpecificationDTO requirementsFileName = showAndSelectRequirementSpecification();
+
+        //Writable Attributes
+        String function = Console.readNonEmptyLine("What's the job's title?", "Providing a job's title is obligatory.");
+
         String description = Console.readNonEmptyLine("Provide a brief description for the job opening.",
                 "A brief description is obligatory.");
+
+        int numVacancies = WriteNumberVacancies();
 
         System.out.println("Regarding the job's opening address:");
         String streetName = Console.readNonEmptyLine("What's the street name?",
@@ -46,6 +50,26 @@ public class RegisterJobOpeningUI extends AbstractUI {
                 "Providing a job opening address's district is obligatory.");
         String state = Console.readNonEmptyLine("What's the state?",
                 "Providing a job opening address's state is obligatory.");
+
+        String zipcode = WriteZipcode();
+
+        try {
+            Optional< JobOpening> jobOpening = this.controller.registerJobOpening(function, contractTypeDenomination,
+                    workModeDenomination, streetName, city, district, state, zipcode, numVacancies, description,
+                    requirementsFileName, companyInfo);
+            if (jobOpening.isEmpty()){
+                throw new IntegrityViolationException();
+            }else{
+                System.out.println("The job opening was successfully registered!\n");
+            }
+        } catch (final IntegrityViolationException | ConcurrencyException e) {
+            System.out.println("An error occurred while registering the job opening.");
+        }
+
+        return false;
+    }
+
+    private String WriteZipcode() {
         String zipcode = "";
         while (String.valueOf(zipcode).length() != 5) {
             zipcode = Console.readLine("Provide the zipcode");
@@ -53,37 +77,46 @@ public class RegisterJobOpeningUI extends AbstractUI {
                 System.out.println("The zipcode must have 5 characters.");
             }
         }
-
-
-        Optional<JobOpening> jobOpening = controller.registerJobOpening(function, contractTypeDenomination, workModeDenomination,
-                streetName, city, district, state, zipcode, numVacancies, description, requirementsFileName, companyInfo);
-
-
+        return zipcode;
     }
 
-    @Override
-    protected boolean doShow() {
-        SelectWidget<CustomerDTO> costumerSelector = new SelectWidget<>("Customers assigned to you:",
-                controller.getCustomersList());
-        costumerSelector.show();
-        companyInfo = costumerSelector.selectedElement();
+    private int WriteNumberVacancies() {
+        int numVacancies = 0;
+        while (numVacancies < 1) {
+            numVacancies = Console.readInteger("Provide the number of vacancies");
+            if (numVacancies < 1){
+                System.out.println("The number of vacancies must be above zero.");
+            }
+        }
+        return numVacancies;
+    }
 
-        SelectWidget<ContractTypeDTO> contractTypeSelector = new SelectWidget<>("Customers assigned to you:",
-                controller.getContractTypesList());
-        contractTypeSelector.show();
-        contractTypeDenomination = contractTypeSelector.selectedElement();
-
-        SelectWidget<WorkModeDTO> workModeSelector = new SelectWidget<>("Customers assigned to you:",
-                controller.getWorkModesList());
-        workModeSelector.show();
-        workModeDenomination = workModeSelector.selectedElement();
-
+    private RequirementSpecificationDTO showAndSelectRequirementSpecification() {
         SelectWidget<RequirementSpecificationDTO> RequirementSpecificationSelector = new SelectWidget<>("Customers assigned to you:",
-                controller.getRequirementsSpecificationsList(companyInfo));
+                this.controller.getRequirementsSpecificationsList());
         RequirementSpecificationSelector.show();
-        requirementsFileName = RequirementSpecificationSelector.selectedElement();
+        return RequirementSpecificationSelector.selectedElement();
+    }
 
-        return true;
+    private WorkModeDTO showAndSelectWorkMode() {
+        SelectWidget<WorkModeDTO> workModeSelector = new SelectWidget<>("Customers assigned to you:",
+                this.controller.getWorkModesList());
+        workModeSelector.show();
+        return workModeSelector.selectedElement();
+    }
+
+    private ContractTypeDTO showAndSelectContractType() {
+        SelectWidget<ContractTypeDTO> contractTypeSelector = new SelectWidget<>("Customers assigned to you:",
+                this.controller.getContractTypesList());
+        contractTypeSelector.show();
+        return contractTypeSelector.selectedElement();
+    }
+
+    private CustomerDTO showAndSelectCustomer() {
+        SelectWidget<CustomerDTO> costumerSelector = new SelectWidget<>("Customers assigned to you:",
+                this.controller.getCustomersList());
+        costumerSelector.show();
+        return costumerSelector.selectedElement();
     }
 
     @Override
