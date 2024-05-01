@@ -101,17 +101,7 @@ need to be done, such as:
 
 ### 4.2. Class Diagram
 
-#### Register User
-
-![SD - Register User](sequence-diagram-register-user.svg)
-
-#### Disable/Enable Users
-
-![SD - Disable/Enable User](sequence-diagram-disable-enable-user.svg)
-
-#### List Users
-
-![SD - List User](sequence-diagram-list-user.svg)
+![Class Diagram](class-diagram.svg)
 
 ### 4.3. Applied Patterns
 
