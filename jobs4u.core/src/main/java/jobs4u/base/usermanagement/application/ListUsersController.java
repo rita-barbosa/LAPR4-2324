@@ -34,19 +34,20 @@ import eapli.framework.infrastructure.authz.domain.model.Username;
 import java.util.Optional;
 
 /**
- *
  * @author losa
  */
 @UseCaseController
-public class ListUsersController{
+public class ListUsersController {
 
     private final AuthorizationService authz = AuthzRegistry.authorizationService();
     private final UserManagementService userSvc = AuthzRegistry.userService();
 
-    public Iterable<SystemUser> allUsers() {
+    private final ListUserService listSvc = new ListUserService();
+
+    public Iterable<SystemUser> backofficeUsers() {
         authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.ADMIN);
 
-        return userSvc.allUsers();
+        return listSvc.backofficeUsers();
     }
 
     public Optional<SystemUser> find(final Username u) {

@@ -48,7 +48,7 @@ public class ListUsersUI extends AbstractListUI<SystemUser> {
 
     @Override
     protected Iterable<SystemUser> elements() {
-        return theController.allUsers();
+        return theController.backofficeUsers();
     }
 
     @Override
@@ -63,6 +63,6 @@ public class ListUsersUI extends AbstractListUI<SystemUser> {
 
     @Override
     protected String listHeader() {
-        return String.format("#  %-10s%-30s%-30s", "USERNAME", "F. NAME", "L. NAME");
+        return String.format("#  %-30s%-30s", "EMAIL", "NAME");
     }
 }
