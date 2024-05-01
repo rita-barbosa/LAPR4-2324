@@ -260,16 +260,6 @@ This topic presents the classes with the patterns applied to them along with jus
 > * Many plugins can exist, so they must be stored and persisted in a repository. It is from here that the plugins available
     >   to generate a requirements specifications template file are.
 
-
->**Interpreter Pattern**
-> * RequirementsTemplateParser
->
-> **Justifications**
->
-> * This class serves as an Interpreter to the grammar defined within the plugin. It is it that will check if the template
-    >   generated is syntactically correct and can be exported.
-
-
 ### 4.5. Tests
 
 **Test 1:** Grammar verifies correctly formatted requirement is valid.
