@@ -28,6 +28,7 @@ int main()
     struct sigaction act;
     int fd[NUMB_CHILDS + 1][2]; // fd[0][x] -> is the file descriptor for the shared pipe
     char *directory = "files";   // Directory to search (current directory in this case)
+    char *output_directory = "output"; // Directory to creat the subdirectories for the candidates files
 
     // SETUP SIGNAL - SIGUSR1
     memset(&act, 0, sizeof(struct sigaction));
@@ -164,8 +165,12 @@ int main()
                 }
                 printf("\n[START]\n");
                 printf("Child[%d] will work on files of candidate: %d\n", i, candidate);
+                
+                //close(fd[i][0]);
+
+                copy_files(candidate, directory, output_directory);
+
                 printf("[FINISH]\n\n");
-                // close(fd[i][0]);
 
                 // SHARED PIPE - para avisar quando terminou o trabalho
                 close(fd[0][0]);
