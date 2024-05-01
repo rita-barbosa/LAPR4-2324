@@ -22,11 +22,16 @@ package jobs4u.base.persistence.impl.inmemory;
 
 import jobs4u.base.clientusermanagement.repositories.ClientUserRepository;
 import jobs4u.base.clientusermanagement.repositories.SignupRequestRepository;
+import jobs4u.base.entitymanagement.repository.EntityRepository;
 import jobs4u.base.infrastructure.bootstrapers.BaseBootstrapper;
 import jobs4u.base.infrastructure.persistence.RepositoryFactory;
 import eapli.framework.domain.repositories.TransactionalContext;
 import eapli.framework.infrastructure.authz.domain.repositories.UserRepository;
 import eapli.framework.infrastructure.authz.repositories.impl.inmemory.InMemoryUserRepository;
+import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
+import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
+import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
+import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
 
 /**
  *
@@ -63,6 +68,56 @@ public class InMemoryRepositoryFactory implements RepositoryFactory {
     @Override
     public SignupRequestRepository signupRequests() {
         return signupRequests(null);
+    }
+
+    @Override
+    public EntityRepository entities(TransactionalContext tx) {
+        return new InMemoryEntityRepository();
+    }
+
+    @Override
+    public EntityRepository entities() {
+        return entities(null);
+    }
+
+    @Override
+    public ContractTypeRepository contractTypes(TransactionalContext tx) {
+        return new InMemoryContractTypeRepository();
+    }
+
+    @Override
+    public ContractTypeRepository contractTypes() {
+        return contractTypes(null);
+    }
+
+    @Override
+    public WorkModeRepository workModes(TransactionalContext tx) {
+        return new InMemoryWorkModeRepository();
+    }
+
+    @Override
+    public WorkModeRepository workModes() {
+        return workModes(null);
+    }
+
+    @Override
+    public RequirementSpecificationRepository requirementSpecifications(TransactionalContext tx) {
+        return new InMemoryRequirementSpecificationRepository();
+    }
+
+    @Override
+    public RequirementSpecificationRepository requirementSpecifications() {
+        return requirementSpecifications(null);
+    }
+
+    @Override
+    public JobOpeningRepository jobOpenings(TransactionalContext tx) {
+        return new InMemoryJobOpeningRepository();
+    }
+
+    @Override
+    public JobOpeningRepository jobOpenings() {
+        return jobOpenings(null);
     }
 
     @Override

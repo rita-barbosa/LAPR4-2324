@@ -24,6 +24,11 @@ import jobs4u.base.clientusermanagement.repositories.ClientUserRepository;
 import jobs4u.base.clientusermanagement.repositories.SignupRequestRepository;
 import eapli.framework.domain.repositories.TransactionalContext;
 import eapli.framework.infrastructure.authz.domain.repositories.UserRepository;
+import jobs4u.base.entitymanagement.repository.EntityRepository;
+import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
+import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
+import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
+import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
 
 /**
  * @author Paulo Gandra Sousa
@@ -83,4 +88,82 @@ public interface RepositoryFactory {
      */
     SignupRequestRepository signupRequests();
 
+
+    /**
+     *
+     * @param autoTx
+     *            the transactional context to enroll
+     * @return
+     */
+    EntityRepository entities(TransactionalContext autoTx);
+
+    /**
+     * repository will be created in auto transaction mode
+     *
+     * @return
+     */
+    EntityRepository entities();
+
+    /**
+     *
+     * @param autoTx
+     *            the transactional context to enroll
+     * @return
+     */
+    ContractTypeRepository contractTypes(TransactionalContext autoTx);
+
+    /**
+     * repository will be created in auto transaction mode
+     *
+     * @return
+     */
+    ContractTypeRepository contractTypes();
+
+
+    /**
+     *
+     * @param autoTx
+     *            the transactional context to enroll
+     * @return
+     */
+    WorkModeRepository workModes(TransactionalContext autoTx);
+
+    /**
+     * repository will be created in auto transaction mode
+     *
+     * @return
+     */
+    WorkModeRepository workModes();
+
+
+    /**
+     *
+     * @param autoTx
+     *            the transactional context to enroll
+     * @return
+     */
+    RequirementSpecificationRepository requirementSpecifications(TransactionalContext autoTx);
+
+    /**
+     * repository will be created in auto transaction mode
+     *
+     * @return
+     */
+    RequirementSpecificationRepository requirementSpecifications();
+
+
+    /**
+     *
+     * @param autoTx
+     *            the transactional context to enroll
+     * @return
+     */
+    JobOpeningRepository jobOpenings(TransactionalContext autoTx);
+
+    /**
+     * repository will be created in auto transaction mode
+     *
+     * @return
+     */
+    JobOpeningRepository jobOpenings();
 }

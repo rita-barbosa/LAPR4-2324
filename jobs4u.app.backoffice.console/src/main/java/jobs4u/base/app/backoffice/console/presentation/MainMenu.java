@@ -63,6 +63,11 @@ public class MainMenu extends AbstractUI {
     // SETTINGS
     private static final int SET_KITCHEN_ALERT_LIMIT_OPTION = 1;
 
+
+    // CUSTOMER MANAGER SETTINGS
+    private static final int REGISTER_JOB_OPENING = 1;
+    private static final int LIST_JOB_OPENINGS = 2;
+
     // MAIN MENU
     private static final int MY_USER_OPTION = 1;
     private static final int USERS_OPTION = 2;
@@ -117,6 +122,11 @@ public class MainMenu extends AbstractUI {
             mainMenu.addSubMenu(SETTINGS_OPTION, settingsMenu);
         }
 
+        if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.CUSTOMER_MANAGER)) {
+            final Menu candidateMenu = buildCustomerManagerSettingsMenu();
+            mainMenu.addSubMenu(SETTINGS_OPTION, candidateMenu);
+        }
+
         if (!Application.settings().isMenuLayoutHorizontal()) {
             mainMenu.addItem(MenuItem.separator(SEPARATOR_LABEL));
         }
@@ -124,6 +134,16 @@ public class MainMenu extends AbstractUI {
         mainMenu.addItem(EXIT_OPTION, "Exit", new ExitWithMessageAction("Bye, Bye"));
 
         return mainMenu;
+    }
+
+    private Menu buildCustomerManagerSettingsMenu() {
+        final Menu menu = new Menu("Settings >");
+
+        menu.addItem(REGISTER_JOB_OPENING, "Register a job opening", Actions.SUCCESS);
+        menu.addItem(LIST_JOB_OPENINGS, "List job openings", Actions.SUCCESS);
+        menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
+
+        return menu;
     }
 
     private Menu buildAdminSettingsMenu() {

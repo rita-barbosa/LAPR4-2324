@@ -22,11 +22,16 @@ package jobs4u.base.persistence.impl.jpa;
 
 import jobs4u.base.Application;
 import jobs4u.base.clientusermanagement.repositories.SignupRequestRepository;
+import jobs4u.base.entitymanagement.repository.EntityRepository;
 import jobs4u.base.infrastructure.persistence.RepositoryFactory;
 import eapli.framework.domain.repositories.TransactionalContext;
 import eapli.framework.infrastructure.authz.domain.repositories.UserRepository;
 import eapli.framework.infrastructure.authz.repositories.impl.jpa.JpaAutoTxUserRepository;
 import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
+import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
+import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
+import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
+import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
 
 /**
  *
@@ -63,6 +68,56 @@ public class JpaRepositoryFactory implements RepositoryFactory {
     @Override
     public SignupRequestRepository signupRequests() {
         return new JpaSignupRequestRepository(Application.settings().getPersistenceUnitName());
+    }
+
+    @Override
+    public EntityRepository entities(final TransactionalContext autoTx) {
+        return new JpaEntityRepository(autoTx);
+    }
+
+    @Override
+    public EntityRepository entities() {
+        return new JpaEntityRepository(Application.settings().getPersistenceUnitName());
+    }
+
+    @Override
+    public ContractTypeRepository contractTypes(final TransactionalContext autoTx) {
+        return new JpaContractTypeRepository(autoTx);
+    }
+
+    @Override
+    public ContractTypeRepository contractTypes() {
+        return new JpaContractTypeRepository(Application.settings().getPersistenceUnitName());
+    }
+
+    @Override
+    public WorkModeRepository workModes(final TransactionalContext autoTx) {
+        return new JpaWorkModeRepository(autoTx);
+    }
+
+    @Override
+    public WorkModeRepository workModes() {
+        return new JpaWorkModeRepository(Application.settings().getPersistenceUnitName());
+    }
+
+    @Override
+    public RequirementSpecificationRepository requirementSpecifications(final TransactionalContext autoTx) {
+        return new JpaRequirementSpecificationRepository(autoTx);
+    }
+
+    @Override
+    public RequirementSpecificationRepository requirementSpecifications() {
+        return new JpaRequirementSpecificationRepository(Application.settings().getPersistenceUnitName());
+    }
+
+    @Override
+    public JobOpeningRepository jobOpenings(final TransactionalContext autoTx) {
+        return new JpaJobOpeningRepository(autoTx);
+    }
+
+    @Override
+    public JobOpeningRepository jobOpenings() {
+        return new JpaJobOpeningRepository(Application.settings().getPersistenceUnitName());
     }
 
     @Override
