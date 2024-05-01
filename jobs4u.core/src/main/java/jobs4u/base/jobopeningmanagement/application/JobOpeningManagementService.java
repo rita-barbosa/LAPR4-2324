@@ -1,7 +1,7 @@
 package jobs4u.base.jobopeningmanagement.application;
 
+import jobs4u.base.customermanagement.dto.CustomerDTO;
 import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
-import jobs4u.base.entitymanagement.dto.CustomerDTO;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
@@ -22,8 +22,11 @@ public class JobOpeningManagementService {
 
         JobReference lastReference = jobOpeningRepository.lastJobReference(companyInfo.costumerCode());
 
-        return new JobOpening(function, contractTypeDenomination, workModeDenomination, streetName, city, district, state,
-                zipcode, numVacancies, description, requirementsFile, lastReference);
+        JobOpening jobOpening = new JobOpening(function, contractTypeDenomination, workModeDenomination, streetName, city,
+                district, state, zipcode, numVacancies, description, requirementsFile, lastReference);
+
+        jobOpeningRepository.save(jobOpening);
+        return jobOpening;
     }
 
 
