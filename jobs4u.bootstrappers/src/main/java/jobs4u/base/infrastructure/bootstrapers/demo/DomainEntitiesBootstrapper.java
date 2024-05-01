@@ -26,7 +26,7 @@ import java.util.Set;
 
 public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implements Action {
 
-    CustomerManagementService service = new CustomerManagementService();
+    CustomerManagementService customerManagementService = new CustomerManagementService();
 
     private ContractTypeRepository contractTypeRepository;
     private WorkModeRepository workModeRepository;
@@ -94,7 +94,7 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         SystemUser customerManager = registerUser("customerM2@email.com", "Password-1", "Joana", "Cash", roles);
         Address address = new Address("StreetLane", "City Garden", "District 9", "14th", "15632");
 
-        service.registerNewCustomer("Instituto Superior de Engenharia do Porto", address.toString(),
+        customerManagementService.registerNewCustomer("Instituto Superior de Engenharia do Porto", address.toString(),
                 "ISEP", customerManager, "isep@email.com");
     }
 
