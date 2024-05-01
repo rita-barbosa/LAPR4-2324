@@ -77,19 +77,19 @@ Considering that customer users should possess the same information as candidate
 * **Service**
 
 > **Repository Pattern**
-> * EntityRepository
+> * CustomerRepository
 > * UserRepository
 >
 > **Justifications**
 >
->The repositories were employed to persist users and entities, as well as to reconstruct objects from the
+>The repositories were employed to persist users and customers, as well as to reconstruct objects from the
     persistence.
 
 
 > **Service Pattern**
 > * UserManagementService
 > * AuthorizationService
-> * EntityManagementService
+> * CustomerManagementService
 > * GeneratePasswordService
 >
 >
@@ -97,15 +97,15 @@ Considering that customer users should possess the same information as candidate
 >
 > The UserManagementService and AuthorizationService, pre-existing services within the Eapli.Framework were used here
 > to register users and retrieve the logged-in user with Admin or Customer Manager roles.
-> Furthermore, the ClientUserManagementService was used to register client users, particularly those categorized as
+> Furthermore, the UserManagementService was used to register client users, particularly those categorized as
 > customer users. This additional registration step is necessary as these users also require the inclusion of their
 > phoneNumber.
 >
-> The EntityManagementService is employed to register customers/entities, tasked with the responsibility of
-entity/customer creation.
+> The CustomerManagementService is employed to register customers, tasked with the responsibility of
+customer creation.
 >
 > The mentioned services were developed because the functionalities they offer will be utilized across multiple use
-> cases. The EntityManagementService will also serve for various other functionalities, such as listing, among others.
+> cases. The CustomerManagementService will also serve for various other functionalities, such as listing, among others.
 
 > **Observer**
 > * EventPublisher
@@ -127,7 +127,7 @@ entity/customer creation.
 > In this case, an instance of NewEntityUserRegisteredEvent is used to inform the specific WatchDog,
 > which then invokes the AddClientUserOnNewEntityRegisteredController for the registration of the ClientUser.
 >
-> Finally, this responsibility pattern was implemented within the service, as we required registration of entities in
+> Finally, this responsibility pattern was implemented within the service, as we required registration of customers in
 > the bootstrap. To maintain consistency in the creation process, we used the EventPublisher within the service to
 > ensure that both the customer and its user were created, thus preserving the system's valid state.
 
@@ -136,9 +136,9 @@ entity/customer creation.
 The tests for the acceptance criteria 1001.3 are within the eapli.framework, since we use SystemUser for the user registration.
 
 
-#### EntityTests
+#### CustomerTests
 
-**Test 1:** Verifies that it is not possible to create an Entity without a name.
+**Test 1:** Verifies that it is not possible to create an customer without a name.
 
 **Refers to Acceptance Criteria:** 1001.1
 
@@ -149,7 +149,7 @@ public void ensureMustHaveName() {
 }
 ````
 
-**Test 2:** Verifies that it is not possible to create an Entity without a code.
+**Test 2:** Verifies that it is not possible to create an customer without a code.
 
 **Refers to Acceptance Criteria:** 1001.1
 
@@ -160,7 +160,7 @@ public void ensureMustHaveCode() {
 }
 ````
 
-**Test 3:** Verifies that it is not possible to create an Entity without an address.
+**Test 3:** Verifies that it is not possible to create an customer without an address.
 
 **Refers to Acceptance Criteria:** 1001.1
 
@@ -173,7 +173,7 @@ public void ensureMustHaveAddress() {
 
 #### CustomerCodeTests
 
-**Test 1:** Verifies that it is not possible to create an entity code with more than 10 characters.
+**Test 1:** Verifies that it is not possible to create an customer code with more than 10 characters.
 
 **Refers to Acceptance Criteria:** 1001.2
 
@@ -184,7 +184,7 @@ public void ensureDoesntHaveMoreThanTenCharacters() {
 }
 ````
 
-**Test 2:** Verifies that it is not possible to create a null entity code.
+**Test 2:** Verifies that it is not possible to create a null customer code.
 
 **Refers to Acceptance Criteria:** 1001.2
 
@@ -195,7 +195,7 @@ public void ensureMustNotBeNull() {
 }
 ````
 
-**Test 3:** Verifies that it is not possible to create an empty entity code.
+**Test 3:** Verifies that it is not possible to create an empty customer code.
 
 **Refers to Acceptance Criteria:** 1001.2
 

@@ -7,10 +7,10 @@ actor "Customer Manager" as USER
 
 participant "RegisterCustomerUI" as UI <<presentation>>
 participant "RegisterCustomerController" as CTRL <<controller>>
+participant "AuthorizationService" as AUTHZ <<service>>
+participant "CustomerManagementService" as EMS <<service>>
 participant "GeneratePasswordService" as GPS <<service>>
 participant "RandomPassword" as PG <<domain>>
-participant "AuthorizationService" as AUTHZ <<service>>
-participant "EntityManagementService" as EMS <<service>>
 participant "EventPublisher" as EP <<domain>>
 participant "UserManagementService" as UMS <<service>>
 participant "NewCustomerUser\nRegisteredEvent" as EVENT <<domain>>
@@ -41,7 +41,18 @@ USER -> UI: companyName, address, customerCode,\nuserEmail, userName, phoneNumbe
 UI -> CTRL: registerEntity(companyName, address, customerCode,\nuserEmail, userName, phoneNumber)
 activate CTRL
 
-CTRL -> GPS: generatePassword()
+
+
+CTRL -> AUTHZ:  loggedinUserWithPermissions(roles)
+activate AUTHZ
+
+AUTHZ --> CTRL:  customerManager
+deactivate AUTHZ
+
+CTRL -> EMS: registerNewCustomer(companyName, address, customerCode,\ncustomerManager,email)
+activate EMS
+
+EMS -> GPS: generatePassword()
 activate GPS
 
 GPS -> PG**: create()
@@ -50,28 +61,26 @@ activate PG
 PG --> GPS: password
 deactivate PG
 
-GPS --> CTRL: password
+GPS --> EMS: password
 deactivate GPS
 
-CTRL -> AUTHZ:  loggedinUserWithPermissions(roles)
-activate AUTHZ
-
-AUTHZ -> CTRL:  customerManagerUser
-deactivate AUTHZ
-
-CTRL -> EMS: registerNewEntity(companyName, address, customerCode,\ncustomerManagerUser,email,password)
-activate EMS
-
-
-EMS -> UMS: registerNewUser(email, password, name,  roles)
+EMS -> UMS: registerNewUser(email, password,firstname,lastname,  roles)
             activate UMS
+
+note right of UMS
+The last name will
+be an empty string.
+Seeing as this is a
+method from the framework
+we can't change it.
+end note
 
 UMS --> EMS: customerUser
 deactivate UMS
 
 
 
-EMS -> EVENT**: create(companyName, address, customerCode,\ncustomerManagerUser, customerUser)
+EMS -> EVENT**: create(companyName, address, customerCode,\ncustomerManager, customerUser)
 
 EMS -> EP : publish(event)
 activate EP

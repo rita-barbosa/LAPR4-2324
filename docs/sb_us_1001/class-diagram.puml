@@ -15,8 +15,8 @@ class AuthorizationService {
 class UserManagementService {
     + registerNewUser(email, password, name, email, roles)
 }
-class EntityManagementService {
-    +  registerNewEntity(companyName, address, customerCode,\ncustomerManagerUser,email,password)
+class CustomerManagementService {
+    +  registerNewEntity(companyName, address, customerCode,\ncustomerManager,email,password)
 }
 
 interface EventPublisher{
@@ -30,7 +30,7 @@ interface DomainEvent{
     + registeredAt()
 }
 interface DomainRepository{
-+ save(entity)
++ save(customer)
 }
 
 
@@ -42,7 +42,7 @@ class RegisterCustomerUI {
 class RegisterCustomerController{
 + registerCustomer(companyName, address, customerCode,\nuserEmail, userName, phoneNumber)
 }
-class AddEntityOnNewCustomerUserRegisteredController{
+class AddCustomerOnNewCustomerUserRegisteredController{
 + registerEntity(newCustomerRegisteredEvent)
 }
 class GeneratePasswordService {
@@ -55,13 +55,13 @@ class RandomPassword{
 - RandomPassword(int) : RandomPassword
 }
 
-class Entity{
-+ Entity(companyName, address,\ncustomerCode, customerManageruser)
+class Customer{
++ Customer(companyName, address,\ncustomerCode, customerManager, customerUser)
 }
 
 
-interface EntityRepository {
-+ save(entity)
+interface CustomerRepository {
++ save(Customer)
 }
 class CustomerCode <<(V,#FF8B40) value object>>  {
 - code
@@ -80,14 +80,15 @@ class Address <<(V,#FF8B40) value object>> {
 + Address(streetName, streetNumber, postalCode, district, city)
 }
 class NewCustomerUserRegisteredEvent{
-+ NewEntityRegisteredEvent(companyName, address, customerCode,\ncustomerManagerUser, customerUser)
++ NewEntityRegisteredEvent(companyName, address, customerCode,\ncustomerManager, customerUser)
 }
 abstract class DomainEventBase {
 }
 class NewCustomerUserRegisteredWatchDog{
 }
 
-
+class SystemUser{
+}
 
 AbstractUI <|-- RegisterCustomerUI
 RegisterCustomerUI .-> RegisterCustomerController
@@ -97,25 +98,26 @@ NewCustomerUserRegisteredEvent --|> DomainEventBase
 NewCustomerUserRegisteredEvent .--|> DomainEvent
 
 NewCustomerUserRegisteredWatchDog .-up|> EventHandler
-NewCustomerUserRegisteredWatchDog .--> AddEntityOnNewCustomerUserRegisteredController
+NewCustomerUserRegisteredWatchDog .--> AddCustomerOnNewCustomerUserRegisteredController
 EventPublisher .-> EventHandler
-Entity --> CompanyName
-Entity --> CustomerCode
-Entity --> Address
-EntityRepository .--> DomainRepository
-EntityRepository --> Entity
+Customer --> CompanyName
+Customer --> CustomerCode
+Customer --> Address
+Customer --> SystemUser
+CustomerRepository .--> DomainRepository
+CustomerRepository --> Customer
 
 RegisterCustomerController --> AuthorizationService
-EntityManagementService -> UserManagementService
-RegisterCustomerController ---> EntityManagementService
+CustomerManagementService -> UserManagementService
+RegisterCustomerController ---> CustomerManagementService
 RegisterCustomerController ---> GeneratePasswordService
-EntityManagementService --> NewCustomerUserRegisteredEvent
-EntityManagementService .--> EventPublisher
+CustomerManagementService --> NewCustomerUserRegisteredEvent
+CustomerManagementService .--> EventPublisher
 
 GeneratePasswordService .--> RandomPassword
-AddEntityOnNewCustomerUserRegisteredController .-up-> NewCustomerUserRegisteredEvent
-AddEntityOnNewCustomerUserRegisteredController .-> Entity
-AddEntityOnNewCustomerUserRegisteredController .-> EntityRepository
+AddCustomerOnNewCustomerUserRegisteredController .-up-> NewCustomerUserRegisteredEvent
+AddCustomerOnNewCustomerUserRegisteredController .-> Customer
+AddCustomerOnNewCustomerUserRegisteredController .-> CustomerRepository
 
 
 
