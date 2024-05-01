@@ -1,8 +1,8 @@
-package jobs4u.base.entitymanagement.application.eventhandlers;
+package jobs4u.base.customermanagement.application.eventhandlers;
 
 import eapli.framework.domain.events.DomainEvent;
 import eapli.framework.infrastructure.pubsub.EventHandler;
-import jobs4u.base.entitymanagement.domain.events.NewCustomerUserRegisteredEvent;
+import jobs4u.base.customermanagement.domain.events.NewCustomerUserRegisteredEvent;
 
 public class NewCustomerUserRegisteredWatchDog implements EventHandler {
     @Override

@@ -2,9 +2,9 @@ package jobs4u.base.persistence.impl.inmemory;
 
 import eapli.framework.infrastructure.authz.domain.model.Username;
 import eapli.framework.infrastructure.repositories.impl.inmemory.InMemoryDomainRepository;
-import jobs4u.base.entitymanagement.domain.CustomerCode;
-import jobs4u.base.entitymanagement.domain.Customer;
-import jobs4u.base.entitymanagement.repository.CustomerRepository;
+import jobs4u.base.customermanagement.domain.Customer;
+import jobs4u.base.customermanagement.domain.CustomerCode;
+import jobs4u.base.customermanagement.repository.CustomerRepository;
 
 import java.util.List;
 

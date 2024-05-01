@@ -16,6 +16,13 @@ public class Address implements ValueObject {
 
     public Address(String streetName, String city, String district, String streetNumber, String zipcode) {
         Preconditions.noneNull(streetName, city, district, streetNumber, zipcode);
+
+        Preconditions.nonEmpty(streetName);
+        Preconditions.nonEmpty(city);
+        Preconditions.nonEmpty(district);
+        Preconditions.nonEmpty(streetNumber);
+        Preconditions.nonEmpty(zipcode);
+
         this.streetName = streetName;
         this.city = city;
         this.district = district;

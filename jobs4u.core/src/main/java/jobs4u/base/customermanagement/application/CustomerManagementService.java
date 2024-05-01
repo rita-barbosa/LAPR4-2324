@@ -1,4 +1,4 @@
-package jobs4u.base.entitymanagement.application;
+package jobs4u.base.customermanagement.application;
 
 import eapli.framework.domain.events.DomainEvent;
 import eapli.framework.infrastructure.authz.application.AuthzRegistry;
@@ -8,12 +8,14 @@ import eapli.framework.infrastructure.authz.domain.model.SystemUser;
 import eapli.framework.infrastructure.authz.domain.model.Username;
 import eapli.framework.infrastructure.pubsub.EventPublisher;
 import eapli.framework.infrastructure.pubsub.impl.inprocess.service.InProcessPubSub;
-import jobs4u.base.entitymanagement.domain.CompanyName;
-import jobs4u.base.entitymanagement.domain.CustomerCode;
-import jobs4u.base.entitymanagement.domain.events.NewCustomerUserRegisteredEvent;
-import jobs4u.base.entitymanagement.dto.CustomerDTO;
-import jobs4u.base.entitymanagement.domain.Customer;
-import jobs4u.base.entitymanagement.repository.CustomerRepository;
+import jobs4u.base.customermanagement.domain.CompanyName;
+import jobs4u.base.customermanagement.domain.Customer;
+import jobs4u.base.customermanagement.domain.CustomerCode;
+import jobs4u.base.customermanagement.dto.CustomerDTO;
+import jobs4u.base.customermanagement.repository.CustomerRepository;
+
+import jobs4u.base.customermanagement.domain.events.NewCustomerUserRegisteredEvent;
+
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.application.CustomerListDTOService;
 import jobs4u.base.jobopeningmanagement.domain.Address;

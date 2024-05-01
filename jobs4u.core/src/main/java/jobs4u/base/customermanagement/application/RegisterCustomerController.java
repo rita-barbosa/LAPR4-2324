@@ -1,10 +1,9 @@
-package jobs4u.base.entitymanagement.application;
+package jobs4u.base.customermanagement.application;
 
 import eapli.framework.infrastructure.authz.application.AuthorizationService;
 import eapli.framework.infrastructure.authz.application.AuthzRegistry;
 import eapli.framework.infrastructure.authz.application.UserManagementService;
 import eapli.framework.infrastructure.authz.domain.model.SystemUser;
-import jobs4u.base.usermanagement.application.GeneratePasswordService;
 import jobs4u.base.usermanagement.domain.BaseRoles;
 
 import java.util.Optional;
