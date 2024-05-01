@@ -1,13 +1,8 @@
-package jobs4u.base.entitymanagement.domain;
+package jobs4u.base.customermanagement.domain;
 
-import jobs4u.base.jobopeningmanagement.domain.Address;
-import jobs4u.base.usermanagement.domain.BaseRoles;
 import org.junit.Test;
 
 import static org.junit.Assert.assertThrows;
-
-import static org.junit.Assert.assertThrows;
-
 
 public class CustomerCodeTest {
     @Test

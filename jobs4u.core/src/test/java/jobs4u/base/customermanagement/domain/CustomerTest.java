@@ -1,4 +1,4 @@
-package jobs4u.base.entitymanagement.domain;
+package jobs4u.base.customermanagement.domain;
 
 import eapli.framework.infrastructure.authz.domain.model.*;
 import jobs4u.base.jobopeningmanagement.domain.Address;
