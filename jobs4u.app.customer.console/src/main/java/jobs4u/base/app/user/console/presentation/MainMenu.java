@@ -36,7 +36,7 @@ import eapli.framework.presentation.console.menu.VerticalMenuRenderer;
 /**
  * @author Paulo Gandra Sousa
  */
-class MainMenu extends ClientUserBaseUI {
+public class MainMenu extends ClientUserBaseUI {
 
     private static final String SEPARATOR_LABEL = "--------------";
 
@@ -71,7 +71,7 @@ class MainMenu extends ClientUserBaseUI {
 
         mainMenu.addItem(MenuItem.separator(SEPARATOR_LABEL));
 
-        mainMenu.addItem(EXIT_OPTION, "Exit", new ExitWithMessageAction("Bye, Bye"));
+        mainMenu.addItem(EXIT_OPTION, "Exit", new ExitWithMessageAction("Closing."));
 
         return mainMenu;
     }

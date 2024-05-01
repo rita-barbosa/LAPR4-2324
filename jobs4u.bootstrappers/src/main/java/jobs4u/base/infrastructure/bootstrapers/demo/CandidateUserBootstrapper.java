@@ -20,8 +20,13 @@
  */
 package jobs4u.base.infrastructure.bootstrapers.demo;
 
+import eapli.framework.infrastructure.authz.domain.model.Role;
 import jobs4u.base.infrastructure.bootstrapers.UsersBootstrapperBase;
 import eapli.framework.actions.Action;
+import jobs4u.base.usermanagement.domain.BaseRoles;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Paulo Sousa
@@ -31,24 +36,25 @@ public class CandidateUserBootstrapper extends UsersBootstrapperBase implements 
 
     @Override
     public boolean execute() {
-
+        registerCandidate("r@email.com", PASSWORD1, "r", "b");
+        registerCustomer("c@email.com", PASSWORD1, "r", "b");
         return true;
     }
-//
-//    private void registerCandidate(final String email, final String password,
-//                                         final String firstName, final String lastName) {
-//        final Set<Role> roles = new HashSet<>();
-//        roles.add(BaseRoles.CANDIDATE_USER);
-//
-//        registerUser(email, password, firstName, lastName, roles);
-//    }
-//
-//    private void registerCustomer(final String email, final String password,
-//                                  final String firstName, final String lastName) {
-//        final Set<Role> roles = new HashSet<>();
-//        roles.add(BaseRoles.CUSTOMER_USER);
-//
-//        registerUser(email, password, firstName, lastName, roles);
-//    }
+
+    private void registerCandidate(final String email, final String password,
+                                   final String firstName, final String lastName) {
+        final Set<Role> roles = new HashSet<>();
+        roles.add(BaseRoles.CANDIDATE_USER);
+
+        registerUser(email, password, firstName, lastName, roles);
+    }
+
+    private void registerCustomer(final String email, final String password,
+                                  final String firstName, final String lastName) {
+        final Set<Role> roles = new HashSet<>();
+        roles.add(BaseRoles.CUSTOMER_USER);
+
+        registerUser(email, password, firstName, lastName, roles);
+    }
 
 }

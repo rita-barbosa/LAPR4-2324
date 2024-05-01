@@ -28,8 +28,8 @@ package jobs4u.base;
  */
 public class Application {
 
-    public static final String VERSION = "1.4.0";
-    public static final String COPYRIGHT = "(C) 2016 - 2021, ISEP's Professors of EAPLI";
+    public static final String VERSION = "1.0.0";
+    public static final String COPYRIGHT = "(C) 2024, Group 2DG2";
 
     private static final AppSettings SETTINGS = new AppSettings();
 

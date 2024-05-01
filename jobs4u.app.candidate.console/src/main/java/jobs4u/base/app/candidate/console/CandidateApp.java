@@ -20,8 +20,11 @@
  */
 package jobs4u.base.app.candidate.console;
 
-import jobs4u.base.app.common.console.presentation.authz.LoginAction;
+import eapli.framework.infrastructure.pubsub.EventDispatcher;
 import jobs4u.base.app.candidate.console.presentation.MainMenu;
+import jobs4u.base.app.common.console.BaseApplication;
+import jobs4u.base.app.common.console.presentation.authz.LoginUI;
+import jobs4u.base.infrastructure.authz.AuthenticationCredentialHandler;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.usermanagement.domain.BasePasswordPolicy;
 import jobs4u.base.usermanagement.domain.BaseRoles;
@@ -29,11 +32,10 @@ import eapli.framework.infrastructure.authz.application.AuthzRegistry;
 import eapli.framework.infrastructure.authz.domain.model.PlainTextEncoder;
 
 /**
- *
  * @author Paulo Gandra Sousa
  */
 @SuppressWarnings("squid:S106")
-public final class CandidateApp {
+public final class CandidateApp extends BaseApplication {
 
     /**
      * Empty constructor is private to avoid instantiation of this class.
@@ -43,23 +45,31 @@ public final class CandidateApp {
 
     public static void main(final String[] args) {
         System.out.println("+= Candidate Application =======");
+        AuthzRegistry.configure(PersistenceContext.repositories().users(), new BasePasswordPolicy(), new PlainTextEncoder());
 
-//        System.out.println("=====================================");
-//        System.out.println("Base POS");
-//        System.out.println("(C) 2016, 2017, 2018");
-//        System.out.println("=====================================");
-//
-//
-//        AuthzRegistry.configure(PersistenceContext.repositories().users(),
-//                new BasePasswordPolicy(), new PlainTextEncoder());
-//
-//        // login and go to main menu
-//        if (new LoginAction(BaseRoles.CASHIER).execute()) {
-//            final MainMenu menu = new MainMenu();
-//            menu.mainLoop();
-//        }
-//
-//        // exiting the application, closing all threads
-//        System.exit(0);
+        new CandidateApp().run(args);
+    }
+
+    @Override
+    protected void doMain(String[] args) {
+        if (new LoginUI(new AuthenticationCredentialHandler(),BaseRoles.CANDIDATE_USER).show()) {
+            final MainMenu menu = new MainMenu();
+            menu.mainLoop();
+        }
+    }
+
+    @Override
+    protected String appTitle() {
+        return "CandidateApp";
+    }
+
+    @Override
+    protected String appGoodbye() {
+        return "CandidateApp";
+    }
+
+    @Override
+    protected void doSetupEventHandlers(EventDispatcher dispatcher) {
+
     }
 }

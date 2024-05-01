@@ -58,10 +58,6 @@ public class MainMenu extends AbstractUI {
     private static final int ADD_USER_OPTION = 1;
     private static final int LIST_USERS_OPTION = 2;
     private static final int DEACTIVATE_USER_OPTION = 3;
-    private static final int ACCEPT_REFUSE_SIGNUP_REQUEST_OPTION = 4;
-
-    // SETTINGS
-    private static final int SET_KITCHEN_ALERT_LIMIT_OPTION = 1;
 
 
     // CUSTOMER MANAGER SETTINGS

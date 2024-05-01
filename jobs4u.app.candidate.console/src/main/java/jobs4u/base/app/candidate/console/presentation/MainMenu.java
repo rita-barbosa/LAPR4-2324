@@ -51,7 +51,7 @@ public class MainMenu extends AbstractUI {
 
     // MAIN MENU
     private static final int MY_USER_OPTION = 1;
-    private static final int SALES_OPTION = 7;
+    private static final int APPLICATION_OPTION = 7;
 
     private final AuthorizationService authz = AuthzRegistry.authorizationService();
 
@@ -87,8 +87,8 @@ public class MainMenu extends AbstractUI {
     @Override
     public String headline() {
 
-        return authz.session().map(s -> "Base [ @" + s.authenticatedUser().identity() + " ]")
-                .orElse("Base [ ==Anonymous== ]");
+        return authz.session().map(s -> "Jobs4u [ @" + s.authenticatedUser().identity() + " ]")
+                .orElse("Jobs4u [ ==Anonymous== ]");
     }
 
     private Menu buildMainMenu() {
@@ -102,21 +102,21 @@ public class MainMenu extends AbstractUI {
         }
 
         if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.CANDIDATE_USER)) {
-            final Menu cashierMenu = buildCashierMenu();
-            mainMenu.addSubMenu(SALES_OPTION, cashierMenu);
+            final Menu cashierMenu = buildCandidateMenu();
+            mainMenu.addSubMenu(APPLICATION_OPTION, cashierMenu);
         }
 
         if (!Application.settings().isMenuLayoutHorizontal()) {
             mainMenu.addItem(MenuItem.separator(SEPARATOR_LABEL));
         }
 
-        mainMenu.addItem(EXIT_OPTION, "Exit", new ExitWithMessageAction("Bye, Bye"));
+        mainMenu.addItem(EXIT_OPTION, "Exit", new ExitWithMessageAction("Closing."));
 
         return mainMenu;
     }
 
-    private Menu buildCashierMenu() {
-        final Menu cashierMenu = new Menu("Sales  >");
+    private Menu buildCandidateMenu() {
+        final Menu cashierMenu = new Menu("Applications  >");
 
         cashierMenu.addItem(EXIT_OPTION, "Return", Actions.SUCCESS);
 

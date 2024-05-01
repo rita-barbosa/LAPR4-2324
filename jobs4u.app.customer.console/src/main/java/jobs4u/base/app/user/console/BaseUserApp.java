@@ -20,17 +20,24 @@
  */
 package jobs4u.base.app.user.console;
 
+import eapli.framework.infrastructure.pubsub.EventDispatcher;
+import eapli.framework.presentation.console.AbstractUI;
+import jobs4u.base.app.common.console.BaseApplication;
+import jobs4u.base.app.common.console.presentation.authz.LoginUI;
 import jobs4u.base.app.user.console.presentation.FrontMenu;
+import jobs4u.base.app.user.console.presentation.MainMenu;
+import jobs4u.base.infrastructure.authz.AuthenticationCredentialHandler;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.usermanagement.domain.BasePasswordPolicy;
 import eapli.framework.infrastructure.authz.application.AuthzRegistry;
 import eapli.framework.infrastructure.authz.domain.model.PlainTextEncoder;
+import jobs4u.base.usermanagement.domain.BaseRoles;
 
 /**
  * Base User App.
  */
 @SuppressWarnings("squid:S106")
-public final class BaseUserApp {
+public final class BaseUserApp extends BaseApplication {
 
     /**
      * Empty constructor is private to avoid instantiation of this class.
@@ -40,17 +47,31 @@ public final class BaseUserApp {
 
     public static void main(final String[] args) {
         System.out.println("+= Customer Application =======");
-        System.out.println("=====================================");
-        System.out.println("Base User App");
-        System.out.println("(C) 2016 - 2019");
-        System.out.println("=====================================");
+        AuthzRegistry.configure(PersistenceContext.repositories().users(), new BasePasswordPolicy(), new PlainTextEncoder());
 
-        AuthzRegistry.configure(PersistenceContext.repositories().users(),
-                new BasePasswordPolicy(), new PlainTextEncoder());
+        new BaseUserApp().run(args);
+    }
 
-        new FrontMenu().show();
+    @Override
+    protected void doMain(String[] args) {
+        if (new LoginUI(new AuthenticationCredentialHandler(), BaseRoles.CUSTOMER_USER).show()) {
+            final MainMenu menu = new MainMenu();
+            menu.mainLoop();
+        }
+    }
 
-        // exiting the application, closing all threads
-        System.exit(0);
+    @Override
+    protected String appTitle() {
+        return "CustomerApp";
+    }
+
+    @Override
+    protected String appGoodbye() {
+        return "CustomerApp";
+    }
+
+    @Override
+    protected void doSetupEventHandlers(EventDispatcher dispatcher) {
+
     }
 }
