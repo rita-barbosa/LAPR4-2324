@@ -34,7 +34,7 @@ import eapli.framework.infrastructure.authz.domain.model.SystemUser;
  * @author Fernando
  */
 @UseCaseController
-public class DeactivateUserController {
+public class EnableDisableUserController {
 
     private final AuthorizationService authz = AuthzRegistry.authorizationService();
     private final UserManagementService userSvc = AuthzRegistry.userService();
@@ -44,10 +44,20 @@ public class DeactivateUserController {
 
         return userSvc.activeUsers();
     }
-
-    public SystemUser deactivateUser(final SystemUser user) {
+    public Iterable<SystemUser> deactivatedUsers() {
         authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.ADMIN);
 
-        return userSvc.deactivateUser(user);
+        return userSvc.deactivatedUsers();
+    }
+
+    public void deactivateUser(final SystemUser user) {
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.ADMIN);
+
+        userSvc.deactivateUser(user);
+    }
+    public void activateUser(final SystemUser user) {
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.ADMIN);
+
+        userSvc.activateUser(user);
     }
 }

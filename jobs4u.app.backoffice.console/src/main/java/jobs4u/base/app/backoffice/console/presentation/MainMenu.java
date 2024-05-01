@@ -25,7 +25,7 @@ package jobs4u.base.app.backoffice.console.presentation;
 
 import jobs4u.base.Application;
 import jobs4u.base.app.backoffice.console.presentation.authz.AddUserUI;
-import jobs4u.base.app.backoffice.console.presentation.authz.DeactivateUserAction;
+import jobs4u.base.app.backoffice.console.presentation.authz.EnableDisableUserAction;
 import jobs4u.base.app.backoffice.console.presentation.authz.ListUsersAction;
 import jobs4u.base.app.backoffice.console.presentation.clientuser.AcceptRefuseSignupRequestAction;
 import jobs4u.base.app.common.console.presentation.authz.MyUserMenu;
@@ -101,8 +101,8 @@ public class MainMenu extends AbstractUI {
     @Override
     public String headline() {
 
-        return authz.session().map(s -> "Base [ @" + s.authenticatedUser().identity() + " ]")
-                .orElse("Base [ ==Anonymous== ]");
+        return authz.session().map(s -> "Jobs4U [ @" + s.authenticatedUser().identity() + " ]")
+                .orElse("Jobs4U [ ==Anonymous== ]");
     }
 
     private Menu buildMainMenu() {
@@ -118,8 +118,8 @@ public class MainMenu extends AbstractUI {
         if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.ADMIN)) {
             final Menu usersMenu = buildUsersMenu();
             mainMenu.addSubMenu(USERS_OPTION, usersMenu);
-            final Menu settingsMenu = buildAdminSettingsMenu();
-            mainMenu.addSubMenu(SETTINGS_OPTION, settingsMenu);
+//            final Menu settingsMenu = buildAdminSettingsMenu();
+//            mainMenu.addSubMenu(SETTINGS_OPTION, settingsMenu);
         }
 
         if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.CUSTOMER_MANAGER)) {
@@ -131,7 +131,7 @@ public class MainMenu extends AbstractUI {
             mainMenu.addItem(MenuItem.separator(SEPARATOR_LABEL));
         }
 
-        mainMenu.addItem(EXIT_OPTION, "Exit", new ExitWithMessageAction("Bye, Bye"));
+        mainMenu.addItem(EXIT_OPTION, "Exit", new ExitWithMessageAction("Closing."));
 
         return mainMenu;
     }
@@ -146,24 +146,20 @@ public class MainMenu extends AbstractUI {
         return menu;
     }
 
-    private Menu buildAdminSettingsMenu() {
-        final Menu menu = new Menu("Settings >");
-
-        menu.addItem(SET_KITCHEN_ALERT_LIMIT_OPTION, "Set kitchen alert limit",
-                new ShowMessageAction("Not implemented yet"));
-        menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
-
-        return menu;
-    }
+//    private Menu buildAdminSettingsMenu() {
+//        final Menu menu = new Menu("Settings >");
+//
+//        menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
+//
+//        return menu;
+//    }
 
     private Menu buildUsersMenu() {
         final Menu menu = new Menu("Users >");
 
         menu.addItem(ADD_USER_OPTION, "Add User", new AddUserUI()::show);
         menu.addItem(LIST_USERS_OPTION, "List all Users", new ListUsersAction());
-        menu.addItem(DEACTIVATE_USER_OPTION, "Deactivate User", new DeactivateUserAction());
-        menu.addItem(ACCEPT_REFUSE_SIGNUP_REQUEST_OPTION, "Accept/Refuse Signup Request",
-                new AcceptRefuseSignupRequestAction());
+        menu.addItem(DEACTIVATE_USER_OPTION, "Enable/Disable User", new EnableDisableUserAction());
         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
 
         return menu;
