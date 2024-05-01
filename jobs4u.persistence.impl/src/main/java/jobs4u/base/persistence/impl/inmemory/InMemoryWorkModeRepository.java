@@ -4,12 +4,23 @@ import eapli.framework.infrastructure.repositories.impl.inmemory.InMemoryDomainR
 import jobs4u.base.jobopeningmanagement.domain.WorkMode;
 import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InMemoryWorkModeRepository extends InMemoryDomainRepository<WorkMode, String>
         implements WorkModeRepository {
+
+    static {
+        InMemoryInitializer.init();
+    }
+
     @Override
     public List<WorkMode> workModes() {
-        return null;
+        List<WorkMode> workModeList = new ArrayList<>();
+        Iterable<WorkMode> workModes = findAll();
+        for (WorkMode workMode : workModes) {
+            workModeList.add(workMode);
+        }
+        return workModeList;
     }
 }

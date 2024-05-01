@@ -6,6 +6,7 @@ import jobs4u.base.Application;
 import jobs4u.base.jobopeningmanagement.domain.WorkMode;
 import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class JpaWorkModeRepository
@@ -14,15 +15,20 @@ public class JpaWorkModeRepository
 
 
     public JpaWorkModeRepository(final TransactionalContext autoTx) {
-        super(autoTx, "workModeDesignation");
+        super(autoTx, "denomination");
     }
 
     public JpaWorkModeRepository(final String puname) {
-        super(puname, Application.settings().getExtendedPersistenceProperties(), "workModeDesignation");
+        super(puname, Application.settings().getExtendedPersistenceProperties(), "denomination");
     }
 
     @Override
     public List<WorkMode> workModes() {
-        return null;
+        List<WorkMode> workModeList = new ArrayList<>();
+        Iterable<WorkMode> workModes = findAll();
+        for (WorkMode workMode : workModes) {
+            workModeList.add(workMode);
+        }
+        return workModeList;
     }
 }

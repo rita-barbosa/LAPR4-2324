@@ -4,14 +4,24 @@ import eapli.framework.infrastructure.repositories.impl.inmemory.InMemoryDomainR
 import jobs4u.base.jobopeningmanagement.domain.ContractType;
 import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InMemoryContractTypeRepository
         extends InMemoryDomainRepository<ContractType, String>
         implements ContractTypeRepository {
 
+    static {
+        InMemoryInitializer.init();
+    }
+
     @Override
     public List<ContractType> contractTypes() {
-        return null;
+        List<ContractType> contractTypeList = new ArrayList<>();
+        Iterable<ContractType> contractTypes = findAll();
+        for (ContractType contractType : contractTypes) {
+            contractTypeList.add(contractType);
+        }
+        return contractTypeList;
     }
 }

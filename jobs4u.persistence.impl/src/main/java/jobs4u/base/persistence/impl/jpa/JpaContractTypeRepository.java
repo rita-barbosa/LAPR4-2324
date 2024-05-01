@@ -6,6 +6,7 @@ import jobs4u.base.Application;
 import jobs4u.base.jobopeningmanagement.domain.ContractType;
 import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class JpaContractTypeRepository
@@ -14,15 +15,20 @@ public class JpaContractTypeRepository
 
 
     public JpaContractTypeRepository(final TransactionalContext autoTx) {
-        super(autoTx, "contractTypeDesignation");
+        super(autoTx, "denomination");
     }
 
     public JpaContractTypeRepository(final String puname) {
-        super(puname, Application.settings().getExtendedPersistenceProperties(), "contractTypeDesignation");
+        super(puname, Application.settings().getExtendedPersistenceProperties(), "denomination");
     }
 
     @Override
     public List<ContractType> contractTypes() {
-        return null;
+        List<ContractType> contractTypeList = new ArrayList<>();
+        Iterable<ContractType> contractTypes = findAll();
+        for (ContractType contractType : contractTypes) {
+            contractTypeList.add(contractType);
+        }
+        return contractTypeList;
     }
 }

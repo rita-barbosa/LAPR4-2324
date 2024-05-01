@@ -3,6 +3,7 @@ package jobs4u.base.jobopeningmanagement.domain;
 import eapli.framework.domain.model.AggregateRoot;
 import eapli.framework.domain.model.ValueObject;
 import eapli.framework.representations.dto.DTOable;
+import eapli.framework.validations.Preconditions;
 import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
 
 public class ContractType implements DTOable<ContractTypeDTO>, ValueObject, AggregateRoot<String> {
@@ -14,13 +15,13 @@ public class ContractType implements DTOable<ContractTypeDTO>, ValueObject, Aggr
     }
 
     public static ContractType valueOf(final String contractTypeDenomination) {
+        Preconditions.noneNull(contractTypeDenomination);
         return new ContractType(contractTypeDenomination);
     }
 
-
     @Override
     public ContractTypeDTO toDTO() {
-        return null;
+        return new ContractTypeDTO(denomination);
     }
 
 
