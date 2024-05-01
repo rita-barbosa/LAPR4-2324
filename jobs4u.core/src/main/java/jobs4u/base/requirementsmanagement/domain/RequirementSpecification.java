@@ -1,43 +1,65 @@
 package jobs4u.base.requirementsmanagement.domain;
 
 import eapli.framework.domain.model.AggregateRoot;
+import eapli.framework.domain.model.DomainEntities;
 import eapli.framework.representations.dto.DTOable;
-import jakarta.persistence.Embeddable;
+import eapli.framework.validations.Preconditions;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jobs4u.base.requirementsmanagement.dto.RequirementSpecificationDTO;
 
-@Embeddable
+@Entity
+@Table(name = "T_REQUIREMENTSPECIFICATION")
 public class RequirementSpecification implements DTOable<RequirementSpecificationDTO>, AggregateRoot<RequirementName> {
 
-    private RequirementName name;
+    @Id
+    private RequirementName requirementName;
 
     private RequirementDescription description;
 
     private PluginJarFile plugin;
 
+    public RequirementSpecification(RequirementName requirementName, RequirementDescription description, PluginJarFile plugin) {
+        Preconditions.noneNull(requirementName,description,plugin);
+        this.requirementName = requirementName;
+        this.description = description;
+        this.plugin = plugin;
+    }
+
+    public RequirementSpecification() {
+        //for ORM
+    }
+
     @Override
     public RequirementSpecificationDTO toDTO() {
-        return null;
+        return new RequirementSpecificationDTO(requirementName, description);
     }
 
     @Override
     public boolean sameAs(Object other) {
-        return false;
+        return DomainEntities.areEqual(this, other);
     }
 
     @Override
     public RequirementName identity() {
-        return null;
+        return this.requirementName;
     }
 
-    public RequirementName getName() {
-        return name;
+    public RequirementName requirementName() {
+        return identity();
     }
 
-    public RequirementDescription getDescription() {
+    public RequirementDescription requirementDescription() {
         return description;
     }
 
-    public PluginJarFile getPlugin() {
+    public PluginJarFile pluginJarFile() {
         return plugin;
+    }
+
+    @Override
+    public int hashCode() {
+        return DomainEntities.hashCode(this);
     }
 }

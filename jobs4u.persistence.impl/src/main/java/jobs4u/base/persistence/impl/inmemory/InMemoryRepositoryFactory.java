@@ -22,7 +22,7 @@ package jobs4u.base.persistence.impl.inmemory;
 
 import jobs4u.base.clientusermanagement.repositories.ClientUserRepository;
 import jobs4u.base.clientusermanagement.repositories.SignupRequestRepository;
-import jobs4u.base.entitymanagement.repository.CustomerRepository;
+import jobs4u.base.customermanagement.repository.CustomerRepository;
 import jobs4u.base.infrastructure.bootstrapers.BaseBootstrapper;
 import jobs4u.base.infrastructure.persistence.RepositoryFactory;
 import eapli.framework.domain.repositories.TransactionalContext;

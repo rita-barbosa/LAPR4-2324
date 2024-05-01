@@ -7,7 +7,7 @@ import jobs4u.base.requirementsmanagement.domain.RequirementName;
 import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
 
-import java.util.List;
+import java.util.*;
 
 public class JpaRequirementSpecificationRepository
         extends JpaAutoTxRepository<RequirementSpecification, RequirementName, RequirementName>
@@ -22,13 +22,21 @@ public class JpaRequirementSpecificationRepository
         super(puname, Application.settings().getExtendedPersistenceProperties(), "requirementName");
     }
 
+
     @Override
-    public List<RequirementSpecification> getCustomerRequirementsSpecificationsFileList(String costumerCode) {
-        return null;
+    public List<RequirementSpecification> requirementsSpecifications() {
+        List<RequirementSpecification> requirementsList = new ArrayList<>();
+        Iterable<RequirementSpecification> requirementsSpecifications = findAll();
+        for (RequirementSpecification req : requirementsSpecifications) {
+            requirementsList.add(req);
+        }
+        return requirementsList;
     }
 
     @Override
-    public RequirementSpecification getFileByName(String filename) {
-        return null;
+    public Optional<RequirementSpecification> getFileByName(String filename) {
+        final Map<String, Object> params = new HashMap<>();
+        params.put("filename", filename);
+        return matchOne("e -> e.requirementName.name=:filename", params);
     }
 }
