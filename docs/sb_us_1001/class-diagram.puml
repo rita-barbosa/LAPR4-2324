@@ -16,7 +16,7 @@ class UserManagementService {
     + registerNewUser(email, password, name, email, roles)
 }
 class CustomerManagementService {
-    +  registerNewEntity(companyName, address, customerCode,\ncustomerManager,email,password)
+    +  registerNewCustomer(companyName, address, customerCode,\ncustomerManager,email,password)
 }
 
 interface EventPublisher{
@@ -40,10 +40,10 @@ class RegisterCustomerUI {
 }
 
 class RegisterCustomerController{
-+ registerCustomer(companyName, address, customerCode,\nuserEmail, userName, phoneNumber)
++ registerCustomer(companyName, address, customerCode,email)
 }
 class AddCustomerOnNewCustomerUserRegisteredController{
-+ registerEntity(newCustomerRegisteredEvent)
++ registerCustomer(newCustomerRegisteredEvent)
 }
 class GeneratePasswordService {
 + generatePassword(): RandomPassword
@@ -80,7 +80,7 @@ class Address <<(V,#FF8B40) value object>> {
 + Address(streetName, streetNumber, postalCode, district, city)
 }
 class NewCustomerUserRegisteredEvent{
-+ NewEntityRegisteredEvent(companyName, address, customerCode,\ncustomerManager, customerUser)
++ NewCustomerRegisteredEvent(companyName, address, customerCode,\ncustomerManager, customerUser)
 }
 abstract class DomainEventBase {
 }

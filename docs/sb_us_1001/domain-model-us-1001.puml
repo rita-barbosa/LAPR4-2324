@@ -15,7 +15,7 @@ skinparam ArrowColor #222222
 package "<<aggregate>> Customer Manager" {
     entity CustomerManager <<entity>> <<root>>  {}
 }
-package "<<aggregate>> Entity" {
+package "<<aggregate>> Customer" {
     entity Entity <<entity>> <<root>>  {}
     class CustomerCode <<(V,#FF8B40) value object>> <<identifier>> {}
     class CompanyName <<(V,#FF8B40) value object>> {}

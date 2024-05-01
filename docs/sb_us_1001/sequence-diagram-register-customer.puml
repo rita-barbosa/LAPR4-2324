@@ -37,8 +37,8 @@ UI -> CTRL**: create
 UI --> USER: asks for necessary information
 
 
-USER -> UI: companyName, address, customerCode,\nuserEmail, userName, phoneNumber
-UI -> CTRL: registerEntity(companyName, address, customerCode,\nuserEmail, userName, phoneNumber)
+USER -> UI: companyName, address,\ncustomerCode, email
+UI -> CTRL: registerCustomer(companyName, address,\ncustomerCode,email);
 activate CTRL
 
 
