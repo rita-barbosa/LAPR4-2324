@@ -22,7 +22,7 @@ package jobs4u.base.persistence.impl.inmemory;
 
 import jobs4u.base.clientusermanagement.repositories.ClientUserRepository;
 import jobs4u.base.clientusermanagement.repositories.SignupRequestRepository;
-import jobs4u.base.entitymanagement.repository.EntityRepository;
+import jobs4u.base.entitymanagement.repository.CustomerRepository;
 import jobs4u.base.infrastructure.bootstrapers.BaseBootstrapper;
 import jobs4u.base.infrastructure.persistence.RepositoryFactory;
 import eapli.framework.domain.repositories.TransactionalContext;
@@ -71,13 +71,13 @@ public class InMemoryRepositoryFactory implements RepositoryFactory {
     }
 
     @Override
-    public EntityRepository entities(TransactionalContext tx) {
-        return new InMemoryEntityRepository();
+    public CustomerRepository customers(TransactionalContext tx) {
+        return new InMemoryCustomerRepository();
     }
 
     @Override
-    public EntityRepository entities() {
-        return entities(null);
+    public CustomerRepository customers() {
+        return customers(null);
     }
 
     @Override

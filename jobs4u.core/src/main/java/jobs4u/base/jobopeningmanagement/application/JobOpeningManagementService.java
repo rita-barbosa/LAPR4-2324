@@ -1,7 +1,7 @@
 package jobs4u.base.jobopeningmanagement.application;
 
 import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
-import jobs4u.base.entitymanagement.dto.EntityDTO;
+import jobs4u.base.entitymanagement.dto.CustomerDTO;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
@@ -16,9 +16,9 @@ public class JobOpeningManagementService {
 
     public JobOpening registerJobOpening(String function, ContractTypeDTO contractTypeDenomination,
                                          WorkModeDTO workModeDenomination, String streetName, String city,
-                                         String district, String state, int zipcode, int numVacancies,
+                                         String district, String state, String zipcode, int numVacancies,
                                          String description, RequirementSpecification requirementsFile,
-                                         EntityDTO companyInfo){
+                                         CustomerDTO companyInfo){
 
         JobReference lastReference = jobOpeningRepository.lastJobReference(companyInfo.costumerCode());
 

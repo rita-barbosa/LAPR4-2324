@@ -4,8 +4,8 @@ import eapli.framework.infrastructure.authz.application.AuthorizationService;
 import eapli.framework.infrastructure.authz.application.AuthzRegistry;
 import eapli.framework.infrastructure.authz.domain.model.SystemUser;
 import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
-import jobs4u.base.entitymanagement.dto.EntityDTO;
-import jobs4u.base.entitymanagement.application.EntityManagementService;
+import jobs4u.base.entitymanagement.dto.CustomerDTO;
+import jobs4u.base.entitymanagement.application.CustomerManagementService;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.domain.ContractType;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
@@ -27,7 +27,7 @@ public class RegisterJobOpeningController {
 
     private final AuthorizationService authz = AuthzRegistry.authorizationService();
 
-    EntityManagementService entityManagementService = new EntityManagementService();
+    CustomerManagementService customerManagementService = new CustomerManagementService();
     JobOpeningManagementService jobOpeningManagementService = new JobOpeningManagementService();
 
     private final ContractTypeRepository contractTypeRepository = PersistenceContext
@@ -39,10 +39,10 @@ public class RegisterJobOpeningController {
     private final RequirementSpecificationRepository requirementSpecificationRepository = PersistenceContext
             .repositories().requirementSpecifications();
 
-    public List<EntityDTO> getCustomersList() {
+    public List<CustomerDTO> getCustomersList() {
         Optional<SystemUser> user = authz.loggedinUserWithPermissions(BaseRoles.CUSTOMER_MANAGER);
         if (user.isPresent()) {
-            return entityManagementService.getAssignedCustomerCodesList(user.get().username());
+            return customerManagementService.getAssignedCustomerCodesList(user.get().username());
         }
         return Collections.emptyList();
     }
@@ -63,7 +63,7 @@ public class RegisterJobOpeningController {
         return workModes;
     }
 
-    public List<RequirementSpecificationDTO> getRequirementsSpecificationsList(EntityDTO companyInfo) {
+    public List<RequirementSpecificationDTO> getRequirementsSpecificationsList(CustomerDTO companyInfo) {
         List<RequirementSpecificationDTO> requirementSpecifications = new ArrayList<>();
         for (RequirementSpecification requirement : requirementSpecificationRepository.getCustomerRequirementsSpecificationsFileList(companyInfo.costumerCode())) {
             requirementSpecifications.add(requirement.toDTO());
@@ -74,9 +74,9 @@ public class RegisterJobOpeningController {
 
     public Optional<JobOpening> registerJobOpening(String function, ContractTypeDTO contractTypeDenomination,
                                                    WorkModeDTO workModeDenomination, String streetName, String city,
-                                                   String district, String state, int zipcode, int numVacancies,
+                                                   String district, String state, String zipcode, int numVacancies,
                                                    String description, RequirementSpecificationDTO requirementsFileName,
-                                                   EntityDTO companyInfo) {
+                                                   CustomerDTO companyInfo) {
 
         return Optional.of(jobOpeningManagementService.registerJobOpening(function, contractTypeDenomination, workModeDenomination,
                 streetName, city, district, state, zipcode, numVacancies, description,

@@ -22,7 +22,7 @@ package jobs4u.base.persistence.impl.jpa;
 
 import jobs4u.base.Application;
 import jobs4u.base.clientusermanagement.repositories.SignupRequestRepository;
-import jobs4u.base.entitymanagement.repository.EntityRepository;
+import jobs4u.base.entitymanagement.repository.CustomerRepository;
 import jobs4u.base.infrastructure.persistence.RepositoryFactory;
 import eapli.framework.domain.repositories.TransactionalContext;
 import eapli.framework.infrastructure.authz.domain.repositories.UserRepository;
@@ -71,13 +71,13 @@ public class JpaRepositoryFactory implements RepositoryFactory {
     }
 
     @Override
-    public EntityRepository entities(final TransactionalContext autoTx) {
-        return new JpaEntityRepository(autoTx);
+    public CustomerRepository customers(final TransactionalContext autoTx) {
+        return new JpaCustomerRepository(autoTx);
     }
 
     @Override
-    public EntityRepository entities() {
-        return new JpaEntityRepository(Application.settings().getPersistenceUnitName());
+    public CustomerRepository customers() {
+        return new JpaCustomerRepository(Application.settings().getPersistenceUnitName());
     }
 
     @Override

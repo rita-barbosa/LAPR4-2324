@@ -1,6 +1,6 @@
 package jobs4u.base.entitymanagement.dto;
 
-public class EntityDTO {
+public class CustomerDTO {
     private String costumerCode;
 
     public String costumerCode(){

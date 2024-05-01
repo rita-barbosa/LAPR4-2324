@@ -24,7 +24,7 @@ import jobs4u.base.clientusermanagement.repositories.ClientUserRepository;
 import jobs4u.base.clientusermanagement.repositories.SignupRequestRepository;
 import eapli.framework.domain.repositories.TransactionalContext;
 import eapli.framework.infrastructure.authz.domain.repositories.UserRepository;
-import jobs4u.base.entitymanagement.repository.EntityRepository;
+import jobs4u.base.entitymanagement.repository.CustomerRepository;
 import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
@@ -95,14 +95,14 @@ public interface RepositoryFactory {
      *            the transactional context to enroll
      * @return
      */
-    EntityRepository entities(TransactionalContext autoTx);
+    CustomerRepository customers(TransactionalContext autoTx);
 
     /**
      * repository will be created in auto transaction mode
      *
      * @return
      */
-    EntityRepository entities();
+    CustomerRepository customers();
 
     /**
      *

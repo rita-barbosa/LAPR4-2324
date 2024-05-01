@@ -3,7 +3,7 @@ package jobs4u.base.app.backoffice.console.presentation.registerJobOpening;
 import eapli.framework.io.util.Console;
 import eapli.framework.presentation.console.AbstractUI;
 import eapli.framework.presentation.console.SelectWidget;
-import jobs4u.base.entitymanagement.dto.EntityDTO;
+import jobs4u.base.entitymanagement.dto.CustomerDTO;
 import jobs4u.base.jobopeningmanagement.application.RegisterJobOpeningController;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
@@ -20,7 +20,7 @@ public class RegisterJobOpeningUI extends AbstractUI {
     private static ContractTypeDTO contractTypeDenomination;
     private static WorkModeDTO workModeDenomination;
     private static RequirementSpecificationDTO requirementsFileName;
-    private static EntityDTO companyInfo;
+    private static CustomerDTO companyInfo;
 
     public void run(String[] args) {
 
@@ -46,9 +46,9 @@ public class RegisterJobOpeningUI extends AbstractUI {
                 "Providing a job opening address's district is obligatory.");
         String state = Console.readNonEmptyLine("What's the state?",
                 "Providing a job opening address's state is obligatory.");
-        int zipcode = 0;
+        String zipcode = "";
         while (String.valueOf(zipcode).length() != 5) {
-            zipcode = Console.readInteger("Provide the zipcode");
+            zipcode = Console.readLine("Provide the zipcode");
             if (String.valueOf(zipcode).length() != 5){
                 System.out.println("The zipcode must have 5 characters.");
             }
@@ -63,7 +63,7 @@ public class RegisterJobOpeningUI extends AbstractUI {
 
     @Override
     protected boolean doShow() {
-        SelectWidget<EntityDTO> costumerSelector = new SelectWidget<>("Customers assigned to you:",
+        SelectWidget<CustomerDTO> costumerSelector = new SelectWidget<>("Customers assigned to you:",
                 controller.getCustomersList());
         costumerSelector.show();
         companyInfo = costumerSelector.selectedElement();
