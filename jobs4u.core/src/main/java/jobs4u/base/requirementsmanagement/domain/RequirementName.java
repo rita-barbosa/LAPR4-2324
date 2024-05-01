@@ -1,9 +1,7 @@
 package jobs4u.base.requirementsmanagement.domain;
 
 import eapli.framework.domain.model.ValueObject;
-import lombok.Getter;
 
-@Getter
 public class RequirementName implements ValueObject, Comparable<RequirementName> {
 
     private String name;
@@ -13,4 +11,7 @@ public class RequirementName implements ValueObject, Comparable<RequirementName>
         return 0;
     }
 
+    public String getName() {
+        return name;
+    }
 }
