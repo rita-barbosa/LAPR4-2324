@@ -16,7 +16,10 @@ public class JobOpening implements AggregateRoot<JobReference> {
     @Version
     private Long version;
     private JobFunction function;
+
+    @ManyToOne
     private ContractType contractType;
+    @ManyToOne
     private  WorkMode workMode;
     @Enumerated(EnumType.STRING)
     private JobOpeningStatus status;
@@ -47,8 +50,8 @@ public class JobOpening implements AggregateRoot<JobReference> {
         this.jobReference = generateNewSequencialJobReference(lastReference);
         this.function = JobFunction.valueOf(function);
         this.address = new Address(streetName, city, district, streetNumber, zipcode);
-        this.contractType = ContractType.valueOf(contractTypeDenomination.toString());
-        this.workMode = WorkMode.valueOf(workModeDenomination.toString());
+        this.contractType = ContractType.valueOf(contractTypeDenomination.contractTypeName());
+        this.workMode = WorkMode.valueOf(workModeDenomination.workModeName());
         this.description = Description.valueOf(description);
         this.numVacancies = NumberVacancy.valueOf(numVacancies);
         this.requirementSpecification = requirementsFile;

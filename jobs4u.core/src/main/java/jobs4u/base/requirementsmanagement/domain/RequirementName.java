@@ -2,16 +2,22 @@ package jobs4u.base.requirementsmanagement.domain;
 
 import eapli.framework.domain.model.ValueObject;
 import eapli.framework.validations.Preconditions;
+import jakarta.persistence.Embeddable;
 
+@Embeddable
 public class RequirementName implements ValueObject, Comparable<RequirementName> {
 
-    private final String name;
+    private String name;
 
     public RequirementName(String name) {
         Preconditions.noneNull(name);
         Preconditions.nonEmpty(name);
 
         this.name = name;
+    }
+
+    public RequirementName() {
+        //for ORM
     }
 
     @Override

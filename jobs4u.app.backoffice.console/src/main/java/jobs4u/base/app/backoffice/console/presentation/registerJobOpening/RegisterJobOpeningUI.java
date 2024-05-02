@@ -5,6 +5,8 @@ import eapli.framework.domain.repositories.IntegrityViolationException;
 import eapli.framework.io.util.Console;
 import eapli.framework.presentation.console.AbstractUI;
 import eapli.framework.presentation.console.SelectWidget;
+import jobs4u.base.customermanagement.domain.CompanyName;
+import jobs4u.base.customermanagement.domain.CustomerCode;
 import jobs4u.base.customermanagement.dto.CustomerDTO;
 import jobs4u.base.jobopeningmanagement.application.RegisterJobOpeningController;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
@@ -25,7 +27,7 @@ public class RegisterJobOpeningUI extends AbstractUI {
         //Selectable attributes
         CustomerDTO companyInfo;
         try {
-            companyInfo = showAndSelectCustomer();
+          //  companyInfo = showAndSelectCustomer();
         }catch (NoSuchElementException e){
             return false;
         }
@@ -41,22 +43,22 @@ public class RegisterJobOpeningUI extends AbstractUI {
 
         int numVacancies = WriteNumberVacancies();
 
-        System.out.println("Regarding the job's opening address:");
+        System.out.println("\nRegarding the job's opening address:");
         String streetName = Console.readNonEmptyLine("What's the street name?",
                 "Providing a job opening address's street name is obligatory.");
         String city = Console.readNonEmptyLine("What's the city?",
                 "Providing a job opening address's city is obligatory.");
         String district = Console.readNonEmptyLine("What's the district?",
                 "Providing a job opening address's district is obligatory.");
-        String state = Console.readNonEmptyLine("What's the state?",
+        String streetNumber = Console.readNonEmptyLine("What's the street number?",
                 "Providing a job opening address's state is obligatory.");
 
         String zipcode = WriteZipcode();
 
         try {
             Optional< JobOpening> jobOpening = this.controller.registerJobOpening(function, contractTypeDenomination,
-                    workModeDenomination, streetName, city, district, state, zipcode, numVacancies, description,
-                    requirementsFileName, companyInfo);
+                    workModeDenomination, streetName, city, district, streetNumber, zipcode, numVacancies, description,
+                    requirementsFileName, companyInfo = new CustomerDTO(new CompanyName("Luau"), new CustomerCode("LUAU")));
             if (jobOpening.isEmpty()){
                 throw new IntegrityViolationException();
             }else{
@@ -92,28 +94,28 @@ public class RegisterJobOpeningUI extends AbstractUI {
     }
 
     private RequirementSpecificationDTO showAndSelectRequirementSpecification() {
-        SelectWidget<RequirementSpecificationDTO> RequirementSpecificationSelector = new SelectWidget<>("Customers assigned to you:",
+        SelectWidget<RequirementSpecificationDTO> RequirementSpecificationSelector = new SelectWidget<>("Select the requirement specifications:",
                 this.controller.getRequirementsSpecificationsList());
         RequirementSpecificationSelector.show();
         return RequirementSpecificationSelector.selectedElement();
     }
 
     private WorkModeDTO showAndSelectWorkMode() {
-        SelectWidget<WorkModeDTO> workModeSelector = new SelectWidget<>("Customers assigned to you:",
+        SelectWidget<WorkModeDTO> workModeSelector = new SelectWidget<>("Select a work mode:",
                 this.controller.getWorkModesList());
         workModeSelector.show();
         return workModeSelector.selectedElement();
     }
 
     private ContractTypeDTO showAndSelectContractType() {
-        SelectWidget<ContractTypeDTO> contractTypeSelector = new SelectWidget<>("Customers assigned to you:",
+        SelectWidget<ContractTypeDTO> contractTypeSelector = new SelectWidget<>("Select a contract type:",
                 this.controller.getContractTypesList());
         contractTypeSelector.show();
         return contractTypeSelector.selectedElement();
     }
 
     private CustomerDTO showAndSelectCustomer() {
-        SelectWidget<CustomerDTO> costumerSelector = new SelectWidget<>("Customers assigned to you:",
+        SelectWidget<CustomerDTO> costumerSelector = new SelectWidget<>("Select a customers that was assigned to you:",
                 this.controller.getCustomersList());
         costumerSelector.show();
         return costumerSelector.selectedElement();

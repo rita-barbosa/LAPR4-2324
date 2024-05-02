@@ -38,11 +38,11 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
 
     @Override
     public boolean execute() {
+        persistCustomers();
         instantiateRepositories();
         persistContractTypes();
         persistWorkModes();
         persistRequirementSpecifications();
-        persistCustomers();
         persistJobOpenings();
         return true;
     }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence">
-    <persistence-unit name="jobs4u.base">
-        <!--
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-        -->
-        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+  <persistence-unit name="jobs4u.base">
+    <!--
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    -->
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
 
         <class>eapli.framework.infrastructure.authz.domain.model.SystemUser</class>
@@ -18,6 +18,18 @@
         <class>jobs4u.base.customermanagement.domain.CompanyName</class>
         <class>jobs4u.base.jobopeningmanagement.domain.Address</class>
 
+        <class>jobs4u.base.customermanagement.domain.events.NewCustomerUserRegisteredEvent</class>
+
+        <class>eapli.framework.infrastructure.authz.domain.model.SystemUser</class>
+        <class>eapli.framework.infrastructure.authz.domain.model.Role</class>
+        <class>eapli.framework.infrastructure.authz.domain.model.RoleSet</class>
+        <class>eapli.framework.infrastructure.authz.domain.model.RoleAssignment</class>
+        <class>jobs4u.base.clientusermanagement.domain.ClientUser</class>
+        <class>jobs4u.base.clientusermanagement.domain.SignupRequest</class>
+        <class>jobs4u.base.jobopeningmanagement.domain.ContractType</class>
+        <class>jobs4u.base.jobopeningmanagement.domain.WorkMode</class>
+        <class>jobs4u.base.jobopeningmanagement.domain.JobOpening</class>
+        <class>jobs4u.base.requirementsmanagement.domain.RequirementSpecification</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:tcp://localhost/~/jobs4u"/>

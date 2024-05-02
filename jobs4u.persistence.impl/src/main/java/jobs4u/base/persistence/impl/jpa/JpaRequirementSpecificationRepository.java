@@ -37,6 +37,6 @@ public class JpaRequirementSpecificationRepository
     public Optional<RequirementSpecification> getFileByName(String filename) {
         final Map<String, Object> params = new HashMap<>();
         params.put("filename", filename);
-        return matchOne("e -> e.requirementName.name=:filename", params);
+        return matchOne("e.requirementName.name=:filename", params);
     }
 }

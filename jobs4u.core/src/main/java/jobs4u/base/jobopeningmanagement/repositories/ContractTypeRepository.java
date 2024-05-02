@@ -9,6 +9,4 @@ public interface ContractTypeRepository
         extends DomainRepository<String, ContractType> {
 
     List<ContractType> contractTypes();
-
-
 }

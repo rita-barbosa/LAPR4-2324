@@ -29,6 +29,7 @@ import jobs4u.base.app.backoffice.console.presentation.authz.EnableDisableUserAc
 import jobs4u.base.app.backoffice.console.presentation.authz.ListUsersAction;
 import jobs4u.base.app.backoffice.console.presentation.customer.RegisterCustomerAction;
 import jobs4u.base.app.backoffice.console.presentation.registerJobOpening.RegisterJobOpeningAction;
+import jobs4u.base.app.backoffice.console.presentation.registerJobOpening.RegisterJobOpeningUI;
 import jobs4u.base.app.common.console.presentation.authz.MyUserMenu;
 import jobs4u.base.usermanagement.domain.BaseRoles;
 import eapli.framework.actions.Actions;
