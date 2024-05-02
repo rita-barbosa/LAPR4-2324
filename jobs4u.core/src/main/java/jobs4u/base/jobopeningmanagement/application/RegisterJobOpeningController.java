@@ -24,24 +24,29 @@ import java.util.*;
 @UseCaseController
 public class RegisterJobOpeningController {
 
-    private final AuthorizationService authz = AuthzRegistry.authorizationService();
-    private final CustomerManagementService customerManagementService = new CustomerManagementService();
-    private final JobOpeningManagementService jobOpeningManagementService = new JobOpeningManagementService();
+    private final AuthorizationService authz;
+    private final CustomerManagementService customerManagementService;
+    private final JobOpeningManagementService jobOpeningManagementService;
+    private final ContractTypeRepository contractTypeRepository;
+    private final WorkModeRepository workModeRepository;
+    private final RequirementSpecificationRepository requirementSpecificationRepository;
 
-    private final ContractTypeRepository contractTypeRepository = PersistenceContext
-            .repositories().contractTypes();
-    private final WorkModeRepository workModeRepository = PersistenceContext
-            .repositories().workModes();
-    private final RequirementSpecificationRepository requirementSpecificationRepository = PersistenceContext
-            .repositories().requirementSpecifications();
+    public RegisterJobOpeningController() {
+        this.authz = AuthzRegistry.authorizationService();
+        this.customerManagementService = new CustomerManagementService();
+        this.jobOpeningManagementService = new JobOpeningManagementService();
+        this.contractTypeRepository = PersistenceContext.repositories().contractTypes();
+        this.workModeRepository = PersistenceContext.repositories().workModes();
+        this.requirementSpecificationRepository = PersistenceContext.repositories().requirementSpecifications();
+    }
 
     public List<CustomerDTO> getCustomersList() {
         authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
         Optional<SystemUser> user = authz.loggedinUserWithPermissions(BaseRoles.CUSTOMER_MANAGER);
         if (user.isPresent()) {
-            return customerManagementService.getAssignedCustomerCodesList(user.get().username());
+            return customerManagementService.getAssignedCustomerCodesList(user.get().identity());
         }
-        throw new NoSuchElementException("You have no customers assigned to you.");
+        throw new NoSuchElementException("It was not possible to retrieve the user's data.");
     }
 
     public List<ContractTypeDTO> getContractTypesList() {
@@ -77,7 +82,7 @@ public class RegisterJobOpeningController {
 
         Optional<RequirementSpecification> requirementSpecification = requirementSpecificationRepository.getFileByName(requirementsFileName.filename());
 
-        if (requirementSpecification.isEmpty()){
+        if (requirementSpecification.isEmpty()) {
             throw new NoSuchElementException("No requirement specifications where found.");
         }
 

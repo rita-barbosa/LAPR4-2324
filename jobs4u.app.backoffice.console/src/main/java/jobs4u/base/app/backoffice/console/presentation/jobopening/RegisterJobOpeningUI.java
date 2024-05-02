@@ -1,4 +1,4 @@
-package jobs4u.base.app.backoffice.console.presentation.registerJobOpening;
+package jobs4u.base.app.backoffice.console.presentation.jobopening;
 
 import eapli.framework.domain.repositories.ConcurrencyException;
 import eapli.framework.domain.repositories.IntegrityViolationException;
@@ -14,6 +14,7 @@ import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
 import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
 import jobs4u.base.requirementsmanagement.dto.RequirementSpecificationDTO;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -27,8 +28,9 @@ public class RegisterJobOpeningUI extends AbstractUI {
         //Selectable attributes
         CustomerDTO companyInfo;
         try {
-          //  companyInfo = showAndSelectCustomer();
+            companyInfo = showAndSelectCustomer();
         }catch (NoSuchElementException e){
+            System.out.println(e.getMessage());
             return false;
         }
         ContractTypeDTO contractTypeDenomination = showAndSelectContractType();
@@ -58,14 +60,14 @@ public class RegisterJobOpeningUI extends AbstractUI {
         try {
             Optional< JobOpening> jobOpening = this.controller.registerJobOpening(function, contractTypeDenomination,
                     workModeDenomination, streetName, city, district, streetNumber, zipcode, numVacancies, description,
-                    requirementsFileName, companyInfo = new CustomerDTO(new CompanyName("Luau"), new CustomerCode("LUAU")));
+                    requirementsFileName, companyInfo);
             if (jobOpening.isEmpty()){
                 throw new IntegrityViolationException();
             }else{
                 System.out.println("The job opening was successfully registered!\n");
             }
         } catch (final IntegrityViolationException | ConcurrencyException e) {
-            System.out.println("An error occurred while registering the job opening.");
+            System.out.println("An error occurred while registering the job opening.\n" + e.getMessage());
         }
 
         return false;
@@ -115,8 +117,13 @@ public class RegisterJobOpeningUI extends AbstractUI {
     }
 
     private CustomerDTO showAndSelectCustomer() {
+        List<CustomerDTO> customerDTOS = this.controller.getCustomersList();
+        if (customerDTOS.isEmpty()){
+            throw new NoSuchElementException("There are no customers to be associated with a job opening.");
+        }
         SelectWidget<CustomerDTO> costumerSelector = new SelectWidget<>("Select a customers that was assigned to you:",
-                this.controller.getCustomersList());
+                customerDTOS);
+
         costumerSelector.show();
         return costumerSelector.selectedElement();
     }

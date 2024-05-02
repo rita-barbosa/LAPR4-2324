@@ -22,6 +22,7 @@ import jobs4u.base.jobopeningmanagement.domain.Address;
 import jobs4u.base.usermanagement.application.GeneratePasswordService;
 import jobs4u.base.usermanagement.domain.BaseRoles;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,6 +54,9 @@ public class CustomerManagementService {
 
     public List<CustomerDTO> getAssignedCustomerCodesList(Username username) {
         List<Customer> customersList = customerRepository.getCustomersByUsername(username);
+        if (customersList == null){
+            return new ArrayList<>();
+        }
         return service.convertToDTO(customersList);
     }
 }

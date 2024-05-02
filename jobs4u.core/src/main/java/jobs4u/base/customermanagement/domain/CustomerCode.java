@@ -11,7 +11,7 @@ public class CustomerCode implements Comparable<CustomerCode>, ValueObject {
     private String customerCode;
 
     protected CustomerCode() {
-
+        //for ORM
     }
 
     public CustomerCode(String code) {
@@ -24,6 +24,10 @@ public class CustomerCode implements Comparable<CustomerCode>, ValueObject {
 
     public String costumerCode() {
         return this.customerCode;
+    }
+
+    public static CustomerCode valueOf(final String code) {
+        return new CustomerCode(code);
     }
 
     @Override

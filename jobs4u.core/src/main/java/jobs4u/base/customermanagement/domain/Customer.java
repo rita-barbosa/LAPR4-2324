@@ -39,6 +39,10 @@ public class Customer implements AggregateRoot<CustomerCode>, DTOable<CustomerDT
         this.customerUser = customerUser;
     }
 
+    public SystemUser customerManager() {
+        return this.customerManager;
+    }
+
 
     @Override
     public boolean sameAs(Object other) {

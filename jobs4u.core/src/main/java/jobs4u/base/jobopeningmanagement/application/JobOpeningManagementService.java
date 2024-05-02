@@ -20,10 +20,10 @@ public class JobOpeningManagementService {
                                          String description, RequirementSpecification requirementsFile,
                                          CustomerDTO companyInfo){
 
-        JobReference lastReference = jobOpeningRepository.lastJobReference(companyInfo.costumerCode());
+        JobReference lastReference = jobOpeningRepository.lastJobReference(companyInfo.customerCode());
 
         JobOpening jobOpening = new JobOpening(function, contractTypeDenomination, workModeDenomination, streetName, city,
-                district, state, zipcode, numVacancies, description, requirementsFile, lastReference);
+                district, state, zipcode, numVacancies, description, requirementsFile, lastReference, companyInfo);
 
         jobOpeningRepository.save(jobOpening);
         return jobOpening;
