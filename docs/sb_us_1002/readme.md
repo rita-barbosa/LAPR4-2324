@@ -11,14 +11,15 @@ This is the first time this user story is being requested.
 **Acceptance Criteria:**
 
 - **1002.1** The "Number of Vacancies" must not be less than or equal to 0.
-- **1002.2** The job reference is based on a customer code that must be unique, which is limited to 10 characters, followed by a sequential number.
+- **1002.2** The job reference is based on a customer code that must be unique, which is limited to 10 characters, followed
+by a sequential number.
 - **1002.3** Regarding the "Company" field in a job opening, it should be the company/customer's name, but when storing it within
 the database, the customer code representing said company should be used.
 - **1002.4** A job opening is only managed by a single Customer Manager, the one that is in charge of the company/customer
 of said job opening.
 - **1002.5** The job opening must have a title/function.
-- **1002.6** The job opening must have a contract type, which must be amongst the types defined.
-- **1002.7** The job opening must have a work mode, which must be amongst the types defined.
+- **1002.6** The job opening must have a contract type
+- **1002.7** The job opening must have a work mode
 - **1002.8** The company's address is obligatory in a job opening.
 
 **Dependencies/References:**
@@ -293,90 +294,101 @@ This topic presents the classes with the patterns applied to them along with jus
 ### 4.5. Tests
 
 
-**Test 1:** Verifies that is not possible to have the number of vacancies be zero or below, or a decimal
+**Test 1:** Verifies that is not possible to have job opening with a number of vacancies
 
 **Refers to Acceptance Criteria:** 1002.1
 
 ````
 @Test
-public void ensureNumberVacanciesValid() {
+public void ensureMustHaveNumberVacancies(){
 ...
 }
 ````
 
-**Test 2:** Verifies that is not possible to have two job references that are the same
+**Test 2:** Verifies that is not possible to have a negative number of vacancies
 
-**Refers to Acceptance Criteria:** 1002.2
+**Refers to Acceptance Criteria:** 1002.1
 
 ````
 @Test
-public void ensureJobReferenceIsUnique() {
+public void ensureNumberVacanciesNegativeIsInvalid() {
 ...
 }
 ````
 
-**Test 3:** Verifies when saving a job opening, on the company field it appears the costumer code
+**Test 3:** Verifies that is not possible to have a zero has the number of vacancies
 
-**Refers to Acceptance Criteria:** 1002.3
+**Refers to Acceptance Criteria:** 1002.1
 
 ````
 @Test
-public void ensureJobOpeningCompanyFieldIsCostumerCode() {
+public void ensureNumberVacanciesZeroIsInvalid() {
 ...
 }
 ````
 
-**Test 4:** Verifies that other Costumer Manager cannot access a job opening of another Costumer Manager
-
-**Refers to Acceptance Criteria:** 1002.4
-
-````
-@Test
-public void ensureOtherCostumerManagerJobOpeningAccessIsDenied() {
-...
-}
-````
-
-**Test 5:** Verifies a job opening cannot exist without a title/function
+**Test 4:** Verifies a job opening cannot exist without a title/function
 
 **Refers to Acceptance Criteria:** 1002.5
 
 ````
 @Test
-public void ensureJobOpeningWithoutTitleIsInvalid() {
+public void ensureMustHaveTitle(){
 ...
 }
 ````
 
-**Test 6:** Verifies a job opening's contract type cannot be different from established contract types
+**Test 5:** Verifies a job opening's contract type cannot be null
 
 **Refers to Acceptance Criteria:** 1002.6
 
 ````
 @Test
-public void ensureJobOpeningHasEstablishedContractType() {
+public void ensureContractTypeNullIsInvalid() {
 ...
 }
 ````
 
-**Test 7:** Verifies a job opening's work mode cannot be different from established work modes
+**Test 6:** Verifies a job opening's contract type cannot be empty
+
+**Refers to Acceptance Criteria:** 1002.6
+
+````
+@Test
+public void ensureContractTypeEmptyIsInvalid() {
+...
+}
+````
+
+**Test 7:** Verifies a job opening's work mode cannot be null
 
 **Refers to Acceptance Criteria:** 1002.7
 
 ````
 @Test
-public void ensureJobOpeningHasEstablishedWorkMode() {
+public void ensureWorkModeNullIsInvalid() {
 ...
 }
 ````
 
-**Test 8:** Verifies a job opening's without an address is not valid
+**Test 8:** Verifies a job opening's work mode cannot be empty
+
+**Refers to Acceptance Criteria:** 1002.7
+
+````
+@Test
+public void ensureWorkModeEmptyIsInvalid() {
+...
+}
+````
+
+**Test 9:** Verifies a job opening's without an address is not valid
 
 **Refers to Acceptance Criteria:** 1002.8
 
 ````
 @Test
-public void ensureJobOpeningHasValidAdress() {
+public void ensureMustHaveAddress(){
 ...
 }
 ````
