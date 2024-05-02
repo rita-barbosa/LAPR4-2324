@@ -67,7 +67,7 @@ void copy_files(int n, char *input_directory, char *output_directory){
             fclose(input_file);
             fclose(output_file);
             
-            printf("The file %s from %s was copied to %s\n", entry->d_name, input_directory, subdirectory);
+            printf("»» COPY ALERT: The file %s from %s was copied to %s\n", entry->d_name, input_directory, subdirectory);
         }
 
 }
