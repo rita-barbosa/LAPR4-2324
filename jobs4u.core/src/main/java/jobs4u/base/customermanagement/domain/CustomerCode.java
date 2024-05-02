@@ -3,10 +3,16 @@ package jobs4u.base.customermanagement.domain;
 import eapli.framework.actions.Actions;
 import eapli.framework.domain.model.ValueObject;
 import eapli.framework.validations.Preconditions;
+import jakarta.persistence.Embeddable;
 
+@Embeddable
 public class CustomerCode implements Comparable<CustomerCode>, ValueObject {
 
-    private final String customerCode;
+    private String customerCode;
+
+    protected CustomerCode() {
+
+    }
 
     public CustomerCode(String code) {
         Preconditions.noneNull(code);
@@ -16,7 +22,7 @@ public class CustomerCode implements Comparable<CustomerCode>, ValueObject {
         this.customerCode = code;
     }
 
-    public String costumerCode(){
+    public String costumerCode() {
         return this.customerCode;
     }
 

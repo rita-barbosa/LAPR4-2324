@@ -49,7 +49,6 @@ public class CustomerManagementService {
         final DomainEvent event = new NewCustomerUserRegisteredEvent(new CompanyName(companyName),
                 new Address(address), new CustomerCode(customerCode), customerManager, customerUser);
         dispatcher.publish(event);
-
     }
 
     public List<CustomerDTO> getAssignedCustomerCodesList(Username username) {
