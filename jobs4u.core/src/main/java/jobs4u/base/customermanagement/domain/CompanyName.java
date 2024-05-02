@@ -11,6 +11,7 @@ public class CompanyName implements ValueObject {
 
     public CompanyName(String companyName) {
         Preconditions.noneNull(companyName);
+        Preconditions.nonEmpty(companyName);
         this.companyName = companyName;
     }
 

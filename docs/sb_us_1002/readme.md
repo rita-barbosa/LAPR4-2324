@@ -11,14 +11,15 @@ This is the first time this user story is being requested.
 **Acceptance Criteria:**
 
 - **1002.1** The "Number of Vacancies" must not be less than or equal to 0.
-- **1002.2** The job reference is based on a customer code that must be unique, which is limited to 10 characters, followed by a sequential number.
+- **1002.2** The job reference is based on a customer code that must be unique, which is limited to 10 characters, followed
+by a sequential number.
 - **1002.3** Regarding the "Company" field in a job opening, it should be the company/customer's name, but when storing it within
 the database, the customer code representing said company should be used.
 - **1002.4** A job opening is only managed by a single Customer Manager, the one that is in charge of the company/customer
 of said job opening.
 - **1002.5** The job opening must have a title/function.
-- **1002.6** The job opening must have a contract type, which must be amongst the types defined.
-- **1002.7** The job opening must have a work mode, which must be amongst the types defined.
+- **1002.6** The job opening must have a contract type
+- **1002.7** The job opening must have a work mode
 - **1002.8** The company's address is obligatory in a job opening.
 
 **Dependencies/References:**
@@ -293,119 +294,209 @@ This topic presents the classes with the patterns applied to them along with jus
 ### 4.5. Tests
 
 
-**Test 1:** Verifies that is not possible to have the number of vacancies be zero or below, or a decimal
+**Test 1:** Verifies that is not possible to have job opening with a number of vacancies
 
 **Refers to Acceptance Criteria:** 1002.1
 
 ````
 @Test
-public void ensureNumberVacanciesValid() {
+public void ensureMustHaveNumberVacancies(){
 ...
 }
 ````
 
-**Test 2:** Verifies that is not possible to have two job references that are the same
+**Test 2:** Verifies that is not possible to have a negative number of vacancies
 
-**Refers to Acceptance Criteria:** 1002.2
+**Refers to Acceptance Criteria:** 1002.1
 
 ````
 @Test
-public void ensureJobReferenceIsUnique() {
+public void ensureNumberVacanciesNegativeIsInvalid() {
 ...
 }
 ````
 
-**Test 3:** Verifies when saving a job opening, on the company field it appears the costumer code
+**Test 3:** Verifies that is not possible to have a zero has the number of vacancies
 
-**Refers to Acceptance Criteria:** 1002.3
+**Refers to Acceptance Criteria:** 1002.1
 
 ````
 @Test
-public void ensureJobOpeningCompanyFieldIsCostumerCode() {
+public void ensureNumberVacanciesZeroIsInvalid() {
 ...
 }
 ````
 
-**Test 4:** Verifies that other Costumer Manager cannot access a job opening of another Costumer Manager
-
-**Refers to Acceptance Criteria:** 1002.4
-
-````
-@Test
-public void ensureOtherCostumerManagerJobOpeningAccessIsDenied() {
-...
-}
-````
-
-**Test 5:** Verifies a job opening cannot exist without a title/function
+**Test 4:** Verifies a job opening cannot exist without a title/function
 
 **Refers to Acceptance Criteria:** 1002.5
 
 ````
 @Test
-public void ensureJobOpeningWithoutTitleIsInvalid() {
+public void ensureMustHaveTitle(){
 ...
 }
 ````
 
-**Test 6:** Verifies a job opening's contract type cannot be different from established contract types
+**Test 5:** Verifies a job opening's contract type cannot be null
 
 **Refers to Acceptance Criteria:** 1002.6
 
 ````
 @Test
-public void ensureJobOpeningHasEstablishedContractType() {
+public void ensureContractTypeNullIsInvalid() {
 ...
 }
 ````
 
-**Test 7:** Verifies a job opening's work mode cannot be different from established work modes
+**Test 6:** Verifies a job opening's contract type cannot be empty
+
+**Refers to Acceptance Criteria:** 1002.6
+
+````
+@Test
+public void ensureContractTypeEmptyIsInvalid() {
+...
+}
+````
+
+**Test 7:** Verifies a job opening's work mode cannot be null
 
 **Refers to Acceptance Criteria:** 1002.7
 
 ````
 @Test
-public void ensureJobOpeningHasEstablishedWorkMode() {
+public void ensureWorkModeNullIsInvalid() {
 ...
 }
 ````
 
-**Test 8:** Verifies a job opening's without an address is not valid
+**Test 8:** Verifies a job opening's work mode cannot be empty
+
+**Refers to Acceptance Criteria:** 1002.7
+
+````
+@Test
+public void ensureWorkModeEmptyIsInvalid() {
+...
+}
+````
+
+**Test 9:** Verifies a job opening's without an address is not valid
 
 **Refers to Acceptance Criteria:** 1002.8
 
 ````
 @Test
-public void ensureJobOpeningHasValidAdress() {
+public void ensureMustHaveAddress(){
 ...
 }
 ````
 
-
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+The following code belongs to the UI of this functionality. All its methods are according to the design.
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+The doShow() method, declared in the AbstractUI interface.
+
+````
+private final RegisterJobOpeningController controller = new RegisterJobOpeningController();
+
+@Override
+protected boolean doShow() {
+
+    //Selectable attributes
+    CustomerDTO companyInfo;
+    try {
+        companyInfo = showAndSelectCustomer();
+    }catch (NoSuchElementException e){
+        System.out.println(e.getMessage());
+        return false;
+    }
+    ContractTypeDTO contractTypeDenomination = showAndSelectContractType();
+    WorkModeDTO workModeDenomination = showAndSelectWorkMode();
+    RequirementSpecificationDTO requirementsFileName = showAndSelectRequirementSpecification();
+
+    //Writable Attributes
+    String function = Console.readNonEmptyLine("What's the job's title?", "Providing a job's title is obligatory.");
+
+    String description = Console.readNonEmptyLine("Provide a brief description for the job opening.",
+            "A brief description is obligatory.");
+
+    int numVacancies = WriteNumberVacancies();
+
+    System.out.println("\nRegarding the job's opening address:");
+    String streetName = Console.readNonEmptyLine("What's the street name?",
+            "Providing a job opening address's street name is obligatory.");
+    String city = Console.readNonEmptyLine("What's the city?",
+            "Providing a job opening address's city is obligatory.");
+    String district = Console.readNonEmptyLine("What's the district?",
+            "Providing a job opening address's district is obligatory.");
+    String streetNumber = Console.readNonEmptyLine("What's the street number?",
+            "Providing a job opening address's state is obligatory.");
+
+    String zipcode = WriteZipcode();
+
+    try {
+        Optional< JobOpening> jobOpening = this.controller.registerJobOpening(function, contractTypeDenomination,
+                workModeDenomination, streetName, city, district, streetNumber, zipcode, numVacancies, description,
+                requirementsFileName, companyInfo);
+        if (jobOpening.isEmpty()){
+            throw new IntegrityViolationException();
+        }else{
+            System.out.println("The job opening was successfully registered!\n");
+        }
+    } catch (final IntegrityViolationException | ConcurrencyException e) {
+        System.out.println("An error occurred while registering the job opening.\n" + e.getMessage());
+    }
+
+    return false;
+}
+````
+
+The only customers that are selectable are the ones belonging to the current user, a Customer Manager. To ensure layer
+encapsulation, a DTO was used.
+
+````
+public List<CustomerDTO> getCustomersList() {
+    authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
+    Optional<SystemUser> user = authz.loggedinUserWithPermissions(BaseRoles.CUSTOMER_MANAGER);
+    if (user.isPresent()) {
+        return customerManagementService.getAssignedCustomerCodesList(user.get().identity());
+    }
+    throw new NoSuchElementException("It was not possible to retrieve the user's data.");
+}
+````
+
+To register a job opening, the requirements must be retrieved from the database.
+
+Implementation of the method getFileByName(filename) in JpaRequirementSpecificationRepository.
+
+````
+@Override
+public Optional<RequirementSpecification> getFileByName(String filename) {
+    final Map<String, Object> params = new HashMap<>();
+    params.put("filename", filename);
+    return matchOne("e.requirementName.name=:filename", params);
+}
+````
+
+**Major Commits**
+
+| Commit  | Brief Description                           |
+|:--------|:--------------------------------------------|
+| 670457b | Initial Classes Setup for the Functionality |
+| 8eb4a92 | Persistence modifications                   |
+| bbeb746 | Test Classes                                |
+
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
-
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
+This functionality has incorporated US1009, regarding the selection of requirements.
+The job openings created in this User Story will later be showed in US1007, to set up a recruitment process.
 
 ## 7. Observations
 
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
 
 ### 7.1 References
 

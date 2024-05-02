@@ -23,6 +23,9 @@
         <class>jobs4u.base.jobopeningmanagement.domain.WorkMode</class>
         <class>jobs4u.base.jobopeningmanagement.domain.JobOpening</class>
         <class>jobs4u.base.requirementsmanagement.domain.RequirementSpecification</class>
+        <class>jobs4u.base.candidatemanagement.Candidate</class>
+        <class>jobs4u.base.jobopeningmanagement.domain.rank.Rank</class>
+        <class>jobs4u.base.jobopeningmanagement.domain.rank.RankEntry</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:tcp://localhost/~/jobs4u"/>

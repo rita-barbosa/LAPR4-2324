@@ -1,6 +1,7 @@
 package jobs4u.base.jobopeningmanagement.domain;
 
 import eapli.framework.domain.model.AggregateRoot;
+import eapli.framework.domain.model.DomainEntities;
 import eapli.framework.domain.model.ValueObject;
 import eapli.framework.representations.dto.DTOable;
 import eapli.framework.validations.Preconditions;
@@ -10,6 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "T_WORKMODE")
 public class WorkMode implements DTOable<WorkModeDTO>, ValueObject, AggregateRoot<String> {
@@ -18,6 +21,8 @@ public class WorkMode implements DTOable<WorkModeDTO>, ValueObject, AggregateRoo
     private String denomination;
 
     public WorkMode(String denomination) {
+        Preconditions.noneNull(denomination);
+        Preconditions.nonEmpty(denomination, "Contract type denomination must not be empty");
         this.denomination = denomination;
     }
 
@@ -26,9 +31,11 @@ public class WorkMode implements DTOable<WorkModeDTO>, ValueObject, AggregateRoo
     }
 
     public static WorkMode valueOf(final String workModeDenomination) {
-        Preconditions.noneNull(workModeDenomination);
-        Preconditions.nonEmpty(workModeDenomination);
         return new WorkMode(workModeDenomination);
+    }
+
+    public String denomination() {
+        return denomination;
     }
 
     @Override
@@ -44,5 +51,18 @@ public class WorkMode implements DTOable<WorkModeDTO>, ValueObject, AggregateRoo
     @Override
     public String identity() {
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof WorkMode)) return false;
+        WorkMode workMode = (WorkMode) o;
+        return Objects.equals(denomination, workMode.denomination);
+    }
+
+    @Override
+    public int hashCode() {
+        return DomainEntities.hashCode(this);
     }
 }

@@ -4,6 +4,8 @@ import eapli.framework.domain.model.ValueObject;
 import eapli.framework.validations.Preconditions;
 import jakarta.persistence.Embeddable;
 
+import java.util.Objects;
+
 @Embeddable
 public class RequirementDescription implements ValueObject {
 
@@ -21,5 +23,18 @@ public class RequirementDescription implements ValueObject {
 
     public String description(){
         return this.description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RequirementDescription)) return false;
+        RequirementDescription that = (RequirementDescription) o;
+        return Objects.equals(description, that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(description);
     }
 }

@@ -1,6 +1,7 @@
 package jobs4u.base.jobopeningmanagement.domain;
 
 import eapli.framework.domain.model.AggregateRoot;
+import eapli.framework.domain.model.DomainEntities;
 import eapli.framework.representations.dto.DTOable;
 import eapli.framework.validations.Preconditions;
 
@@ -8,6 +9,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
+
+import java.util.Objects;
 
 @Entity
 @Table(name = "T_CONTRACTTYPE")
@@ -17,6 +20,8 @@ public class ContractType implements DTOable<ContractTypeDTO>, AggregateRoot<Str
     private String denomination;
 
     public ContractType(String denomination) {
+        Preconditions.noneNull(denomination);
+        Preconditions.nonEmpty(denomination, "Contract type denomination must not be empty");
         this.denomination = denomination;
     }
 
@@ -25,7 +30,6 @@ public class ContractType implements DTOable<ContractTypeDTO>, AggregateRoot<Str
     }
 
     public static ContractType valueOf(String contractTypeDenomination) {
-        Preconditions.nonEmpty(contractTypeDenomination, "Contract type denomination must not be empty");
         return new ContractType(contractTypeDenomination);
     }
 
@@ -49,5 +53,18 @@ public class ContractType implements DTOable<ContractTypeDTO>, AggregateRoot<Str
     @Override
     public String identity() {
         return denomination;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ContractType)) return false;
+        ContractType that = (ContractType) o;
+        return Objects.equals(getDenomination(), that.getDenomination());
+    }
+
+    @Override
+    public int hashCode() {
+        return DomainEntities.hashCode(this);
     }
 }
