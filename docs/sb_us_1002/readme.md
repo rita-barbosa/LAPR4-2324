@@ -393,31 +393,110 @@ public void ensureMustHaveAddress(){
 }
 ````
 
-
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+The following code belongs to the UI of this functionality. All its methods are according to the design.
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+The doShow() method, declared in the AbstractUI interface.
+
+````
+private final RegisterJobOpeningController controller = new RegisterJobOpeningController();
+
+@Override
+protected boolean doShow() {
+
+    //Selectable attributes
+    CustomerDTO companyInfo;
+    try {
+        companyInfo = showAndSelectCustomer();
+    }catch (NoSuchElementException e){
+        System.out.println(e.getMessage());
+        return false;
+    }
+    ContractTypeDTO contractTypeDenomination = showAndSelectContractType();
+    WorkModeDTO workModeDenomination = showAndSelectWorkMode();
+    RequirementSpecificationDTO requirementsFileName = showAndSelectRequirementSpecification();
+
+    //Writable Attributes
+    String function = Console.readNonEmptyLine("What's the job's title?", "Providing a job's title is obligatory.");
+
+    String description = Console.readNonEmptyLine("Provide a brief description for the job opening.",
+            "A brief description is obligatory.");
+
+    int numVacancies = WriteNumberVacancies();
+
+    System.out.println("\nRegarding the job's opening address:");
+    String streetName = Console.readNonEmptyLine("What's the street name?",
+            "Providing a job opening address's street name is obligatory.");
+    String city = Console.readNonEmptyLine("What's the city?",
+            "Providing a job opening address's city is obligatory.");
+    String district = Console.readNonEmptyLine("What's the district?",
+            "Providing a job opening address's district is obligatory.");
+    String streetNumber = Console.readNonEmptyLine("What's the street number?",
+            "Providing a job opening address's state is obligatory.");
+
+    String zipcode = WriteZipcode();
+
+    try {
+        Optional< JobOpening> jobOpening = this.controller.registerJobOpening(function, contractTypeDenomination,
+                workModeDenomination, streetName, city, district, streetNumber, zipcode, numVacancies, description,
+                requirementsFileName, companyInfo);
+        if (jobOpening.isEmpty()){
+            throw new IntegrityViolationException();
+        }else{
+            System.out.println("The job opening was successfully registered!\n");
+        }
+    } catch (final IntegrityViolationException | ConcurrencyException e) {
+        System.out.println("An error occurred while registering the job opening.\n" + e.getMessage());
+    }
+
+    return false;
+}
+````
+
+The only customers that are selectable are the ones belonging to the current user, a Customer Manager. To ensure layer
+encapsulation, a DTO was used.
+
+````
+public List<CustomerDTO> getCustomersList() {
+    authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
+    Optional<SystemUser> user = authz.loggedinUserWithPermissions(BaseRoles.CUSTOMER_MANAGER);
+    if (user.isPresent()) {
+        return customerManagementService.getAssignedCustomerCodesList(user.get().identity());
+    }
+    throw new NoSuchElementException("It was not possible to retrieve the user's data.");
+}
+````
+
+To register a job opening, the requirements must be retrieved from the database.
+
+Implementation of the method getFileByName(filename) in JpaRequirementSpecificationRepository.
+
+````
+@Override
+public Optional<RequirementSpecification> getFileByName(String filename) {
+    final Map<String, Object> params = new HashMap<>();
+    params.put("filename", filename);
+    return matchOne("e.requirementName.name=:filename", params);
+}
+````
+
+**Major Commits**
+
+| Commit  | Brief Description                           |
+|:--------|:--------------------------------------------|
+| 670457b | Initial Classes Setup for the Functionality |
+| 8eb4a92 | Persistence modifications                   |
+| bbeb746 | Test Classes                                |
+
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
-
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
+This functionality has incorporated US1009, regarding the selection of requirements.
+The job openings created in this User Story will later be showed in US1007, to set up a recruitment process.
 
 ## 7. Observations
 
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
 
 ### 7.1 References
 
