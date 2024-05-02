@@ -27,6 +27,7 @@ import jobs4u.base.Application;
 import jobs4u.base.app.backoffice.console.presentation.authz.AddUserUI;
 import jobs4u.base.app.backoffice.console.presentation.authz.EnableDisableUserAction;
 import jobs4u.base.app.backoffice.console.presentation.authz.ListUsersAction;
+import jobs4u.base.app.backoffice.console.presentation.customer.RegisterCustomerAction;
 import jobs4u.base.app.backoffice.console.presentation.registerJobOpening.RegisterJobOpeningAction;
 import jobs4u.base.app.common.console.presentation.authz.MyUserMenu;
 import jobs4u.base.usermanagement.domain.BaseRoles;
@@ -61,8 +62,9 @@ public class MainMenu extends AbstractUI {
 
 
     // CUSTOMER MANAGER SETTINGS
-    private static final int REGISTER_JOB_OPENING_OPTION = 1;
-    private static final int LIST_JOB_OPENINGS_OPTION = 2;
+    private static final int REGISTER_JOB_OPENING = 1;
+    private static final int LIST_JOB_OPENINGS = 2;
+    private static final int REGISTER_CUSTOMERS = 3;
 
     // MAIN MENU
     private static final int MY_USER_OPTION = 1;
@@ -135,8 +137,9 @@ public class MainMenu extends AbstractUI {
     private Menu buildCustomerManagerSettingsMenu() {
         final Menu menu = new Menu("Settings >");
 
-        menu.addItem(REGISTER_JOB_OPENING_OPTION, "Register a job opening", new RegisterJobOpeningAction());
-        menu.addItem(LIST_JOB_OPENINGS_OPTION, "List job openings", new ShowMessageAction("Not implemented yet"));
+        menu.addItem(REGISTER_JOB_OPENING, "Register a job opening", new RegisterJobOpeningAction());
+        menu.addItem(LIST_JOB_OPENINGS, "List job openings", new ShowMessageAction("Not implemented yet"));
+        menu.addItem(REGISTER_CUSTOMERS,"Register a Customer",new RegisterCustomerAction());
         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
 
         return menu;

@@ -44,7 +44,7 @@ public class CustomerManagementService {
         final Set<Role> roles = new HashSet<>();
         roles.add(BaseRoles.CUSTOMER_USER);
 
-        SystemUser customerUser = userSvc.registerNewUser(email, password, companyName, " ", email, roles);
+        SystemUser customerUser = userSvc.registerNewUser(email, password, companyName, "Customer", email, roles);
 
         final DomainEvent event = new NewCustomerUserRegisteredEvent(new CompanyName(companyName),
                 new Address(address), new CustomerCode(customerCode), customerManager, customerUser);

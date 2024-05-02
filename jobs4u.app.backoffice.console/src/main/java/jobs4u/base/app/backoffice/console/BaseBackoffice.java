@@ -26,6 +26,8 @@ package jobs4u.base.app.backoffice.console;
 import jobs4u.base.app.backoffice.console.presentation.MainMenu;
 import jobs4u.base.app.common.console.BaseApplication;
 import jobs4u.base.app.common.console.presentation.authz.LoginUI;
+import jobs4u.base.customermanagement.application.eventhandlers.NewCustomerUserRegisteredWatchDog;
+import jobs4u.base.customermanagement.domain.events.NewCustomerUserRegisteredEvent;
 import jobs4u.base.infrastructure.authz.AuthenticationCredentialHandler;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.usermanagement.domain.BasePasswordPolicy;
@@ -80,8 +82,6 @@ public final class BaseBackoffice extends BaseApplication {
     @SuppressWarnings("unchecked")
     @Override
     protected void doSetupEventHandlers(final EventDispatcher dispatcher) {
-//        dispatcher.subscribe(new NewUserRegisteredFromSignupWatchDog(),
-//                NewUserRegisteredFromSignupEvent.class);
-//        dispatcher.subscribe(new SignupAcceptedWatchDog(), SignupAcceptedEvent.class);
+        dispatcher.subscribe(new NewCustomerUserRegisteredWatchDog(), NewCustomerUserRegisteredEvent.class);
     }
 }

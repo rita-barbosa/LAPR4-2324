@@ -14,19 +14,20 @@ import jobs4u.base.jobopeningmanagement.domain.Address;
 public class Customer implements AggregateRoot<CustomerCode>, DTOable<CustomerDTO> {
 
     private static final long serialVersionUID = 1L;
+
+    @Id
+    private Long id;
     @Version
     private Long version;
-    @Id
     private CustomerCode code;
     private CompanyName name;
     private Address address;
-    @OneToOne
-    private SystemUser customerManager;
     @ManyToOne
+    private SystemUser customerManager;
+    @OneToOne
     private SystemUser customerUser;
 
-    public Customer() {
-        //for ORM
+    protected Customer() {
     }
 
     public Customer(CompanyName companyName, Address address, CustomerCode customerCode, SystemUser customerManager, SystemUser customerUser) {
