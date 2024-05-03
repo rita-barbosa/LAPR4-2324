@@ -21,6 +21,7 @@
 package jobs4u.base.persistence.impl.jpa;
 
 import jobs4u.base.Application;
+import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
 import jobs4u.base.clientusermanagement.repositories.SignupRequestRepository;
 import jobs4u.base.customermanagement.repository.CustomerRepository;
 import jobs4u.base.infrastructure.persistence.RepositoryFactory;
@@ -119,12 +120,11 @@ public class JpaRepositoryFactory implements RepositoryFactory {
     public JobOpeningRepository jobOpenings() {
         return new JpaJobOpeningRepository(Application.settings().getPersistenceUnitName());
     }
-    @Override
-    public CandidateRepository candidates(final TransactionalContext autoTx) {
+    public JpaCandidateRepository candidates(final TransactionalContext autoTx) {
         return new JpaCandidateRepository(autoTx);
     }
     @Override
-    public CandidateRepository candidates() {
+    public JpaCandidateRepository candidates() {
         return new JpaCandidateRepository((Application.settings().getPersistenceUnitName()));
     }
 

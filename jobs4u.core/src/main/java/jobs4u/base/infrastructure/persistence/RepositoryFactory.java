@@ -185,6 +185,8 @@ public interface RepositoryFactory {
      */
     ApplicationRepository applications();
 
+    CandidateRepository candidates(TransactionalContext tx);
+
     CandidateRepository candidates();
 
 }
