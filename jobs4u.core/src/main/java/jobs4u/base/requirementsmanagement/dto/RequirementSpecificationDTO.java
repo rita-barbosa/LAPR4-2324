@@ -6,8 +6,6 @@ import jobs4u.base.requirementsmanagement.domain.RequirementDescription;
 import jobs4u.base.requirementsmanagement.domain.RequirementName;
 import lombok.AllArgsConstructor;
 
-@DTO
-@AllArgsConstructor
 public class RequirementSpecificationDTO {
 
     private final String name;
@@ -19,15 +17,21 @@ public class RequirementSpecificationDTO {
         this.description = description;
     }
 
-    public String filename(){
+    public RequirementSpecificationDTO(String name, String description, String plugin) {
+        this.name = name;
+        this.description = description;
+        this.plugin = plugin;
+    }
+
+    public String filename() {
         return this.name;
     }
 
     @Override
     public String toString() {
-        if (plugin == null){
-            return String.format("Name: %s\nDescription: %s", name, description);
+        if (plugin == null) {
+            return String.format("Name: %s | Description: %s", name, description);
         }
-        return String.format("Name: %s | Plugin : %s |\nDescription: %s", name, plugin, description);
+        return String.format("Name: %s | Plugin : %s | Description: %s", name, plugin, description);
     }
 }

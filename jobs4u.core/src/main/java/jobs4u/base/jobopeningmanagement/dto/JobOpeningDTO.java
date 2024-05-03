@@ -6,9 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 
-@DTO
-@Data
-@AllArgsConstructor
 public class JobOpeningDTO {
 
     private String function;
@@ -16,8 +13,6 @@ public class JobOpeningDTO {
     private String contractType;
 
     private String workMode;
-
-    private String status;
 
     private String jobReference;
 
@@ -28,36 +23,29 @@ public class JobOpeningDTO {
     private Integer numVacancies;
 
     private String company;
-    private String customerCode;
 
-
-//    public JobOpeningDTO(String function, String contractType, String workMode, String status, String jobReference, String address, String description, Integer numVacancies, String company, CustomerCode customerCode) {
-//        this.function = function;
-//        this.contractType = contractType;
-//        this.workMode = workMode;
-//        this.status = status;
-//        this.jobReference = jobReference;
-//        this.address = address;
-//        this.description = description;
-//        this.numVacancies = numVacancies;
-//        this.company = company;
-//        this.customerCode = customerCode;
-//    }
-
+    public JobOpeningDTO(String function, String contractType, String workMode, String jobReference, String address, String description, Integer numVacancies, String company) {
+        this.function = function;
+        this.contractType = contractType;
+        this.workMode = workMode;
+        this.jobReference = jobReference;
+        this.address = address;
+        this.description = description;
+        this.numVacancies = numVacancies;
+        this.company = company;
+    }
 
     @Override
     public String toString() {
-        return String.format("#Job Reference: %s\n" +
-                        "#Function: %s\n" +
-                        "#Contract Type: %s\n" +
-                        "#Work Mode: %s\n" +
-                        "#Status: %s\n" +
-                        "#Address: %s\n" +
-                        "#Description: %s\n" +
-                        "#Number of Vacancies: %d\n" +
-                        "#Company: %s\n" +
-                        "#Customer Code: %s",
-                jobReference, function, contractType, workMode, status, address,
-                description, numVacancies, company, customerCode);
+        return String.format("»» Job Reference: %s\n" +
+                        " » Function: %s |" +
+                        " Contract Type: %s |" +
+                        " Work Mode: %s\n" +
+                        " » Address: %s\n" +
+                        " » Description: %s\n" +
+                        " » Number of Vacancies: %d\n" +
+                        " » Company: %s\n",
+                jobReference, function, contractType, workMode, address,
+                description, numVacancies, company);
     }
 }
