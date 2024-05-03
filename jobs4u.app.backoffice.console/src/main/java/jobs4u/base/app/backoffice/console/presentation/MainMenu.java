@@ -161,7 +161,7 @@ public class MainMenu extends AbstractUI {
 
         menu.addItem(LIST_USERS_OPTION, "List all Users", new ListUsersAction());
         menu.addItem(DEACTIVATE_USER_OPTION, "Enable/Disable User", new EnableDisableUserAction());
-        menu.addItem(5, "Add User", new ListJobOpeningsUI()::show);
+//        menu.addItem(5, "Add User", new ListJobOpeningsUI()::show);
         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
 
         return menu;
