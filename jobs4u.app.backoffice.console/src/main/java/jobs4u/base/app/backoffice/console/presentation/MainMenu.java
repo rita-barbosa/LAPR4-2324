@@ -27,6 +27,7 @@ import jobs4u.base.Application;
 import jobs4u.base.app.backoffice.console.presentation.authz.AddUserUI;
 import jobs4u.base.app.backoffice.console.presentation.authz.EnableDisableUserAction;
 import jobs4u.base.app.backoffice.console.presentation.authz.ListUsersAction;
+import jobs4u.base.app.backoffice.console.presentation.candidate.RegisterCandidateAction;
 import jobs4u.base.app.backoffice.console.presentation.customer.RegisterCustomerAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.RegisterJobOpeningAction;
 import jobs4u.base.app.common.console.presentation.authz.MyUserMenu;
@@ -59,7 +60,9 @@ public class MainMenu extends AbstractUI {
     private static final int ADD_USER_OPTION = 1;
     private static final int LIST_USERS_OPTION = 2;
     private static final int DEACTIVATE_USER_OPTION = 3;
-
+    
+    //OPERATOR
+    private static final int REGISTER_CANDIDATE = 1;
 
     // CUSTOMER MANAGER SETTINGS
     private static final int REGISTER_JOB_OPENING = 1;
@@ -70,6 +73,7 @@ public class MainMenu extends AbstractUI {
     private static final int MY_USER_OPTION = 1;
     private static final int USERS_OPTION = 2;
     private static final int SETTINGS_OPTION = 3;
+    private static final int OPERATORS_OPTION =4;
 
     private static final String SEPARATOR_LABEL = "--------------";
 
@@ -124,6 +128,10 @@ public class MainMenu extends AbstractUI {
             final Menu candidateMenu = buildCustomerManagerSettingsMenu();
             mainMenu.addSubMenu(SETTINGS_OPTION, candidateMenu);
         }
+        if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.OPERATOR)) {
+            final Menu candidateMenu = buildOperatorCandidateMenu();
+            mainMenu.addSubMenu(OPERATORS_OPTION, candidateMenu);
+        }
 
         if (!Application.settings().isMenuLayoutHorizontal()) {
             mainMenu.addItem(MenuItem.separator(SEPARATOR_LABEL));
@@ -132,6 +140,12 @@ public class MainMenu extends AbstractUI {
         mainMenu.addItem(EXIT_OPTION, "Exit", new ExitWithMessageAction("Closing."));
 
         return mainMenu;
+    }
+
+    private Menu buildOperatorCandidateMenu() {
+        final Menu menu = new Menu("Operator >");
+        menu.addItem(REGISTER_CANDIDATE,"Register a new candidate",new RegisterCandidateAction());
+        return menu;
     }
 
     private Menu buildCustomerManagerSettingsMenu() {
