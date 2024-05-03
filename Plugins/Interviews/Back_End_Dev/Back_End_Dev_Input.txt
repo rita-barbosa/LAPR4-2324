@@ -1,0 +1,54 @@
+QUESTION 1
+Type of Question: TRUE/FALSE
+"DDD is an important aspect of developing any new app."
+R:. True
+
+QUESTION 2
+Type of Question: SHORT ANSWER
+"Do you deserve a salary above or below 10k a year?"
+R:. Below
+
+QUESTION 3
+Type of Question: SINGLE CHOICE
+"Which of the following is the abbreviation of the DIE principle?"
+1) "Duplication Is Evil"
+2) "Double Inspiration Exists"
+3) "Damaging Intentions Endure"
+4) "Doing Innovative Experiences"
+R:. 1
+
+QUESTION 4
+Type of Question: MULTIPLE CHOICE
+"Which of the following are commonly used back-end development languages?"
+1) "Python"
+2) "HTML"
+3) "CSS"
+4) "SQL"
+5) "Java"
+6) "C"
+R:. 1, 5, 6
+
+QUESTION 5
+Type of Question: NUMBER
+"What is the binary representation of 16?"
+R:. 00010000
+
+QUESTION 6
+Type of Question: DECIMAL NUMBER
+"What is the value of pi? (two decimal places)"
+R:. 3.14
+
+QUESTION 7
+Type of Question: DATE
+"When was released the programming language Python?" DD/MM/YYYY
+R:. 20/02/1991
+
+QUESTION 8
+Type of Question: TIME
+"How many seconds exists in one minute?"
+R:. 60
+
+QUESTION 9
+Type of Question: NUMERIC SCALE
+"On a scale of 1 to 5 how important is GIT?"
+R:. 5

@@ -26,7 +26,7 @@ public class JpaJobOpeningRepository
     public JobReference lastJobReference(String customerCode) {
         int size = (int) size();
         JobReference lastJobReference = null;
-        if (size == 0){
+        if (size == 0) {
             System.out.println("First job opening being registered in the system!");
             return new JobReference(customerCode, 0);
         }
@@ -39,4 +39,10 @@ public class JpaJobOpeningRepository
         }
         return lastJobReference;
     }
+
+    @Override
+    public Iterable<JobOpening> findAllJobOpeningsNotStarted() {
+        return match("e.status = 'UNFINISHED' OR e.status ='NOT_STARTED'");
+    }
+
 }

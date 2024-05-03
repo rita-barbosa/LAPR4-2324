@@ -1,27 +1,33 @@
 package jobs4u.base.requirementsmanagement.dto;
 
+import eapli.framework.representations.dto.DTO;
 import jobs4u.base.requirementsmanagement.domain.PluginJarFile;
 import jobs4u.base.requirementsmanagement.domain.RequirementDescription;
 import jobs4u.base.requirementsmanagement.domain.RequirementName;
+import lombok.AllArgsConstructor;
 
+@DTO
+@AllArgsConstructor
 public class RequirementSpecificationDTO {
 
-    private String filename;
-    private String description;
+    private final String name;
+    private final String description;
     private String plugin;
 
-    public RequirementSpecificationDTO(RequirementName requirementName, RequirementDescription description) {
-        this.filename = requirementName.name() ;
-        this.description = description.description();
-    }
-
-    public RequirementSpecificationDTO(RequirementName requirementName, RequirementDescription description, PluginJarFile plugin) {
-        this.filename = requirementName.name() ;
-        this.description = description.description();
-        this.plugin = plugin.pluginName();
+    public RequirementSpecificationDTO(String requirementName, String description) {
+        this.name = requirementName;
+        this.description = description;
     }
 
     public String filename(){
-        return this.filename;
+        return this.name;
+    }
+
+    @Override
+    public String toString() {
+        if (plugin == null){
+            return String.format("Name: %s\nDescription: %s", name, description);
+        }
+        return String.format("Name: %s | Plugin : %s |\nDescription: %s", name, plugin, description);
     }
 }

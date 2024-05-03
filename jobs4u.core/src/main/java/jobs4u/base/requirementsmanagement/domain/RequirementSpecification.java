@@ -9,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jobs4u.base.requirementsmanagement.dto.RequirementSpecificationDTO;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "T_REQUIREMENTSPECIFICATION")
 public class RequirementSpecification implements DTOable<RequirementSpecificationDTO>, AggregateRoot<RequirementName> {
@@ -27,13 +29,13 @@ public class RequirementSpecification implements DTOable<RequirementSpecificatio
         this.plugin = plugin;
     }
 
-    public RequirementSpecification() {
+    protected RequirementSpecification() {
         //for ORM
     }
 
     @Override
     public RequirementSpecificationDTO toDTO() {
-        return new RequirementSpecificationDTO(requirementName, description);
+        return new RequirementSpecificationDTO(requirementName.name(), description.description(),plugin.pluginName());
     }
 
     @Override
@@ -61,5 +63,13 @@ public class RequirementSpecification implements DTOable<RequirementSpecificatio
     @Override
     public int hashCode() {
         return DomainEntities.hashCode(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof RequirementSpecification)) return false;
+        RequirementSpecification that = (RequirementSpecification) o;
+        return Objects.equals(requirementName, that.requirementName) && Objects.equals(description, that.description) && Objects.equals(plugin, that.plugin);
     }
 }

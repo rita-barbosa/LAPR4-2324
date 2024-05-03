@@ -24,7 +24,7 @@ public class JpaRequirementSpecificationRepository
 
 
     @Override
-    public List<RequirementSpecification> requirementsSpecifications() {
+    public Iterable<RequirementSpecification> requirementsSpecifications() {
         List<RequirementSpecification> requirementsList = new ArrayList<>();
         Iterable<RequirementSpecification> requirementsSpecifications = findAll();
         for (RequirementSpecification req : requirementsSpecifications) {
@@ -37,6 +37,6 @@ public class JpaRequirementSpecificationRepository
     public Optional<RequirementSpecification> getFileByName(String filename) {
         final Map<String, Object> params = new HashMap<>();
         params.put("filename", filename);
-        return matchOne("e -> e.requirementName.name=:filename", params);
+        return matchOne("e.requirementName.name=:filename", params);
     }
 }

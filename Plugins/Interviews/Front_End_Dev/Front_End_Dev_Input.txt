@@ -1,0 +1,54 @@
+QUESTION 1
+Type of Question: TRUE/FALSE
+"Is Java a high-level language?"
+R:. True
+
+QUESTION 2
+Type of Question: SHORT ANSWER
+"What does SQL stands for?"
+R:. Structured Query Language
+
+QUESTION 3
+Type of Question: SINGLE CHOICE
+"Which of the following is an object-oriented programming language?"
+1) "Python"
+2) "HTML"
+3) "Java"
+4) "SQL"
+R:. Java
+
+QUESTION 4
+Type of Question: MULTIPLE CHOICE
+"Which of the following are commonly used front-end web development languages?"
+1) "HTML"
+2) "Python"
+3) "Java"
+4) "SQL"
+5) "CSS"
+6) "JavaScript"
+R:. 1, 5, 6
+
+QUESTION 5
+Type of Question: NUMBER
+"How many bits are in a byte?"
+R:. 8
+
+QUESTION 6
+Type of Question: DECIMAL NUMBER
+"What is the value of pi? (two decimal places)"
+R:. 3.14
+
+QUESTION 7
+Type of Question: DATE
+"When was released the programming language Python?" DD/MM/YYYY
+R:. 20/02/1991
+
+QUESTION 8
+Type of Question: TIME
+"How many seconds exists in one minute?"
+R:. 60
+
+QUESTION 9
+Type of Question: NUMERIC SCALE
+"On a scale of 1 to 5 how important is GIT?"
+R:. 5

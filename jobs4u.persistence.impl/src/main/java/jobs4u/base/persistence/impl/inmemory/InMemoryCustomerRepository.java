@@ -6,13 +6,21 @@ import jobs4u.base.customermanagement.domain.Customer;
 import jobs4u.base.customermanagement.domain.CustomerCode;
 import jobs4u.base.customermanagement.repository.CustomerRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class InMemoryCustomerRepository
         extends InMemoryDomainRepository<Customer, CustomerCode>
         implements CustomerRepository {
+
     @Override
     public List<Customer> getCustomersByUsername(Username username) {
-        throw new UnsupportedOperationException("No yet implemented.");
+        List<Customer> assignedCustomers = new ArrayList<>();
+        Iterable<Customer> entities = match(e -> e.customerManager().username().equals(username));
+
+        for (Customer Customer : entities) {
+            assignedCustomers.add(Customer);
+        }
+        return assignedCustomers;
     }
 }

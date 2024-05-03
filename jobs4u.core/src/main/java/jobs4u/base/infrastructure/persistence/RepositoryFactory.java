@@ -20,6 +20,8 @@
  */
 package jobs4u.base.infrastructure.persistence;
 
+import jobs4u.base.applicationmanagement.domain.Application;
+import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
 import jobs4u.base.clientusermanagement.repositories.ClientUserRepository;
 import jobs4u.base.clientusermanagement.repositories.SignupRequestRepository;
 import eapli.framework.domain.repositories.TransactionalContext;
@@ -166,4 +168,19 @@ public interface RepositoryFactory {
      * @return
      */
     JobOpeningRepository jobOpenings();
+
+    /**
+     *
+     * @param autoTx
+     *            the transactional context to enroll
+     * @return
+     */
+    ApplicationRepository applications(TransactionalContext autoTx);
+
+    /**
+     * repository will be created in auto transaction mode
+     *
+     * @return
+     */
+    ApplicationRepository applications();
 }

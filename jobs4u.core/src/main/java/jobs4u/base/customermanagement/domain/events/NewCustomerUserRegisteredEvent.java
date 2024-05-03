@@ -16,9 +16,9 @@ public class NewCustomerUserRegisteredEvent extends DomainEventBase implements D
     private final SystemUser customerManager;
     private final SystemUser customerUser;
 
-
-    public NewCustomerUserRegisteredEvent(CompanyName companyName, Address address,
-                                          CustomerCode customerCode, SystemUser customerManager, SystemUser customerUser) {
+    public NewCustomerUserRegisteredEvent(CompanyName companyName, Address address, CustomerCode customerCode, SystemUser
+            customerManager, SystemUser customerUser) {
+        //for ORM
         this.companyName = companyName;
         this.address = address;
         this.customerCode = customerCode;

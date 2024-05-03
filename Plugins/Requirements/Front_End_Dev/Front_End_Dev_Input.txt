@@ -1,0 +1,40 @@
+REQUIREMENT #1
+[Single Choice] "Do you prefer using React or Angular for front-end development?" Answer Model: "[Choice]"
+1) "React"
+2) "Angular"
+R:. React
+
+REQUIREMENT #2
+[Multiple Choice] "Which of the following are front-end technologies?" Answer Model: "[CHOICE] and [CHOICE]"
+1) "HTML"
+2) "Python"
+3) "CSS"
+R:. HTML and CSS
+
+REQUIREMENT #3
+[Whole Number] "How many years have you been working with JavaScript?"
+R:. 4
+
+REQUIREMENT #4
+[True/False] "Are you familiar with responsive web design?"
+R:. True
+
+REQUIREMENT #5
+[Numeric Scale] "Rate your proficiency in CSS with the given scale." Answer Model: [1-5]
+R:. 4
+
+REQUIREMENT #6
+[Decimal Number] "What is the pixel width of a standard Bootstrap container?"
+R:. 1140.5
+
+REQUIREMENT #7
+[Short Answer] "Name a popular CSS preprocessor."
+R:. Sass
+
+REQUIREMENT #8
+[Date] "When did you start learning web development?" [DD/MM/YYYY]
+R:. 01/01/2022
+
+REQUIREMENT #9
+[Time] "At what time do you usually start coding?" [HH:MM]
+R:. 10:30

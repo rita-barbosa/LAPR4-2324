@@ -4,6 +4,9 @@ import eapli.framework.actions.Action;
 import eapli.framework.infrastructure.authz.domain.model.Role;
 import eapli.framework.infrastructure.authz.domain.model.SystemUser;
 import jobs4u.base.customermanagement.application.CustomerManagementService;
+import jobs4u.base.customermanagement.domain.CompanyName;
+import jobs4u.base.customermanagement.domain.CustomerCode;
+import jobs4u.base.customermanagement.dto.CustomerDTO;
 import jobs4u.base.infrastructure.bootstrapers.UsersBootstrapperBase;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.domain.*;
@@ -39,10 +42,10 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
     @Override
     public boolean execute() {
         instantiateRepositories();
+        persistCustomers();
         persistContractTypes();
         persistWorkModes();
         persistRequirementSpecifications();
-        persistCustomers();
         persistJobOpenings();
         return true;
     }
@@ -60,10 +63,11 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         String description = "This work is very well payed.";
 
         JobReference jobReference = new JobReference("ISEP", 1);
+        CustomerDTO companyInfo = new CustomerDTO(new CompanyName("Instituto Superior de Engenharia do Porto"), new CustomerCode("ISEP"));
 
         JobOpening jobOpening = new JobOpening("Front End Junior Developer", contract, mode, "123 Main Street",
                 "Flagtown", "Star District", "USA", "12345", 10, description,
-                requirementSpecificationsList.get(1), jobReference);
+                requirementSpecificationsList.get(1), jobReference, companyInfo);
 
         jobOpeningRepository.save(jobOpening);
     }

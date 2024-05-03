@@ -12,10 +12,9 @@ import jobs4u.base.jobopeningmanagement.domain.Address;
 @Entity
 @Table(name = "T_CUSTOMER")
 public class Customer implements AggregateRoot<CustomerCode>, DTOable<CustomerDTO> {
-
     private static final long serialVersionUID = 1L;
-
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Version
     private Long version;
@@ -38,6 +37,10 @@ public class Customer implements AggregateRoot<CustomerCode>, DTOable<CustomerDT
         this.code = customerCode;
         this.customerManager = customerManager;
         this.customerUser = customerUser;
+    }
+
+    public SystemUser customerManager() {
+        return this.customerManager;
     }
 
 

@@ -20,10 +20,14 @@
  */
 package jobs4u.base.app.bootstrap;
 
+import eapli.framework.infrastructure.pubsub.EventPublisher;
+import eapli.framework.infrastructure.pubsub.impl.inprocess.service.InProcessPubSub;
 import jobs4u.base.app.common.console.BaseApplication;
 import jobs4u.base.clientusermanagement.application.eventhandlers.NewUserRegisteredFromSignupWatchDog;
 import jobs4u.base.clientusermanagement.domain.events.NewUserRegisteredFromSignupEvent;
 import jobs4u.base.clientusermanagement.domain.events.SignupAcceptedEvent;
+import jobs4u.base.customermanagement.application.eventhandlers.NewCustomerUserRegisteredWatchDog;
+import jobs4u.base.customermanagement.domain.events.NewCustomerUserRegisteredEvent;
 import jobs4u.base.infrastructure.bootstrapers.BaseBootstrapper;
 import jobs4u.base.infrastructure.bootstrapers.demo.BaseDemoBootstrapper;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
@@ -92,7 +96,6 @@ public final class BaseBootstrap extends BaseApplication {
     @SuppressWarnings("unchecked")
     @Override
     protected void doSetupEventHandlers(final EventDispatcher dispatcher) {
-        dispatcher.subscribe(new NewUserRegisteredFromSignupWatchDog(), NewUserRegisteredFromSignupEvent.class);
-        dispatcher.subscribe(new SignupAcceptedWatchDog(), SignupAcceptedEvent.class);
+        dispatcher.subscribe(new NewCustomerUserRegisteredWatchDog(), NewCustomerUserRegisteredEvent.class);
     }
 }
