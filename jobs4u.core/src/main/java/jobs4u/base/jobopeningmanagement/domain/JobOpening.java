@@ -2,11 +2,13 @@ package jobs4u.base.jobopeningmanagement.domain;
 
 import eapli.framework.domain.model.AggregateRoot;
 import eapli.framework.domain.model.DomainEntities;
+import eapli.framework.representations.dto.DTOable;
 import eapli.framework.validations.Preconditions;
 import jakarta.persistence.*;
 import jobs4u.base.customermanagement.domain.CustomerCode;
 import jobs4u.base.customermanagement.dto.CustomerDTO;
 import jobs4u.base.jobopeningmanagement.domain.rank.Rank;
+import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
 import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
@@ -15,7 +17,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "T_JOBOPENING")
-public class JobOpening implements AggregateRoot<JobReference> {
+public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeningDTO> {
 
     private static final long serialVersionUID = 1L;
     @Version
@@ -28,7 +30,7 @@ public class JobOpening implements AggregateRoot<JobReference> {
     private ContractType contractType;
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    private  WorkMode workMode;
+    private WorkMode workMode;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private JobOpeningStatus status;
@@ -99,13 +101,16 @@ public class JobOpening implements AggregateRoot<JobReference> {
     }
 
     private JobReference generateNewSequencialJobReference(JobReference lastReference) {
-        return new JobReference(lastReference.getcustomerCode(), lastReference.getSequentialCode()+1);
+        return new JobReference(lastReference.getcustomerCode(), lastReference.getSequentialCode() + 1);
     }
 
-    public JobReference jobReference(){
+    public JobReference jobReference() {
         return identity();
     }
 
+    public JobOpeningStatus jobOpeningStatus() {
+        return this.status;
+    }
 
     @Override
     public boolean sameAs(Object other) {
@@ -129,5 +134,12 @@ public class JobOpening implements AggregateRoot<JobReference> {
     @Override
     public int hashCode() {
         return DomainEntities.hashCode(this);
+    }
+
+    @Override
+    public JobOpeningDTO toDTO() {
+        return new JobOpeningDTO(function.jobFunction(), contractType.getDenomination(), workMode.denomination(),
+                status.toString(), jobReference.toString(), address.toString(), description.description(),
+                numVacancies.numberVacancies(), company, customerCode.customerCode());
     }
 }

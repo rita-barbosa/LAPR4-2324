@@ -8,7 +8,7 @@ public class CustomerDTO {
     private final String companyName;
 
     public CustomerDTO(CompanyName companyName, CustomerCode customerCode) {
-        this.custumerCode = customerCode.costumerCode();
+        this.custumerCode = customerCode.customerCode();
         this.companyName = companyName.companyName();
     }
     public String companyName(){

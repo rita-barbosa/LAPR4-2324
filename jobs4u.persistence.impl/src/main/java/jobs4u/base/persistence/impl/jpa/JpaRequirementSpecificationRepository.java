@@ -24,7 +24,7 @@ public class JpaRequirementSpecificationRepository
 
 
     @Override
-    public List<RequirementSpecification> requirementsSpecifications() {
+    public Iterable<RequirementSpecification> requirementsSpecifications() {
         List<RequirementSpecification> requirementsList = new ArrayList<>();
         Iterable<RequirementSpecification> requirementsSpecifications = findAll();
         for (RequirementSpecification req : requirementsSpecifications) {

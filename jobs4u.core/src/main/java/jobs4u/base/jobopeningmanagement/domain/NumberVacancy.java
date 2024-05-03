@@ -17,7 +17,7 @@ public class NumberVacancy implements ValueObject {
         this.numVacancies = num;
     }
 
-    public NumberVacancy() {
+    protected NumberVacancy() {
         //for ORM
     }
 
@@ -25,6 +25,9 @@ public class NumberVacancy implements ValueObject {
         return new NumberVacancy(num);
     }
 
+    public Integer numberVacancies() {
+        return numVacancies;
+    }
 
     @Override
     public boolean equals(Object o) {

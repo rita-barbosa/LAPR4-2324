@@ -29,13 +29,13 @@ public class RequirementSpecification implements DTOable<RequirementSpecificatio
         this.plugin = plugin;
     }
 
-    public RequirementSpecification() {
+    protected RequirementSpecification() {
         //for ORM
     }
 
     @Override
     public RequirementSpecificationDTO toDTO() {
-        return new RequirementSpecificationDTO(requirementName, description);
+        return new RequirementSpecificationDTO(requirementName.name(), description.description(),plugin.pluginName());
     }
 
     @Override
