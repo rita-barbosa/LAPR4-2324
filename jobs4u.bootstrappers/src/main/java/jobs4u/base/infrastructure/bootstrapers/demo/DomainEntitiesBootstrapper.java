@@ -3,6 +3,8 @@ package jobs4u.base.infrastructure.bootstrapers.demo;
 import eapli.framework.actions.Action;
 import eapli.framework.infrastructure.authz.domain.model.Role;
 import eapli.framework.infrastructure.authz.domain.model.SystemUser;
+import jobs4u.base.candidatemanagement.application.CandidateManagementService;
+import jobs4u.base.candidatemanagement.domain.PhoneNumber;
 import jobs4u.base.customermanagement.application.CustomerManagementService;
 import jobs4u.base.customermanagement.domain.CompanyName;
 import jobs4u.base.customermanagement.domain.CustomerCode;
@@ -31,6 +33,8 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
 
     CustomerManagementService customerManagementService = new CustomerManagementService();
 
+    CandidateManagementService candidateManagementService = new CandidateManagementService();
+
     private ContractTypeRepository contractTypeRepository;
     private WorkModeRepository workModeRepository;
     private RequirementSpecificationRepository requirementSpecificationRepository;
@@ -47,6 +51,7 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         persistWorkModes();
         persistRequirementSpecifications();
         persistJobOpenings();
+        persistCandidates();
         return true;
     }
 
@@ -100,6 +105,15 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
 
         customerManagementService.registerNewCustomer("Instituto Superior de Engenharia do Porto", address.toString(),
                 "ISEP", customerManager, "isep@email.com");
+    }
+
+    private void persistCandidates(){
+        final Set<Role> roles = new HashSet<>();
+        roles.add(BaseRoles.CANDIDATE_USER);
+        SystemUser candidate = registerUser("candidate@email.com", "Password-1","Joana", "Cash", roles);
+        PhoneNumber phoneNumber = new PhoneNumber("+351", "910000034");
+
+        candidateManagementService.registerCandidate("candidate0","candidate@email.com",phoneNumber);
     }
 
     private void persistWorkModes() {

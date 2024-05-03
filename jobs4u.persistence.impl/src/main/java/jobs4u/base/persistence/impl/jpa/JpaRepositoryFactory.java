@@ -120,6 +120,15 @@ public class JpaRepositoryFactory implements RepositoryFactory {
     public JobOpeningRepository jobOpenings() {
         return new JpaJobOpeningRepository(Application.settings().getPersistenceUnitName());
     }
+    public JpaCandidateRepository candidates(final TransactionalContext autoTx) {
+        return new JpaCandidateRepository(autoTx);
+    }
+    @Override
+    public JpaCandidateRepository candidates() {
+        return new JpaCandidateRepository((Application.settings().getPersistenceUnitName()));
+    }
+
+
 
     @Override
     public ApplicationRepository applications(TransactionalContext autoTx) {
