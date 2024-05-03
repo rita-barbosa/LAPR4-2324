@@ -110,10 +110,9 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
     private void persistCandidates(){
         final Set<Role> roles = new HashSet<>();
         roles.add(BaseRoles.CANDIDATE_USER);
-        SystemUser candidate = registerUser("candidate@email.com", "Password-1","Joana", "Cash", roles);
         PhoneNumber phoneNumber = new PhoneNumber("+351", "910000034");
 
-        candidateManagementService.registerCandidate("candidate0","candidate@email.com",phoneNumber);
+        candidateManagementService.registerCandidate("Joana","candidate@email.com",phoneNumber);
     }
 
     private void persistWorkModes() {
