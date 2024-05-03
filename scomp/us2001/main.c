@@ -6,6 +6,9 @@
 #include <signal.h>
 #include <string.h>
 #include <stdbool.h>
+#include <dirent.h>
+#include <errno.h>
+#include <sys/stat.h>
 #include "fnc.h"
 
 volatile sig_atomic_t time_to_terminate = 0;
@@ -28,8 +31,8 @@ void handle_signal(int signo)
     }
 }
 
-// VERSION: 5
-// 02/05/2024
+// VERSION: 
+// 03/05/2024
 // Group: 2DG2
 int main(int argc, char *argv[])
 {
@@ -45,6 +48,33 @@ int main(int argc, char *argv[])
     sscanf(argv[2], "%s", config.output_directory);
     sscanf(argv[3], "%d", &config.num_worker_children);
     sscanf(argv[4], "%d", &config.time_interval);
+    //===================================================================================
+
+    // CREATES THE OUTPUT DIRECTORY IF IT DOESN'T EXIST
+    //==Work done by: Ana Guterres======================================================
+
+    DIR *dir_output;
+
+    dir_output = opendir(config.output_directory);
+    if (!dir_output) {
+        printf("The %s directory doesn't exist!\nCreating the directory!\n", config.output_directory);
+        if (errno == ENOENT) {
+            // If the output directory doesn't exist, it will be created
+            if (mkdir(config.output_directory, 0777) == -1) {
+                perror("mkdir");
+                exit(EXIT_FAILURE);
+            }
+
+            dir_output = opendir(config.output_directory);
+            if (!dir_output) {
+                perror("opendir");
+                exit(EXIT_FAILURE);
+            }
+        } else {
+            perror("opendir");
+            exit(EXIT_FAILURE);
+        }
+    }
     //===================================================================================
 
     int i, j, n, status, candidate = -1;
@@ -283,6 +313,8 @@ int main(int argc, char *argv[])
         }
     }
     //===================================================================================
+
+    closedir(dir_output);
 
     return 0;
 }
