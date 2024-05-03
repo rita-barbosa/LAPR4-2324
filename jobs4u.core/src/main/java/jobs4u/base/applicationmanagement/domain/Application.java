@@ -12,10 +12,14 @@ import java.util.Date;
 
 @Entity
 @Table(name = "T_APPLICATION")
-public class Application implements DTOable<ApplicationDTO>, AggregateRoot<Application> {
+public class Application implements AggregateRoot<Application> {
     private static final long serialVersionUID = 1L;
     @Version
     private Long version;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     private RequirementAnswer requirementAnswer;
@@ -37,14 +41,9 @@ public class Application implements DTOable<ApplicationDTO>, AggregateRoot<Appli
 
 
 
-    public Application(String requirementAnswer, Integer requirementResult, File file, String email, Date applicationDate, Boolean applicationStatus, String candidateName, Integer phoneNumber, Interview interview) {
-        this.requirementAnswer = requirementAnswer;
-        this.requirementResult = requirementResult;
-        this.file = file;
-        this.applicationDate = applicationDate;
-        this.applicationStatus = applicationStatus;
-        this.interview = interview;
-    }
+//    public Application(String requirementAnswer, Integer requirementResult, File file, String email, Date applicationDate, Boolean applicationStatus, String candidateName, Integer phoneNumber, Interview interview) {
+//
+//    }
 
     protected Application(){
         //for ORM
@@ -66,8 +65,5 @@ public class Application implements DTOable<ApplicationDTO>, AggregateRoot<Appli
         return null;
     }
 
-    @Override
-    public ApplicationDTO toDTO() {
-        return null;
-    }
+
 }
