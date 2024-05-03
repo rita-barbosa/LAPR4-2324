@@ -30,6 +30,7 @@ import jobs4u.base.app.backoffice.console.presentation.authz.ListUsersAction;
 import jobs4u.base.app.backoffice.console.presentation.candidate.RegisterCandidateAction;
 import jobs4u.base.app.backoffice.console.presentation.customer.RegisterCustomerAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.RegisterJobOpeningAction;
+import jobs4u.base.app.backoffice.console.presentation.requirementspecification.SelectRequirementSpecificationAction;
 import jobs4u.base.app.common.console.presentation.authz.MyUserMenu;
 import jobs4u.base.usermanagement.domain.BaseRoles;
 import eapli.framework.actions.Actions;
@@ -67,12 +68,14 @@ public class MainMenu extends AbstractUI {
     // CUSTOMER MANAGER SETTINGS
     private static final int REGISTER_JOB_OPENING = 1;
     private static final int LIST_JOB_OPENINGS = 2;
-    private static final int REGISTER_CUSTOMERS = 3;
+    private static final int SELECT_REQ_SPEC = 3;
+    private static final int REGISTER_CUSTOMERS = 1;
 
     // MAIN MENU
     private static final int MY_USER_OPTION = 1;
     private static final int USERS_OPTION = 2;
-    private static final int SETTINGS_OPTION = 3;
+    private static final int JOB_OPENING_OPTION = 3;
+    private static final int CUSTOMER_OPTION = 4;
     private static final int OPERATORS_OPTION =4;
 
     private static final String SEPARATOR_LABEL = "--------------";
@@ -125,8 +128,10 @@ public class MainMenu extends AbstractUI {
         }
 
         if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.CUSTOMER_MANAGER)) {
-            final Menu candidateMenu = buildCustomerManagerSettingsMenu();
-            mainMenu.addSubMenu(SETTINGS_OPTION, candidateMenu);
+            final Menu jobOpeningMenu = buildCustomerManagerJobOpeningMenu();
+            mainMenu.addSubMenu(JOB_OPENING_OPTION, jobOpeningMenu);
+            final Menu customerMenu = buildCustomerManagerCustomerMenu();
+            mainMenu.addSubMenu(CUSTOMER_OPTION, customerMenu);
         }
         if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.OPERATOR)) {
             final Menu candidateMenu = buildOperatorCandidateMenu();
@@ -148,12 +153,21 @@ public class MainMenu extends AbstractUI {
         return menu;
     }
 
-    private Menu buildCustomerManagerSettingsMenu() {
-        final Menu menu = new Menu("Settings >");
+    private Menu buildCustomerManagerCustomerMenu() {
+        final Menu menu = new Menu("Customers >");
+
+        menu.addItem(REGISTER_CUSTOMERS, "Register a Customer", new RegisterCustomerAction());
+        menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
+
+        return menu;
+    }
+
+    private Menu buildCustomerManagerJobOpeningMenu() {
+        final Menu menu = new Menu("Job Opening >");
 
         menu.addItem(REGISTER_JOB_OPENING, "Register a job opening", new RegisterJobOpeningAction());
         menu.addItem(LIST_JOB_OPENINGS, "List job openings", new ShowMessageAction("Not implemented yet"));
-        menu.addItem(REGISTER_CUSTOMERS,"Register a Customer",new RegisterCustomerAction());
+        menu.addItem(SELECT_REQ_SPEC, "Select a requirement specification", new SelectRequirementSpecificationAction());
         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
 
         return menu;
@@ -171,7 +185,6 @@ public class MainMenu extends AbstractUI {
         final Menu menu = new Menu("Users >");
 
         menu.addItem(ADD_USER_OPTION, "Add User", new AddUserUI()::show);
-
         menu.addItem(LIST_USERS_OPTION, "List all Users", new ListUsersAction());
         menu.addItem(DEACTIVATE_USER_OPTION, "Enable/Disable User", new EnableDisableUserAction());
         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
