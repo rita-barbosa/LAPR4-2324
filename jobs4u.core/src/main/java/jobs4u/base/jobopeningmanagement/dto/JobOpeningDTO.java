@@ -8,21 +8,21 @@ import lombok.Data;
 
 public class JobOpeningDTO {
 
-    private String function;
+    public String function;
 
-    private String contractType;
+    public String contractType;
 
-    private String workMode;
+    public String workMode;
 
-    private String jobReference;
+    public String jobReference;
 
-    private String address;
+    public String address;
 
-    private String description;
+    public String description;
 
-    private Integer numVacancies;
+    public Integer numVacancies;
 
-    private String company;
+    public String company;
 
     public JobOpeningDTO(String function, String contractType, String workMode, String jobReference, String address, String description, Integer numVacancies, String company) {
         this.function = function;

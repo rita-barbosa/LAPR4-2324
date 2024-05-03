@@ -23,7 +23,7 @@ public class RequirementSpecification implements DTOable<RequirementSpecificatio
     private PluginJarFile plugin;
 
     public RequirementSpecification(RequirementName requirementName, RequirementDescription description, PluginJarFile plugin) {
-        Preconditions.noneNull(requirementName,description,plugin);
+        Preconditions.noneNull(requirementName, description, plugin);
         this.requirementName = requirementName;
         this.description = description;
         this.plugin = plugin;
@@ -35,7 +35,7 @@ public class RequirementSpecification implements DTOable<RequirementSpecificatio
 
     @Override
     public RequirementSpecificationDTO toDTO() {
-        return new RequirementSpecificationDTO(requirementName.name(), description.description(),plugin.pluginName());
+        return new RequirementSpecificationDTO(requirementName.name(), description.description(), plugin.pluginName());
     }
 
     @Override
