@@ -20,6 +20,7 @@
  */
 package jobs4u.base.persistence.impl.inmemory;
 
+import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
 import jobs4u.base.clientusermanagement.repositories.ClientUserRepository;
 import jobs4u.base.clientusermanagement.repositories.SignupRequestRepository;
 import jobs4u.base.customermanagement.repository.CustomerRepository;
@@ -118,6 +119,16 @@ public class InMemoryRepositoryFactory implements RepositoryFactory {
     @Override
     public JobOpeningRepository jobOpenings() {
         return jobOpenings(null);
+    }
+
+    @Override
+    public ApplicationRepository applications(TransactionalContext autoTx) {
+        return null;
+    }
+
+    @Override
+    public ApplicationRepository applications() {
+        return null;
     }
 
     @Override
