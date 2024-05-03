@@ -112,6 +112,10 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         return this.status;
     }
 
+    public void updateStatusToStarted() {
+        this.status = JobOpeningStatus.STARTED;
+    }
+
     @Override
     public boolean sameAs(Object other) {
         return DomainEntities.areEqual(this, other);
@@ -140,8 +144,11 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
     public JobOpeningDTO toDTO() {
         return new JobOpeningDTO(function.jobFunction(), contractType.getDenomination(), workMode.denomination(), jobReference.toString(), address.toString(), description.description(), numVacancies.numberVacancies(), company);
     }
+
     public void changeRequirementSpecification(RequirementSpecification requirementSpecification) {
         Preconditions.noneNull(requirementSpecification);
+        Preconditions.ensure(status == JobOpeningStatus.UNFINISHED || status == JobOpeningStatus.NOT_STARTED);
+
         this.requirementSpecification = requirementSpecification;
     }
 }
