@@ -38,18 +38,55 @@ It is the first time in this project that this US is worked on.
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+For the implementation of this US it was envisioned that the plugins, that are made outside of the program thanks to the Language Engineer, are to be stored in the directory **"./Plugins"**. We'll use the **PluginJarFile** value object to hold information of the plugins inside the repository to be then persisted, that way we have information on each of the existing plugins that can then be chosen and sued by the Customer Manager in later user stories.
+
+#### New Persistence Layer Classes:
+- RecruitmentSpecificationRepository
+- InterviewModelRepository
+
+#### New Domain Layer Classes:
+- InterviewModel
+- InterviewModelName
+- InterviewModelDescription
+- RequirementSpecification
+- RequirementName
+- RequirementDescription
+- PluginJarFile
+
+*PluginJarFile, InterviewModelName and InterviewModelDescription are value objects belonging to the InterviewModel entity.*
+*PluginJarFile, RequirementDescription and RequirementName are value objects belonging to the RequirementSpecification entity.*
+
+#### New Application Layer Classes:
+- RegisterPluginController
+
+#### New Presentation Layer Classes:
+- RegisterPluginUI
 
 ### 4.1. Realization
+
+#### Sequence Diagram To Register Interview Plugins
+
+![Sequence-Diagram-Interview.svg](SD%2FSequence-Diagram-Interview.svg)
+
+#### Sequence Diagram To Register Requirement Plugins
+
+![Sequence-Diagram-Requirement.svg](SD%2FSequence-Diagram-Requirement.svg)
 
 ### 4.2. Class Diagram
 
 ![a class diagram]()
 
 ### 4.3. Applied Patterns
+
+This section is focused on the patterns used for this US:
+
+#### Repository Pattern
+
+For the envisioned structure and usage of this functionality, the usage of a serializable repository is essential for the Interview Model and Requirement Specification to access the data needed for this functionality.
+
+#### Service Pattern
+
+To create a layer of abstraction between the Domain layer and the Application layer, the usage of a specific service was deemed necessary for this user story.
 
 ### 4.4. Tests
 
