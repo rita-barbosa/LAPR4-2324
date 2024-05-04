@@ -2,10 +2,10 @@ package jobs4u.base.jobopeningmanagement.domain;
 
 import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
 import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
-import jobs4u.base.requirementsmanagement.domain.PluginJarFile;
-import jobs4u.base.requirementsmanagement.domain.RequirementDescription;
-import jobs4u.base.requirementsmanagement.domain.RequirementName;
-import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.FullClassName;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementDescription;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementName;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementSpecification;
 import org.junit.Test;
 
 import static org.junit.Assert.assertThrows;
@@ -24,10 +24,10 @@ public class JobOpeningTest {
     Address address = new Address(streetName, city, district, streetNumber, zipcode);
 
     public RequirementSpecification jobOpeningRequirement() {
-        RequirementName name = new RequirementName("Senior Developer");
-        RequirementDescription description = new RequirementDescription("Database maintenance");
-        PluginJarFile pluginJarFile = new PluginJarFile("senior-developer-database.jar");
-        return new RequirementSpecification(name, description, pluginJarFile);
+        String name = "Senior Developer";
+        String description = "Database maintenance";
+        String fullClassName = "senior-developer-database.jar";
+        return new RequirementSpecification(name, description, fullClassName);
     }
 
     @Test

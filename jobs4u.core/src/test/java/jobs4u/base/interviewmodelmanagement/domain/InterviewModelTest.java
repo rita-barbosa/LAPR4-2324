@@ -1,7 +1,6 @@
 package jobs4u.base.interviewmodelmanagement.domain;
 
-import jobs4u.base.jobopeningmanagement.domain.JobOpening;
-import jobs4u.base.requirementsmanagement.domain.PluginJarFile;
+import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModel;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertThrows;
@@ -9,23 +8,23 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InterviewModelTest {
 
-    InterviewModelName name = new InterviewModelName("Prime Minister");
-    InterviewModelDescription description = new InterviewModelDescription("Prime Ministers with experience in running a country.");
-    PluginJarFile pluginJarFile = new PluginJarFile("Plugins/Interviews/Prime_Minister/Prime_Minister_Interview_Plugin.jar");
+    String name = "Prime Minister";
+    String description = "Prime Ministers with experience in running a country.";
+    String fullClassName = "Plugins/Interviews/Prime_Minister/Prime_Minister_Interview_Plugin.jar";
 
     @Test
     void ensureSameAsWorksAsExpected() {
-        InterviewModelDescription description1 = new InterviewModelDescription("Back-End Developer With Experience in Java");
-        InterviewModelName name1 = new InterviewModelName("Back-End Developer");
-        PluginJarFile pluginJarFile1 = new PluginJarFile("Plugins/Interviews/Back_End_Dev/Back_End_Dev_Interview_Plugin.jar");
-        InterviewModel interviewModel1 = new InterviewModel(name1, description1, pluginJarFile1);
+        String description1 = "Back-End Developer With Experience in Java";
+        String name1 = "Back-End Developer";
+        String fullClassName1 = "Plugins/Interviews/Back_End_Dev/Back_End_Dev_Interview_Plugin.jar";
+        InterviewModel interviewModel1 = new InterviewModel(name1, description1, fullClassName1);
 
-        InterviewModelDescription description2 = new InterviewModelDescription("Front-End Developer With Experience in HTML");
-        InterviewModelName name2 = new InterviewModelName("Front-End Developer");
-        PluginJarFile pluginJarFile2 = new PluginJarFile("Plugins/Interviews/Front_End_Dev/Front_End_Dev_Interview_Plugin.jar");
-        InterviewModel interviewModel2 = new InterviewModel(name2, description2, pluginJarFile2);
+        String description2 = "Front-End Developer With Experience in HTML";
+        String name2 = "Front-End Developer";
+        String fullClassName2 = "Plugins/Interviews/Front_End_Dev/Front_End_Dev_Interview_Plugin.jar";
+        InterviewModel interviewModel2 = new InterviewModel(name2, description2, fullClassName2);
 
-        InterviewModel interviewModel3 = new InterviewModel(name2, description2, pluginJarFile2);
+        InterviewModel interviewModel3 = new InterviewModel(name2, description2, fullClassName2);
 
         // Assert that the sameAs() method checks that two different interview models are different
         assertFalse(interviewModel1.sameAs(interviewModel2));
@@ -39,12 +38,12 @@ class InterviewModelTest {
 
     @Test
     void ensureItHasAnInterviewModelName() {
-        assertThrows(IllegalArgumentException.class, () -> new InterviewModel(null, description, pluginJarFile));
+        assertThrows(IllegalArgumentException.class, () -> new InterviewModel(null, description, fullClassName));
     }
 
     @Test
     void ensureItHasAnInterviewModelDescription() {
-        assertThrows(IllegalArgumentException.class, () -> new InterviewModel(name, null, pluginJarFile));
+        assertThrows(IllegalArgumentException.class, () -> new InterviewModel(name, null, fullClassName));
     }
 
     @Test
