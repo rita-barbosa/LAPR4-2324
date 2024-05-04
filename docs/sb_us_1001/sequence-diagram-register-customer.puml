@@ -69,7 +69,7 @@ EMS -> UMS: registerNewUser(email, password,firstname,lastname,  roles)
 
 note right of UMS
 The last name will
-be an empty string.
+be set as "Customer".
 Seeing as this is a
 method from the framework
 we can't change it.

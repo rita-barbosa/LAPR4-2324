@@ -16,7 +16,7 @@ class UserManagementService {
     + registerNewUser(email, password, name, email, roles)
 }
 class CustomerManagementService {
-    +  registerNewCustomer(companyName, address, customerCode,\ncustomerManager,email,password)
+    +  registerNewCustomer(companyName, address, customerCode,\ncustomerManager,email)
 }
 
 interface EventPublisher{
@@ -110,7 +110,7 @@ CustomerRepository --> Customer
 RegisterCustomerController --> AuthorizationService
 CustomerManagementService -> UserManagementService
 RegisterCustomerController ---> CustomerManagementService
-RegisterCustomerController ---> GeneratePasswordService
+CustomerManagementService ---> GeneratePasswordService
 CustomerManagementService --> NewCustomerUserRegisteredEvent
 CustomerManagementService .--> EventPublisher
 

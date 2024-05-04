@@ -98,12 +98,9 @@ Considering that customer users should possess the same information as candidate
 > The UserManagementService and AuthorizationService, pre-existing services within the Eapli.Framework were used here
 > to register users and retrieve the logged-in user with Admin or Customer Manager roles.
 > Furthermore, the UserManagementService was used to register client users, particularly those categorized as
-> customer users. This additional registration step is necessary as these users also require the inclusion of their
-> phoneNumber.
->
-> The CustomerManagementService is employed to register customers, tasked with the responsibility of
-> customer creation.
->
+> customer users.
+> The primary function of the CustomerManagementService is to register a system user and subsequently publish the event,
+despite its initial purpose being customer registration.
 > The mentioned services were developed because the functionalities they offer will be utilized across multiple use
 > cases. The CustomerManagementService will also serve for various other functionalities, such as listing, among others.
 
@@ -116,12 +113,9 @@ Considering that customer users should possess the same information as candidate
 > **Justifications**
 >
 > All the mentioned objects are components of the applied observer pattern. This pattern was implemented to ensure
-> that when a new customer is registered, a user is automatically registered as well. Following this procedure, upon the
-> registration of a customer, a NewCustomerUserRegisteredEvent instance is generated, and the EventPublisher is utilized
+> that when a new customer user is registered, a customer is automatically registered as well. Following this procedure, upon the
+> registration of a customer user, a NewCustomerUserRegisteredEvent instance is generated, and the EventPublisher is utilized
 > to notify the WatchDog (Observer).
->
-> Upon receiving this notification, the WatchDog triggers the registration of the
-> user through the AddCustomerOnNewCustomerUserRegisteredController.
 >
 > In this case, an instance of NewCustomerUserRegisteredEvent is used to inform the specific WatchDog,
 > which then invokes the AddCustomerOnNewCustomerUserRegisteredController for the registration of the Customer.
