@@ -96,13 +96,13 @@ Domain and Persistence. A link in [references](#71-references) explains this top
 To list a job opening, they must be first filtered, so that the only ones the Customer Managers have access to are the ones
 related to the customer that have been assigned to them. For this purpose, access to the AuthorizationService is required.
 
-Both customers code and company name are to be criteria when filtering the list, all this data is in the Entity represented
+Both customers code and company name are to be criteria when filtering the list, all this data is in the Customer represented
 by the Customer.
 
 In order to enhance encapsulation between layers, the usage of DTO's is required.
 
 **New Domain Layer Classes**
-* Entity
+* Customer
 * Criteria
 * JobOpeningListDTOService
 * JobOpeningManagementService
