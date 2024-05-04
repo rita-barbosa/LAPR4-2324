@@ -46,13 +46,13 @@ package "<<aggregate>> Administrator" {
 package "<<aggregate>> Customer Manager" {
     entity CustomerManager <<entity>> <<root>>  {}
 }
-package "<<aggregate>> Entity" {
-    entity Entity <<entity>> <<root>>  {}
+package "<<aggregate>> Customer" {
+    entity Customer <<entity>> <<root>>  {}
     class CustomerCode <<(V,#FF8B40) value object>> <<identifier>> {}
     class CompanyName <<(V,#FF8B40) value object>> {}
 }
-package "<<aggregate>> Customer" {
-    entity Customer <<entity>> <<root>> {}
+package "<<aggregate>> Customer Representative" {
+    entity CustomerRepresentative <<entity>> <<root>> {}
     }
 package "<<aggregate>> Operator" {
     entity Operator <<entity>> <<root>> {}
@@ -93,17 +93,17 @@ package "<<aggregate>> Recruitment Process" {
 
 
 'ASSOCIATIONS
-Administrator -> "1..*" Entity: manages
+Administrator -> "1..*" Customer: manages
 Administrator --> "1..*" CustomerManager : manages
 Administrator -> "1..*" Operator : manages
 Administrator -> "1..*" Customer : registers
 '--
-Entity --> "1..*" JobOpening : sends
-Entity --> "1" CompanyName : is described by
-Entity --> "1" Address : is located at
-Entity --> "1" CustomerCode : is identified by
+Customer --> "1..*" JobOpening : sends
+Customer --> "1" CompanyName : is described by
+Customer --> "1" Address : is located at
+Customer --> "1" CustomerCode : is identified by
 '--
-CustomerManager "1" <--  Entity: manages >
+CustomerManager "1" <--  Customer: manages >
 CustomerManager --> "1..*" JobOpening: registers
 CustomerManager ---> "0..*" Application : overseas
 CustomerManager --> "1..*" RecruitmentProcess : sets up
@@ -120,7 +120,7 @@ Candidate ---> "1" Email: identified by
 Candidate --> "1" CandidateName: has
 Candidate ---> "1" PhoneNumber: has
 '--
-Customer --> "1" Entity :  represents
+Customer --> "1" Customer :  represents
 '--
 JobOpening ---> "1"  JobReference : includes
 JobOpening --> "1"  Mode : includes
