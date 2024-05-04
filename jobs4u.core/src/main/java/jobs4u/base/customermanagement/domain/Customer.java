@@ -16,6 +16,7 @@ public class Customer implements AggregateRoot<CustomerCode>, DTOable<CustomerDT
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Version
     private Long version;
     private CustomerCode code;

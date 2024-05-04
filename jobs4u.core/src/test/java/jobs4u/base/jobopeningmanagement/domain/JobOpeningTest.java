@@ -22,8 +22,8 @@ public class JobOpeningTest {
     String streetNumber = "14th";
     String zipcode = "12345";
     Address address = new Address(streetName, city, district, streetNumber, zipcode);
-    
-    public RequirementSpecification jobOpeningRequirement(){
+
+    public RequirementSpecification jobOpeningRequirement() {
         RequirementName name = new RequirementName("Senior Developer");
         RequirementDescription description = new RequirementDescription("Database maintenance");
         PluginJarFile pluginJarFile = new PluginJarFile("senior-developer-database.jar");
@@ -31,56 +31,56 @@ public class JobOpeningTest {
     }
 
     @Test
-    public void ensureMustHaveTitle(){
+    public void ensureMustHaveTitle() {
         assertThrows(IllegalArgumentException.class, () -> new JobOpening(null, contractType, workMode,
                 address, 15, "description", jobOpeningRequirement(), jobReference)
         );
     }
 
     @Test
-    public void ensureMustHaveContractType(){
+    public void ensureMustHaveContractType() {
         assertThrows(IllegalArgumentException.class, () -> new JobOpening("function", null, workMode,
                 address, 15, "description", jobOpeningRequirement(), jobReference)
         );
     }
 
     @Test
-    public void ensureMustHaveWorkMode(){
+    public void ensureMustHaveWorkMode() {
         assertThrows(IllegalArgumentException.class, () -> new JobOpening("function", contractType, null,
                 address, 15, "description", jobOpeningRequirement(), jobReference)
         );
     }
 
     @Test
-    public void ensureMustHaveAddress(){
+    public void ensureMustHaveAddress() {
         assertThrows(IllegalArgumentException.class, () -> new JobOpening("function", contractType, workMode,
                 null, 15, "description", jobOpeningRequirement(), jobReference)
         );
     }
 
     @Test
-    public void ensureMustHaveNumberVacancies(){
+    public void ensureMustHaveNumberVacancies() {
         assertThrows(IllegalArgumentException.class, () -> new JobOpening("function", contractType, workMode,
                 address, null, "description", jobOpeningRequirement(), jobReference)
         );
     }
 
     @Test
-    public void ensureMustHaveDescription(){
+    public void ensureMustHaveDescription() {
         assertThrows(IllegalArgumentException.class, () -> new JobOpening("function", contractType, workMode,
                 address, 15, null, jobOpeningRequirement(), jobReference)
         );
     }
 
     @Test
-    public void ensureMustHaveRequirements(){
+    public void ensureMustHaveRequirements() {
         assertThrows(IllegalArgumentException.class, () -> new JobOpening("function", contractType, workMode,
                 address, 15, "description", null, jobReference)
         );
     }
 
     @Test
-    public void ensureMustHaveLastJobReference(){
+    public void ensureMustHaveLastJobReference() {
         assertThrows(IllegalArgumentException.class, () -> new JobOpening("function", contractType, workMode,
                 address, 15, "description", jobOpeningRequirement(), null)
         );
@@ -88,11 +88,18 @@ public class JobOpeningTest {
 
     @Test
     public void ensureHasGivenIdentity() {
-        JobOpening opening =  new JobOpening("Senior Dev", contractType, workMode, address, 15,
+        JobOpening opening = new JobOpening("Senior Dev", contractType, workMode, address, 15,
                 "description", jobOpeningRequirement(), jobReference);
 
         JobReference jobReference1 = new JobReference("ISEP", 4);
         assertEquals(opening.identity(), jobReference1);
     }
 
+    @Test
+    public void ensureSelectReqSpecificationBeforeRecruitmentProccess() {
+        JobOpening opening = new JobOpening("Senior Dev", contractType, workMode, address, 15,
+                "description", jobOpeningRequirement(), jobReference);
+        opening.updateStatusToStarted();
+        assertThrows(IllegalArgumentException.class, () -> opening.changeRequirementSpecification(jobOpeningRequirement()));
+    }
 }

@@ -36,7 +36,7 @@ class SelectRequirementSpecificationController{
 }
 
 class JobOpeningRepository{
-+ activeJobOpenings()
++ findAllJobOpeningsNotStarted()
 + ofIdentity(jobReference)
 }
 class RequirementSpecificationRepository{

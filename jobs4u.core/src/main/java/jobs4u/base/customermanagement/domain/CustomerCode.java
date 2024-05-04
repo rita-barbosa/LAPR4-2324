@@ -22,7 +22,7 @@ public class CustomerCode implements Comparable<CustomerCode>, ValueObject {
         this.customerCode = code;
     }
 
-    public String costumerCode() {
+    public String customerCode() {
         return this.customerCode;
     }
 

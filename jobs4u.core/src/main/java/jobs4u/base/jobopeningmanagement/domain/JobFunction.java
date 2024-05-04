@@ -26,6 +26,9 @@ public class JobFunction implements ValueObject {
         return new JobFunction(jobFunction);
     }
 
+    public String jobFunction() {
+        return jobFunction;
+    }
 
     @Override
     public boolean equals(Object o) {
