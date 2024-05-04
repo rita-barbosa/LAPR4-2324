@@ -183,7 +183,7 @@ is a partial domain model, with emphasis on US1002's concepts.
 The solution for this functionality is to have 4 layers, following DDD development architecture: Presentation, Application,
 Domain and Persistence. A link in [references](#71-references) explains this topic in-depth.
 
-To register a job opening, plenty of information must be retrieved from databases to be displayed: entities, contract types, work
+To register a job opening, plenty of information must be retrieved from databases to be displayed: customers, contract types, work
 modes and requirement specifications to select. These objects must be within repositories.
 
 In order to enhance encapsulation between layers, the usage of DTO's to the previously mentioned objects should be applied.
@@ -277,7 +277,7 @@ This topic presents the classes with the patterns applied to them along with jus
 > 
 > **Justifications**
 > 
-> * CustomerManagementService is used in more than one functionality, and its in charge of managing request regarding entities,
+> * CustomerManagementService is used in more than one functionality, and its in charge of managing request regarding customers,
 >   serving as encapsulation between the controller and the CustomerRepository along with the domain classes.
 >
 > * JobOpeningManagementService is used in more than one functionality, and its in charge of managing request regarding 
