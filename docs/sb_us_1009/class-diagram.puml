@@ -14,7 +14,6 @@ class AuthorizationService {
 
 class JobOpeningManagementService {
 + activeJobOpenings()
-+ updateRequirementSpecification(jobOpeningDto, requirementSpecificationDto)
 }
 class JobOpeningDtoService {
 + convertToDto(jobOpenings)
@@ -61,6 +60,9 @@ SelectRequirementSpecificationUI .-> SelectRequirementSpecificationController
 SelectRequirementSpecificationController .> AuthorizationService
 SelectRequirementSpecificationController .--> JobOpeningManagementService
 SelectRequirementSpecificationController .--> RequirementSpecificationManagementService
+SelectRequirementSpecificationController .--> JobOpeningRepository
+SelectRequirementSpecificationController .--> RequirementSpecificationRepository
+SelectRequirementSpecificationController --> JobOpening
 
 JobOpeningManagementService --> JobOpeningRepository
 JobOpeningManagementService .-> JobOpeningDtoService
@@ -82,5 +84,6 @@ JobOpening .--|> DTOable
 RequirementSpecification .--|> DTOable
 JobOpening --> JobOpeningDto
 RequirementSpecification --> RequirementSpecificationDto
+JobOpening ---> RequirementSpecification
 
 @enduml
