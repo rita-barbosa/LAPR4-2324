@@ -10,24 +10,24 @@ Participant "<<Infrastructure>>\nRequirementSpecificationManagementService" as S
 Participant "<<Domain>>\n<<Root Entity>>\nRequirementSpecification" as RS
 Participant "<<Domain>>\n<<Value Object>>\nRequirementName" as RSNAME
 Participant "<<Domain>>\n<<Value Object>>\nRequirementDescription" as RSDESC
-Participant "<<Domain>>\n<<Value Object>>\nPluginJarFile" as RSPLUGIN
+Participant "<<Domain>>\n<<Value Object>>\nFullClassName" as RSPLUGIN
 Database "<<Infrastructure>>\nRequirementSpecificationRepository" as RSREPO
 
 Activate UI
 
     UI -> CTRL**: create()
 
-    UI -> CTRL: registerRequirementPlugin(String: nameRequirement, String: description, String: path)
+    UI -> CTRL: registerRequirementPlugin(String: nameRequirement, String: description, String: class)
 
     Activate CTRL
 
     CTRL -> SERVICERS**: create()
 
-    CTRL -> SERVICERS: registerInterviewPlugin(String: nameRequirement, String: description, String: path)
+    CTRL -> SERVICERS: registerInterviewPlugin(String: nameRequirement, String: description, String: class)
 
     Activate SERVICERS
 
-    SERVICERS -> RS**: create(String: nameRequirement, String: description, String: path)
+    SERVICERS -> RS**: create(String: nameRequirement, String: description, String: class)
 
     Activate RS
 
@@ -49,7 +49,7 @@ Activate UI
 
     RS -> RSPLUGIN**: create()
 
-    RS -> RSPLUGIN: nameOfFile(nameRequirement)
+    RS -> RSPLUGIN: classNameOfPlugin(fullClassName)
 
     Activate RSPLUGIN
 

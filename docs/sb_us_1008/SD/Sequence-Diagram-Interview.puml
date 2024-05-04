@@ -10,24 +10,24 @@ Participant "<<Infrastructure>>\nInterviewModelManagementService" as SERVICEIM
 Participant "<<Domain>>\n<<Root Entity>>\nInterviewModel" as IM
 Participant "<<Domain>>\n<<Value Object>>\nInterviewModelName" as IMNAME
 Participant "<<Domain>>\n<<Value Object>>\nInterviewModelDescription" as IMDESC
-Participant "<<Domain>>\n<<Value Object>>\nPluginJarFile" as IMPLUGIN
+Participant "<<Domain>>\n<<Value Object>>\nFullClassName" as IMPLUGIN
 Database "<<Infrastructure>>\nInterviewModelRepository" as IMREPO
 
 Activate UI
 
     UI -> CTRL**: create()
 
-    UI -> CTRL: registerInterviewPlugin(String: nameInterview, String: description, String: path)
+    UI -> CTRL: registerInterviewPlugin(String: nameInterview, String: description, String: class)
 
     Activate CTRL
 
     CTRL -> SERVICEIM**: create()
 
-    CTRL -> SERVICEIM: registerInterviewPlugin(String: nameInterview, String: description, String: path)
+    CTRL -> SERVICEIM: registerInterviewPlugin(String: nameInterview, String: description, String: class)
 
     Activate SERVICEIM
 
-    SERVICEIM -> IM**: create(String: nameInterview, String: description, String: path)
+    SERVICEIM -> IM**: create(String: nameInterview, String: description, String: class)
 
     Activate IM
 
@@ -49,7 +49,7 @@ Activate UI
 
     IM -> IMPLUGIN**: create()
 
-    IM -> IMPLUGIN: nameOfFile(nameInterview)
+    IM -> IMPLUGIN: fullClassOfPlugin(fullClass)
 
     Activate IMPLUGIN
 
