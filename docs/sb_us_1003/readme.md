@@ -277,6 +277,8 @@ public boolean show() {
                     default:
                         break;
                 }
+            }else {
+                super.show();
             }
             answer = Console.readLine("Finish listing? [y/n]").trim().toLowerCase();
             if (!answer.equals("y") && !answer.equals("n")) {
