@@ -13,17 +13,13 @@ OP -> SYS : asks to generate a new requirements\n specification file
 
 activate SYS
 
-    SYS --> OP : asks for template file name
+    SYS --> OP : shows job openings to select
 deactivate SYS
 
-OP -> SYS : writes the file name
+OP -> SYS : selects a job Opening
 activate SYS
 
-SYS --> OP : asks for the job position
-deactivate SYS
-
-OP -> SYS : selects the job position
-activate SYS
+SYS --> OP : shows requirement specification\n associated with the job opening
 
 SYS -> PLU : generate and export template file
 activate PLU
