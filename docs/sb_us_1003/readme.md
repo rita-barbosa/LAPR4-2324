@@ -227,28 +227,188 @@ public void ensureCriteriaClassNameEmptyIsInvalid() {
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+The following code belongs to the UI of this functionality. All its methods are according to the design.
+
+The doShow() method, declared in the AbstractListUI interface. One of the challenges was to be able to display the filtered
+list, which varies according to the selected criteria, so it isn't only one permanent list, as the AbstractListUI interface
+requires. To overcome this obstacle, the call to super was done, to force the program to check which scenario is the correct
+one and display the adequate filtered list, instead of the default case one - all the job openings.
+
+To list and select the customers and criteria, the SelectWidget class from **_EAPLI Framework_** was used. A printer class was
+created to define the format of the jobOpening entries on the lists and print them.
+
+````
+private final ListJobOpeningsController controller = new ListJobOpeningsController();
+
+private CriteriaDTO criteriaDTO;
+private CustomerDTO customerDTO;
+private DateInterval dateInterval;
+
+@Override
+public boolean show() {
+    criteriaDTO = new CriteriaDTO("no criteria");
+    try {
+        super.show();
+        String answer;
+        do {
+            answer = Console.readLine("Would you like to select filtering criteria? [y/n]").trim().toLowerCase();
+            if (!answer.equals("y") && !answer.equals("n")) {
+                throw new InputMismatchException("Invalid input. Please enter 'y' or 'n'.");
+            }
+            if (answer.equals("y")) {
+                criteriaDTO = showAndSelectCriteria();
+                switch (criteriaDTO.getDenomination()) {
+                    case "Status [STARTED]":
+                        super.show();
+                        break;
+                    case "Company Name":
+                        customerDTO = showAndSelectCustomer("Company Name");
+                        super.show();
+                        break;
+                    case "Customer Code":
+                        customerDTO = showAndSelectCustomer("Customer Code");
+                        super.show();
+                        break;
+                    case "Time Interval":
+                        dateInterval = buildNewDateInterval();
+                        super.show();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            answer = Console.readLine("Finish listing? [y/n]").trim().toLowerCase();
+            if (!answer.equals("y") && !answer.equals("n")) {
+                throw new InputMismatchException("Invalid input. Please enter 'y' or 'n'.");
+            }
+        } while (!answer.equals("y"));
+        return false;
+    } catch (NoSuchElementException | IllegalArgumentException e) {
+        System.out.println(e.getMessage());
+        return false;
+    }
+}
+
+(...)
+
+@Override
+protected Iterable<JobOpeningDTO> elements() {
+    switch (criteriaDTO.getDenomination()){
+        case "Status [STARTED]":
+            return controller.filterJobOpeningList("STARTED");
+        case "Company Name":
+            return controller.filterJobOpeningList(customerDTO);
+        case "Customer Code":
+            return controller.filterJobOpeningList(customerDTO.customerCode());
+        case "Time Interval":
+            return controller.filterJobOpeningList(dateInterval);
+        case "no criteria":
+            return controller.backofficeJobOpenings();
+        default:
+            throw new NoSuchElementException("There is no criteria with defined designation");
+    }
+}
+
+@Override
+protected Visitor<JobOpeningDTO> elementPrinter() {
+    return new JobOpeningPrinter();
+}
+
+(...)
+````
+
+The following method is from the controller, which redirects the filtering of the Customer Manager's job openings list.
+````
+public List<JobOpeningDTO> filterJobOpeningList(Object object) {
+    List<JobOpening> jobOpeningList = new ArrayList<>();
+    switch (object.getClass().getSimpleName()) {
+        case "CustomerDTO":
+            Optional<Customer> customer = customerManagementService.getCustomerByDTO((CustomerDTO) object);
+            if (customer.isPresent()){
+                jobOpeningList = filterJobOpeningListByCompanyName((CustomerDTO) object);
+            }
+            break;
+        case "DateInterval":
+                jobOpeningList = filterJobOpeningListByDateInterval((DateInterval) object, virgemJobOpeningList());
+            break;
+        case "String":
+            if (object.equals("STARTED")) {
+                jobOpeningList = filterJobOpeningListBySTARTEDStatus(virgemJobOpeningList());
+            } else {
+                jobOpeningList = filterJobOpeningListByCustomerCode((String) object);
+            }
+            break;
+        default:
+            break;
+    }
+    return jobOpeningListDTOService.convertToDTO(jobOpeningList);
+}
+````
+
+JobOpening criteria gathering from the JpaCriteriaRepository.
+````
+@Override
+public List<Criteria> jobOpeningCriteria() {
+    List<Criteria> jobOpeningCriteria = new ArrayList<>();
+    Iterable<Criteria> criteria = match("e.classNameCriteria = :name", "name", JobOpening.class.getSimpleName());
+
+    for (Criteria criterion : criteria) {
+        jobOpeningCriteria.add(criterion);
+    }
+    return jobOpeningCriteria;
+}
+````
+
+
+Some filtering method in the JpaJobOpeningRepository.
+````
+@Override
+public List<JobOpening> getJobOpeningListMatchingCustomerCodesList(Set<CustomerCode> customerCodes) {
+    List<JobOpening> jobOpenings = new ArrayList<>();
+    for (CustomerCode code : customerCodes){
+        try{
+            jobOpenings.addAll(match("e.jobReference.companyCode = :code","code", code.costumerCode()));
+        }catch (HibernateException ex){
+            jobOpenings.addAll(match("e=(SELECT c FROM JobOpening c WHERE c.jobReference.companyCode=:code)",
+                    "code", code.costumerCode()));
+        }
+    }
+    return jobOpenings;
+}
+
+@Override
+public List<JobOpening> getJobOpeningListMatchingCustomer(Customer customer) {
+    try{
+        return match("e.jobReference.companyCode = :code", "code", customer.customerCode().toString());
+    }catch (HibernateException ex){
+        return match("e=(SELECT c FROM JobOpening c WHERE c.jobReference.companyCode=:code)",
+                "code", customer.customerCode().costumerCode());
+    }
+}
+
+@Override
+public List<JobOpening> getJobOpeningListMatchingStatus(String started) {
+    try{
+        return match("e.status.statusDescription = :status", "status", started);
+    }catch (HibernateException ex){
+        return match("e=(SELECT c FROM JobOpening c WHERE c.status.statusDescription = :status)",
+                "status", started);
+    }
+}
+````
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
+This functionality analyses the job openings and its various associations within the system: see its status, the dates of
+its recruitment process, and the information of its customer, mainly company name and customer code.
 
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
+Of course, for this to happen, the database must have instances of all the mention entities and value objects.
+
+The classes associated with criteria are flexible enough to have more criteria associated to different entities.
+
 
 ## 7. Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
 
 ### 7.1 References
 
