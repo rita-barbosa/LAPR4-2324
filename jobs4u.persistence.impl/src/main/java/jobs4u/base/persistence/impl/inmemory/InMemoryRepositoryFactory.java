@@ -31,7 +31,6 @@ import jobs4u.base.infrastructure.persistence.RepositoryFactory;
 import eapli.framework.domain.repositories.TransactionalContext;
 import eapli.framework.infrastructure.authz.domain.repositories.UserRepository;
 import eapli.framework.infrastructure.authz.repositories.impl.inmemory.InMemoryUserRepository;
-import jobs4u.base.interviewmodelmanagement.repositories.InterviewModelRepository;
 import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
@@ -116,17 +115,6 @@ public class InMemoryRepositoryFactory implements RepositoryFactory {
     public RequirementSpecificationRepository requirementSpecifications() {
         return requirementSpecifications(null);
     }
-
-    @Override
-    public InterviewModelRepository interviewModels(TransactionalContext autoTx) {
-        return new InMemoryInterviewModelRepository();
-    }
-
-    @Override
-    public InterviewModelRepository interviewModels() {
-        return interviewModels(null);
-    }
-
 
     @Override
     public JobOpeningRepository jobOpenings(TransactionalContext tx) {

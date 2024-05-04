@@ -31,7 +31,6 @@ import eapli.framework.domain.repositories.TransactionalContext;
 import eapli.framework.infrastructure.authz.domain.repositories.UserRepository;
 import eapli.framework.infrastructure.authz.repositories.impl.jpa.JpaAutoTxUserRepository;
 import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
-import jobs4u.base.interviewmodelmanagement.repositories.InterviewModelRepository;
 import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
@@ -115,16 +114,6 @@ public class JpaRepositoryFactory implements RepositoryFactory {
     @Override
     public RequirementSpecificationRepository requirementSpecifications() {
         return new JpaRequirementSpecificationRepository(Application.settings().getPersistenceUnitName());
-    }
-
-    @Override
-    public InterviewModelRepository interviewModels(final TransactionalContext autoTx){
-        return new JpaInterviewModelRepository(autoTx);
-    }
-
-    @Override
-    public InterviewModelRepository interviewModels(){
-        return new JpaInterviewModelRepository(Application.settings().getPersistenceUnitName());
     }
 
     @Override
