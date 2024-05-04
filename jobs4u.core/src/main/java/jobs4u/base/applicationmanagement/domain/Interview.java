@@ -1,6 +1,7 @@
 package jobs4u.base.applicationmanagement.domain;
 
 import eapli.framework.domain.model.ValueObject;
+import eapli.framework.validations.Preconditions;
 import jakarta.persistence.Embeddable;
 
 import java.util.Date;
@@ -16,6 +17,10 @@ public class Interview implements ValueObject {
 
 
     public Interview(String interviewTypeDenomination, Date schedule, InterviewResult interviewResult, String interviewAnswer) {
+        Preconditions.noneNull(interviewAnswer, schedule, interviewResult, interviewAnswer);
+        Preconditions.nonEmpty(interviewTypeDenomination);
+        Preconditions.nonEmpty(interviewAnswer);
+
         this.interviewTypeDenomination = interviewTypeDenomination;
         this.schedule = schedule;
         this.interviewResult = interviewResult;
