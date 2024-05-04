@@ -27,6 +27,7 @@ import jobs4u.base.Application;
 import jobs4u.base.app.backoffice.console.presentation.authz.AddUserUI;
 import jobs4u.base.app.backoffice.console.presentation.authz.EnableDisableUserAction;
 import jobs4u.base.app.backoffice.console.presentation.authz.ListUsersAction;
+import jobs4u.base.app.backoffice.console.presentation.candidate.ListAllCandidatesAction;
 import jobs4u.base.app.backoffice.console.presentation.candidate.RegisterCandidateAction;
 import jobs4u.base.app.backoffice.console.presentation.customer.RegisterCustomerAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.listing.ListJobOpeningsAction;
@@ -64,6 +65,7 @@ public class MainMenu extends AbstractUI {
     
     //OPERATOR
     private static final int REGISTER_CANDIDATE = 1;
+    private static final int LIST_CANDIDATES = 2;
 
     // CUSTOMER MANAGER SETTINGS
     private static final int REGISTER_JOB_OPENING = 1;
@@ -150,6 +152,7 @@ public class MainMenu extends AbstractUI {
     private Menu buildOperatorCandidateMenu() {
         final Menu menu = new Menu("Operator >");
         menu.addItem(REGISTER_CANDIDATE,"Register a new candidate",new RegisterCandidateAction());
+        menu.addItem(LIST_CANDIDATES, "List All Candidates", new ListAllCandidatesAction());
         return menu;
     }
 

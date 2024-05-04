@@ -23,6 +23,8 @@ package jobs4u.base.app.bootstrap;
 import eapli.framework.infrastructure.pubsub.EventPublisher;
 import eapli.framework.infrastructure.pubsub.impl.inprocess.service.InProcessPubSub;
 import jobs4u.base.app.common.console.BaseApplication;
+import jobs4u.base.candidatemanagement.application.eventhandlers.NewCandidateUserRegisteredWatchDog;
+import jobs4u.base.candidatemanagement.domain.events.NewCandidateUserRegisteredEvent;
 import jobs4u.base.clientusermanagement.application.eventhandlers.NewUserRegisteredFromSignupWatchDog;
 import jobs4u.base.clientusermanagement.domain.events.NewUserRegisteredFromSignupEvent;
 import jobs4u.base.clientusermanagement.domain.events.SignupAcceptedEvent;
@@ -97,5 +99,6 @@ public final class BaseBootstrap extends BaseApplication {
     @Override
     protected void doSetupEventHandlers(final EventDispatcher dispatcher) {
         dispatcher.subscribe(new NewCustomerUserRegisteredWatchDog(), NewCustomerUserRegisteredEvent.class);
+        dispatcher.subscribe(new NewCandidateUserRegisteredWatchDog(), NewCandidateUserRegisteredEvent.class);
     }
 }
