@@ -7,8 +7,8 @@ control "<<application>>\n:ListJobOpeningController" as CTRL
 database "<<repository>>\n:CriteriaRepository" as CriteriaRepository
 participant "<<domain>>\n:Criteria" as Criteria
 participant "<<service>>\n:AuthorizationService" as AuthSvc
-participant "<<service>>\n:EntityManagementService" as EntityManagement
-database "<<repository>>\n:EntityRepository" as EntityRepository
+participant "<<service>>\n:CustomerManagementService" as CustomerManagement
+database "<<repository>>\n:CustomerRepository" as CustomerRepository
 participant "<<domain>>\n:Customer" as Customer
 participant "<<service>>\n:JobOpeningManagementService" as JobManagement
 participant "<<service>>\n:JobOpeningListDTOService" as JobOpeningListDTO
@@ -29,21 +29,21 @@ activate CTRL
     activate AuthSvc
     deactivate AuthSvc
 
-    CTRL -> EntityManagement : getAssignedCustomerCodesList(username)
-    activate EntityManagement
+    CTRL -> CustomerManagement : getAssignedCustomerCodesList(username)
+    activate CustomerManagement
 
-        EntityManagement -> EntityRepository : getCustomersByUsername(username)
+        CustomerManagement -> CustomerRepository : getCustomersByUsername(username)
         note right: Username is the Customer\n Manager's email
-        activate EntityRepository
-        deactivate EntityRepository
+        activate CustomerRepository
+        deactivate CustomerRepository
 
         loop for all codes
-            EntityManagement -> Customer : customerCode()
+            CustomerManagement -> Customer : customerCode()
             activate Customer
             deactivate Customer
         end loop
 
-    deactivate EntityManagement
+    deactivate CustomerManagement
 
     CTRL -> JobManagement : getJobOpeningsFromCustomerCodes(assignedCustomerCodesList)
     activate JobManagement

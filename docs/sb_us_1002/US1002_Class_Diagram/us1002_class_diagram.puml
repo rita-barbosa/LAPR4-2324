@@ -62,14 +62,15 @@ class Address <<Domain>> <<Value Object>> {
 
 'Job Opening
 class JobOpening <<Domain>> <<Aggregate Root>> {
-- String function
+- JobFunction function
 - ContractType contractType
 - WorkMode workMode
 - Address jobOpeningAddress
-- String jobReference
-- Integer numVacancies
-- String description
-- File requirementsSpecificationsFile
+- JobReference jobReference
+- NumberVacancy numVacancies
+- JobDescription description
+- RequirementSpecification requirementsSpecification
+- Rank rank
 + jobReference(String lastJobReference)
 + create(function, contractTypeDenomination, workModeDenomination,\n streetName, city, district, state, zipcode, customerCode, numVacancies,\n description, requirementsSpecificationsFile)
 }

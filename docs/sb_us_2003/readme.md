@@ -12,7 +12,7 @@ of a job opening (so the data is used to verify the requirements of the job open
 **Acceptance Criteria:**
 
 - **2003.1** The usage of **_ANTLR_** tool is required.
-- **2003.2** The question type are to be one of the established types: True/False, Short Text Answer, Choice with Single-Answer,
+- **2003.2** The question types have established types: True/False, Short Text Answer, Choice with Single-Answer,
   Choice with Multiple-Answer, Integer Number, Decimal Number, Date, Time and Numeric Scale.
 - **2003.3** A requirement template must have at least one requirement entry.
 
@@ -95,7 +95,6 @@ Requirements can have different natures:
 * **Time** - A question which answer is a time
 * **Numeric Scale** - A question which answer is one option in a range of integers (ex: 1-5)
 
-
 Below there's a System Sequence Diagram (SSD) illustrating the expected behaviour of this functionality. After this diagram
 is a partial domain model, with emphasis on US2003's concepts.
 
@@ -150,93 +149,71 @@ The further topics illustrate and explain this functionality usage flow, and the
 
 ### 4.3 Grammar
 
-The following text represents the grammar that defines the format of the requirement template.
+The following text represents the grammar that defines the format of the requirement template for front end developers.
 
 ```
-grammar RequirementsTemplate;
+grammar Requirements_Front_End_Dev;
 
-//Parser rules
-start: template;
+start: (group NEWLINE)+ group NEWLINE?;
 
-//Costitution of the template
-template: requirement+;
+group : requirement_header NEWLINE s_choice_q START_ANSWER s_choice_a
+      | requirement_header NEWLINE m_choice_q START_ANSWER m_choice_a
+      | requirement_header NEWLINE whole_n_q START_ANSWER whole_n_a
+      | requirement_header NEWLINE true_false_q START_ANSWER true_false_a
+      | requirement_header NEWLINE scale_q START_ANSWER scale_a
+      | requirement_header NEWLINE decimal_q START_ANSWER decimal_a
+      | requirement_header NEWLINE short_q START_ANSWER short_a
+      | requirement_header NEWLINE date_q START_ANSWER date_a
+      | requirement_header NEWLINE time_q START_ANSWER time_a
+      ;
 
-//Costitution of a requirement
-requirement : REQUIREMENT_NUMBER NEWLINE question+;
+requirement_header : 'REQUIREMENT #'intNumber;
 
-//Types of questions
-question: single_choice_question
-        | multiple_choice_question
-        | integer_question
-        | true_false_question
-        | numeric_scale_question
-        | decimal_question
-        | short_answer_question
-        | date_question
-        | time_question
-        ;
+// Questions for Front End Developer
+s_choice_q : '[Single Choice] "Do you prefer using React or Angular for front-end development?" Answer Model: "[Choice]"'NEWLINE'1) "React"'NEWLINE'2) "Angular"'NEWLINE;
+m_choice_q : '[Multiple Choice] "Which of the following are front-end technologies?" Answer Model: "[CHOICE] and [CHOICE]"'NEWLINE'1) "HTML"'NEWLINE'2) "Python"'NEWLINE'3) "CSS"'NEWLINE;
+whole_n_q : '[Whole Number] "How many years have you been working with JavaScript?"'NEWLINE;
+true_false_q : '[True/False] "Are you familiar with responsive web design?"'NEWLINE;
+scale_q : '[Numeric Scale] "Rate your proficiency in CSS with the given scale." Answer Model: [1-5]'NEWLINE;
+decimal_q : '[Decimal Number] "What is the pixel width of a standard Bootstrap container?"'NEWLINE;
+short_q : '[Short Answer] "Name a popular CSS preprocessor."'NEWLINE;
+date_q : '[Date] "When did you start learning web development?" [DD/MM/YYYY]'NEWLINE;
+time_q : '[Time] "At what time do you usually start coding?" [HH:MM]'NEWLINE;
 
-//Questions Format
-single_choice_question: SINGLE_CHOICE WHITESPACE DESCRIPTION_TEXT NEWLINE option+ answer;
-multiple_choice_question: MULTIPLE_CHOICE WHITESPACE DESCRIPTION_TEXT NEWLINE option+ answer+;
-integer_question: INTEGER WHITESPACE DESCRIPTION_TEXT NEWLINE answer;
-true_false_question: TRUE_FALSE WHITESPACE DESCRIPTION_TEXT NEWLINE answer;
-numeric_scale_question: NUMERIC_SCALE WHITESPACE DESCRIPTION_TEXT WHITESPACE SCALE_FORMAT NEWLINE answer;
-decimal_question: DECIMAL WHITESPACE DESCRIPTION_TEXT NEWLINE answer;
-short_answer_question: SHORT_ANSWER WHITESPACE DESCRIPTION_TEXT NEWLINE answer;
-date_question: DATE WHITESPACE DESCRIPTION_TEXT WHITESPACE DATE_FORMAT NEWLINE answer;
-time_question: TIME WHITESPACE DESCRIPTION_TEXT WHITESPACE TIME_FORMAT NEWLINE answer;
+//Answers for the questions
+s_choice_a : ACTUALANSWER NEWLINE;
+m_choice_a :  m_choice NEWLINE;
+whole_n_a :  intNumber NEWLINE;
+scale_a :  intNumber NEWLINE;
+true_false_a : BOOLEAN NEWLINE;
+decimal_a : decimal NEWLINE;
+short_a : short_answer NEWLINE;
+date_a : date NEWLINE;
+time_a : time NEWLINE;
 
-//Option Format
-option : OPTION WHITESPACE DESCRIPTION_TEXT NEWLINE;
+decimal : NUM+ '.' NUM+;
+short_answer : ACTUAL_ANSWER+;
+date : NUM NUM'/'NUM NUM'/'NUM NUM NUM NUM;
+time : NUM NUM ':' NUM NUM;
+m_choice : ACTUAL_ANSWER ' and ' ACTUAL_ANSWER;
+intNumber : NUM+ ;
 
-//Answer Format
-answer : ANSWER WHITESPACE DESCRIPTION_TEXT NEWLINE*;
-
-//Formatters
-ANSWER : 'ANSWER';
-OPTION : NUMBER')';
-REQUIREMENT_NUMBER : 'REQUIREMENT #'NUMBER;
-SCALE_FORMAT : '['NUMBER'-'NUMBER']';
-DATE_FORMAT : '[DD/MM/YYYY]';
-TIME_FORMAT : '[HH:MM]';
-TRUE_FALSE_FORMAT : 'Write "True" or "False".';
-
-//Lexer rules
-//Types of questions identifiers
-TRUE_FALSE : '[True/False]';
-SINGLE_CHOICE : '[Single Choice]';
-MULTIPLE_CHOICE : '[Multiple Choice]';
-INTEGER : '[Whole Number]';
-NUMERIC_SCALE : '[Numeric Scale]';
-DECIMAL : '[Decimal Number]';
-SHORT_ANSWER : '[Short Answer]';
-DATE : '[Date]';
-TIME : '[Time]';
-
-WHITESPACE: ' ';
-DESCRIPTION_TEXT: '"' (~["\r\n])* '"';
-NUMBER: [0-9]+;
-NEWLINE: '\r'?'\n';
+BOOLEAN : ('True'|'False');
+START_ANSWER : 'R:. ';
+ACTUAL_ANSWER : [a-zA-Z]+;
+NEWLINE : '\r'? '\n';
+NUM : [0-9];
+WS : [ \t\r]+ -> skip ;
 ```
 
 Table of some tokens used with concrete lexemes in the template file grammar:
 
-| Tokens          | Lexemes           |
-|:----------------|:------------------|
-| TRUE_FALSE      | [True/False]      |
-| SINGLE_CHOICE   | [Single Choice]   |
-| MULTIPLE_CHOICE | [Multiple Choice] |
-| INTEGER         | [Whole Number]    |
-| NUMERIC_SCALE   | [Numeric Scale]   |
-| DECIMAL         | [Decimal Number]  |
-| SHORT_ANSWER    | [Short Answer]    |
-| DATE            | [Date]            |
-| TIME            | [Time]            |
-| WHITESPACE      | ' '               |
-| DATE_FORMAT     | [DD/MM/YYYY]      |
-| TIME_FORMAT     | [HH:MM]           |
-| ANSWER          | ANSWER            |
+| Tokens       | Lexemes           |
+|:-------------|:------------------|
+| BOOLEAN      | 'True' or 'False' |
+| START_ANSWER | 'R:. '            |
+| NEWLINE      | '\r'? '\n'        |
+| NUM          | [0-9]             |
 
 
 ### 4.4. Applied Patterns
@@ -245,20 +222,47 @@ This topic presents the classes with the patterns applied to them along with jus
 
 >**Service Pattern**
 > * RequirementsTemplateManagerService
+> * JobOpeningManagementService
+> * AuthorizationService
+> * CustomerManagementService
+> * JobOpeningListDTOService
 >
 > **Justifications**
 >
 > * RequirementsTemplateManagerService is necessary because it manages a set of operations and responsibilities that don't
-    >   belong to any class. It's in charge of managing the process of getting the plugins available from their repository,
-    >   overseeing the conversion of the data into DTOs and bridging the system to the chosen plugin.
+    belong to any class. It's in charge of managing the process of getting the plugins available from their repository,
+    overseeing the conversion of the data into DTOs and bridging the system to the chosen plugin.
+> 
+> * To get the customers that are assigned to the current Customer Manager in-session, we must get something to identify them.
+    The AuthorizationService allows to get the username (user's email), which is essential to then filter the CustomerRepository
+    to the desired customers, which will allow us to get desired job openings. This set of instructions is used in other
+    functionalities too.
+>
+> * CustomerManagementService is used in more than one functionality, and its in charge of managing request regarding entities,
+    serving as encapsulation between the controller and the CustomerRepository along with the domain classes.
+>
+> * JobOpeningManagementService is used in more than one functionality, and its in charge of managing request regarding
+    jobOpenings, serving as encapsulation between the controller and the JobOpeningRepository along with the domain classes.
+>
+> * In order to enforce encapsulation amongst layers and adequate responsibility assigment, the JobOpeningListDTOService was
+    created, besides being a set of instructions that is used in other functionalities.
 
 >**Repository Pattern**
 > * RequirementsSpecificationsRepository
+> * CustomerRepository
+> * JobOpeningRepository
 >
 > **Justifications**
 >
 > * Many plugins can exist, so they must be stored and persisted in a repository. It is from here that the plugins available
-    >   to generate a requirements specifications template file are.
+>   to generate a requirements specifications template file are.
+> 
+> * The JobOpeningRepository has stored all the jobOpening instances created in all sessions in its database, it's where
+   the instances can be rebuilt.
+> 
+> * Customers have their Customer Manager email as an attribute, so by using the email we can track which customers are assigned 
+    to said user and retrieve their costumer codes. This is all stored in the database represented by the repository.
+
 
 ### 4.5. Tests
 
