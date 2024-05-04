@@ -21,14 +21,10 @@
 package jobs4u.base.persistence.impl.inmemory;
 
 import eapli.framework.infrastructure.authz.domain.model.Username;
-import eapli.framework.infrastructure.repositories.LockableRepository;
 import eapli.framework.infrastructure.repositories.impl.inmemory.InMemoryDomainRepository;
-import jobs4u.base.candidatemanagement.domain.CandidateUser;
+import jobs4u.base.candidatemanagement.domain.Candidate;
 import jobs4u.base.candidatemanagement.domain.PhoneNumber;
 import jobs4u.base.candidatemanagement.repository.CandidateRepository;
-import jobs4u.base.clientusermanagement.domain.ClientUser;
-import jobs4u.base.clientusermanagement.domain.MecanographicNumber;
-import jobs4u.base.clientusermanagement.repositories.ClientUserRepository;
 
 import java.util.Optional;
 
@@ -37,14 +33,14 @@ import java.util.Optional;
  * @author Jorge Santos ajs@isep.ipp.pt 02/04/2016
  */
 public class InMemoryCandidateUserRepository
-        extends InMemoryDomainRepository<CandidateUser, PhoneNumber> implements CandidateRepository {
+        extends InMemoryDomainRepository<Candidate, PhoneNumber> implements CandidateRepository {
 
     static {
         InMemoryInitializer.init();
     }
 
     @Override
-    public Optional<CandidateUser> findByUsername(final Username name) {
+    public Optional<Candidate> findByUsername(final Username name) {
         return matchOne(e -> e.user().username().equals(name));
     }
 

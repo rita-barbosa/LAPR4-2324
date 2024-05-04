@@ -1,6 +1,7 @@
 package jobs4u.base.applicationmanagement.dto;
 
-import jobs4u.base.candidatemanagement.Candidate;
+import jobs4u.base.candidatemanagement.domain.Candidate;
+
 import java.io.File;
 import java.util.Date;
 

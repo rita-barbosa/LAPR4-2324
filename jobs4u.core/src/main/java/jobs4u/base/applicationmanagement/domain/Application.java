@@ -6,7 +6,7 @@ import eapli.framework.representations.dto.DTOable;
 import eapli.framework.validations.Preconditions;
 import jakarta.persistence.*;
 import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
-import jobs4u.base.candidatemanagement.Candidate;
+import jobs4u.base.candidatemanagement.domain.Candidate;
 
 import java.io.File;
 import java.util.Date;

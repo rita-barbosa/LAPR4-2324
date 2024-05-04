@@ -4,16 +4,14 @@ import eapli.framework.domain.repositories.TransactionalContext;
 import eapli.framework.infrastructure.authz.domain.model.Username;
 import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
 import jobs4u.base.Application;
-import jobs4u.base.candidatemanagement.domain.CandidateUser;
+import jobs4u.base.candidatemanagement.domain.Candidate;
 import jobs4u.base.candidatemanagement.domain.PhoneNumber;
 import jobs4u.base.candidatemanagement.repository.CandidateRepository;
-import jobs4u.base.customermanagement.domain.Customer;
 
 
-import java.util.List;
 import java.util.Optional;
 
-public class JpaCandidateRepository extends JpaAutoTxRepository<CandidateUser, Long, PhoneNumber>
+public class JpaCandidateRepository extends JpaAutoTxRepository<Candidate, Long, PhoneNumber>
         implements CandidateRepository {
 
     public JpaCandidateRepository(final TransactionalContext autoTx) {
@@ -25,7 +23,7 @@ public class JpaCandidateRepository extends JpaAutoTxRepository<CandidateUser, L
     }
 
     @Override
-    public Optional<CandidateUser> ofIdentity(PhoneNumber entityPhoneNumber) {
+    public Optional<Candidate> ofIdentity(PhoneNumber entityPhoneNumber) {
         return Optional.empty();
     }
 
@@ -35,7 +33,7 @@ public class JpaCandidateRepository extends JpaAutoTxRepository<CandidateUser, L
     }
 
     @Override
-    public Optional<CandidateUser> findByUsername(Username name) {
+    public Optional<Candidate> findByUsername(Username name) {
         return Optional.empty();
     }
 }

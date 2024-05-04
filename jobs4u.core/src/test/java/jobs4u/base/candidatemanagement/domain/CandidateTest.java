@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class CandidateUserTest {
+class CandidateTest {
 
      private final PhoneNumber phoneNumber1 = new PhoneNumber("+351","910000000");
     private final PhoneNumber phoneNumber2 = new PhoneNumber("+351","910000002");
@@ -25,8 +25,8 @@ class CandidateUserTest {
     @Test
     public void ensureEqualsCandidateUsersPassesForSamePhoneNumber() throws Exception {
 
-        final CandidateUser candidate1 = new CandidateUser(getNewDummyUser(),phoneNumber1);
-        final CandidateUser candidate2 = new CandidateUser(getNewDummyUser(),phoneNumber1);
+        final Candidate candidate1 = new Candidate(getNewDummyUser(),phoneNumber1);
+        final Candidate candidate2 = new Candidate(getNewDummyUser(),phoneNumber1);
 
         final boolean expected = candidate1.equals(candidate2);
 
@@ -37,8 +37,8 @@ class CandidateUserTest {
     @Test
     public void ensureEqualsCandidateUsersFailsForSamePhoneNumber() throws Exception {
 
-        final CandidateUser candidate1 = new CandidateUser(getNewDummyUser(),phoneNumber1);
-        final CandidateUser candidate2 = new CandidateUser(getNewDummyUser(),phoneNumber2);
+        final Candidate candidate1 = new Candidate(getNewDummyUser(),phoneNumber1);
+        final Candidate candidate2 = new Candidate(getNewDummyUser(),phoneNumber2);
 
         final boolean expected = candidate1.equals(candidate2);
 

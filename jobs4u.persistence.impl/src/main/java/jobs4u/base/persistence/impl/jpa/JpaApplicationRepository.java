@@ -4,8 +4,6 @@ import eapli.framework.domain.repositories.TransactionalContext;
 import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
 import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
-import jobs4u.base.candidatemanagement.domain.CandidateUser;
-import jobs4u.base.candidatemanagement.domain.PhoneNumber;
 
 
 import java.util.ArrayList;

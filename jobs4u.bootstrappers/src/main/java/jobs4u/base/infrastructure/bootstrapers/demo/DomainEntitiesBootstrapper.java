@@ -68,7 +68,7 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         persistInterviewModels();
         persistJobOpenings();
         persistCandidates();
-        persistApplications();
+//        persistApplications();
         //persistRecruitmentProcesses();
         return true;
     }
