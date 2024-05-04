@@ -11,7 +11,8 @@ This is the first time this user story is being requested.
 **Acceptance Criteria:**
 
 - **1009.1.** The system must maintain consistency at all times.
-- **1009.2.** Requirement specificatios should only be selected for job openings where the recruitment process has not yet started or hasn't been set up.
+- **1009.2.** Requirement specificatios should only be selected for job openings where the recruitment process has not
+  yet started or hasn't been set up.
 
 **Dependencies/References:**
 
@@ -78,7 +79,8 @@ requirement specification based on the provided information by the customer.
 > * RequirementSpecificationDto
 >
 > We opted for DTOs due to the significant amount of domain information required for this functionality. Recognizing the
-> benefits of encapsulation and layer decoupling offered by DTOs, we concluded that applying this pattern was advantageous
+> benefits of encapsulation and layer decoupling offered by DTOs, we concluded that applying this pattern was
+> advantageous
 > in this context.
 
 > **Service Pattern**
@@ -91,14 +93,16 @@ requirement specification based on the provided information by the customer.
 >
 > The services were used to gather job openings and their specifications to display them to the user, essentially
 > listing them. Recognizing the potential for this functionality to be used in various use cases, we opted to
-> develop a service with the primary responsibility of: obtaining the persisted instances using their repository and using
+> develop a service with the primary responsibility of: obtaining the persisted instances using their repository and
+> using
 > the DtoService to transform these instances into DTOs.
 
 ### 4.4. Tests
 
 #### JobOpeningTests
 
-**Test 1:** Verifies that it is not possible to select a requirement specification for a job opening that is already in the recruitment process.
+**Test 1:** Verifies that it is not possible to select a requirement specification for a job opening that is already in
+the recruitment process.
 
 **Refers to Acceptance Criteria:** 1009.2
 
@@ -111,26 +115,53 @@ public void ensureSelectReqSpecificationBeforeRecruitmentProccess() {
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+### SelectRequirementSpecificationController
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this
-requirement.*
+```
+public Iterable<JobOpeningDTO> activeJobOpenings() {
+    authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN);
+  
+    return jobOpeningSvc.acticeJobOpenings();
+}
+
+public Iterable<RequirementSpecificationDTO> availableRequirementSpecification() {
+    authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN);
+  
+    return reqSpeSvc.availableRequirementSpecification();
+}
+
+public boolean updateRequirementSpecification(JobOpeningDTO jobOpeningDTO, RequirementSpecificationDTO requirementSpecificationDTO) {
+    authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN);
+    Optional<JobOpening> j = jobOpeningRepository.ofIdentity(new JobReference(jobOpeningDTO.getJobReference()));
+    if (j.isPresent()) {
+        Optional<RequirementSpecification> r = requirementSpecificationRepository.ofIdentity(new RequirementName(requirementSpecificationDTO.filename()));
+        if (r.isPresent()) {
+            j.get().changeRequirementSpecification(r.get());
+            jobOpeningRepository.save(j.get());
+            return true;
+        }
+    }
+    return false;
+}
+```
+
+### RequirementSpecificationManagementService
+
+```
+public Iterable<RequirementSpecificationDTO> availableRequirementSpecification() {
+    return dtoSvc.convertToDTO(repo.requirementsSpecifications());
+}
+```
+
+### JobOpeningManagementService
+
+``` 
+public Iterable<JobOpeningDTO> acticeJobOpenings() {
+    return dtoSvc.convertToDTO(jobOpeningRepository.findAllJobOpeningsNotStarted());
+}
+```
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
-
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
-
-## 7. Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
+To execute this fucntionality it is necessary to run the script named `run-backoffice-app` and log in with Customer
+Manager permissions after it must select the menu `Job Opening` followed by `Select a requirement specification`.
