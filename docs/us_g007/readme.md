@@ -120,17 +120,14 @@ public final class BaseRoles {
 public class BasePasswordPolicy implements PasswordPolicy {
     @Override
     public boolean isSatisfiedBy(final String rawPassword) {
-        // sanity check
         if (StringPredicates.isNullOrEmpty(rawPassword)) {
             return false;
         }
 
-        // at least 6 characters long
         if (rawPassword.length() < 8) {
             return false;
         }
 
-        // at least one digit
         if (!StringPredicates.containsDigit(rawPassword)) {
             return false;
         }
