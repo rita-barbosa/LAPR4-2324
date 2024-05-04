@@ -198,8 +198,8 @@ is required.
 * WorkMode
 * ContractType
 * RequirementSpecification
-* EntityListDTOService
-* EntityManagementService
+* CustomerListDTOService
+* CustomerManagementService
 * JobOpeningManagementService
 * AuthorizationService
 
@@ -210,7 +210,7 @@ is required.
 * WorkModesRepository
 * ContractTypesRepository
 * RequirementsSpecificationsRepository
-* EntityRepository
+* CustomerRepository
 
 **New Application Layer Classes**
 * RegisterJobOpeningController
@@ -249,7 +249,7 @@ This topic presents the classes with the patterns applied to them along with jus
 > * ContractTypesRepository
 > * WorkModesRepository
 > * RequirementsSpecificationsRepository
-> * EntityRepository
+> * CustomerRepository
 > * JobOpeningRepository
 > 
 > **Justifications**
@@ -265,29 +265,29 @@ This topic presents the classes with the patterns applied to them along with jus
 > * To have access to the requirements specifications file names, access to a database containing registers of them is
     necessary, therefore the existence of a repository database that is shared amongst various applications is necessary.
 > 
-> * The customers assigned to the Customer Manager are stored within the EntityRepository, persisting and rebuilding them
+> * The customers assigned to the Customer Manager are stored within the CustomerRepository, persisting and rebuilding them
     between sessions.
 
 
 >**Service Pattern**
-> * EntityListDTOService
-> * EntityManagementService
+> * CustomerListDTOService
+> * CustomerManagementService
 > * JobOpeningManagementService
 > * AuthorizationService
 > 
 > **Justifications**
 > 
-> * EntityManagementService is used in more than one functionality, and its in charge of managing request regarding entities,
->   serving as encapsulation between the controller and the EntityRepository along with the domain classes.
+> * CustomerManagementService is used in more than one functionality, and its in charge of managing request regarding entities,
+>   serving as encapsulation between the controller and the CustomerRepository along with the domain classes.
 >
 > * JobOpeningManagementService is used in more than one functionality, and its in charge of managing request regarding 
 >   jobOpenings, serving as encapsulation between the controller and the JobOpeningRepository along with the domain classes.
 > 
-> * In order to enforce encapsulation amongst layers and adequate responsibility assigment, the EntityListDTOService was
+> * In order to enforce encapsulation amongst layers and adequate responsibility assigment, the CustomerListDTOService was
 >   created, besides being a set of instructions that is used in other functionalities.
 > 
 > * To get the customers that are assigned to the current Customer Manager in-session, we must get something to identify them.
->   The AuthorizationService allows to get the username (user's email), which is essential to then filter the EntityRepository
+>   The AuthorizationService allows to get the username (user's email), which is essential to then filter the CustomerRepository
 >   to the desired customers. This set of instructions is used in other functionalities too.
 
 
