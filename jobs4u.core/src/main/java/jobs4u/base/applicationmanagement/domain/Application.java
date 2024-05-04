@@ -27,21 +27,20 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
     private RequirementAnswer requirementAnswer;
     @Column(nullable = false)
     private RequirementResult requirementResult;
+
     @Column(nullable = false)
     private File file;
     @Column(nullable = false)
     private Date applicationDate;
     @Column(nullable = false)
     private ApplicationStatus applicationStatus;
-//    @ManyToOne(optional = false)
+
+    @ManyToOne
 //    @JoinColumn(nullable = false)
-//    private Candidate candidate;
+    private Candidate candidate;
     @Column
     private Interview interview;
 
-//    @ManyToOne
-//    @JoinColumn
-//    private JobOpening jobOpening;
 
 
 //    public Application(RequirementAnswer requirementAnswer, RequirementResult requirementResult, File file, Date applicationDate, ApplicationStatus applicationStatus, Candidate candidate, Interview interview) {
@@ -70,7 +69,7 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
 //        this.candidate = candidate;
 //        this.interview = interview;
 //    }
-//
+
 
     public Application(RequirementAnswer requirementAnswer, RequirementResult requirementResult, File file, Date applicationDate, Interview interview) {
 
@@ -98,19 +97,33 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
 //        this.interview = new Interview(interviewTypeDenomination, schedule, interviewResult, interviewAnswer);
 //    }
 //
-//    public Application(String requirementAnswer, Boolean requirementResult, File file, Date applicationDate, String applicationStatus, Candidate candidate, Interview interview) {
-//
-//        Preconditions.noneNull(requirementAnswer, requirementResult, file, applicationDate, applicationStatus, candidate);
-//
-//        this.requirementAnswer = RequirementAnswer.valueOf(requirementAnswer);
-//        this.requirementResult = RequirementResult.valueOf(requirementResult);
-//        this.file = file;
-//        this.applicationDate = applicationDate;
-//        this.applicationStatus = new ApplicationStatus();
-//        this.applicationStatus.setStatusDescriptionAsNOT_CHECKED();
-//        this.candidate = candidate;
-//        this.interview = interview;
-//    }
+    public Application(RequirementAnswer requirementAnswer, RequirementResult requirementResult, File file, Date applicationDate, Candidate candidate, Interview interview) {
+
+        Preconditions.noneNull(requirementAnswer, requirementResult, file, applicationDate, candidate);
+
+        this.requirementAnswer = requirementAnswer;
+        this.requirementResult = requirementResult;
+        this.file = file;
+        this.applicationDate = applicationDate;
+        this.applicationStatus = new ApplicationStatus();
+        this.applicationStatus.setStatusDescriptionAsNOT_CHECKED();
+        this.candidate = candidate;
+        this.interview = interview;
+    }
+
+    public Application(String requirementAnswer, Boolean requirementResult, File file, Date applicationDate, Candidate candidate, Interview interview) {
+
+        Preconditions.noneNull(requirementAnswer, requirementResult, file, applicationDate, candidate);
+
+        this.requirementAnswer = RequirementAnswer.valueOf(requirementAnswer);
+        this.requirementResult = RequirementResult.valueOf(requirementResult);
+        this.file = file;
+        this.applicationDate = applicationDate;
+        this.applicationStatus = new ApplicationStatus();
+        this.applicationStatus.setStatusDescriptionAsNOT_CHECKED();
+        this.candidate = candidate;
+        this.interview = interview;
+    }
 
     public Application(RequirementAnswer requirementAnswer, RequirementResult requirementResult, File file, Date applicationDate) {
 
@@ -122,6 +135,19 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
         this.applicationDate = applicationDate;
         this.applicationStatus = new ApplicationStatus();
         this.applicationStatus.setStatusDescriptionAsNOT_CHECKED();
+    }
+
+
+    public Application(String requirementAnswer, Boolean requirementResult, File file, Date applicationDate, String candidateName) {
+        Preconditions.noneNull(requirementAnswer, requirementResult, file, applicationDate);
+
+        this.requirementAnswer = RequirementAnswer.valueOf(requirementAnswer);
+        this.requirementResult = RequirementResult.valueOf(requirementResult);
+        this.file = file;
+        this.applicationDate = applicationDate;
+        this.applicationStatus = new ApplicationStatus();
+        this.applicationStatus.setStatusDescriptionAsNOT_CHECKED();
+
     }
 
     protected Application(){
@@ -160,6 +186,6 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
     @Override
     public ApplicationDTO toDTO() {
         return new ApplicationDTO(id, requirementAnswer.requirementAnswer(), requirementResult.requirementResult(),
-                file, applicationDate, applicationStatus.toString());
+                file, applicationDate, applicationStatus.getStatusDescription());
     }
 }

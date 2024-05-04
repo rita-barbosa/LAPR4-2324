@@ -54,6 +54,7 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
 //    @JoinColumn(nullable = false)
     private InterviewModel interviewModel;
 
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Application> applications = new HashSet<>();
 
@@ -145,6 +146,28 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         this.numVacancies = NumberVacancy.valueOf(numVacancies);
         this.requirementSpecification = requirementsFile;
 //        this.interviewModel = interviewFile;
+        this.status = new JobOpeningStatus();
+        this.status.setStatusDescriptionAsUNFINISHED();
+        this.rank = new Rank(newJobReference);
+        this.applications = applications;
+    }
+
+    public JobOpening(String function, ContractTypeDTO contractTypeDenomination, WorkModeDTO workModeDenomination,
+                      String streetName, String city, String district, String streetNumber, String zipcode, Integer numVacancies,
+                      String description, RequirementSpecification requirementsFile, JobReference lastReference, Set<Application> applications) {
+
+        Preconditions.noneNull(function, description, district, streetNumber, lastReference, requirementsFile, zipcode,
+                city, contractTypeDenomination, workModeDenomination, numVacancies, streetName);
+
+        JobReference newJobReference = generateNewSequencialJobReference(lastReference);
+        this.jobReference = newJobReference;
+        this.function = JobFunction.valueOf(function);
+        this.address = new Address(streetName, city, district, streetNumber, zipcode);
+        this.contractType = ContractType.valueOf(contractTypeDenomination.contractTypeName());
+        this.workMode = WorkMode.valueOf(workModeDenomination.workModeName());
+        this.description = Description.valueOf(description);
+        this.numVacancies = NumberVacancy.valueOf(numVacancies);
+        this.requirementSpecification = requirementsFile;
         this.status = new JobOpeningStatus();
         this.status.setStatusDescriptionAsUNFINISHED();
         this.rank = new Rank(newJobReference);

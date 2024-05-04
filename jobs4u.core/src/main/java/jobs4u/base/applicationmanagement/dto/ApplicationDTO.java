@@ -29,14 +29,39 @@ public class ApplicationDTO {
 
     @Override
     public String toString() {
-        return String.format("#Application: %s\n" +
+        return String.format("\n=====================================================================\n" +
+                "#Application: %d\n" +
                         "#Requirement Answer: %s\n" +
                         "#Requirement Result: %s\n" +
                         "#File: %s\n" +
                         "#Application Date: %s\n" +
                         "#Application Status: %s\n" +
-
+                        "=====================================================================\n",
                 id, requirementAnswer, requirementResult, file, applicationDate,
                 applicationStatus);
+    }
+
+    public String getRequirementAnswer() {
+        return requirementAnswer;
+    }
+
+    public Boolean getRequirementResult() {
+        return requirementResult;
+    }
+
+    public File getFile() {
+        return file;
+    }
+
+    public Date getApplicationDate() {
+        return applicationDate;
+    }
+
+    public String getApplicationStatus() {
+        return applicationStatus;
+    }
+
+    public Long getId() {
+        return id;
     }
 }
