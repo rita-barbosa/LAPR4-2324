@@ -52,6 +52,8 @@ public class ListJobOpeningsUI extends AbstractListUI<JobOpeningDTO> {
                         default:
                             break;
                     }
+                }else {
+                    super.show();
                 }
                 answer = Console.readLine("Finish listing? [y/n]").trim().toLowerCase();
                 if (!answer.equals("y") && !answer.equals("n")) {
