@@ -23,7 +23,6 @@ package jobs4u.base.persistence.impl.jpa;
 import jobs4u.base.Application;
 import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
 import jobs4u.base.candidatemanagement.repository.CandidateRepository;
-import jobs4u.base.clientusermanagement.repositories.SignupRequestRepository;
 import jobs4u.base.criteriamanagement.repository.CriteriaRepository;
 import jobs4u.base.customermanagement.repository.CustomerRepository;
 import jobs4u.base.infrastructure.persistence.RepositoryFactory;
@@ -54,26 +53,6 @@ public class JpaRepositoryFactory implements RepositoryFactory {
     public UserRepository users() {
         return new JpaAutoTxUserRepository(Application.settings().getPersistenceUnitName(),
                 Application.settings().getExtendedPersistenceProperties());
-    }
-
-    @Override
-    public JpaClientUserRepository clientUsers(final TransactionalContext autoTx) {
-        return new JpaClientUserRepository(autoTx);
-    }
-
-    @Override
-    public JpaClientUserRepository clientUsers() {
-        return new JpaClientUserRepository(Application.settings().getPersistenceUnitName());
-    }
-
-    @Override
-    public SignupRequestRepository signupRequests(final TransactionalContext autoTx) {
-        return new JpaSignupRequestRepository(autoTx);
-    }
-
-    @Override
-    public SignupRequestRepository signupRequests() {
-        return new JpaSignupRequestRepository(Application.settings().getPersistenceUnitName());
     }
 
     @Override

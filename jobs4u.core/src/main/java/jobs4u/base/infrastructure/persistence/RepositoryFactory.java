@@ -22,8 +22,6 @@ package jobs4u.base.infrastructure.persistence;
 
 import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
 import jobs4u.base.candidatemanagement.repository.CandidateRepository;
-import jobs4u.base.clientusermanagement.repositories.ClientUserRepository;
-import jobs4u.base.clientusermanagement.repositories.SignupRequestRepository;
 import eapli.framework.domain.repositories.TransactionalContext;
 import eapli.framework.infrastructure.authz.domain.repositories.UserRepository;
 import jobs4u.base.criteriamanagement.repository.CriteriaRepository;
@@ -63,37 +61,6 @@ public interface RepositoryFactory {
      * @return
      */
     UserRepository users();
-
-    /**
-     *
-     * @param autoTx
-     *            the transactional context to enroll
-     * @return
-     */
-    ClientUserRepository clientUsers(TransactionalContext autoTx);
-
-    /**
-     * repository will be created in auto transaction mode
-     *
-     * @return
-     */
-    ClientUserRepository clientUsers();
-
-    /**
-     *
-     * @param autoTx
-     *            the transactional context to enroll
-     * @return
-     */
-    SignupRequestRepository signupRequests(TransactionalContext autoTx);
-
-    /**
-     * repository will be created in auto transaction mode
-     *
-     * @return
-     */
-    SignupRequestRepository signupRequests();
-
 
     /**
      *

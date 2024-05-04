@@ -20,23 +20,16 @@
  */
 package jobs4u.base.app.bootstrap;
 
-import eapli.framework.infrastructure.pubsub.EventPublisher;
-import eapli.framework.infrastructure.pubsub.impl.inprocess.service.InProcessPubSub;
 import jobs4u.base.app.common.console.BaseApplication;
 import jobs4u.base.candidatemanagement.application.eventhandlers.NewCandidateUserRegisteredWatchDog;
 import jobs4u.base.candidatemanagement.domain.events.NewCandidateUserRegisteredEvent;
-import jobs4u.base.clientusermanagement.application.eventhandlers.NewUserRegisteredFromSignupWatchDog;
-import jobs4u.base.clientusermanagement.domain.events.NewUserRegisteredFromSignupEvent;
-import jobs4u.base.clientusermanagement.domain.events.SignupAcceptedEvent;
 import jobs4u.base.customermanagement.application.eventhandlers.NewCustomerUserRegisteredWatchDog;
 import jobs4u.base.customermanagement.domain.events.NewCustomerUserRegisteredEvent;
 import jobs4u.base.infrastructure.bootstrapers.BaseBootstrapper;
 import jobs4u.base.infrastructure.bootstrapers.demo.BaseDemoBootstrapper;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.infrastructure.smoketests.BaseDemoSmokeTester;
-import jobs4u.base.usermanagement.application.eventhandlers.SignupAcceptedWatchDog;
 import jobs4u.base.usermanagement.domain.BasePasswordPolicy;
-import eapli.framework.collections.util.ArrayPredicates;
 import eapli.framework.infrastructure.authz.application.AuthzRegistry;
 import eapli.framework.infrastructure.authz.domain.model.PlainTextEncoder;
 import eapli.framework.infrastructure.pubsub.EventDispatcher;

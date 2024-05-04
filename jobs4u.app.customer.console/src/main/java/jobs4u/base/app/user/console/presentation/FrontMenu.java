@@ -24,7 +24,6 @@
 package jobs4u.base.app.user.console.presentation;
 
 import jobs4u.base.app.common.console.presentation.authz.LoginUI;
-import jobs4u.base.app.user.console.presentation.myuser.SignupRequestAction;
 import jobs4u.base.infrastructure.authz.AuthenticationCredentialHandler;
 import jobs4u.base.usermanagement.domain.BaseRoles;
 import eapli.framework.actions.ChainedAction;
@@ -63,7 +62,6 @@ public class FrontMenu extends AbstractUI {
             return true;
         }));
         //TODO: instead of leaving the app, return to the main menu again
-        menu.addItem(SIGNUP_OPTION, "Sign up", new SignupRequestAction());
         menu.addItem(EXIT_OPTION, "Exit", new ExitWithMessageAction("Bye, Bye"));
 
         final MenuRenderer renderer = new VerticalMenuRenderer(menu, MenuItemRenderer.DEFAULT);

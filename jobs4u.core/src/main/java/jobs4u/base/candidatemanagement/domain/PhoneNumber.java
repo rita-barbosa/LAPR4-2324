@@ -1,10 +1,8 @@
 package jobs4u.base.candidatemanagement.domain;
 
 import eapli.framework.domain.model.ValueObject;
-import eapli.framework.strings.util.StringPredicates;
-import eapli.framework.validations.Preconditions;
 import jakarta.persistence.Embeddable;
-import jobs4u.base.clientusermanagement.domain.MecanographicNumber;
+
 
 @Embeddable
 public class PhoneNumber implements ValueObject, Comparable<PhoneNumber> {

@@ -18,21 +18,32 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package jobs4u.base.app.backoffice.console.presentation.clientuser;
+package jobs4u.base.app.user.console.presentation;
 
-import jobs4u.base.clientusermanagement.domain.SignupRequest;
-import eapli.framework.visitor.Visitor;
+import eapli.framework.infrastructure.authz.application.AuthorizationService;
+import eapli.framework.infrastructure.authz.application.AuthzRegistry;
+import eapli.framework.presentation.console.AbstractUI;
 
 /**
- * Created by AJS on 08/04/2016.
  *
+ * @author mcn
  */
 @SuppressWarnings("squid:S106")
-class SignupRequestPrinter implements Visitor<SignupRequest> {
+public abstract class CustomerUserUI extends AbstractUI {
+
+    private final AuthorizationService authz = AuthzRegistry.authorizationService();
 
     @Override
-    public void visit(final SignupRequest visitee) {
-        System.out.printf("%-10s%-20s%-10s%n", visitee.identity(), visitee.name(),
-                visitee.mecanographicNumber());
+    public String headline() {
+
+        return authz.session().map(s -> "Jobs4u [ @" + s.authenticatedUser().identity() + " ] ")
+                .orElse("Jobs4u [ ==Anonymous== ]");
+    }
+
+    @Override
+    protected void drawFormTitle(final String title) {
+        final String titleBorder = BORDER.substring(0, 2) + " " + title;
+        System.out.println(titleBorder);
+        drawFormBorder();
     }
 }
