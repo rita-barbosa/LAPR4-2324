@@ -30,6 +30,7 @@ import jobs4u.base.app.backoffice.console.presentation.authz.ListUsersAction;
 import jobs4u.base.app.backoffice.console.presentation.candidate.ListAllCandidatesAction;
 import jobs4u.base.app.backoffice.console.presentation.candidate.RegisterCandidateAction;
 import jobs4u.base.app.backoffice.console.presentation.customer.RegisterCustomerAction;
+import jobs4u.base.app.backoffice.console.presentation.interviewmodel.SelectInterviewModelAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.listing.ListJobOpeningsAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.registration.RegisterJobOpeningAction;
 import jobs4u.base.app.backoffice.console.presentation.requirementspecification.SelectRequirementSpecificationAction;
@@ -72,6 +73,7 @@ public class MainMenu extends AbstractUI {
     private static final int REGISTER_JOB_OPENING = 1;
     private static final int LIST_JOB_OPENINGS = 2;
     private static final int SELECT_REQ_SPEC = 3;
+    private static final int SELECT_INT_MODEL = 4;
     private static final int REGISTER_CUSTOMERS = 1;
 
     // LANGUAGE ENGINEER SETTINGS
@@ -187,6 +189,7 @@ public class MainMenu extends AbstractUI {
         menu.addItem(REGISTER_JOB_OPENING, "Register a job opening", new RegisterJobOpeningAction());
         menu.addItem(LIST_JOB_OPENINGS, "List job openings", new ListJobOpeningsAction());
         menu.addItem(SELECT_REQ_SPEC, "Select a requirement specification", new SelectRequirementSpecificationAction());
+        menu.addItem(SELECT_INT_MODEL, "Select an interview model", new SelectInterviewModelAction());
         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
 
             return menu;

@@ -83,7 +83,7 @@ activate IMREPO
 IMREPO --> IMMS: interviewModels
 deactivate IMREPO
 
-IMMS -> IMDTOService: convertToDto(interviewModels)
+IMMS -> IMDTOService: toDto(interviewModels)
 activate IMDTOService
 
 
