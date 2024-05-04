@@ -5,7 +5,8 @@
 #include <string.h>
 #include <sys/stat.h>
 
-void copy_files(int n, char *input_directory, char *output_directory){
+void copy_files(int n, char *input_directory, char *output_directory)
+{
     DIR *dir;
     struct dirent *entry;
     char subdirectory[15];
@@ -19,25 +20,26 @@ void copy_files(int n, char *input_directory, char *output_directory){
 
     // Open the directory
     dir = opendir(input_directory);
-    if (!dir) 
+    if (!dir)
     {
         perror("opendir");
         exit(EXIT_FAILURE);
     }
 
-    
-
     // Iterate over the directory entries
     while ((entry = readdir(dir)) != NULL)
     {
-        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+        {
             continue;
         }
 
-        if (entry->d_name[0] - '0' == n) {
+        if (entry->d_name[0] - '0' == n)
+        {
             pid = fork();
 
-            if(pid == 0){
+            if (pid == 0)
+            {
                 char source_file_path[257];
                 sprintf(source_file_path, "%s/%s", input_directory, entry->d_name);
 
@@ -49,12 +51,10 @@ void copy_files(int n, char *input_directory, char *output_directory){
                 exit(EXIT_FAILURE);
             }
 
-             printf("«----» [ File %s copied to %s ] «----»\n", entry->d_name, subdirectory);
+            printf("«----» [ File %s copied to %s ] «----»\n", entry->d_name, subdirectory);
         }
-        
     }
 
     // Close the directory
     closedir(dir);
-
 }

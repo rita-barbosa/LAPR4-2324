@@ -31,8 +31,8 @@ void handle_signal(int signo)
     }
 }
 
-// VERSION:
-// 03/05/2024
+// VERSION: 7
+// 04/05/2024
 // Group: 2DG2
 int main(int argc, char *argv[])
 {
