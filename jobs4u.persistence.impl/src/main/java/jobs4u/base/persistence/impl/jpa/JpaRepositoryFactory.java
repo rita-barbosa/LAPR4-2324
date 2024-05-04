@@ -37,7 +37,8 @@ import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
 import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
 import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
-import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
+import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.repositories.InterviewModelRepository;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.repositories.RequirementSpecificationRepository;
 
 /**
  *
@@ -139,6 +140,16 @@ public class JpaRepositoryFactory implements RepositoryFactory {
     @Override
     public ApplicationRepository applications(final TransactionalContext autoTx) {
         return new JpaApplicationRepository(autoTx);
+    }
+
+    @Override
+    public InterviewModelRepository interviewModels(final TransactionalContext autoTx) {
+        return new JpaInterviewModelRepository(autoTx);
+    }
+
+    @Override
+    public InterviewModelRepository interviewModels() {
+        return new JpaInterviewModelRepository(Application.settings().getPersistenceUnitName());
     }
 
     @Override

@@ -14,24 +14,22 @@ import jobs4u.base.criteriamanagement.repository.CriteriaRepository;
 import jobs4u.base.customermanagement.application.CustomerManagementService;
 import jobs4u.base.infrastructure.bootstrapers.UsersBootstrapperBase;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
-import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
-import jobs4u.base.interviewmodelmanagement.domain.InterviewModelDescription;
-import jobs4u.base.interviewmodelmanagement.domain.InterviewModelName;
-import jobs4u.base.interviewmodelmanagement.repositories.InterviewModelRepository;
 import jobs4u.base.jobopeningmanagement.domain.*;
 import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
 import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
 import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
+import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModel;
+import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.repositories.InterviewModelRepository;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.FullClassName;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementDescription;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementName;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementSpecification;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.repositories.RequirementSpecificationRepository;
 import jobs4u.base.recruitmentprocessmanagement.domain.*;
 import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
 import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
-import jobs4u.base.requirementsmanagement.domain.PluginJarFile;
-import jobs4u.base.requirementsmanagement.domain.RequirementDescription;
-import jobs4u.base.requirementsmanagement.domain.RequirementName;
-import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
-import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
 import jobs4u.base.usermanagement.domain.BaseRoles;
 
 import java.io.File;
@@ -49,8 +47,8 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
     private WorkModeRepository workModeRepository;
     private RequirementSpecificationRepository requirementSpecificationRepository;
     private InterviewModelRepository interviewModelRepository;
-
     private JobOpeningRepository jobOpeningRepository;
+    List<InterviewModel> interviewModelsList = new ArrayList<>();
     private CriteriaRepository criteriaRepository;
     private RecruitmentProcessRepository recruitmentProcessRepository;
     private PhaseRepository phaseRepository;
@@ -58,7 +56,6 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
     private ApplicationRepository applicationRepository;
 
     List<RequirementSpecification> requirementSpecificationsList = new ArrayList<>();
-    List<InterviewModel> interviewModelList = new ArrayList<>();
 
     @Override
     public boolean execute() {
@@ -80,8 +77,8 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         this.contractTypeRepository = PersistenceContext.repositories().contractTypes();
         this.workModeRepository = PersistenceContext.repositories().workModes();
         this.requirementSpecificationRepository = PersistenceContext.repositories().requirementSpecifications();
-        this.interviewModelRepository = PersistenceContext.repositories().interviewModels();
         this.jobOpeningRepository = PersistenceContext.repositories().jobOpenings();
+        this.interviewModelRepository = PersistenceContext.repositories().interviewModels();
         this.criteriaRepository = PersistenceContext.repositories().criteria();
         this.recruitmentProcessRepository = PersistenceContext.repositories().recruitmentProcesses();
         this.phaseRepository = PersistenceContext.repositories().phases();
@@ -174,41 +171,41 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
     }
 
     private void persistRequirementSpecifications() {
-        RequirementName requirementName = new RequirementName("Back End Senior Developer");
-        RequirementDescription requirementDescription = new RequirementDescription("Requirements for back end senior developers");
-        PluginJarFile pluginJarFile = new PluginJarFile("back-end-senior-developer.jar");
-        RequirementSpecification requirementSpecification = new RequirementSpecification(requirementName, requirementDescription,
-                pluginJarFile);
+        String description1 = "Back-End Developer With Experience in Java";
+        String name1 = "Back_End_Dev_Requirement_Plugin.jar";
+        String fullClassName1 = "plugin.src.java.pluginRequirement";
+        RequirementSpecification requirementSpecification1 = new RequirementSpecification(name1, description1, fullClassName1);
 
-        RequirementName requirementName1 = new RequirementName("Front End Junior Developer");
-        RequirementDescription requirementDescription1 = new RequirementDescription("Requirements for front end junior developers");
-        PluginJarFile pluginJarFile1 = new PluginJarFile("front-end-junior-developer.jar");
-        RequirementSpecification requirementSpecification1 = new RequirementSpecification(requirementName1, requirementDescription1,
-                pluginJarFile1);
 
-        requirementSpecificationsList.add(requirementSpecification);
+        String description2 = "Front-End Developer With Experience in HTML";
+        String name2 = "Front_End_Dev_Requirement_Plugin.jar";
+        String fullClassName2 = "plugin.src.java.pluginRequirement";
+        RequirementSpecification requirementSpecification2 = new RequirementSpecification(name2, description2, fullClassName2);
+
         requirementSpecificationsList.add(requirementSpecification1);
+        requirementSpecificationsList.add(requirementSpecification2);
 
-        requirementSpecificationRepository.save(requirementSpecification);
         requirementSpecificationRepository.save(requirementSpecification1);
+        requirementSpecificationRepository.save(requirementSpecification2);
     }
 
-    private void persistInterviewModels(){
-        InterviewModelName interviewName = new InterviewModelName("[Back End] Senior Developer");
-        InterviewModelDescription interviewModelDescription = new InterviewModelDescription("Interview for back end senior developers");
-        PluginJarFile pluginJarFile = new PluginJarFile("interview-back-end-senior-developer.jar");
-        InterviewModel interviewModel = new InterviewModel(interviewName, interviewModelDescription, pluginJarFile);
+    private void persistInterviewModels() {
+        String description1 = "Back-End Developer With Experience in Java";
+        String name1 = "Back_End_Dev_Interview_Plugin.jar";
+        String fullClassName1 = "plugin.src.java.pluginInterview";
+        InterviewModel interviewModel1 = new InterviewModel(name1, description1, fullClassName1);
 
-        InterviewModelName interviewName1 = new InterviewModelName("[Front End] Junior Developer");
-        InterviewModelDescription interviewModelDescription1 = new InterviewModelDescription("Interview for front end junior developers");
-        PluginJarFile pluginJarFile1 = new PluginJarFile("interview-front-end-junior-developer.jar");
-        InterviewModel interviewModel1 = new InterviewModel(interviewName1, interviewModelDescription1, pluginJarFile1);
 
-        interviewModelList.add(interviewModel);
-        interviewModelList.add(interviewModel1);
+        String description2 = "Front-End Developer With Experience in Java";
+        String name2 = "Front_End_Dev_Interview_Plugin.jar";
+        String fullClassName2 = "plugin.src.java.pluginInterview";
+        InterviewModel interviewModel2 = new InterviewModel(name2, description2, fullClassName2);
 
-        interviewModelRepository.save(interviewModel);
+        interviewModelsList.add(interviewModel1);
+        interviewModelsList.add(interviewModel2);
+
         interviewModelRepository.save(interviewModel1);
+        interviewModelRepository.save(interviewModel2);
     }
 
     private void persistCustomers() {

@@ -37,7 +37,8 @@ import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
 import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
 import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
-import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
+import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.repositories.InterviewModelRepository;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.repositories.RequirementSpecificationRepository;
 
 /**
  *
@@ -166,6 +167,14 @@ public class InMemoryRepositoryFactory implements RepositoryFactory {
     public PhaseRepository phases() {
         return phases(null);
     }
+
+    @Override
+    public InterviewModelRepository interviewModels(TransactionalContext autoTx) {
+        return new InMemoryInterviewModelRepository();
+    }
+
+    @Override
+    public InterviewModelRepository interviewModels() { return interviewModels(null); }
 
     @Override
     public ApplicationRepository applications(TransactionalContext autoTx) {

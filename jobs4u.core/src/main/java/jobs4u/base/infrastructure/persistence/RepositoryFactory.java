@@ -20,7 +20,6 @@
  */
 package jobs4u.base.infrastructure.persistence;
 
-import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
 import jobs4u.base.candidatemanagement.repository.CandidateRepository;
 import jobs4u.base.clientusermanagement.repositories.ClientUserRepository;
@@ -35,7 +34,8 @@ import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
 import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
 import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
-import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
+import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.repositories.InterviewModelRepository;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.repositories.RequirementSpecificationRepository;
 
 /**
  * @author Paulo Gandra Sousa
@@ -188,6 +188,22 @@ public interface RepositoryFactory {
      * @return
      */
     JobOpeningRepository jobOpenings();
+
+
+    /**
+     *
+     * @param autoTx
+     *            the transactional context to enroll
+     * @return
+     */
+    InterviewModelRepository interviewModels(TransactionalContext autoTx);
+
+    /**
+     * repository will be created in auto transaction mode
+     *
+     * @return
+     */
+    InterviewModelRepository interviewModels();
 
     /**
      *

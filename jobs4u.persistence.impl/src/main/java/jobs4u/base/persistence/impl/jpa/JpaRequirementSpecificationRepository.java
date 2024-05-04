@@ -3,9 +3,9 @@ package jobs4u.base.persistence.impl.jpa;
 import eapli.framework.domain.repositories.TransactionalContext;
 import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
 import jobs4u.base.Application;
-import jobs4u.base.requirementsmanagement.domain.RequirementName;
-import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
-import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementName;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementSpecification;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.repositories.RequirementSpecificationRepository;
 
 import java.util.*;
 
