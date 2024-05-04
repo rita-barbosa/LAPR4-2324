@@ -12,7 +12,7 @@ skinparam ArrowColor #222222
 
     class Address <<(V,#FF8B40) value object>> {}
 
- class PluginJarFile <<(V,#FF8B40) value object>> {}
+ class FullClassName <<(V,#FF8B40) value object>> {}
 'SERVICES
     class RequirementEvaluator <<(S,#4d91f7) service>> {}
     class InterviewEvaluator <<(S,#4d91f7) service>> {}
@@ -165,9 +165,9 @@ Interview --> "1" Schedule : follows a
 '--
 InterviewModel --> "1" InterviewModelName: identifies <
 InterviewModel --> "1" InterviewModelDescription: describes <
-InterviewModel --> "1" PluginJarFile: configures <
+InterviewModel --> "1" FullClassName: configures <
 '--
 RequirementSpecification --> "1" RequirementName: identifies <
 RequirementSpecification --> "1" RequirementDescription: describes <
-RequirementSpecification --> "1" PluginJarFile: configures <
+RequirementSpecification --> "1" FullClassName: configures <
 @enduml
