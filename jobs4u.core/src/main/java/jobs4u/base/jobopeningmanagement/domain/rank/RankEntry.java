@@ -3,6 +3,7 @@ package jobs4u.base.jobopeningmanagement.domain.rank;
 import eapli.framework.domain.model.ValueObject;
 import jakarta.persistence.*;
 import jobs4u.base.candidatemanagement.Candidate;
+import jobs4u.base.candidatemanagement.domain.CandidateUser;
 
 @Entity
 @Table(name = "T_RANK_ENTRIES")
@@ -13,7 +14,7 @@ public class RankEntry implements ValueObject {
     private Integer rankEntryId;
 
     @ManyToOne
-    private Candidate candidate;
+    private CandidateUser candidate;
 
     private Integer numberRanked;
 
@@ -21,7 +22,7 @@ public class RankEntry implements ValueObject {
         //for ORM
     }
 
-    public RankEntry(Candidate candidate, Integer numberRanked) {
+    public RankEntry(CandidateUser candidate, Integer numberRanked) {
         this.candidate = candidate;
         this.numberRanked = numberRanked;
     }

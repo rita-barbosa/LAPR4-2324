@@ -29,6 +29,7 @@ import eapli.framework.infrastructure.authz.domain.model.SystemUser;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "CANDIDATE")
 public class CandidateUser implements AggregateRoot<PhoneNumber> {
 
     private static final long serialVersionUID = 1L;

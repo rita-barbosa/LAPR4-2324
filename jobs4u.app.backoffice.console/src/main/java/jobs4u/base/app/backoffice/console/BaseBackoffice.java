@@ -26,6 +26,8 @@ package jobs4u.base.app.backoffice.console;
 import jobs4u.base.app.backoffice.console.presentation.MainMenu;
 import jobs4u.base.app.common.console.BaseApplication;
 import jobs4u.base.app.common.console.presentation.authz.LoginUI;
+import jobs4u.base.candidatemanagement.application.eventhandlers.NewCandidateUserRegisteredWatchDog;
+import jobs4u.base.candidatemanagement.domain.events.NewCandidateUserRegisteredEvent;
 import jobs4u.base.customermanagement.application.eventhandlers.NewCustomerUserRegisteredWatchDog;
 import jobs4u.base.customermanagement.domain.events.NewCustomerUserRegisteredEvent;
 import jobs4u.base.infrastructure.authz.AuthenticationCredentialHandler;
@@ -83,5 +85,6 @@ public final class BaseBackoffice extends BaseApplication {
     @Override
     protected void doSetupEventHandlers(final EventDispatcher dispatcher) {
         dispatcher.subscribe(new NewCustomerUserRegisteredWatchDog(), NewCustomerUserRegisteredEvent.class);
+        dispatcher.subscribe(new NewCandidateUserRegisteredWatchDog(), NewCandidateUserRegisteredEvent.class);
     }
 }
