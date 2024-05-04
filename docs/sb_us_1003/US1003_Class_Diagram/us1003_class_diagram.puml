@@ -3,7 +3,12 @@
 
 title US1003 Class Diagram
 
-interface AbstractUI{
+interface AbstractListUI{
+# elements()
+# elementPrinter()
+# emptyMessage()
+# listHeader()
+# elementName(
 # doShow()
 }
 
@@ -12,15 +17,15 @@ class CustomerManagementService <<Service>> {
 }
 
 class Customer <<Domain>> <<Aggregate Root>> {
-- String customerCode
-- String companyName
+- CustomerCode customerCode
+- CompanyName companyName
 - EmailAddress costumerManagerEmail
 + customerCode()
 + companyName()
 }
 
 class JobOpeningManagementService <<Service>> {
-+ getJobOpeningsFromCostumerCodes(List<String> assignedCostumerCodesList)
++ getJobOpeningsFromCostumerCodes(List<CustomerCode> assignedCostumerCodesList)
 + filterJobOpeningList(List<Criteria> criteriaList)
 }
 
@@ -29,6 +34,11 @@ class JobOpeningListDTOService <<Service>> {
 }
 
 class ListJobOpeningUI <<Presentation>> {
++ elements()
++ elementPrinter()
++ emptyMessage()
++ listHeader()
++ elementName(
 + doShow()
 }
 
@@ -47,14 +57,15 @@ class AuthorizationService <<Service>> {
 }
 
 class JobOpening <<Domain>> <<Aggregate Root>> {
-- String function
+- JobFunction function
 - ContractType contractType
 - WorkMode workMode
 - Address jobOpeningAddress
-- String jobReference
-- Integer numVacancies
-- String description
-- File requirementsSpecificationsFile
+- JobReference jobReference
+- NumberVacancy numVacancies
+- JobDescription description
+- RequirementSpecification requirementsSpecification
+- Rank rank
 }
 
 class JobOpeningRepository <<Persistence>> <<Repository>> {
@@ -103,7 +114,7 @@ RepositoryDatabase <|.. JobOpeningRepository : implements
 RepositoryDatabase <|.. CriteriaRepository : implements
 RepositoryDatabase <|.. CustomerRepository : implements
 
-AbstractUI <|.. ListJobOpeningUI : implements
+AbstractListUI <|.. ListJobOpeningUI : implements
 
 'Authentication
 AuthorizationService .right.> ListJobOpeningController
