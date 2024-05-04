@@ -51,10 +51,10 @@ For the implementation of this US it was envisioned that the plugins, that are m
 - RequirementSpecification
 - RequirementName
 - RequirementDescription
-- PluginJarFile
+- FullClassName
 
-*PluginJarFile, InterviewModelName and InterviewModelDescription are value objects belonging to the InterviewModel entity.*
-*PluginJarFile, RequirementDescription and RequirementName are value objects belonging to the RequirementSpecification entity.*
+*FullClassName, InterviewModelName and InterviewModelDescription are value objects belonging to the InterviewModel entity.*
+*FullClassName, RequirementDescription and RequirementName are value objects belonging to the RequirementSpecification entity.*
 
 #### New Application Layer Classes:
 - RegisterPluginController
@@ -92,16 +92,109 @@ To create a layer of abstraction between the Domain layer and the Application la
 
 *Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
 
-**Test 1:** Verifies that it is not possible to ...
+**Test 1:** Ensures the method sameAs() in InterviewModel class is working accurately.
+````
+    @Test
+    void ensureSameAsWorksAsExpected() {
+        String description1 = "Back-End Developer With Experience in Java";
+        String name1 = "Back-End Developer";
+        String fullClassName1 = "Plugins/Interviews/Back_End_Dev/Back_End_Dev_Interview_Plugin.jar";
+        InterviewModel interviewModel1 = new InterviewModel(name1, description1, fullClassName1);
 
-**Refers to Acceptance Criteria:** G002.1
+        String description2 = "Front-End Developer With Experience in HTML";
+        String name2 = "Front-End Developer";
+        String fullClassName2 = "Plugins/Interviews/Front_End_Dev/Front_End_Dev_Interview_Plugin.jar";
+        InterviewModel interviewModel2 = new InterviewModel(name2, description2, fullClassName2);
+
+        InterviewModel interviewModel3 = new InterviewModel(name2, description2, fullClassName2);
+
+        // Assert that the sameAs() method checks that two different interview models are different
+        assertFalse(interviewModel1.sameAs(interviewModel2));
+
+        // Assert that the sameAs() method checks that the same interview model is checked as being the same
+        assertTrue(interviewModel1.sameAs(interviewModel1));
+
+        // Assert that the sameAs() method checks that two different interview objects with the same value objects are considered the same
+        assertTrue(interviewModel2.sameAs(interviewModel3));
+    }
+````
+
+**Test 2:** Ensures a new interview model has a name.
+````
+    @Test
+    void ensureItHasAnInterviewModelName() {
+        assertThrows(IllegalArgumentException.class, () -> new InterviewModel(null, description, fullClassName));
+    }
+````
+
+**Test 3:** Ensures a new interview model has a description.
+````
+    @Test
+    void ensureItHasAnInterviewModelDescription() {
+        assertThrows(IllegalArgumentException.class, () -> new InterviewModel(name, null, fullClassName));
+    }
+````
+
+**Test 4:** Ensures a new interview model has a full class name.
+````
+    @Test
+    void ensureItHasAPluginJarFile() {
+        assertThrows(IllegalArgumentException.class, () -> new InterviewModel(name, description, null));
+    }
 
 ````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
-...
-}
+
+**Test 5:** Ensures the method sameAs() in RequirementSpecification class is working accurately.
 ````
+@Test
+void ensureSameAsWorksAsExpected() {
+String description1 = "Back-End Developer With Experience in Java";
+String name1 = "Back-End Developer";
+String fullClassName1 = "Plugins/Requirements/Back_End_Dev/Back_End_Dev_Requirement_Plugin.jar";
+RequirementSpecification requirementSpecification1 = new RequirementSpecification(name1, description1, fullClassName1);
+
+        String description2 = "Front-End Developer With Experience in HTML";
+        String name2 = "Front-End Developer";
+        String fullClassName2 = "Plugins/Requirements/Front_End_Dev/Front_End_Dev_Requirement_Plugin.jar";
+        RequirementSpecification requirementSpecification2 = new RequirementSpecification(name2, description2, fullClassName2);
+
+        RequirementSpecification requirementSpecification3 = new RequirementSpecification(name2, description2, fullClassName2);
+
+        // Assert that the sameAs() method checks that two different interview models are different
+        assertFalse(requirementSpecification1.sameAs(requirementSpecification2));
+
+        // Assert that the sameAs() method checks that the same interview model is checked as being the same
+        assertTrue(requirementSpecification1.sameAs(requirementSpecification1));
+
+        // Assert that the sameAs() method checks that two different interview objects with the same value objects are considered the same
+        assertTrue(requirementSpecification2.sameAs(requirementSpecification3));
+    }
+````
+
+**Test 6:** Ensures a new requirement specification has a name.
+````
+    @Test
+    void ensureItHasAnRequirementName() {
+        assertThrows(IllegalArgumentException.class, () -> new RequirementSpecification(null, description, fullClassName));
+    }
+````
+
+**Test 7:** Ensures a new requirement specification has a description.
+````
+    @Test
+    void ensureItHasAnRequirementDescription() {
+        assertThrows(IllegalArgumentException.class, () -> new RequirementSpecification(name, null, fullClassName));
+    }
+````
+
+**Test 8:** Ensures a new requirement specification has a full class name.
+````
+    @Test
+    void ensureItHasAPluginJarFile() {
+        assertThrows(IllegalArgumentException.class, () -> new RequirementSpecification(name, description, null));
+    }
+````
+
 
 ## 5. Implementation
 
@@ -109,21 +202,158 @@ public void ensureXxxxYyyy() {
 design. It should also describe and explain other important artifacts necessary to fully understand the implementation
 like, for instance, configuration files.*
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+The following code belongs to the UI of the functionality:
+````
+package jobs4u.base.app.backoffice.console.presentation.languageengineer;
+
+import eapli.framework.io.util.Console;
+import eapli.framework.presentation.console.AbstractUI;
+import jobs4u.base.languageenginnermanagement.application.RegisterPluginController;
+
+public class RegisterPluginUI extends AbstractUI {
+
+    private static final RegisterPluginController controller = new RegisterPluginController();
+
+    @Override
+    protected boolean doShow() {
+
+        System.out.println("To register a new plugin please provide the following details:");
+        String option = Console.readNonEmptyLine("Would you like to register an interview plugin or a requirement plugin? 'Interview' or 'Requirement'\n1) Interview Plugin\n2) Requirement Plugin",
+                "Choice: 'Interview' or 'Requirement'");
+        String name = Console.readNonEmptyLine("What's the name of the plugin?",
+                "Providing a name for the plugin is obligatory.");
+        if(option.equals("1")) {
+            while(controller.checkIfInterviewModelAlreadyExists(name)){
+                System.out.println("Interview plugin already exists.");
+                name = Console.readNonEmptyLine("Give another name for the plugin:",
+                        "Providing a name for the plugin is obligatory.");
+            }
+        }else if(option.equals("2")){
+            while(controller.checkIfRequirementSpecificationAlreadyExists(name)){
+                System.out.println("Requirement plugin already exists.");
+                name = Console.readNonEmptyLine("Give another name for the plugin:",
+                        "Providing a name for the plugin is obligatory.");
+            }
+        }
+        String description = Console.readNonEmptyLine("Write a small description of the plugin:",
+                "Providing a small description of the plugin is obligatory.");
+        String fullClassName = Console.readNonEmptyLine("Provide the full class name of the class of the plugin:",
+                "Providing the full class name of the class of the plugin is obligatory.");
+        if(option.equals("1")) {
+            controller.registerInterviewPlugin(name, description, fullClassName);
+        }else if(option.equals("2")){
+            controller.registerRequirementPlugin(name, description, fullClassName);
+        }
+        System.out.println("Worked!");
+
+        return false;
+    }
+
+    @Override
+    public String headline() {
+        return "Register New Interview Model/Requirement Specification Plugin";
+    }
+}
+
+````
+
+The doShow() method is done according to the interface **AbstractUI**, as per shown on the design documentation.
+
+Depending on what needs to be registered (Interview Plugin or Requirement Plugin) the UI calls different methods in the controller to register said plugins.
+It also checks if the name of the plugin (Which will be used as an identifier) already exists in another plugin, in an effort to make sure the names can be used as ids and that data wont be lost due to overwrite or even errors while persisting certain plugins in the database.
+
+The following code belongs to the controller of the functionality:
+````
+package jobs4u.base.languageenginnermanagement.application;
+
+import jobs4u.base.infrastructure.persistence.PersistenceContext;
+import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.application.InterviewModelManagementService;
+import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.application.RequirementSpecificationManagementService;
+
+public class RegisterPluginController {
+
+    private final static InterviewModelManagementService interviewModelManagementService = new InterviewModelManagementService();
+
+    private final static RequirementSpecificationManagementService requirementSpecificationManagementService = new RequirementSpecificationManagementService();
+
+    public void registerInterviewPlugin(String nameOfInterviewPlugin, String descriptionOfInterviewPlugin, String pathOfInterviewPlugin){
+        interviewModelManagementService.registerInterviewPlugin(nameOfInterviewPlugin, descriptionOfInterviewPlugin, pathOfInterviewPlugin);
+    }
+
+    public void registerRequirementPlugin(String nameOfInterviewPlugin, String descriptionOfInterviewPlugin, String pathOfInterviewPlugin){
+        requirementSpecificationManagementService.registerRequirementPlugin(nameOfInterviewPlugin, descriptionOfInterviewPlugin, pathOfInterviewPlugin);
+    }
+
+    public boolean checkIfInterviewModelAlreadyExists(String identifier){
+        return interviewModelManagementService.checkIfInterviewModelAlreadyExists(identifier);
+    }
+
+    public boolean checkIfRequirementSpecificationAlreadyExists(String identifier){
+        return requirementSpecificationManagementService.checkIfRequirementSpecificationAlreadyExists(identifier);
+    }
+
+}
+````
+The controller has access to both services used to register new plugins, as per explained in the design part of this documentation.
+
+The following code belongs to both services of this functionality, respectively, the interview model and the requirement specification services:
+````
+package jobs4u.base.languageenginnermanagement.interviewmodelmanagement.application;
+
+import jobs4u.base.infrastructure.persistence.PersistenceContext;
+import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModel;
+import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModelName;
+import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.repositories.InterviewModelRepository;
+
+public class InterviewModelManagementService {
+    private static final InterviewModelRepository interviewModelRepository = PersistenceContext.repositories().interviewModels();
+
+    public static void registerInterviewPlugin(String nameOfInterviewPlugin, String descriptionOfInterviewPlugin, String fullClassName){
+        InterviewModel interviewModel = new InterviewModel(nameOfInterviewPlugin, descriptionOfInterviewPlugin, fullClassName);
+        interviewModelRepository.save(interviewModel);
+    }
+
+    public boolean checkIfInterviewModelAlreadyExists(String identifier){
+        return interviewModelRepository.containsOfIdentity(new InterviewModelName(identifier));
+    }
+
+}
+````
+````
+package jobs4u.base.languageenginnermanagement.interviewmodelmanagement.application;
+
+import jobs4u.base.infrastructure.persistence.PersistenceContext;
+import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModelName;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementName;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementSpecification;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.repositories.RequirementSpecificationRepository;
+
+public class RequirementSpecificationManagementService {
+
+    private static final RequirementSpecificationRepository requirementSpecificationRepository = PersistenceContext.repositories().requirementSpecifications();
+
+    public static void registerRequirementPlugin(String nameOfRequirementPlugin, String descriptionOfRequirementPlugin, String fullClassName){
+        RequirementSpecification requirementSpecification = new RequirementSpecification(nameOfRequirementPlugin, descriptionOfRequirementPlugin, fullClassName);
+        requirementSpecificationRepository.save(requirementSpecification);
+    }
+
+    public boolean checkIfRequirementSpecificationAlreadyExists(String identifier){
+        return requirementSpecificationRepository.containsOfIdentity(new RequirementName(identifier));
+    }
+
+}
+
+````
+
+**Major Commits**
+
+| Commit  | Brief Description                           |
+|:--------|:--------------------------------------------|
+| 670457b | Initial Classes Setup for the Functionality |
+| 8eb4a92 | Persistence modifications                   |
+| bbeb746 | Test Classes                                |
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
+This US is essential for coming US's that will need to access the plugins for evaluators and for US 2003 that will use this functionality to get the plugins it needs to export the template files. 
 
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
-
-## 7. Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
