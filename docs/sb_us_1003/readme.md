@@ -106,13 +106,13 @@ In order to enhance encapsulation between layers, the usage of DTO's is required
 * Criteria
 * JobOpeningListDTOService
 * JobOpeningManagementService
-* EntityManagementService
+* CustomerManagementService
 * AuthorizationService
 
 **New Persistence Layer Classes**
 * JobOpeningRepository
 * CriteriaRepository
-* EntityRepository
+* CustomerRepository
 
 **New Application Layer Classes**
 * ListJobOpeningController
@@ -140,7 +140,7 @@ This topic presents the classes with the patterns applied to them along with jus
 
 >**Repository Pattern**
 > * CriteriaRepository
-> * EntityRepository
+> * CustomerRepository
 > * JobOpeningRepository
 >
 > **Justifications**
@@ -155,20 +155,20 @@ This topic presents the classes with the patterns applied to them along with jus
     sequential. If the previous job opening from the same customer was made in a different session, then the current session
     does not have access to its job reference, so it must be retrieved from the job openings' repository database.
 >
-> * Customers have their Customer Manager email as an attribute, so by using the email we can track which entities are assigned
+> * Customers have their Customer Manager email as an attribute, so by using the email we can track which customers are assigned
 >   to said user and retrieve their costumer codes. This is all stored in the database represented by the repository.
 
 
 >**Service Pattern**
 > * JobOpeningListDTOService
 > * JobOpeningManagementService
-> * EntityManagementService
+> * CustomerManagementService
 > * AuthorizationService
 >
 > **Justifications**
 >
-> * EntityManagementService is used in more than one functionality, and its in charge of managing request regarding entities,
-    serving as encapsulation between the controller and the EntityRepository along with the domain classes.
+> * CustomerManagementService is used in more than one functionality, and its in charge of managing request regarding customers,
+    serving as encapsulation between the controller and the CustomerRepository along with the domain classes.
 >
 > * JobOpeningManagementService is used in more than one functionality, and its in charge of managing request regarding
     jobOpenings, serving as encapsulation between the controller and the JobOpeningRepository along with the domain classes.
@@ -177,7 +177,7 @@ This topic presents the classes with the patterns applied to them along with jus
     created, besides being a set of instructions that is used in other functionalities.
 >
 > * To get the customers that are assigned to the current Customer Manager in-session, we must get something to identify them.
-    The AuthorizationService allows to get the username (user's email), which is essential to then filter the EntityRepository
+    The AuthorizationService allows to get the username (user's email), which is essential to then filter the CustomerRepository
     to the desired customers. This set of instructions is used in other functionalities too.
 
 
@@ -405,9 +405,9 @@ public List<JobOpening> getJobOpeningListMatchingStatus(String started) {
 This functionality analyses the job openings and its various associations within the system: see its status, the dates of
 its recruitment process, and the information of its customer, mainly company name and customer code.
 
-Of course, for this to happen, the database must have instances of all the mention entities and value objects.
+Of course, for this to happen, the database must have instances of all the mention customers and value objects.
 
-The classes associated with criteria are flexible enough to have more criteria associated to different entities.
+The classes associated with criteria are flexible enough to have more criteria associated to different customers.
 
 
 ## 7. Observations
