@@ -118,7 +118,7 @@ The only pattern we directly applied was:
 * **Service**
 
 This pattern was specifically implemented for tasks such as password creation, which is a recurring process across
-various use cases. Additionally, it was employed in the listing of backoffice users, named 
+various use cases. Additionally, it was employed in the listing of backoffice users, named
 `ListUserService`.
 
 ### 4.4. Tests
@@ -188,26 +188,80 @@ public void ensurePasswordHasNonAlphanumeric() {
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+### AddUserController
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this
-requirement.*
+```
+private SystemUser addUser(final String email, final String password, final String firstName,
+                           final String lastName,
+                           final Set<Role> roles, final Calendar createdOn) {
+    authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.ADMIN, BaseRoles.ADMIN);
+
+    return userSvc.registerNewUser(email, password, firstName, lastName, email, roles,
+            createdOn);
+}
+
+```
+
+### EnableDisableUserController
+
+```
+public Iterable<SystemUser> activeUsers() {
+    authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.ADMIN);
+
+    return userSvc.activeUsers();
+}
+public Iterable<SystemUser> deactivatedUsers() {
+    authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.ADMIN);
+
+    return userSvc.deactivatedUsers();
+}
+
+public void deactivateUser(final SystemUser user) {
+    authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.ADMIN);
+
+    userSvc.deactivateUser(user);
+}
+public void activateUser(final SystemUser user) {
+    authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.ADMIN);
+
+    userSvc.activateUser(user);
+}
+```
+
+### ListUsersController
+
+```
+public Iterable<SystemUser> backofficeUsers() {
+    authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.ADMIN);
+
+    return listSvc.backofficeUsers();
+}
+```
+
+### ListUsersService
+
+```
+public Iterable<SystemUser> backofficeUsers() {
+    return filterBackofficeUsers(userSvc.allUsers());
+
+
+}
+
+
+private Iterable<SystemUser> filterBackofficeUsers(Iterable<SystemUser> systemUsers) {
+    List<SystemUser> backofficeUsers = new ArrayList<>();
+
+    for (SystemUser user : systemUsers) {
+        if (user.hasAny(BaseRoles.CUSTOMER_MANAGER, BaseRoles.OPERATOR, BaseRoles.LANGUAGE_ENGINEER)) {
+            backofficeUsers.add(user);
+        }
+    }
+    return backofficeUsers;
+}
+```
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
-
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
-
-## 7. Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
+To demonstrate this feature, it's necessary to run the script named `run-backoffice-app`. Then, log in and proceed to navigate to
+the `Users` menu. Within this menu, three options will be available, each representing a component of this
+functionality. Access to this menu is limited to users with Admin permissions.
