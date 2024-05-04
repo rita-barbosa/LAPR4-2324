@@ -33,6 +33,7 @@ import jobs4u.base.app.backoffice.console.presentation.customer.RegisterCustomer
 import jobs4u.base.app.backoffice.console.presentation.jobopening.listing.ListJobOpeningsAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.registration.RegisterJobOpeningAction;
 import jobs4u.base.app.backoffice.console.presentation.requirementspecification.SelectRequirementSpecificationAction;
+import jobs4u.base.app.backoffice.console.presentation.languageengineer.RegisterPluginAction;
 import jobs4u.base.app.common.console.presentation.authz.MyUserMenu;
 import jobs4u.base.usermanagement.domain.BaseRoles;
 import eapli.framework.actions.Actions;
@@ -62,7 +63,7 @@ public class MainMenu extends AbstractUI {
     private static final int ADD_USER_OPTION = 1;
     private static final int LIST_USERS_OPTION = 2;
     private static final int DEACTIVATE_USER_OPTION = 3;
-    
+
     //OPERATOR
     private static final int REGISTER_CANDIDATE = 1;
     private static final int LIST_CANDIDATES = 2;
@@ -73,12 +74,16 @@ public class MainMenu extends AbstractUI {
     private static final int SELECT_REQ_SPEC = 3;
     private static final int REGISTER_CUSTOMERS = 1;
 
+    // LANGUAGE ENGINEER SETTINGS
+    private static final int REGISTER_PLUGIN = 1;
+
     // MAIN MENU
     private static final int MY_USER_OPTION = 1;
     private static final int USERS_OPTION = 2;
     private static final int JOB_OPENING_OPTION = 3;
     private static final int CUSTOMER_OPTION = 4;
-    private static final int OPERATORS_OPTION =4;
+    private static final int OPERATORS_OPTION = 5;
+    private static final int LANGUAGE_ENGINEER_OPTION = 6;
 
     private static final String SEPARATOR_LABEL = "--------------";
 
@@ -129,6 +134,11 @@ public class MainMenu extends AbstractUI {
 //            mainMenu.addSubMenu(SETTINGS_OPTION, settingsMenu);
         }
 
+        if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.LANGUAGE_ENGINEER)) {
+            final Menu pluginMenu = buildLanguageEngineerSettingsMenu();
+            mainMenu.addSubMenu(LANGUAGE_ENGINEER_OPTION, pluginMenu);
+        }
+
         if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.CUSTOMER_MANAGER)) {
             final Menu jobOpeningMenu = buildCustomerManagerJobOpeningMenu();
             mainMenu.addSubMenu(JOB_OPENING_OPTION, jobOpeningMenu);
@@ -149,6 +159,12 @@ public class MainMenu extends AbstractUI {
         return mainMenu;
     }
 
+    private Menu buildLanguageEngineerSettingsMenu(){
+        final Menu menu = new Menu("Language Engineer >");
+        menu.addItem(REGISTER_PLUGIN,"Register a new plugin",new RegisterPluginAction());
+        return menu;
+    }
+
     private Menu buildOperatorCandidateMenu() {
         final Menu menu = new Menu("Operator >");
         menu.addItem(REGISTER_CANDIDATE,"Register a new candidate",new RegisterCandidateAction());
@@ -159,11 +175,11 @@ public class MainMenu extends AbstractUI {
     private Menu buildCustomerManagerCustomerMenu() {
         final Menu menu = new Menu("Customers >");
 
-        menu.addItem(REGISTER_CUSTOMERS, "Register a Customer", new RegisterCustomerAction());
-        menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
+            menu.addItem(REGISTER_CUSTOMERS, "Register a Customer", new RegisterCustomerAction());
+            menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
 
-        return menu;
-    }
+            return menu;
+        }
 
     private Menu buildCustomerManagerJobOpeningMenu() {
         final Menu menu = new Menu("Job Opening >");
@@ -173,8 +189,8 @@ public class MainMenu extends AbstractUI {
         menu.addItem(SELECT_REQ_SPEC, "Select a requirement specification", new SelectRequirementSpecificationAction());
         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
 
-        return menu;
-    }
+            return menu;
+        }
 
 //    private Menu buildAdminSettingsMenu() {
 //        final Menu menu = new Menu("Settings >");
@@ -184,8 +200,8 @@ public class MainMenu extends AbstractUI {
 //        return menu;
 //    }
 
-    private Menu buildUsersMenu() {
-        final Menu menu = new Menu("Users >");
+        private Menu buildUsersMenu () {
+            final Menu menu = new Menu("Users >");
 
         menu.addItem(ADD_USER_OPTION, "Add User", new AddUserUI()::show);
         menu.addItem(LIST_USERS_OPTION, "List all Users", new ListUsersAction());
