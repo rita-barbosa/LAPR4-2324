@@ -14,16 +14,16 @@ public class ApplicationDTO {
     private File file;
     private Date applicationDate;
     private String applicationStatus;
-    private Candidate candidate;
+//    private Candidate candidate;
 
-    public ApplicationDTO(Long id, String requirementAnswer, Boolean requirementResult, File file, Date applicationDate, String applicationStatus, Candidate candidate) {
+    public ApplicationDTO(Long id, String requirementAnswer, Boolean requirementResult, File file, Date applicationDate, String applicationStatus) {
         this.id = id;
         this.requirementAnswer = requirementAnswer;
         this.requirementResult = requirementResult;
         this.file = file;
         this.applicationDate = applicationDate;
         this.applicationStatus = applicationStatus;
-        this.candidate = candidate;
+//        this.candidate = candidate;
     }
 
 
@@ -35,8 +35,8 @@ public class ApplicationDTO {
                         "#File: %s\n" +
                         "#Application Date: %s\n" +
                         "#Application Status: %s\n" +
-                        "#Candidate: %s\n",
+
                 id, requirementAnswer, requirementResult, file, applicationDate,
-                applicationStatus, candidate);
+                applicationStatus);
     }
 }

@@ -68,7 +68,7 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         persistInterviewModels();
         persistJobOpenings();
         persistCandidates();
-//        persistApplications();
+        persistApplications();
         //persistRecruitmentProcesses();
         return true;
     }
@@ -253,8 +253,18 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
                 new InterviewResult("correct", 50, "wrong"), "answer");
 
 
-        Application application = new Application(1L, requirementAnswer, requirementResult, file, date, interview);
+        Application application = new Application(requirementAnswer, requirementResult, file, date, interview);
+
+        Set<Application> applicationsSet = new HashSet<>();
+        applicationsSet.add(application);
 
         applicationRepository.save(application);
+        List<JobOpening> jobs = new ArrayList<>();
+        for (JobOpening job : jobOpeningRepository.findAll()) {
+            jobs.add(job);
+        }
+
+        jobs.get(0).setApplications(applicationsSet);
+
     }
 }

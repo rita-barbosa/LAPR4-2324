@@ -2,9 +2,11 @@ package jobs4u.base.applicationmanagement.domain;
 
 import eapli.framework.domain.model.ValueObject;
 import eapli.framework.validations.Preconditions;
+import jakarta.persistence.Embeddable;
 
 import java.util.Objects;
 
+@Embeddable
 public class RequirementAnswer implements ValueObject {
 
     private String requirementAnswer;
