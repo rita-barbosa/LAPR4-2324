@@ -31,14 +31,14 @@
 	</root>
 
 	<!-- specific LOG level -->
-	<logger name="eapli.framework" level="debug" additivity="false">
+	<logger name="eapli.framework" level="error" additivity="false">
 		<appender-ref ref="STDOUT" />
 	</logger>
-	<logger name="eapli.base" level="info" additivity="false">
+	<logger name="jobs4u.base" level="error" additivity="false">
 		<appender-ref ref="STDOUT" />
 	</logger>
 
-	<Logger name="org.hibernate" level="WARN">
+	<Logger name="org.hibernate" level="error">
 		<appender-ref ref="STDOUT" />
 	</Logger>
 	<Logger name="org.hibernate.SQL" level="error">
