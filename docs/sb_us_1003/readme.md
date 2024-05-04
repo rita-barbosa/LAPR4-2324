@@ -155,7 +155,7 @@ This topic presents the classes with the patterns applied to them along with jus
     sequential. If the previous job opening from the same customer was made in a different session, then the current session
     does not have access to its job reference, so it must be retrieved from the job openings' repository database.
 >
-> * Entities have their Customer Manager email as an attribute, so by using the email we can track which entities are assigned
+> * Customers have their Customer Manager email as an attribute, so by using the email we can track which entities are assigned
 >   to said user and retrieve their costumer codes. This is all stored in the database represented by the repository.
 
 
