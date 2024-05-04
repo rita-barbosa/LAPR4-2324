@@ -29,6 +29,7 @@ import eapli.framework.domain.repositories.TransactionalContext;
 import eapli.framework.infrastructure.authz.domain.repositories.UserRepository;
 import jobs4u.base.criteriamanagement.repository.CriteriaRepository;
 import jobs4u.base.customermanagement.repository.CustomerRepository;
+import jobs4u.base.interviewmodelmanagement.repositories.InterviewModelRepository;
 import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
@@ -157,6 +158,21 @@ public interface RepositoryFactory {
      */
     RequirementSpecificationRepository requirementSpecifications();
 
+    /**
+     *
+     * @param autoTx
+     *            the transactional context to enroll
+     * @return
+     */
+    InterviewModelRepository interviewModels(TransactionalContext autoTx);
+
+    /**
+     * repository will be created in auto transaction mode
+     *
+     * @return
+     */
+    InterviewModelRepository interviewModels();
+
 
     /**
      *
@@ -188,8 +204,20 @@ public interface RepositoryFactory {
      */
     ApplicationRepository applications();
 
+
+    /**
+     *
+     * @param tx
+     *            the transactional context to enroll
+     * @return
+     */
     CandidateRepository candidates(TransactionalContext tx);
 
+    /**
+     * repository will be created in auto transaction mode
+     *
+     * @return
+     */
     CandidateRepository candidates();
 
 
