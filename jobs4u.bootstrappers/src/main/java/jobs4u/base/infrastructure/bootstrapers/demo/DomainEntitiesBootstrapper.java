@@ -154,15 +154,15 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
 
         JobOpening jobOpening = new JobOpening("Front End Junior Developer", contract, mode, "123 Main Street",
                 "Flagtown", "Star District", "USA", "12345", 10, description,
-                requirementSpecificationsList.get(1), jobReference);
+                requirementSpecificationsList.get(1),interviewModelsList.get(0), jobReference);
 
         JobOpening jobOpening1 = new JobOpening("Back End Senior Developer", contract, mode, "456 Elm Street",
                 "Maple Town", "Moonlight District", "Canada", "54321", 15, description,
-                requirementSpecificationsList.get(0), jobReference1);
+                requirementSpecificationsList.get(0),interviewModelsList.get(0), jobReference1);
 
         JobOpening jobOpening2 = new JobOpening("Back End Senior Developer", contract, mode, "MM Street",
                 "MM Town", "MM District", "MMM", "54321", 8, description,
-                requirementSpecificationsList.get(0), jobReference2);
+                requirementSpecificationsList.get(0), interviewModelsList.get(0),jobReference2);
         jobOpening2.getStatus().setStatusDescriptionAsSTARTED();
 
         jobOpeningRepository.save(jobOpening);
