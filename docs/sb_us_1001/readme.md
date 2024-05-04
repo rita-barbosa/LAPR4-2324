@@ -14,7 +14,7 @@ that customer
 - **1001.1.** Each customer must have associated their company name, an address and a customer code.
 
 - **1001.2.** The customer code must be unique and have a maximum of 10 characters, having at least one character.
-- 
+
 - **1001.3.** The user must have associated the following information: email, name and phone number.
 - **1001.4.** The password must have a minimum of 8 characters, including both upper and lowercase letters, digits, and
   at least one non-alphanumeric character.
@@ -83,7 +83,7 @@ Considering that customer users should possess the same information as candidate
 > **Justifications**
 >
 >The repositories were employed to persist users and customers, as well as to reconstruct objects from the
-    persistence.
+> persistence.
 
 
 > **Service Pattern**
@@ -102,7 +102,7 @@ Considering that customer users should possess the same information as candidate
 > phoneNumber.
 >
 > The CustomerManagementService is employed to register customers, tasked with the responsibility of
-customer creation.
+> customer creation.
 >
 > The mentioned services were developed because the functionalities they offer will be utilized across multiple use
 > cases. The CustomerManagementService will also serve for various other functionalities, such as listing, among others.
@@ -117,15 +117,14 @@ customer creation.
 >
 > All the mentioned objects are components of the applied observer pattern. This pattern was implemented to ensure
 > that when a new customer is registered, a user is automatically registered as well. Following this procedure, upon the
-> registration of a customer, a NewEntityRegisteredEvent instance is generated, and the EventPublisher is utilized
+> registration of a customer, a NewCustomerUserRegisteredEvent instance is generated, and the EventPublisher is utilized
 > to notify the WatchDog (Observer).
 >
 > Upon receiving this notification, the WatchDog triggers the registration of the
-> user through the AddUserOnNewEntityRegisteredController. Similarly, for the creation of a ClientUser, a comparable
-> approach is adopted.
+> user through the AddCustomerOnNewCustomerUserRegisteredController.
 >
-> In this case, an instance of NewEntityUserRegisteredEvent is used to inform the specific WatchDog,
-> which then invokes the AddClientUserOnNewEntityRegisteredController for the registration of the ClientUser.
+> In this case, an instance of NewCustomerUserRegisteredEvent is used to inform the specific WatchDog,
+> which then invokes the AddCustomerOnNewCustomerUserRegisteredController for the registration of the Customer.
 >
 > Finally, this responsibility pattern was implemented within the service, as we required registration of customers in
 > the bootstrap. To maintain consistency in the creation process, we used the EventPublisher within the service to
@@ -133,8 +132,8 @@ customer creation.
 
 ### 4.4. Tests
 
-The tests for the acceptance criteria 1001.3 are within the eapli.framework, since we use SystemUser for the user registration.
-
+The tests for the acceptance criteria 1001.3 are within the eapli.framework, since we use SystemUser for the user
+registration.
 
 #### CustomerTests
 
@@ -263,32 +262,65 @@ public void ensurePasswordHasNonAlphanumeric() {
 }
 ````
 
-
-
-
-
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+### RegisterCustomerController
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this
-requirement.*
+```
+public boolean registerNewCustomer(String companyName, String address, String customerCode, String email) {
+    Optional<SystemUser> customerManager = authz.loggedinUserWithPermissions(BaseRoles.ADMIN, BaseRoles.CUSTOMER_MANAGER);
+    
+    if(customerManager.isPresent()){
+        custSvc.registerNewCustomer(companyName, address, customerCode, customerManager.get(), email);
+        return true;
+    }
+    return false;
+}
+```
+
+### CustomerManagementService
+
+```
+public void registerNewCustomer(String companyName, String address, String customerCode,
+                                SystemUser customerManager, String email) {
+    String password = passSvc.generatePassword();
+    final Set<Role> roles = new HashSet<>();
+    roles.add(BaseRoles.CUSTOMER_USER);
+
+    SystemUser customerUser = userSvc.registerNewUser(email, password, companyName, "Customer", email, roles);
+
+    final DomainEvent event = new NewCustomerUserRegisteredEvent(new CompanyName(companyName),
+            new Address(address), new CustomerCode(customerCode), customerManager, customerUser);
+    dispatcher.publish(event);
+}
+```
+
+### NewCustomerUserRegisteredWatchDog
+
+```
+@Override
+public void onEvent(final DomainEvent domainevent) {
+    assert domainevent instanceof NewCustomerUserRegisteredEvent;
+
+    final NewCustomerUserRegisteredEvent event = (NewCustomerUserRegisteredEvent) domainevent;
+
+    final AddCustomerOnNewCustomerUserRegisteredController
+            controller = new AddCustomerOnNewCustomerUserRegisteredController();
+    controller.registerNewCustomer(event);
+}
+```
+
+### AddCustomerOnNewCustomerUserRegisteredController
+
+```
+public void registerNewCustomer(NewCustomerUserRegisteredEvent event) {
+    customerRepository.save(new Customer(event.companyName(), event.address(),
+            event.customerCode(), event.customerManager(), event.customerUser()));
+}
+```
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
-
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
-
-## 7. Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
+To activate this feature, you'll need to run the script named `run-backoffice-app` and log in with Customer Manager
+permissions. Then, navigate to the "Customers" menu and select option 1 - `Register a Customer` - to access this
+feature.
