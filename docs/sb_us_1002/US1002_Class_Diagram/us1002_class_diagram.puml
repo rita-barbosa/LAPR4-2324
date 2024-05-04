@@ -5,12 +5,12 @@ title US1002 Class Diagram
 
 
 
-class EntityListDTOService <<service>> {
-+ convertToDTO(List<Entity> customersList)
+class CustomerListDTOService <<service>> {
++ convertToDTO(List<Customer> customersList)
 }
 
 
-class EntityManagementService <<service>> {
+class CustomerManagementService <<service>> {
 + getAssignedCustomerCodesList(Email username)
 
 
@@ -30,11 +30,11 @@ class RegisterJobOpeningController <<Application>> {
 + getContractTypesList()
 + getWorkModesList()
 + getRequirementsSpecificationsList()
-+ registerJobOpening(String function, String contractTypeDenomination,\n String workModeDenomination, String streetName, String city, String district, state,\n Integer zipcode, Integer numVacancies, String description, String requirementsFileName)
++ registerJobOpening(String function, ContractTypeDTO contractTypeDenomination,\n WorkModeDTO workModeDenomination, String streetName, String city, String district,\n String state, String zipcode, Integer numVacancies, String description,\n RequirementSpecificationDTO requirementsFileName, CustomerDTO customerInfo)
 }
 
 class JobOpeningManagementService <<service>> {
-+ registerJobOpening(streetName, city, district, state, zipcode,\n function, contractTypeDenomination, workModeDenomination,\n customerCode, numVacancies, description, requirementsSpecificationsFile)
++ registerJobOpening(String streetName, String city, String district, String state, String zipcode,\n String function, contractTypeDTO contractTypeDenomination, workModeDTO workModeDenomination,\n Integer numVacancies, String description, RequirementSpecificationDTO requirementsSpecificationsFile,\n CustomerDTO customerInfo)
 }
 
 
@@ -109,13 +109,13 @@ class RequirementsSpecificationsRepository <<Persistence>> <<Repository>> {
 + getFileByName(String requirementsFileName)
 }
 
-class EntityRepository  <<Persistence>> <<Repository>>  {
-+ save(Entity: entity)
+class CustomerRepository  <<Persistence>> <<Repository>>  {
++ save(Customer: entity)
 + getCustomersByUsername(Email username)
 }
 
 interface DomainRepository <<Persistence>> {
-+ save(Entity: Entity)
++ save(Customer: Customer)
 }
 
 
@@ -126,9 +126,9 @@ RegisterJobOpeningController ...> RequirementsSpecificationsRepository
 RegisterJobOpeningController ...> WorkModesRepository
 RegisterJobOpeningController ...> ContractTypesRepository
 RegisterJobOpeningController ..> JobOpeningRepository
-RegisterJobOpeningController ..> EntityManagementService
+RegisterJobOpeningController ..> CustomerManagementService
 RegisterJobOpeningController ..> JobOpeningManagementService
-RegisterJobOpeningUI ..> EntityListDTOService
+RegisterJobOpeningUI ..> CustomerListDTOService
 
 'Domain Layer
 Address "1" <-up- "*" JobOpening : is located at
@@ -145,8 +145,8 @@ ContractTypesRepository --> ContractType : aggregates
 WorkModesRepository --> WorkMode : aggregates
 JobOpeningRepository <.. JobOpening : persisted by
 RequirementsSpecificationsRepository -> RequirementSpecification : aggregates
-EntityManagementService ---> EntityRepository
-EntityManagementService --> EntityListDTOService
+CustomerManagementService ---> CustomerRepository
+CustomerManagementService --> CustomerListDTOService
 JobOpeningManagementService --> JobOpeningRepository
 JobOpeningManagementService --> JobOpening
 
@@ -155,7 +155,7 @@ DomainRepository <|.. JobOpeningRepository : implements
 DomainRepository <|.. ContractTypesRepository : implements
 DomainRepository <|.. WorkModesRepository : implements
 DomainRepository <|.. RequirementsSpecificationsRepository : implements
-DomainRepository <|.. EntityRepository : implements
+DomainRepository <|.. CustomerRepository : implements
 AbstractUI <|.. RegisterJobOpeningUI : implements
 
 'Authentication

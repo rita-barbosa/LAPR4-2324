@@ -5,13 +5,13 @@ title [US1002 - Sequence Diagram]
 participant "<<presentation>>\n:RegisterJobOpeningUI" as UI
 control "<<application>>\n:RegisterJobOpeningController" as CTRL
 participant "<<service>>\n:AuthorizationService" as AuthSvc
-participant "<<service>>\n:EntityManagementService" as EntityManagement
+participant "<<service>>\n:CustomerManagementService" as CustomerManagement
 database "<<repository>>\n:ContractTypesRepository" as ContractTypesRepository
 database "<<repository>>\n:WorkModesRepository" as WorkModesRepository
 database "<<repository>>\n:RequirementsSpecificationsRepository" as RequirementsSpecificationsRepository
 participant "<<domain>>\n:RequirementSpecification" as RequirementSpecification
-database "<<repository>>\n:EntityRepository" as EntityRepository
-participant "<<service>>\n:EntityListDTOService" as EntityListDTO
+database "<<repository>>\n:CustomerRepository" as CustomerRepository
+participant "<<service>>\n:CustomerListDTOService" as CustomerListDTO
 participant "<<service>>\n:JobOpeningManagementService" as JobManagement
 database "<<repository>>\n:JobOpeningRepository" as JobOpeningRepository
 participant "<<domain>>\n:JobOpening" as JobOpening
@@ -35,19 +35,19 @@ activate CTRL
     activate AuthSvc
     deactivate AuthSvc
 
-    CTRL -> EntityManagement : getAssignedCustomerCodesList(username)
-    activate EntityManagement
+    CTRL -> CustomerManagement : getAssignedCustomerCodesList(username)
+    activate CustomerManagement
 
-        EntityManagement -> EntityRepository : getCustomersByUsername(username)
+        CustomerManagement -> CustomerRepository : getCustomersByUsername(username)
         note right: Username is the Customer\n Manager's email
-        activate EntityRepository
-        deactivate EntityRepository
+        activate CustomerRepository
+        deactivate CustomerRepository
 
-            EntityManagement -> EntityListDTO : convertToDTO(customersList)
-            activate EntityListDTO
-            deactivate EntityListDTO
+            CustomerManagement -> CustomerListDTO : convertToDTO(customersList)
+            activate CustomerListDTO
+            deactivate CustomerListDTO
 
-    deactivate EntityManagement
+    deactivate CustomerManagement
 
     CTRL --> UI : customerListDTO
 
@@ -123,7 +123,7 @@ deactivate CTRL
 
 UI -> UI : doShow()
 
-UI -> CTRL : registerJobOpening(function, contractTypeDenomination,\n workModeDenomination, streetName, city, district, state,\n zipcode, numVacancies, description, requirementsFileName)
+UI -> CTRL : registerJobOpening(function, contractTypeDenomination,\n workModeDenomination, streetName, city, district, state,\n zipcode, numVacancies, description, requirementsFileName,\n customerInfo)
 
 'Register a new Job Opening
 activate CTRL
@@ -133,10 +133,10 @@ activate CTRL
         deactivate RequirementsSpecificationsRepository
 
     'Job Opening Encapsulation
-    CTRL -> JobManagement : registerJobOpening(streetName, city, district, state, zipcode, function, contractTypeDenomination, workModeDenomination, customerCode, numVacancies, description, requirementsSpecificationsFile)
+    CTRL -> JobManagement : registerJobOpening(streetName, city, district, state, zipcode, function, contractTypeDenomination, workModeDenomination, customerCode, numVacancies, description, requirementsSpecificationsFile, customerInfo)
     activate JobManagement
 
-        JobManagement -> JobOpeningRepository : lastJobReference(customerCode)
+        JobManagement -> JobOpeningRepository : lastJobReference(customerInfo.customerCode)
         note left: The system does not have access to the previous job opening\n reference if it was made in another session, so this step is necessary.
         activate JobOpeningRepository
         deactivate JobOpeningRepository
