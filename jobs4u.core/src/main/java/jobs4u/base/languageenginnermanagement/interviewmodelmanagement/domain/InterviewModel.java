@@ -57,6 +57,12 @@ public class InterviewModel implements AggregateRoot<InterviewModelName> {
     public FullClassName pluginJarFile() {
         return plugin;
     }
+    public String nameString(){
+        return this.interviewModelName.name();
+    }
+    public String descriptionString(){
+        return this.interviewModelName.name();
+    }
 
     @Override
     public int hashCode() {
@@ -72,6 +78,6 @@ public class InterviewModel implements AggregateRoot<InterviewModelName> {
     }
 
     public InterviewModelDTO toDto() {
-        return  new InterviewModelDTO(interviewModelName.toString(), description.toString(),plugin.toString());
+        return  new InterviewModelDTO(nameString(), descriptionString());
     }
 }
