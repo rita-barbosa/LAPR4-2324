@@ -4,12 +4,11 @@ autonumber
 title [US1001] Register Customer - 2
 
 
-participant "EventPublisher" as EP <<domain>>
-participant "NewCustomerUserRegistered\nWatchDog" as WD <<domain>>
-participant "AddCustomerOnNewCustomerUser\nRegisteredController" as CTRL_EVENT <<domain>>
-'participant "EntityManagementService" as EMS <<service>>
-participant "Customer" as ENTITY <<domain>>
-participant "CustomerRepository" as ER <<domain>>
+participant ":EventPublisher" as EP <<application>>
+participant ":NewCustomerUserRegistered\nWatchDog" as WD <<application>>
+participant ":AddCustomerOnNewCustomerUser\nRegisteredController" as CTRL_EVENT <<application>>
+participant ":Customer" as ENTITY <<domain>>
+database ":CustomerRepository" as ER <<repository>>
 
 
 

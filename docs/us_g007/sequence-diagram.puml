@@ -2,13 +2,13 @@
 autonumber
 actor "User" as USER
 
-participant "BaseAplication" as BA <<application>>
-    participant "LoginUI" as LUI <<presentation>>
-    participant "MainMenu" as MM <<presentation>>
-participant "AuthzRegistry" as AR <<infrastructure>>
-participant "AuthenticationCredentialHandler" as ACH <<infrastructure>>
-participant "AuthenticationService" as auth <<service>>
-participant "AuthorizationService" as authz <<service>>
+participant ":BaseAplication" as BA <<presentation>>
+    participant ":LoginUI" as LUI <<presentation>>
+    participant ":MainMenu" as MM <<presentation>>
+participant ":AuthzRegistry" as AR <<application>>
+participant ":AuthenticationCredentialHandler" as ACH <<application>>
+participant ":AuthenticationService" as auth <<service>>
+participant ":AuthorizationService" as authz <<service>>
 
 
 activate USER

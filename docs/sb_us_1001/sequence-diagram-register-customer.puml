@@ -5,15 +5,15 @@ title [US1001] Register Customer - 1
 
 actor "Customer Manager" as USER
 
-participant "RegisterCustomerUI" as UI <<presentation>>
-participant "RegisterCustomerController" as CTRL <<controller>>
-participant "AuthorizationService" as AUTHZ <<service>>
-participant "CustomerManagementService" as EMS <<service>>
-participant "GeneratePasswordService" as GPS <<service>>
-participant "RandomPassword" as PG <<domain>>
-participant "EventPublisher" as EP <<domain>>
-participant "UserManagementService" as UMS <<service>>
-participant "NewCustomerUser\nRegisteredEvent" as EVENT <<domain>>
+participant ":RegisterCustomerUI" as UI <<presentation>>
+participant ":RegisterCustomerController" as CTRL <<application>>
+participant ":AuthorizationService" as AUTHZ <<service>>
+participant ":CustomerManagementService" as EMS <<service>>
+participant ":GeneratePasswordService" as GPS <<service>>
+participant ":RandomPassword" as PG <<domain>>
+participant ":EventPublisher" as EP <<domain>>
+participant ":UserManagementService" as UMS <<service>>
+participant ":NewCustomerUser\nRegisteredEvent" as EVENT <<domain>>
 
 
 

@@ -4,10 +4,10 @@ autonumber
 
 actor "Admin" as AD
 
-participant "EnableDisableUserUI" as UI <<presentation>>
-participant "EnableDisableController" as CTRL <<controller>>
-participant "UserManagementService" as UMS <<service>>
-participant "AuthorizationService" as AUTHZ <<service>>
+participant ":EnableDisableUserUI" as UI <<presentation>>
+participant ":EnableDisableController" as CTRL <<application>>
+participant ":UserManagementService" as UMS <<service>>
+participant ":AuthorizationService" as AUTHZ <<service>>
 
 note right AUTHZ
 The UserManagementService and

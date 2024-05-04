@@ -4,13 +4,13 @@ autonumber
 
 actor "Admin" as AD
 
-participant "AddUserUI" as RUUI <<presentation>>
-participant "AddUserController" as AUC <<controller>>
-participant "GeneratePasswordService" as GPS <<service>>
-participant "UserManagementService" as UMS <<service>>
-participant "AuthorizationService" as AUTHZ <<service>>
-participant "BaseRoles" as BR <<domain>>
-participant "RandomPassword" as PG <<domain>>
+participant ":AddUserUI" as RUUI <<presentation>>
+participant ":AddUserController" as AUC <<application>>
+participant ":GeneratePasswordService" as GPS <<service>>
+participant ":UserManagementService" as UMS <<service>>
+participant ":AuthorizationService" as AUTHZ <<service>>
+participant ":BaseRoles" as BR <<domain>>
+participant ":RandomPassword" as PG <<domain>>
 
 
 

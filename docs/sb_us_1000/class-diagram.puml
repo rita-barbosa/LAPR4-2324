@@ -47,7 +47,7 @@ class AddUserController{
 + addUser(email,name, role)
 }
 class ListUsersController  {
-+ allUsers()
++ backofficeUsers()
 }
 
 class EnableDisableUserController  {

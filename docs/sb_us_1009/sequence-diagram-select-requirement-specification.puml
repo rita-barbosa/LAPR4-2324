@@ -4,17 +4,17 @@ title [US1009] - Sequence Diagram
 
 actor "Customer Manager" as USER
 
-participant "SelectRequirementSpecificationUI" as UI <<presentation>>
-participant "SelectRequirementSpecificationController" as CTRL <<application>>
-participant "AuthorizationService" as AUTH <<service>>
-participant "RequirementSpecification\nManagementService" as RSMS <<service>>
-participant "RequirementSpecification\nDtoService" as RSMS_DTO <<service>>
-participant "JobOpening\nManagementService" as JOMS <<service>>
-participant "JobOpening\nDtoService" as JOMS_DTO <<service>>
-participant "RequirementSpecification" as RS <<domain>>
-participant "JobOpening" as JO <<domain>>
-database "JobOpeningRepository" as JO_REPO <<repository>>
-database "RequirementsSpecifications\nRepository" as RS_REPO <<repository>>
+participant ":SelectRequirementSpecificationUI" as UI <<presentation>>
+participant ":SelectRequirementSpecificationController" as CTRL <<application>>
+participant ":AuthorizationService" as AUTH <<service>>
+participant ":RequirementSpecification\nManagementService" as RSMS <<service>>
+participant ":RequirementSpecification\nDtoService" as RSMS_DTO <<service>>
+participant ":JobOpening\nManagementService" as JOMS <<service>>
+participant ":JobOpening\nDtoService" as JOMS_DTO <<service>>
+participant ":RequirementSpecification" as RS <<domain>>
+participant ":JobOpening" as JO <<domain>>
+database ":JobOpeningRepository" as JO_REPO <<repository>>
+database ":RequirementsSpecifications\nRepository" as RS_REPO <<repository>>
 
 
 activate USER
