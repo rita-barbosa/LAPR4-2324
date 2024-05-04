@@ -33,6 +33,8 @@ import jobs4u.base.app.backoffice.console.presentation.customer.RegisterCustomer
 import jobs4u.base.app.backoffice.console.presentation.interviewmodel.SelectInterviewModelAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.listing.ListJobOpeningsAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.registration.RegisterJobOpeningAction;
+import jobs4u.base.app.backoffice.console.presentation.listApplications.ListJobOpeningApplicationsAction;
+import jobs4u.base.app.backoffice.console.presentation.operator.RegisterJobOpeningApplicationsAction;
 import jobs4u.base.app.backoffice.console.presentation.requirementspecification.SelectRequirementSpecificationAction;
 import jobs4u.base.app.backoffice.console.presentation.languageengineer.RegisterPluginAction;
 import jobs4u.base.app.common.console.presentation.authz.MyUserMenu;
@@ -68,12 +70,14 @@ public class MainMenu extends AbstractUI {
     //OPERATOR
     private static final int REGISTER_CANDIDATE = 1;
     private static final int LIST_CANDIDATES = 2;
+    private static final int REGISTER_APPLICATIONS = 3;
 
     // CUSTOMER MANAGER SETTINGS
     private static final int REGISTER_JOB_OPENING = 1;
     private static final int LIST_JOB_OPENINGS = 2;
     private static final int SELECT_REQ_SPEC = 3;
     private static final int SELECT_INT_MODEL = 4;
+    private static final int LIST_JOB_OPENING_APPLICATIONS = 5;
     private static final int REGISTER_CUSTOMERS = 1;
 
     // LANGUAGE ENGINEER SETTINGS
@@ -171,6 +175,7 @@ public class MainMenu extends AbstractUI {
         final Menu menu = new Menu("Operator >");
         menu.addItem(REGISTER_CANDIDATE,"Register a new candidate",new RegisterCandidateAction());
         menu.addItem(LIST_CANDIDATES, "List All Candidates", new ListAllCandidatesAction());
+   //     menu.addItem(REGISTER_APPLICATIONS, "Register Job Opening Applications", new RegisterJobOpeningApplicationsAction());
         return menu;
     }
 
@@ -190,6 +195,7 @@ public class MainMenu extends AbstractUI {
         menu.addItem(LIST_JOB_OPENINGS, "List job openings", new ListJobOpeningsAction());
         menu.addItem(SELECT_REQ_SPEC, "Select a requirement specification", new SelectRequirementSpecificationAction());
         menu.addItem(SELECT_INT_MODEL, "Select an interview model", new SelectInterviewModelAction());
+        menu.addItem(LIST_JOB_OPENING_APPLICATIONS, "List job opening applications", new ListJobOpeningApplicationsAction());
         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
 
             return menu;
