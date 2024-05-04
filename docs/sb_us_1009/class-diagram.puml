@@ -39,7 +39,7 @@ class JobOpeningRepository{
 + ofIdentity(jobReference)
 }
 class RequirementSpecificationRepository{
-+ availableRequirementSpecifications()
++ requirementsSpecifications()
 + ofIdentity(requirementName)
 }
 interface DomainRepository{
@@ -52,7 +52,13 @@ class RequirementSpecification{
 interface DTOable {
 + toDto()
 }
-
+class RequirementName <<(V,#FF8B40) value object>> {
+- name
+}
+class JobReference <<(V,#FF8B40) value object>> {
+- customerCode
+- sequentialCode
+}
 
 AbstractUI <|-- SelectRequirementSpecificationUI
 SelectRequirementSpecificationUI .-> SelectRequirementSpecificationController
@@ -62,7 +68,8 @@ SelectRequirementSpecificationController .--> JobOpeningManagementService
 SelectRequirementSpecificationController .--> RequirementSpecificationManagementService
 SelectRequirementSpecificationController .--> JobOpeningRepository
 SelectRequirementSpecificationController .--> RequirementSpecificationRepository
-SelectRequirementSpecificationController --> JobOpening
+SelectRequirementSpecificationController --> JobOpeningDto
+SelectRequirementSpecificationController --> RequirementSpecificationDto
 
 JobOpeningManagementService --> JobOpeningRepository
 JobOpeningManagementService .-> JobOpeningDtoService
@@ -85,5 +92,7 @@ RequirementSpecification .--|> DTOable
 JobOpening --> JobOpeningDto
 RequirementSpecification --> RequirementSpecificationDto
 JobOpening ---> RequirementSpecification
+RequirementSpecification --> RequirementName
+JobOpening --> JobReference
 
 @enduml

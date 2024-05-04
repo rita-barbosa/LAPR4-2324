@@ -78,7 +78,7 @@ deactivate AUTH
 CTRL ->RSMS: availableRequirementSpecifications()
 activate RSMS
 
-RSMS -> RS_REPO: 4equirementSpecifications()
+RSMS -> RS_REPO: requirementSpecifications()
 activate RS_REPO
 
 RS_REPO --> RSMS: requirementSpecifications
