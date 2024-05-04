@@ -5,9 +5,10 @@ import eapli.framework.domain.model.DomainEntities;
 import eapli.framework.representations.dto.DTOable;
 import eapli.framework.validations.Preconditions;
 import jakarta.persistence.*;
-import jobs4u.base.customermanagement.domain.CustomerCode;
-import jobs4u.base.customermanagement.dto.CustomerDTO;
 import jobs4u.base.jobopeningmanagement.domain.rank.Rank;
+import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
+import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentPeriod;
+import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
@@ -30,8 +31,7 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
     private ContractType contractType;
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    private WorkMode workMode;
-    @Enumerated(EnumType.STRING)
+    private  WorkMode workMode;
     @Column(nullable = false)
     private JobOpeningStatus status;
     @EmbeddedId
@@ -46,21 +46,19 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
     @JoinColumn(nullable = false)
     private RequirementSpecification requirementSpecification;
 
+    @OneToOne
+    private RecruitmentProcess recruitmentProcess;
+
     @OneToOne(optional = false, cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Rank rank;
-    @Transient
-    private String company;
-    @AttributeOverride(name = "value", column = @Column(name = "Company"))
-    private CustomerCode customerCode;
 
     public JobOpening(String function, ContractTypeDTO contractTypeDenomination, WorkModeDTO workModeDenomination,
                       String streetName, String city, String district, String streetNumber, String zipcode, Integer numVacancies,
-                      String description, RequirementSpecification requirementsFile, JobReference lastReference,
-                      CustomerDTO companyInfo) {
+                      String description, RequirementSpecification requirementsFile, JobReference lastReference) {
 
         Preconditions.noneNull(function, description, district, streetNumber, lastReference, requirementsFile, zipcode,
-                city, contractTypeDenomination, workModeDenomination, numVacancies, streetName, companyInfo);
+                city, contractTypeDenomination, workModeDenomination, numVacancies, streetName);
 
         JobReference newJobReference = generateNewSequencialJobReference(lastReference);
         this.jobReference = newJobReference;
@@ -71,9 +69,8 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         this.description = Description.valueOf(description);
         this.numVacancies = NumberVacancy.valueOf(numVacancies);
         this.requirementSpecification = requirementsFile;
-        this.status = JobOpeningStatus.UNFINISHED;
-        this.company = companyInfo.companyName();
-        this.customerCode = CustomerCode.valueOf(companyInfo.customerCode());
+        this.status = new JobOpeningStatus();
+        this.status.setStatusDescriptionAsUNFINISHED();
         this.rank = new Rank(newJobReference);
     }
 
@@ -84,7 +81,8 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         Preconditions.noneNull(function, description, address, lastReference, requirementsFile, contractTypeDenomination,
                 workModeDenomination, numVacancies);
 
-        this.jobReference = generateNewSequencialJobReference(lastReference);
+        JobReference newJobReference = generateNewSequencialJobReference(lastReference);
+        this.jobReference = newJobReference;
         this.function = JobFunction.valueOf(function);
         this.address = address;
         this.contractType = ContractType.valueOf(contractTypeDenomination.contractTypeName());
@@ -92,11 +90,12 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         this.description = Description.valueOf(description);
         this.numVacancies = NumberVacancy.valueOf(numVacancies);
         this.requirementSpecification = requirementsFile;
-        this.status = JobOpeningStatus.UNFINISHED;
-        //SEE RANK ATTRIBUTE
+        this.status = new JobOpeningStatus();
+        this.status.setStatusDescriptionAsUNFINISHED();
+        this.rank = new Rank(newJobReference);
     }
 
-    public JobOpening() {
+    protected JobOpening() {
         //for ORM
     }
 
@@ -104,7 +103,7 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         return new JobReference(lastReference.getcustomerCode(), lastReference.getSequentialCode() + 1);
     }
 
-    public JobReference jobReference() {
+    public JobReference jobReference(){
         return identity();
     }
 
@@ -113,7 +112,7 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
     }
 
     public void updateStatusToStarted() {
-        this.status = JobOpeningStatus.STARTED;
+        this.status = new JobOpeningStatus(JobOpeningStatusEnum.STARTED);
     }
 
     @Override
@@ -132,7 +131,7 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         if (this == o) return true;
         if (!(o instanceof JobOpening)) return false;
         JobOpening that = (JobOpening) o;
-        return Objects.equals(version, that.version) && Objects.equals(function, that.function) && Objects.equals(contractType, that.contractType) && Objects.equals(workMode, that.workMode) && status == that.status && Objects.equals(jobReference, that.jobReference) && Objects.equals(address, that.address) && Objects.equals(description, that.description) && Objects.equals(numVacancies, that.numVacancies) && Objects.equals(requirementSpecification, that.requirementSpecification) && Objects.equals(rank, that.rank) && Objects.equals(company, that.company) && Objects.equals(customerCode, that.customerCode);
+        return Objects.equals(version, that.version) && Objects.equals(function, that.function) && Objects.equals(contractType, that.contractType) && Objects.equals(workMode, that.workMode) && status == that.status && Objects.equals(jobReference, that.jobReference) && Objects.equals(address, that.address) && Objects.equals(description, that.description) && Objects.equals(numVacancies, that.numVacancies) && Objects.equals(requirementSpecification, that.requirementSpecification) && Objects.equals(rank, that.rank);
     }
 
     @Override
@@ -140,14 +139,57 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         return DomainEntities.hashCode(this);
     }
 
+    public JobFunction getFunction() {
+        return function;
+    }
+
+    public ContractType getContractType() {
+        return contractType;
+    }
+
+    public WorkMode getWorkMode() {
+        return workMode;
+    }
+
+    public JobOpeningStatus getStatus() {
+        return status;
+    }
+
+    public JobReference getJobReference() {
+        return jobReference;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public Description getDescription() {
+        return description;
+    }
+
+    public NumberVacancy getNumVacancies() {
+        return numVacancies;
+    }
+
+    public RequirementSpecification getRequirementSpecification() {
+        return requirementSpecification;
+    }
+
+    public Rank getRank() {
+        return rank;
+    }
+
     @Override
     public JobOpeningDTO toDTO() {
-        return new JobOpeningDTO(function.jobFunction(), contractType.getDenomination(), workMode.denomination(), jobReference.toString(), address.toString(), description.description(), numVacancies.numberVacancies(), company);
+        return new JobOpeningDTO(address.toString(), function.jobFunction(), description.description(), status.getStatusDescription(),
+                contractType.getDenomination(), workMode.denomination(), String.valueOf(numVacancies.getNumVacancies()),
+                requirementSpecification.requirementName().name(), jobReference.toString(), jobReference.getcustomerCode());
     }
 
     public void changeRequirementSpecification(RequirementSpecification requirementSpecification) {
         Preconditions.noneNull(requirementSpecification);
-        Preconditions.ensure(status == JobOpeningStatus.UNFINISHED || status == JobOpeningStatus.NOT_STARTED);
+        Preconditions.ensure(status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED)) ||
+                status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED)));
 
         this.requirementSpecification = requirementSpecification;
     }

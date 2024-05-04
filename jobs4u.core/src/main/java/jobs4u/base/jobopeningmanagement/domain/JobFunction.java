@@ -1,7 +1,6 @@
 package jobs4u.base.jobopeningmanagement.domain;
 
 import eapli.framework.domain.model.ValueObject;
-import eapli.framework.representations.dto.DTOable;
 import eapli.framework.validations.Preconditions;
 import jakarta.persistence.Embeddable;
 
@@ -18,7 +17,7 @@ public class JobFunction implements ValueObject {
         this.jobFunction = jobFunction;
     }
 
-    public JobFunction() {
+    protected JobFunction() {
         //for ORM
     }
 
@@ -41,5 +40,9 @@ public class JobFunction implements ValueObject {
     @Override
     public int hashCode() {
         return Objects.hash(jobFunction);
+    }
+
+    public String getJobFunction() {
+        return jobFunction;
     }
 }

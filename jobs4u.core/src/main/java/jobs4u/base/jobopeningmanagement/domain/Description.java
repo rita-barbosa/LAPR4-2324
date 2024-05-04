@@ -3,14 +3,12 @@ package jobs4u.base.jobopeningmanagement.domain;
 import eapli.framework.domain.model.ValueObject;
 import eapli.framework.validations.Preconditions;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Id;
 
 import java.util.Objects;
 
 @Embeddable
 public class Description implements ValueObject {
+
     private String descriptionText;
 
     public Description(String text) {
@@ -19,7 +17,8 @@ public class Description implements ValueObject {
         this.descriptionText = text;
     }
 
-    protected Description() {
+    public Description() {
+        //for ORM
     }
 
     public static Description valueOf(final String text) {
@@ -42,5 +41,4 @@ public class Description implements ValueObject {
     public int hashCode() {
         return Objects.hash(descriptionText);
     }
-
 }

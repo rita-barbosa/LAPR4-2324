@@ -7,10 +7,10 @@ import jobs4u.base.Application;
 import jobs4u.base.customermanagement.domain.Customer;
 import jobs4u.base.customermanagement.domain.CustomerCode;
 import jobs4u.base.customermanagement.repository.CustomerRepository;
+import org.hibernate.HibernateException;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class JpaCustomerRepository extends JpaAutoTxRepository<Customer, Long, CustomerCode>
         implements CustomerRepository {
@@ -26,11 +26,23 @@ public class JpaCustomerRepository extends JpaAutoTxRepository<Customer, Long, C
     @Override
     public List<Customer> getCustomersByUsername(Username username) {
         List<Customer> assignedCustomers = new ArrayList<>();
-        Iterable<Customer> entities = match("e=(SELECT c FROM Customer c WHERE c.customerManager.username=:name)", "name", username);
+        Iterable<Customer> entities;
+        try{
+            entities = match("e=(SELECT c FROM Customer c WHERE c.customerManager.username=:name)", "name", username);
+        }catch (HibernateException ex){
+            entities = match("e.customerManager.username=:name", "name", username);
+        }
 
         for (Customer Customer : entities) {
             assignedCustomers.add(Customer);
         }
         return assignedCustomers;
+    }
+
+    @Override
+    public Optional<Customer> getCustomerByCustomerCode(String customerCode) {
+        final Map<String, Object> params = new HashMap<>();
+        params.put("code", customerCode);
+        return matchOne("e.code.customerCode = :code", params);
     }
 }

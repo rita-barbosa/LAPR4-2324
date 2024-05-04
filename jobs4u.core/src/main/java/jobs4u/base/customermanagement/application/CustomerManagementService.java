@@ -22,10 +22,7 @@ import jobs4u.base.jobopeningmanagement.domain.Address;
 import jobs4u.base.usermanagement.application.GeneratePasswordService;
 import jobs4u.base.usermanagement.domain.BaseRoles;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 public class CustomerManagementService {
@@ -58,5 +55,14 @@ public class CustomerManagementService {
             return new ArrayList<>();
         }
         return service.convertToDTO(customersList);
+    }
+
+
+    public Optional<Customer> getCustomerByDTO(CustomerDTO object) {
+       return customerRepository.ofIdentity(CustomerCode.valueOf(object.customerCode()));
+    }
+
+    public Optional<Customer> getCustomerByCustomerCode(String customerCode) {
+        return customerRepository.getCustomerByCustomerCode(customerCode);
     }
 }

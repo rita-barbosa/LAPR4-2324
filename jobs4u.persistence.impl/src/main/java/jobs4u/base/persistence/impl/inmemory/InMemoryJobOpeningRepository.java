@@ -1,12 +1,19 @@
 package jobs4u.base.persistence.impl.inmemory;
 
 import eapli.framework.infrastructure.repositories.impl.inmemory.InMemoryDomainRepository;
+import eapli.framework.time.domain.model.DateInterval;
+import jobs4u.base.customermanagement.domain.Customer;
+import jobs4u.base.customermanagement.domain.CustomerCode;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatus;
+import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatusEnum;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 public class InMemoryJobOpeningRepository
         extends InMemoryDomainRepository<JobOpening, JobReference>
@@ -20,7 +27,7 @@ public class InMemoryJobOpeningRepository
     public JobReference lastJobReference(String customerCode) {
         int repoSize = (int) size();
         JobReference lastJobReference = null;
-        if (repoSize == 0) {
+        if (repoSize == 0){
             System.out.println("First job opening being registered in the system!");
             return new JobReference(customerCode, 0);
         }
@@ -35,7 +42,44 @@ public class InMemoryJobOpeningRepository
     }
 
     @Override
-    public Iterable<JobOpening> findAllJobOpeningsNotStarted() {
-        return match(e -> e.jobOpeningStatus() == JobOpeningStatus.UNFINISHED || e.jobOpeningStatus() == JobOpeningStatus.NOT_STARTED);
+    public List<JobOpening> getJobOpeningListMatchingCustomerCodesList(Set<CustomerCode> customerCode) {
+        throw new UnsupportedOperationException("yet to implement");
     }
+
+    @Override
+    public List<JobOpening> getJobOpeningListMatchingCustomer(Customer customer) {
+        List<JobOpening> jobOpeningArrayList = new ArrayList<>();
+
+        Iterable<JobOpening> jobOpenings = match(e -> {
+            e.jobReference().getcustomerCode();
+            customer.customerCode();
+            return false;
+        });
+        for (JobOpening element : jobOpenings) {
+            jobOpeningArrayList.add(element);
+        }
+        return jobOpeningArrayList;
+    }
+
+    @Override
+    public List<JobOpening> getJobOpeningListMatchingStatus(String started) {
+        List<JobOpening> jobOpeningArrayList = new ArrayList<>();
+        Iterable<JobOpening> jobOpenings = match(e -> e.getStatus().toString().equals(started));
+        for (JobOpening element : jobOpenings) {
+            jobOpeningArrayList.add(element);
+        }
+        return jobOpeningArrayList;
+    }
+
+    @Override
+    public List<JobOpening> getJobOpeningListWithinDateInterval(DateInterval interval) {
+        return null;
+    }
+
+    @Override
+    public Iterable<JobOpening> findAllJobOpeningsNotStarted() {
+        return match(e -> e.jobOpeningStatus().getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED))
+                || e.jobOpeningStatus().getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED)));
+    }
+
 }

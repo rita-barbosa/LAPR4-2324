@@ -29,7 +29,8 @@ import jobs4u.base.app.backoffice.console.presentation.authz.EnableDisableUserAc
 import jobs4u.base.app.backoffice.console.presentation.authz.ListUsersAction;
 import jobs4u.base.app.backoffice.console.presentation.candidate.RegisterCandidateAction;
 import jobs4u.base.app.backoffice.console.presentation.customer.RegisterCustomerAction;
-import jobs4u.base.app.backoffice.console.presentation.jobopening.RegisterJobOpeningAction;
+import jobs4u.base.app.backoffice.console.presentation.jobopening.listing.ListJobOpeningsAction;
+import jobs4u.base.app.backoffice.console.presentation.jobopening.registration.RegisterJobOpeningAction;
 import jobs4u.base.app.backoffice.console.presentation.requirementspecification.SelectRequirementSpecificationAction;
 import jobs4u.base.app.common.console.presentation.authz.MyUserMenu;
 import jobs4u.base.usermanagement.domain.BaseRoles;
@@ -40,7 +41,6 @@ import eapli.framework.infrastructure.authz.application.AuthorizationService;
 import eapli.framework.infrastructure.authz.application.AuthzRegistry;
 import eapli.framework.presentation.console.AbstractUI;
 import eapli.framework.presentation.console.ExitWithMessageAction;
-import eapli.framework.presentation.console.ShowMessageAction;
 import eapli.framework.presentation.console.menu.HorizontalMenuRenderer;
 import eapli.framework.presentation.console.menu.MenuItemRenderer;
 import eapli.framework.presentation.console.menu.MenuRenderer;
@@ -166,7 +166,7 @@ public class MainMenu extends AbstractUI {
         final Menu menu = new Menu("Job Opening >");
 
         menu.addItem(REGISTER_JOB_OPENING, "Register a job opening", new RegisterJobOpeningAction());
-        menu.addItem(LIST_JOB_OPENINGS, "List job openings", new ShowMessageAction("Not implemented yet"));
+        menu.addItem(LIST_JOB_OPENINGS, "List job openings", new ListJobOpeningsAction());
         menu.addItem(SELECT_REQ_SPEC, "Select a requirement specification", new SelectRequirementSpecificationAction());
         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
 

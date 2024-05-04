@@ -2,6 +2,7 @@ package jobs4u.base.jobopeningmanagement.domain;
 
 import eapli.framework.domain.model.AggregateRoot;
 import eapli.framework.domain.model.DomainEntities;
+import eapli.framework.domain.model.ValueObject;
 import eapli.framework.representations.dto.DTOable;
 import eapli.framework.validations.Preconditions;
 
@@ -14,7 +15,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "T_CONTRACTTYPE")
-public class ContractType implements DTOable<ContractTypeDTO>, AggregateRoot<String> {
+public class ContractType implements DTOable<ContractTypeDTO>, ValueObject, AggregateRoot<String> {
 
     @Id
     private String denomination;

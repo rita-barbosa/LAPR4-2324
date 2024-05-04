@@ -67,11 +67,18 @@ public class Customer implements AggregateRoot<CustomerCode>, DTOable<CustomerDT
 
     @Override
     public CustomerDTO toDTO() {
-        return new CustomerDTO(name, code);
+        return new CustomerDTO(code.costumerCode(), name.companyName());
     }
 
     public CustomerCode customerCode() {
         return this.identity();
+    }
+
+    public SystemUser customerUser() {
+        return this.customerUser;
+    }
+    public CompanyName companyName() {
+        return this.name;
     }
 
 }

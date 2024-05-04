@@ -26,7 +26,7 @@ public class WorkMode implements DTOable<WorkModeDTO>, ValueObject, AggregateRoo
         this.denomination = denomination;
     }
 
-    public WorkMode() {
+    protected WorkMode() {
         //for ORM
     }
 

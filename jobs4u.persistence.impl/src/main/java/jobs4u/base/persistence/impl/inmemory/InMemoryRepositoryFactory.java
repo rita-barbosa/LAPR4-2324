@@ -24,6 +24,7 @@ import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
 import jobs4u.base.candidatemanagement.repository.CandidateRepository;
 import jobs4u.base.clientusermanagement.repositories.ClientUserRepository;
 import jobs4u.base.clientusermanagement.repositories.SignupRequestRepository;
+import jobs4u.base.criteriamanagement.repository.CriteriaRepository;
 import jobs4u.base.customermanagement.repository.CustomerRepository;
 import jobs4u.base.infrastructure.bootstrapers.BaseBootstrapper;
 import jobs4u.base.infrastructure.persistence.RepositoryFactory;
@@ -33,6 +34,8 @@ import eapli.framework.infrastructure.authz.repositories.impl.inmemory.InMemoryU
 import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
+import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
+import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
 import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
 
 /**
@@ -120,6 +123,36 @@ public class InMemoryRepositoryFactory implements RepositoryFactory {
     @Override
     public JobOpeningRepository jobOpenings() {
         return jobOpenings(null);
+    }
+
+    @Override
+    public CriteriaRepository criteria(TransactionalContext tx) {
+        return new InMemoryCriteriaRepository();
+    }
+
+    @Override
+    public CriteriaRepository criteria() {
+        return criteria(null);
+    }
+
+    @Override
+    public RecruitmentProcessRepository recruitmentProcesses(TransactionalContext autoTx) {
+        return new InMemoryRecruitmentProcessRepository();
+    }
+
+    @Override
+    public RecruitmentProcessRepository recruitmentProcesses() {
+        return recruitmentProcesses(null);
+    }
+
+    @Override
+    public PhaseRepository phases(TransactionalContext autoTx) {
+        return new InMemoryPhaseRepository();
+    }
+
+    @Override
+    public PhaseRepository phases() {
+        return phases(null);
     }
 
     @Override

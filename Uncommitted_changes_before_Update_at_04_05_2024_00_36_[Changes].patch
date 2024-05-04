@@ -1,0 +1,2836 @@
+Subject: [PATCH] Uncommitted changes before Update at 04/05/2024 00:36 [Changes]
+---
+Index: jobs4u.bootstrappers/src/main/java/jobs4u/base/infrastructure/bootstrapers/demo/DomainEntitiesBootstrapper.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.bootstrappers/src/main/java/jobs4u/base/infrastructure/bootstrapers/demo/DomainEntitiesBootstrapper.java b/jobs4u.bootstrappers/src/main/java/jobs4u/base/infrastructure/bootstrapers/demo/DomainEntitiesBootstrapper.java
+--- a/jobs4u.bootstrappers/src/main/java/jobs4u/base/infrastructure/bootstrapers/demo/DomainEntitiesBootstrapper.java	
++++ b/jobs4u.bootstrappers/src/main/java/jobs4u/base/infrastructure/bootstrapers/demo/DomainEntitiesBootstrapper.java	
+@@ -3,6 +3,10 @@
+ import eapli.framework.actions.Action;
+ import eapli.framework.infrastructure.authz.domain.model.Role;
+ import eapli.framework.infrastructure.authz.domain.model.SystemUser;
++import eapli.framework.time.domain.model.DateInterval;
++import eapli.framework.time.util.Calendars;
++import jobs4u.base.criteriamanagement.domain.Criteria;
++import jobs4u.base.criteriamanagement.repository.CriteriaRepository;
+ import jobs4u.base.customermanagement.application.CustomerManagementService;
+ import jobs4u.base.customermanagement.domain.CompanyName;
+ import jobs4u.base.customermanagement.domain.CustomerCode;
+@@ -15,6 +19,9 @@
+ import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
+ import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
+ import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
++import jobs4u.base.recruitmentprocessmanagement.domain.*;
++import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
++import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
+ import jobs4u.base.requirementsmanagement.domain.PluginJarFile;
+ import jobs4u.base.requirementsmanagement.domain.RequirementDescription;
+ import jobs4u.base.requirementsmanagement.domain.RequirementName;
+@@ -22,10 +29,9 @@
+ import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
+ import jobs4u.base.usermanagement.domain.BaseRoles;
+ 
+-import java.util.ArrayList;
+-import java.util.HashSet;
+-import java.util.List;
+-import java.util.Set;
++import java.text.ParseException;
++import java.text.SimpleDateFormat;
++import java.util.*;
+ 
+ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implements Action {
+ 
+@@ -36,17 +42,22 @@
+     private RequirementSpecificationRepository requirementSpecificationRepository;
+ 
+     private JobOpeningRepository jobOpeningRepository;
++    private CriteriaRepository criteriaRepository;
++    private RecruitmentProcessRepository recruitmentProcessRepository;
++    private PhaseRepository phaseRepository;
+ 
+     List<RequirementSpecification> requirementSpecificationsList = new ArrayList<>();
+ 
+     @Override
+     public boolean execute() {
+         instantiateRepositories();
++        persistCriteria();
+         persistCustomers();
+         persistContractTypes();
+         persistWorkModes();
+         persistRequirementSpecifications();
+         persistJobOpenings();
++        //persistRecruitmentProcesses();
+         return true;
+     }
+ 
+@@ -55,31 +66,107 @@
+         this.workModeRepository = PersistenceContext.repositories().workModes();
+         this.requirementSpecificationRepository = PersistenceContext.repositories().requirementSpecifications();
+         this.jobOpeningRepository = PersistenceContext.repositories().jobOpenings();
++        this.criteriaRepository = PersistenceContext.repositories().criteria();
++        this.recruitmentProcessRepository = PersistenceContext.repositories().recruitmentProcesses();
++        this.phaseRepository = PersistenceContext.repositories().phases();
+     }
++
++    private void persistCriteria() {
++        criteriaRepository.save(new Criteria("Status [STARTED]", JobOpening.class.getSimpleName()));
++        criteriaRepository.save(new Criteria("Company Name", JobOpening.class.getSimpleName()));
++        criteriaRepository.save(new Criteria("Customer Code", JobOpening.class.getSimpleName()));
++        criteriaRepository.save(new Criteria("Time Interval", JobOpening.class.getSimpleName()));
++    }
++
++
++    private void persistRecruitmentProcesses() {
++        ContractTypeDTO contract = new ContractTypeDTO("full-time");
++        WorkModeDTO mode = new WorkModeDTO("remote");
++        String description = "UX/UI Design.";
++        JobReference jobReference2 = new JobReference("ISEP", 3);
++
++        JobOpening jobOpening2 = new JobOpening("Back End Senior Developer", contract, mode, "HELLO Street",
++                "HELLO Town", "HELLO District", "HELLO", "85206", 8, description,
++                requirementSpecificationsList.get(0), jobReference2);
++        jobOpening2.getStatus().setStatusDescriptionAsSTARTED();
++
++
++        DateInterval dateInterval = null;
++        try {
++            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
++            Calendar start = Calendars.fromDate(df.parse("25-04-2024"));
++            Calendar end = Calendars.fromDate(df.parse("17-06-2024"));
++            dateInterval = new DateInterval(start, end);
++        }catch (ParseException e){
++            System.out.println(e.getMessage());
++        }
++
++        List<Phase> phases = new ArrayList<>();
++        RecruitmentProcess recruitmentProcess = new RecruitmentProcess(new RecruitmentPeriod(dateInterval), jobOpening2, phases);
++
++
++        Phase application = new Phase(new PhaseType(PhaseTypeEnum.APPLICATION), new PhaseDescription("Candidates send applications."),
++                new PhaseStatus(PhaseStatusEnum.CONCLUDED), new PhasePeriod()/*, recruitmentProcess*/);
++        Phase screening = new Phase(new PhaseType(PhaseTypeEnum.SCREENING), new PhaseDescription("Candidates screening."),
++                new PhaseStatus(PhaseStatusEnum.ON_GOING), new PhasePeriod()/*, recruitmentProcess*/);
++        Phase analysis = new Phase(new PhaseType(PhaseTypeEnum.ANALYSIS), new PhaseDescription("Candidates analysis."),
++                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod()/*, recruitmentProcess*/);
++        Phase interview = new Phase(new PhaseType(PhaseTypeEnum.INTERVIEWS), new PhaseDescription("Candidates get interviewed."),
++                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod()/*, recruitmentProcess*/);
++        Phase result = new Phase(new PhaseType(PhaseTypeEnum.RESULT), new PhaseDescription("Candidates get results."),
++                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod()/*, recruitmentProcess*/);
++
++        phases.add(application);
++        phases.add(screening);
++        phases.add(analysis);
++        phases.add(interview);
++        phases.add(result);
++
++        for (Phase phase : phases){
++            phaseRepository.save(phase);
++        }
++
++        recruitmentProcess.setPhases(phases);
++        recruitmentProcessRepository.save(recruitmentProcess);
++    }
++
++
+ 
+     private void persistJobOpenings() {
+         ContractTypeDTO contract = new ContractTypeDTO("full-time");
+         WorkModeDTO mode = new WorkModeDTO("remote");
+-        String description = "This work is very well payed.";
++        String description = "UX/UI Design.";
+ 
+-        JobReference jobReference = new JobReference("ISEP", 1);
+-        CustomerDTO companyInfo = new CustomerDTO(new CompanyName("Instituto Superior de Engenharia do Porto"), new CustomerCode("ISEP"));
++        JobReference jobReference = new JobReference("ISEP", 0);
++        JobReference jobReference1 = new JobReference("ISEP", 1);
++        JobReference jobReference2 = new JobReference("ISEP", 2);
+ 
+         JobOpening jobOpening = new JobOpening("Front End Junior Developer", contract, mode, "123 Main Street",
+                 "Flagtown", "Star District", "USA", "12345", 10, description,
+-                requirementSpecificationsList.get(1), jobReference, companyInfo);
++                requirementSpecificationsList.get(1), jobReference);
++
++        JobOpening jobOpening1 = new JobOpening("Back End Senior Developer", contract, mode, "456 Elm Street",
++                "Maple Town", "Moonlight District", "Canada", "54321", 15, description,
++                requirementSpecificationsList.get(0), jobReference1);
++
++        JobOpening jobOpening2 = new JobOpening("Back End Senior Developer", contract, mode, "MM Street",
++                "MM Town", "MM District", "MMM", "54321", 8, description,
++                requirementSpecificationsList.get(0), jobReference2);
++        jobOpening2.getStatus().setStatusDescriptionAsSTARTED();
+ 
+         jobOpeningRepository.save(jobOpening);
++        jobOpeningRepository.save(jobOpening1);
++        jobOpeningRepository.save(jobOpening2);
+     }
+ 
+     private void persistRequirementSpecifications() {
+-        RequirementName requirementName = new RequirementName("[Back End] Senior Developer");
++        RequirementName requirementName = new RequirementName("Back End Senior Developer");
+         RequirementDescription requirementDescription = new RequirementDescription("Requirements for back end senior developers");
+         PluginJarFile pluginJarFile = new PluginJarFile("back-end-senior-developer.jar");
+         RequirementSpecification requirementSpecification = new RequirementSpecification(requirementName, requirementDescription,
+                 pluginJarFile);
+ 
+-        RequirementName requirementName1 = new RequirementName("[Front End] Junior Developer");
++        RequirementName requirementName1 = new RequirementName("Front End Junior Developer");
+         RequirementDescription requirementDescription1 = new RequirementDescription("Requirements for front end junior developers");
+         PluginJarFile pluginJarFile1 = new PluginJarFile("front-end-junior-developer.jar");
+         RequirementSpecification requirementSpecification1 = new RequirementSpecification(requirementName1, requirementDescription1,
+Index: jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaCriteriaRepository.java
+===================================================================
+diff --git a/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaCriteriaRepository.java b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaCriteriaRepository.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaCriteriaRepository.java	
+@@ -0,0 +1,37 @@
++package jobs4u.base.persistence.impl.jpa;
++
++import eapli.framework.domain.repositories.TransactionalContext;
++import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
++import jobs4u.base.Application;
++import jobs4u.base.criteriamanagement.domain.Criteria;
++import jobs4u.base.criteriamanagement.repository.CriteriaRepository;
++import jobs4u.base.jobopeningmanagement.domain.JobOpening;
++
++import java.util.ArrayList;
++import java.util.List;
++
++public class JpaCriteriaRepository
++        extends JpaAutoTxRepository<Criteria, String, String>
++        implements CriteriaRepository {
++
++
++    public JpaCriteriaRepository(final TransactionalContext autoTx) {
++        super(autoTx, "criteriaDenomination");
++    }
++
++    public JpaCriteriaRepository(final String puname) {
++        super(puname, Application.settings().getExtendedPersistenceProperties(), "criteriaDenomination");
++    }
++
++
++    @Override
++    public List<Criteria> jobOpeningCriteria() {
++        List<Criteria> jobOpeningCriteria = new ArrayList<>();
++        Iterable<Criteria> criteria = match("e.classNameCriteria = :name", "name", JobOpening.class.getSimpleName());
++
++        for (Criteria criterion : criteria) {
++            jobOpeningCriteria.add(criterion);
++        }
++        return jobOpeningCriteria;
++    }
++}
+Index: jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/listing/ListJobOpeningsUI.java
+===================================================================
+diff --git a/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/listing/ListJobOpeningsUI.java b/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/listing/ListJobOpeningsUI.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/listing/ListJobOpeningsUI.java	
+@@ -0,0 +1,162 @@
++package jobs4u.base.app.backoffice.console.presentation.jobopening.listing;
++
++import eapli.framework.io.util.Console;
++import eapli.framework.presentation.console.AbstractListUI;
++import eapli.framework.presentation.console.SelectWidget;
++import eapli.framework.time.domain.model.DateInterval;
++import eapli.framework.visitor.Visitor;
++import jobs4u.base.criteriamanagement.dto.CriteriaDTO;
++import jobs4u.base.customermanagement.dto.CustomerDTO;
++import jobs4u.base.jobopeningmanagement.application.ListJobOpeningsController;
++import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
++
++import java.util.*;
++
++public class ListJobOpeningsUI extends AbstractListUI<JobOpeningDTO> {
++
++    private final ListJobOpeningsController controller = new ListJobOpeningsController();
++
++    private CriteriaDTO criteriaDTO;
++    private CustomerDTO customerDTO;
++    private DateInterval dateInterval;
++
++    @Override
++    public boolean show() {
++        criteriaDTO = new CriteriaDTO("no criteria");
++        try {
++            super.show();
++            String answer;
++            do {
++                answer = Console.readLine("Would you like to select filtering criteria? [y/n]").trim().toLowerCase();
++                if (!answer.equals("y") && !answer.equals("n")) {
++                    throw new InputMismatchException("Invalid input. Please enter 'y' or 'n'.");
++                }
++                if (answer.equals("y")) {
++                    criteriaDTO = showAndSelectCriteria();
++                    switch (criteriaDTO.getDenomination()) {
++                        case "Status [STARTED]":
++                            super.show();
++                            break;
++                        case "Company Name":
++                            customerDTO = showAndSelectCustomer("Company Name");
++                            super.show();
++                            break;
++                        case "Customer Code":
++                            customerDTO = showAndSelectCustomer("Customer Code");
++                            super.show();
++                            break;
++                        case "Time Interval":
++                            dateInterval = buildNewDateInterval();
++                            super.show();
++                            break;
++                        default:
++                            break;
++                    }
++                }
++                answer = Console.readLine("Finish listing? [y/n]").trim().toLowerCase();
++                if (!answer.equals("y") && !answer.equals("n")) {
++                    throw new InputMismatchException("Invalid input. Please enter 'y' or 'n'.");
++                }
++            } while (!answer.equals("y"));
++            return false;
++        } catch (NoSuchElementException e) {
++            System.out.println(e.getMessage());
++            return false;
++        }
++    }
++
++    private DateInterval buildNewDateInterval() {
++        Calendar start = Console.readCalendar("Provide the start date:");
++        Calendar end = Console.readCalendar("Provide the end date:");
++        return new DateInterval(start, end);
++    }
++
++    private CriteriaDTO showAndSelectCriteria() {
++        List<CriteriaDTO> criteria = this.controller.getCriteria();
++        SelectWidget<CriteriaDTO> criteriaSelector = new SelectWidget<>("Select a criteria to filter the list of job openings:",
++                criteria);
++
++        criteriaSelector.show();
++        return criteriaSelector.selectedElement();
++    }
++
++    @Override
++    public String headline() {
++        return "List Job Openings";
++    }
++
++    @Override
++    protected String emptyMessage() {
++        return "No data found.";
++    }
++
++    @Override
++    protected Iterable<JobOpeningDTO> elements() {
++        switch (criteriaDTO.getDenomination()){
++            case "Status [STARTED]":
++                return controller.filterJobOpeningList("STARTED");
++            case "Company Name":
++                return controller.filterJobOpeningList(customerDTO);
++            case "Customer Code":
++                return controller.filterJobOpeningList(customerDTO.customerCode());
++            case "Time Interval":
++                return controller.filterJobOpeningList(dateInterval);
++            case "no criteria":
++                return controller.backofficeJobOpenings();
++            default:
++                throw new NoSuchElementException("There is no criteria with defined designation");
++        }
++    }
++
++    @Override
++    protected Visitor<JobOpeningDTO> elementPrinter() {
++        return new JobOpeningPrinter();
++    }
++
++    @Override
++    protected String elementName() {
++        return "Job Opening";
++    }
++
++    @Override
++    protected String listHeader() {
++        return "Listing Job Openings";
++    }
++
++    private CustomerDTO showAndSelectCustomer(String distinction) {
++        List<CustomerDTO> customerDTOS = this.controller.getCustomersList();
++        if (customerDTOS.isEmpty()){
++            throw new NoSuchElementException("There are no customers to be associated with a job opening.");
++        }
++        List<String> customerInfo = new ArrayList<>();
++        if (distinction.equals("Company Name")){
++            for (CustomerDTO dto : customerDTOS){
++                customerInfo.add(dto.companyName());
++            }
++        }else {
++            for (CustomerDTO dto : customerDTOS){
++                customerInfo.add(dto.customerCode());
++            }
++        }
++
++        SelectWidget<String> costumerSelector = new SelectWidget<>("Select a customers that was assigned to you:",
++                customerInfo);
++        costumerSelector.show();
++        String answer = costumerSelector.selectedElement();
++
++        if (distinction.equals("Company Name")){
++            for (CustomerDTO dto : customerDTOS){
++                if (dto.companyName().equals(answer)){
++                    return dto;
++                }
++            }
++        }else {
++            for (CustomerDTO dto : customerDTOS){
++                if (dto.customerCode().equals(answer)){
++                    return dto;
++                }
++            }
++        }
++        throw new NoSuchElementException("No customer selected.");
++    }
++}
+Index: jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/ListJobOpeningsController.java
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/ListJobOpeningsController.java b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/ListJobOpeningsController.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/ListJobOpeningsController.java	
+@@ -0,0 +1,128 @@
++package jobs4u.base.jobopeningmanagement.application;
++
++
++import eapli.framework.application.UseCaseController;
++import eapli.framework.infrastructure.authz.application.AuthorizationService;
++import eapli.framework.infrastructure.authz.application.AuthzRegistry;
++import eapli.framework.infrastructure.authz.domain.model.SystemUser;
++import eapli.framework.time.domain.model.DateInterval;
++import jobs4u.base.criteriamanagement.domain.Criteria;
++import jobs4u.base.criteriamanagement.dto.CriteriaDTO;
++import jobs4u.base.criteriamanagement.repository.CriteriaRepository;
++import jobs4u.base.customermanagement.application.CustomerManagementService;
++import jobs4u.base.customermanagement.domain.Customer;
++import jobs4u.base.customermanagement.dto.CustomerDTO;
++import jobs4u.base.infrastructure.persistence.PersistenceContext;
++import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
++import jobs4u.base.usermanagement.domain.BaseRoles;
++import jobs4u.base.jobopeningmanagement.domain.JobOpening;
++
++
++import java.util.*;
++
++
++@UseCaseController
++public class ListJobOpeningsController {
++
++    private final AuthorizationService authz;
++
++    private final CustomerManagementService customerManagementService;
++    private final JobOpeningManagementService jobOpeningManagementService;
++
++    private final JobOpeningListDTOService jobOpeningListDTOService;
++
++    private final CriteriaRepository criteriaRepository;
++
++    public ListJobOpeningsController() {
++        this.authz = AuthzRegistry.authorizationService();
++        this.customerManagementService = new CustomerManagementService();
++        this.jobOpeningManagementService = new JobOpeningManagementService();
++        this.jobOpeningListDTOService = new JobOpeningListDTOService();
++        this.criteriaRepository = PersistenceContext.repositories().criteria();
++    }
++
++
++    public List<JobOpeningDTO> filterJobOpeningList(Object object) {
++
++        List<JobOpening> jobOpeningList = new ArrayList<>();
++
++        switch (object.getClass().getSimpleName()) {
++            case "CustomerDTO":
++                Optional<Customer> customer = customerManagementService.getCustomerByDTO((CustomerDTO) object);
++                if (customer.isPresent()){
++                    jobOpeningList = filterJobOpeningListByCompanyName((CustomerDTO) object);
++                }
++                break;
++            case "DateInterval":
++                assert object instanceof DateInterval;
++               // try {
++                    jobOpeningList = filterJobOpeningListByDateInterval((DateInterval) object, virgemJobOpeningList());
++                //}catch (NoSuchElementException e){
++                  //  System.out.println(e.getMessage());
++                //}
++                break;
++            case "String":
++                if (object.equals("STARTED")) {
++                    jobOpeningList = filterJobOpeningListBySTARTEDStatus(virgemJobOpeningList());
++                } else {
++                    assert object instanceof String;
++                    jobOpeningList = filterJobOpeningListByCustomerCode((String) object);
++                }
++                break;
++            default:
++                break;
++        }
++        return jobOpeningListDTOService.convertToDTO(jobOpeningList);
++    }
++
++    private List<JobOpening> filterJobOpeningListByDateInterval(DateInterval interval, List<JobOpening> jobOpenings) {
++        return jobOpeningManagementService.filterJobOpeningListByDateInterval(interval, jobOpenings);
++    }
++
++    private List<JobOpening> filterJobOpeningListBySTARTEDStatus(List<JobOpening> virgemJobOpeningList) {
++        return jobOpeningManagementService.filterJobOpeningListBySTARTEDStatus("STARTED", virgemJobOpeningList);
++    }
++
++    private List<JobOpening> filterJobOpeningListByCustomerCode(String customerCode) {
++        return jobOpeningManagementService.filterJobOpeningListByCustomerCode(customerCode);
++    }
++
++
++    private List<JobOpening> filterJobOpeningListByCompanyName(CustomerDTO object) {
++        return jobOpeningManagementService.filterJobOpeningListByCompanyName(object);
++    }
++
++
++    public Iterable<JobOpeningDTO> backofficeJobOpenings() {
++        return jobOpeningListDTOService.convertToDTO(virgemJobOpeningList());
++    }
++
++    private List<JobOpening> virgemJobOpeningList() {
++        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
++        Optional<SystemUser> user = authz.loggedinUserWithPermissions(BaseRoles.CUSTOMER_MANAGER);
++        if (user.isPresent()) {
++            List<CustomerDTO> customerDTOList = customerManagementService.getAssignedCustomerCodesList(user.get().identity());
++            return jobOpeningManagementService.getJobOpeningsFromCustomerCodes(customerDTOList);
++        } else {
++            throw new NoSuchElementException("It was not possible to retrieve the job openings.");
++        }
++    }
++
++    public List<CriteriaDTO> getCriteria() {
++        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
++        List<CriteriaDTO> criteriaDTOS = new ArrayList<>();
++        for (Criteria criteria : criteriaRepository.jobOpeningCriteria()) {
++            criteriaDTOS.add(criteria.toDTO());
++        }
++        return criteriaDTOS;
++    }
++
++    public List<CustomerDTO> getCustomersList() {
++        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
++        Optional<SystemUser> user = authz.loggedinUserWithPermissions(BaseRoles.CUSTOMER_MANAGER);
++        if (user.isPresent()) {
++            return customerManagementService.getAssignedCustomerCodesList(user.get().identity());
++        }
++        throw new NoSuchElementException("It was not possible to retrieve the user's data.");
++    }
++}
+Index: jobs4u.core/src/main/java/jobs4u/base/customermanagement/domain/CustomerCode.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/customermanagement/domain/CustomerCode.java b/jobs4u.core/src/main/java/jobs4u/base/customermanagement/domain/CustomerCode.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/customermanagement/domain/CustomerCode.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/customermanagement/domain/CustomerCode.java	
+@@ -22,7 +22,7 @@
+         this.customerCode = code;
+     }
+ 
+-    public String costumerCode() {
++    public String custumerCode() {
+         return this.customerCode;
+     }
+ 
+@@ -32,6 +32,11 @@
+ 
+     @Override
+     public int compareTo(CustomerCode o) {
+-        throw new UnsupportedOperationException("Yet to implement");
++        return customerCode.compareTo(o.customerCode);
++    }
++
++    @Override
++    public String toString() {
++        return customerCode;
+     }
+ }
+Index: jobs4u.core/src/main/java/jobs4u/base/customermanagement/domain/Customer.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/customermanagement/domain/Customer.java b/jobs4u.core/src/main/java/jobs4u/base/customermanagement/domain/Customer.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/customermanagement/domain/Customer.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/customermanagement/domain/Customer.java	
+@@ -66,11 +66,18 @@
+ 
+     @Override
+     public CustomerDTO toDTO() {
+-        return new CustomerDTO(name, code);
++        return new CustomerDTO(code.custumerCode(), name.companyName());
+     }
+ 
+     public CustomerCode customerCode() {
+         return this.identity();
+     }
+ 
++    public SystemUser customerUser() {
++        return this.customerUser;
++    }
++    public CompanyName companyName() {
++        return this.name;
++    }
++
+ }
+Index: jobs4u.core/src/main/java/jobs4u/base/criteriamanagement/repository/CriteriaRepository.java
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/criteriamanagement/repository/CriteriaRepository.java b/jobs4u.core/src/main/java/jobs4u/base/criteriamanagement/repository/CriteriaRepository.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.core/src/main/java/jobs4u/base/criteriamanagement/repository/CriteriaRepository.java	
+@@ -0,0 +1,12 @@
++package jobs4u.base.criteriamanagement.repository;
++
++import eapli.framework.domain.repositories.DomainRepository;
++import jobs4u.base.criteriamanagement.domain.Criteria;
++
++import java.util.List;
++
++public interface CriteriaRepository
++        extends DomainRepository<String, Criteria> {
++
++        List<Criteria> jobOpeningCriteria();
++}
+Index: jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryCriteriaRepository.java
+===================================================================
+diff --git a/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryCriteriaRepository.java b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryCriteriaRepository.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryCriteriaRepository.java	
+@@ -0,0 +1,28 @@
++package jobs4u.base.persistence.impl.inmemory;
++
++import eapli.framework.infrastructure.repositories.impl.inmemory.InMemoryDomainRepository;
++import jobs4u.base.criteriamanagement.domain.Criteria;
++import jobs4u.base.criteriamanagement.repository.CriteriaRepository;
++
++import java.util.ArrayList;
++import java.util.List;
++
++public class InMemoryCriteriaRepository
++        extends InMemoryDomainRepository<Criteria, String>
++        implements CriteriaRepository {
++
++    static {
++        InMemoryInitializer.init();
++    }
++
++    @Override
++    public List<Criteria> jobOpeningCriteria() {
++        List<Criteria> criteria = new ArrayList<>();
++        Iterable<Criteria> matches =  match(e -> e.getClassNameCriteria().equals("JobOpening"));
++
++        for (Criteria criterion : matches) {
++            criteria.add(criterion);
++        }
++        return criteria;
++    }
++}
+Index: jobs4u.core/src/main/java/jobs4u/base/criteriamanagement/domain/Criteria.java
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/criteriamanagement/domain/Criteria.java b/jobs4u.core/src/main/java/jobs4u/base/criteriamanagement/domain/Criteria.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.core/src/main/java/jobs4u/base/criteriamanagement/domain/Criteria.java	
+@@ -0,0 +1,56 @@
++package jobs4u.base.criteriamanagement.domain;
++
++import eapli.framework.domain.model.AggregateRoot;
++import eapli.framework.domain.model.DomainEntities;
++import eapli.framework.representations.dto.DTOable;
++import eapli.framework.validations.Preconditions;
++import jakarta.persistence.Entity;
++import jakarta.persistence.Id;
++import jakarta.persistence.Table;
++import jobs4u.base.criteriamanagement.dto.CriteriaDTO;
++import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
++
++@Entity
++@Table(name = "T_CRITERIA")
++public class Criteria implements DTOable<CriteriaDTO>, AggregateRoot<String> {
++    @Id
++    private String criteriaDenomination;
++
++    //class where criteria is to be applied
++    private String classNameCriteria;
++
++    protected Criteria() {
++        //for ORM
++    }
++
++    public Criteria(String criteriaDenomination, String classNameCriteria) {
++        Preconditions.noneNull(criteriaDenomination, classNameCriteria);
++        Preconditions.nonEmpty(criteriaDenomination);
++        Preconditions.nonEmpty(classNameCriteria);
++        this.criteriaDenomination = criteriaDenomination;
++        this.classNameCriteria = classNameCriteria;
++    }
++
++    @Override
++    public CriteriaDTO toDTO() {
++        return new CriteriaDTO(criteriaDenomination);
++    }
++
++    @Override
++    public boolean sameAs(Object other) {
++        return DomainEntities.areEqual(this, other);
++    }
++
++    @Override
++    public String identity() {
++        return this.criteriaDenomination;
++    }
++
++    public String getCriteriaDenomination() {
++        return criteriaDenomination;
++    }
++
++    public String getClassNameCriteria() {
++        return classNameCriteria;
++    }
++}
+Index: jobs4u.core/src/main/java/jobs4u/base/criteriamanagement/dto/CriteriaDTO.java
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/criteriamanagement/dto/CriteriaDTO.java b/jobs4u.core/src/main/java/jobs4u/base/criteriamanagement/dto/CriteriaDTO.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.core/src/main/java/jobs4u/base/criteriamanagement/dto/CriteriaDTO.java	
+@@ -0,0 +1,43 @@
++package jobs4u.base.criteriamanagement.dto;
++
++import eapli.framework.validations.Preconditions;
++
++import java.util.Objects;
++
++
++public class CriteriaDTO {
++
++    private String denomination;
++
++    protected CriteriaDTO() {
++        //for ORM
++    }
++
++    public CriteriaDTO(String denomination) {
++        Preconditions.noneNull(denomination);
++        Preconditions.nonEmpty(denomination);
++        this.denomination = denomination;
++    }
++
++    @Override
++    public boolean equals(Object o) {
++        if (this == o) return true;
++        if (!(o instanceof CriteriaDTO)) return false;
++        CriteriaDTO that = (CriteriaDTO) o;
++        return Objects.equals(denomination, that.denomination);
++    }
++
++    @Override
++    public int hashCode() {
++        return Objects.hash(denomination);
++    }
++
++    public String getDenomination() {
++        return denomination;
++    }
++
++    @Override
++    public String toString() {
++        return denomination;
++    }
++}
+Index: Plugins/Requirements/Front_End_Dev/template_Front_End_Dev.txt
+===================================================================
+diff --git a/Plugins/Requirements/Front_End_Dev/template_Front_End_Dev.txt b/Plugins/Requirements/Front_End_Dev/template_Front_End_Dev.txt
+new file mode 100644
+--- /dev/null	
++++ b/Plugins/Requirements/Front_End_Dev/template_Front_End_Dev.txt	
+@@ -0,0 +1,41 @@
++REQUIREMENT #1
++[Single Choice] "Do you prefer using React or Angular for front-end development?" Answer Model: "[Choice]"
++1) "React"
++2) "Angular"
++R:. 
++
++REQUIREMENT #2
++[Multiple Choice] "Which of the following are front-end technologies?" Answer Model: "[CHOICE] and [CHOICE]"
++1) "HTML"
++2) "Python"
++3) "CSS"
++R:. 
++
++REQUIREMENT #3
++[Whole Number] "How many years have you been working with JavaScript?"
++R:. 
++
++REQUIREMENT #4
++[True/False] "Are you familiar with responsive web design?"
++R:. 
++
++REQUIREMENT #5
++[Numeric Scale] "Rate your proficiency in CSS with the given scale." Answer Model: [1-5]
++R:. 
++
++REQUIREMENT #6
++[Decimal Number] "What is the pixel width of a standard Bootstrap container?"
++R:. 
++
++REQUIREMENT #7
++[Short Answer] "Name a popular CSS preprocessor."
++R:. 
++
++REQUIREMENT #8
++[Date] "When did you start learning web development?" [DD/MM/YYYY]
++R:. 
++
++REQUIREMENT #9
++[Time] "At what time do you usually start coding?" [HH:MM]
++R:. 
++
+Index: jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/listing/JobOpeningPrinter.java
+===================================================================
+diff --git a/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/listing/JobOpeningPrinter.java b/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/listing/JobOpeningPrinter.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/listing/JobOpeningPrinter.java	
+@@ -0,0 +1,49 @@
++/*
++ * Copyright (c) 2013-2024 the original author or authors.
++ *
++ * MIT License
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
++ * associated documentation files (the "Software"), to deal in the Software without restriction,
++ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
++ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
++ * furnished to do so, subject to the following conditions:
++ *
++ * The above copyright notice and this permission notice shall be included in all copies or
++ * substantial portions of the Software.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
++ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
++ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
++ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
++ */
++package jobs4u.base.app.backoffice.console.presentation.jobopening.listing;
++
++import eapli.framework.visitor.Visitor;
++import jobs4u.base.jobopeningmanagement.domain.JobOpening;
++import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
++
++/**
++ * @author Paulo Gandra de Sousa
++ */
++@SuppressWarnings({"squid:S106"})
++public class JobOpeningPrinter implements Visitor<JobOpeningDTO> {
++
++    @Override
++    public void visit(final JobOpeningDTO jobOpening) {
++        String sb = "==================================================================\n" +
++                "[Job Reference] " + jobOpening.getJobReference() + "\n" +
++                "[Status] " + jobOpening.getStatus() + "\n" +
++                "[Function] " + jobOpening.getFunction() + "\n" +
++                "[Description] " + jobOpening.getDescription() + "\n" +
++                "[Contract Type] " + jobOpening.getContractType() + "\n" +
++                "[Work Mode] " + jobOpening.getWorkMode() + "\n" +
++                "[Address] " + jobOpening.getAddress() + "\n" +
++                "[Customer Code] " + jobOpening.getCustomerCode() + "\n" +
++                "[Number of Vacancies] " + jobOpening.getNumVacancies() + "\n" +
++                "[Requirement Specification] " + jobOpening.getRequirementName() + "\n" +
++                "=====================================================================";
++        System.out.println(sb);
++    }
++}
+Index: jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/JobOpeningListDTOService.java
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/JobOpeningListDTOService.java b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/JobOpeningListDTOService.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/JobOpeningListDTOService.java	
+@@ -0,0 +1,29 @@
++package jobs4u.base.jobopeningmanagement.application;
++
++import eapli.framework.infrastructure.authz.application.AuthorizationService;
++import eapli.framework.infrastructure.authz.application.AuthzRegistry;
++import eapli.framework.validations.Preconditions;
++import jobs4u.base.jobopeningmanagement.domain.JobOpening;
++import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
++import jobs4u.base.usermanagement.domain.BaseRoles;
++
++import java.util.ArrayList;
++import java.util.List;
++
++public class JobOpeningListDTOService {
++
++    private final AuthorizationService authz = AuthzRegistry.authorizationService();
++
++    public List<JobOpeningDTO> convertToDTO(List<JobOpening> listToDisplay){
++        Preconditions.noneNull(listToDisplay);
++        Preconditions.nonEmpty(listToDisplay);
++
++        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
++
++        List<JobOpeningDTO> dtoList = new ArrayList<>();
++        for (JobOpening jobOpening : listToDisplay){
++            dtoList.add(jobOpening.toDTO());
++        }
++        return dtoList;
++    }
++}
+Index: jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/dto/JobOpeningDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/dto/JobOpeningDTO.java b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/dto/JobOpeningDTO.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/dto/JobOpeningDTO.java	
+@@ -0,0 +1,94 @@
++package jobs4u.base.jobopeningmanagement.dto;
++
++import eapli.framework.validations.Preconditions;
++import jobs4u.base.jobopeningmanagement.domain.*;
++import jobs4u.base.requirementsmanagement.domain.RequirementName;
++
++import java.util.Objects;
++
++public class JobOpeningDTO {
++
++    private final String function;
++    private final String description;
++    private final String status;
++    private final String contractType;
++    private final String workMode;
++    private final String numVacancies;
++    private final String requirementName;
++    private final String customerCode;
++    private final String jobReference;
++    private final String address;
++
++
++    public JobOpeningDTO(Address address, JobFunction function, Description description, JobOpeningStatus status, ContractType contractType,
++                         WorkMode workMode, NumberVacancy numVacancies, RequirementName requirementName,
++                         JobReference jobReference) {
++
++        Preconditions.noneNull(address, function, description, status, contractType, workMode, numVacancies, requirementName, jobReference);
++
++        this.function = function.getJobFunction();
++        this.description = description.getDescriptionText();
++        this.status = status.getStatusDescription();
++        this.contractType = contractType.getDenomination();
++        this.workMode = workMode.denomination();
++        this.numVacancies = String.valueOf(numVacancies);
++        this.requirementName = requirementName.name();
++        this.customerCode = jobReference.getcustomerCode();
++        this.jobReference = jobReference.toString();
++        this.address = address.toString();
++    }
++
++
++    public String getFunction() {
++        return function;
++    }
++
++    public String getDescription() {
++        return description;
++    }
++
++    public String getStatus() {
++        return status;
++    }
++
++    public String getContractType() {
++        return contractType;
++    }
++
++    public String getWorkMode() {
++        return workMode;
++    }
++
++    public String getNumVacancies() {
++        return numVacancies;
++    }
++
++    public String getRequirementName() {
++        return requirementName;
++    }
++
++    public String getCustomerCode() {
++        return customerCode;
++    }
++
++    public String getJobReference() {
++        return jobReference;
++    }
++
++    public String getAddress() {
++        return address;
++    }
++
++    @Override
++    public boolean equals(Object o) {
++        if (this == o) return true;
++        if (!(o instanceof JobOpeningDTO)) return false;
++        JobOpeningDTO that = (JobOpeningDTO) o;
++        return Objects.equals(getFunction(), that.getFunction()) && Objects.equals(getDescription(), that.getDescription()) && Objects.equals(getStatus(), that.getStatus()) && Objects.equals(getContractType(), that.getContractType()) && Objects.equals(getWorkMode(), that.getWorkMode()) && Objects.equals(getNumVacancies(), that.getNumVacancies()) && Objects.equals(getRequirementName(), that.getRequirementName()) && Objects.equals(getCustomerCode(), that.getCustomerCode()) && Objects.equals(getJobReference(), that.getJobReference()) && Objects.equals(getAddress(), that.getAddress());
++    }
++
++    @Override
++    public int hashCode() {
++        return Objects.hash(getFunction(), getDescription(), getStatus(), getContractType(), getWorkMode(), getNumVacancies(), getRequirementName(), getCustomerCode(), getJobReference(), getAddress());
++    }
++}
+Index: jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/MainMenu.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/MainMenu.java b/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/MainMenu.java
+--- a/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/MainMenu.java	
++++ b/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/MainMenu.java	
+@@ -28,7 +28,8 @@
+ import jobs4u.base.app.backoffice.console.presentation.authz.EnableDisableUserAction;
+ import jobs4u.base.app.backoffice.console.presentation.authz.ListUsersAction;
+ import jobs4u.base.app.backoffice.console.presentation.customer.RegisterCustomerAction;
+-import jobs4u.base.app.backoffice.console.presentation.jobopening.RegisterJobOpeningAction;
++import jobs4u.base.app.backoffice.console.presentation.jobopening.listing.ListJobOpeningsAction;
++import jobs4u.base.app.backoffice.console.presentation.jobopening.registration.RegisterJobOpeningAction;
+ import jobs4u.base.app.common.console.presentation.authz.MyUserMenu;
+ import jobs4u.base.usermanagement.domain.BaseRoles;
+ import eapli.framework.actions.Actions;
+@@ -38,7 +39,6 @@
+ import eapli.framework.infrastructure.authz.application.AuthzRegistry;
+ import eapli.framework.presentation.console.AbstractUI;
+ import eapli.framework.presentation.console.ExitWithMessageAction;
+-import eapli.framework.presentation.console.ShowMessageAction;
+ import eapli.framework.presentation.console.menu.HorizontalMenuRenderer;
+ import eapli.framework.presentation.console.menu.MenuItemRenderer;
+ import eapli.framework.presentation.console.menu.MenuRenderer;
+@@ -138,7 +138,7 @@
+         final Menu menu = new Menu("Settings >");
+ 
+         menu.addItem(REGISTER_JOB_OPENING, "Register a job opening", new RegisterJobOpeningAction());
+-        menu.addItem(LIST_JOB_OPENINGS, "List job openings", new ShowMessageAction("Not implemented yet"));
++        menu.addItem(LIST_JOB_OPENINGS, "List job openings", new ListJobOpeningsAction());
+         menu.addItem(REGISTER_CUSTOMERS,"Register a Customer",new RegisterCustomerAction());
+         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
+ 
+Index: jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/listing/ListJobOpeningsAction.java
+===================================================================
+diff --git a/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/listing/ListJobOpeningsAction.java b/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/listing/ListJobOpeningsAction.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/listing/ListJobOpeningsAction.java	
+@@ -0,0 +1,11 @@
++package jobs4u.base.app.backoffice.console.presentation.jobopening.listing;
++
++import eapli.framework.actions.Action;
++
++public class ListJobOpeningsAction implements Action {
++
++    @Override
++    public boolean execute() {
++        return new ListJobOpeningsUI().show();
++    }
++}
+Index: jobs4u.core/src/main/java/jobs4u/base/customermanagement/repository/CustomerRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/customermanagement/repository/CustomerRepository.java b/jobs4u.core/src/main/java/jobs4u/base/customermanagement/repository/CustomerRepository.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/customermanagement/repository/CustomerRepository.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/customermanagement/repository/CustomerRepository.java	
+@@ -7,9 +7,12 @@
+ import jobs4u.base.customermanagement.domain.CustomerCode;
+ 
+ import java.util.List;
++import java.util.Optional;
+ 
+ public interface CustomerRepository
+         extends DomainRepository<CustomerCode, Customer> {
+ 
+     List<Customer> getCustomersByUsername(Username username);
++
++    Optional<Customer> getCustomerByCustomerCode(String customerCode);
+ }
+Index: jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/dto/ContractTypeDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/dto/ContractTypeDTO.java b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/dto/ContractTypeDTO.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/dto/ContractTypeDTO.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/dto/ContractTypeDTO.java	
+@@ -1,5 +1,7 @@
+ package jobs4u.base.jobopeningmanagement.dto;
+ 
++import eapli.framework.validations.Preconditions;
++
+ import java.util.Objects;
+ 
+ public class ContractTypeDTO {
+@@ -7,6 +9,8 @@
+     private final String contractTypeName;
+ 
+     public ContractTypeDTO(String denomination) {
++        Preconditions.nonEmpty(denomination);
++        Preconditions.noneNull(denomination);
+         this.contractTypeName = denomination;
+     }
+ 
+Index: jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobOpeningStatusEnum.java
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobOpeningStatusEnum.java b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobOpeningStatusEnum.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobOpeningStatusEnum.java	
+@@ -0,0 +1,5 @@
++package jobs4u.base.jobopeningmanagement.domain;
++
++public enum JobOpeningStatusEnum {
++        UNFINISHED, NOT_STARTED, STARTED, ENDED;
++}
+Index: jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/rank/RankEntry.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/rank/RankEntry.java b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/rank/RankEntry.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/rank/RankEntry.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/rank/RankEntry.java	
+@@ -17,7 +17,7 @@
+ 
+     private Integer numberRanked;
+ 
+-    public RankEntry() {
++    protected RankEntry() {
+         //for ORM
+     }
+ 
+Index: jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/dto/WorkModeDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/dto/WorkModeDTO.java b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/dto/WorkModeDTO.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/dto/WorkModeDTO.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/dto/WorkModeDTO.java	
+@@ -1,6 +1,6 @@
+ package jobs4u.base.jobopeningmanagement.dto;
+ 
+-import eapli.framework.domain.model.DomainEntities;
++import eapli.framework.validations.Preconditions;
+ 
+ import java.util.Objects;
+ 
+@@ -9,6 +9,8 @@
+     private final String workModeName;
+ 
+     public WorkModeDTO(String denomination) {
++        Preconditions.nonEmpty(denomination);
++        Preconditions.noneNull(denomination);
+         this.workModeName = denomination;
+     }
+ 
+Index: jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobReference.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobReference.java b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobReference.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobReference.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobReference.java	
+@@ -3,6 +3,7 @@
+ 
+ import eapli.framework.domain.model.ValueObject;
+ import eapli.framework.validations.Preconditions;
++import jakarta.persistence.AttributeOverride;
+ import jakarta.persistence.Column;
+ import jakarta.persistence.Embeddable;
+ 
+@@ -11,12 +12,12 @@
+ @Embeddable
+ public class JobReference implements Comparable<JobReference>, ValueObject {
+ 
++    @AttributeOverride(name = "value", column = @Column(name = "Company"))
+     private String companyCode;
+-
+     @Column(unique = true, nullable = false)
+     private Integer sequentialCode;
+ 
+-    public JobReference() {
++    protected JobReference() {
+         // FOR ORM
+     }
+ 
+@@ -24,7 +25,7 @@
+         Preconditions.noneNull(custumerCode, sequentialCode);
+         Preconditions.noneNull(custumerCode);
+         Preconditions.nonEmpty(custumerCode);
+-        Preconditions.isPositive(sequentialCode);
++        Preconditions.nonNegative(sequentialCode);
+         this.companyCode = custumerCode;
+         this.sequentialCode = sequentialCode;
+     }
+@@ -38,8 +39,6 @@
+         return Integer.compare(this.sequentialCode, other.sequentialCode);
+     }
+ 
+-
+-
+     @Override
+     public String toString() {
+         return String.format("%s-%d", companyCode, sequentialCode);
+Index: jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/RecruitmentPeriod.java
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/RecruitmentPeriod.java b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/RecruitmentPeriod.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/RecruitmentPeriod.java	
+@@ -0,0 +1,37 @@
++package jobs4u.base.recruitmentprocessmanagement.domain;
++
++import eapli.framework.domain.model.ValueObject;
++import eapli.framework.time.domain.model.DateInterval;
++import eapli.framework.validations.Preconditions;
++import jakarta.persistence.Embeddable;
++
++import java.util.Calendar;
++
++@Embeddable
++public class RecruitmentPeriod implements ValueObject {
++
++    private DateInterval recruitmentInterval;
++
++    protected RecruitmentPeriod(){
++        //for ORM
++    }
++
++    public RecruitmentPeriod(DateInterval recruitmentInterval) {
++        Preconditions.noneNull(recruitmentInterval);
++        this.recruitmentInterval = recruitmentInterval;
++    }
++
++    public DateInterval getRecruitmentInterval(){
++        return this.recruitmentInterval;
++    }
++
++    public Calendar getStartDate(){
++        return recruitmentInterval.start();
++    }
++
++    public Calendar getEndDate(){
++        return recruitmentInterval.end();
++    }
++
++
++}
+Index: jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/Phase.java
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/Phase.java b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/Phase.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/Phase.java	
+@@ -0,0 +1,54 @@
++package jobs4u.base.recruitmentprocessmanagement.domain;
++
++import eapli.framework.domain.model.AggregateRoot;
++import eapli.framework.domain.model.DomainEntities;
++import eapli.framework.domain.model.ValueObject;
++import eapli.framework.validations.Preconditions;
++import jakarta.persistence.*;
++
++@Entity
++@Table(name = "T_PHASE")
++public class Phase implements AggregateRoot<Long>, ValueObject {
++
++    @Id
++    @GeneratedValue(strategy = GenerationType.IDENTITY)
++    private Long phaseId;
++
++    private PhaseType phaseType;
++
++    private PhaseDescription description;
++
++    private PhaseStatus status;
++
++    private PhasePeriod period;
++
++//    @ManyToOne
++//    @JoinColumn
++//    private RecruitmentProcess recruitmentprocess;
++
++    protected Phase(){
++        //for ORM
++    }
++
++    public Phase(PhaseType phaseType, PhaseDescription description, PhaseStatus status, PhasePeriod period/*,
++                 RecruitmentProcess recruitmentprocess*/) {
++        Preconditions.noneNull(phaseType, period, description, status/*, recruitmentprocess*/);
++        this.phaseType = phaseType;
++        this.description = description;
++        this.status = status;
++        this.period = period;
++      //  this.recruitmentprocess = recruitmentprocess;
++    }
++
++    @Override
++    public boolean sameAs(Object other) {
++        return DomainEntities.areEqual(this, other);
++    }
++
++    @Override
++    public Long identity() {
++        return this.phaseId;
++    }
++
++
++}
+Index: jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhaseDescription.java
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhaseDescription.java b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhaseDescription.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhaseDescription.java	
+@@ -0,0 +1,25 @@
++package jobs4u.base.recruitmentprocessmanagement.domain;
++
++import eapli.framework.domain.model.ValueObject;
++import eapli.framework.validations.Preconditions;
++import jakarta.persistence.Embeddable;
++
++@Embeddable
++public class PhaseDescription implements ValueObject {
++
++    private String descriptionText;
++
++    protected PhaseDescription(){
++        // for ORM
++    }
++
++    public PhaseDescription(String descriptionText) {
++        Preconditions.noneNull(descriptionText);
++        Preconditions.nonEmpty(descriptionText);
++        this.descriptionText = descriptionText;
++    }
++
++    public String getDescriptionText() {
++        return descriptionText;
++    }
++}
+Index: jobs4u.core/src/main/java/jobs4u/base/requirementsmanagement/domain/RequirementName.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/requirementsmanagement/domain/RequirementName.java b/jobs4u.core/src/main/java/jobs4u/base/requirementsmanagement/domain/RequirementName.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/requirementsmanagement/domain/RequirementName.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/requirementsmanagement/domain/RequirementName.java	
+@@ -17,7 +17,7 @@
+         this.name = name;
+     }
+ 
+-    public RequirementName() {
++    protected RequirementName() {
+         //for ORM
+     }
+ 
+Index: jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhaseType.java
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhaseType.java b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhaseType.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhaseType.java	
+@@ -0,0 +1,45 @@
++package jobs4u.base.recruitmentprocessmanagement.domain;
++
++import eapli.framework.domain.model.ValueObject;
++import eapli.framework.validations.Preconditions;
++import jakarta.persistence.Embeddable;
++
++@Embeddable
++public class PhaseType implements ValueObject {
++
++    private String typeDenomination;
++
++    protected PhaseType(){
++        //for ORM
++    }
++
++    public PhaseType(PhaseTypeEnum typeDenomination) {
++        Preconditions.noneNull(typeDenomination);
++        this.typeDenomination = String.valueOf(typeDenomination);
++    }
++
++    public String getTypeDenomination() {
++        return typeDenomination;
++    }
++
++    public void setTypeDescriptionAsAPPLICATION(){
++        this.typeDenomination = String.valueOf(PhaseTypeEnum.APPLICATION);
++    }
++    public void setTypeDescriptionAsSCREENING(){
++        this.typeDenomination = String.valueOf(PhaseTypeEnum.SCREENING);
++    }
++
++    public void setTypeDescriptionAsINTERVIEWS(){
++        this.typeDenomination = String.valueOf(PhaseTypeEnum.INTERVIEWS);
++    }
++
++    public void setTypeDescriptionAsANALYSIS(){
++        this.typeDenomination = String.valueOf(PhaseTypeEnum.ANALYSIS);
++    }
++
++    public void setTypeDescriptionAsRESULT(){
++        this.typeDenomination = String.valueOf(PhaseTypeEnum.RESULT);
++    }
++
++
++}
+Index: jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/JobOpeningManagementService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/JobOpeningManagementService.java b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/JobOpeningManagementService.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/JobOpeningManagementService.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/JobOpeningManagementService.java	
+@@ -1,5 +1,9 @@
+ package jobs4u.base.jobopeningmanagement.application;
+ 
++import eapli.framework.time.domain.model.DateInterval;
++import jobs4u.base.customermanagement.application.CustomerManagementService;
++import jobs4u.base.customermanagement.domain.Customer;
++import jobs4u.base.customermanagement.domain.CustomerCode;
+ import jobs4u.base.customermanagement.dto.CustomerDTO;
+ import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
+ import jobs4u.base.infrastructure.persistence.PersistenceContext;
+@@ -9,11 +13,15 @@
+ import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
+ import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
+ 
++import java.util.*;
++
+ public class JobOpeningManagementService {
+ 
+     private final JobOpeningRepository jobOpeningRepository = PersistenceContext
+             .repositories().jobOpenings();
+ 
++    private final CustomerManagementService customerManagementService = new CustomerManagementService();
++
+     public JobOpening registerJobOpening(String function, ContractTypeDTO contractTypeDenomination,
+                                          WorkModeDTO workModeDenomination, String streetName, String city,
+                                          String district, String state, String zipcode, int numVacancies,
+@@ -23,12 +31,49 @@
+         JobReference lastReference = jobOpeningRepository.lastJobReference(companyInfo.customerCode());
+ 
+         JobOpening jobOpening = new JobOpening(function, contractTypeDenomination, workModeDenomination, streetName, city,
+-                district, state, zipcode, numVacancies, description, requirementsFile, lastReference, companyInfo);
++                district, state, zipcode, numVacancies, description, requirementsFile, lastReference);
+ 
+         jobOpeningRepository.save(jobOpening);
+         return jobOpening;
+     }
+ 
+ 
++    public List<JobOpening> getJobOpeningsFromCustomerCodes(List<CustomerDTO> customerDTOList) {
++        Set<CustomerCode> customerCodes = new HashSet<>();
++        for (CustomerDTO customerDTO : customerDTOList){
++            customerCodes.add(new CustomerCode(customerDTO.customerCode()));
++        }
++       return jobOpeningRepository.getJobOpeningListMatchingCustomerCodesList(customerCodes);
++    }
++
++    public List<JobOpening> filterJobOpeningListByCompanyName(CustomerDTO dto) {
++        Optional<Customer> customer = customerManagementService.getCustomerByDTO(dto);
++        if (customer.isPresent()){
++            return jobOpeningRepository.getJobOpeningListMatchingCustomer(customer.get());
++        }
++        throw new NoSuchElementException("Failure - filterJobOpeningListByCompanyName");
++    }
+ 
++    public List<JobOpening> filterJobOpeningListByCustomerCode(String customerCode) {
++        Optional<Customer> customer = customerManagementService.getCustomerByCustomerCode(customerCode);
++        if (customer.isPresent()){
++            return jobOpeningRepository.getJobOpeningListMatchingCustomer(customer.get());
++        }
++        throw new NoSuchElementException("Unable to retrieve the customer with customer code " + customerCode);
++    }
++
++    public List<JobOpening> filterJobOpeningListBySTARTEDStatus(String started, List<JobOpening> virgemJobOpeningList) {
++        List<JobOpening> filtered = jobOpeningRepository.getJobOpeningListMatchingStatus(started);
++        virgemJobOpeningList.removeIf(jobOpening -> !filtered.contains(jobOpening));
++        return virgemJobOpeningList;
++    }
++
++    public List<JobOpening> filterJobOpeningListByDateInterval(DateInterval interval, List<JobOpening> jobOpenings) {
++        List<JobOpening> filtered = jobOpeningRepository.getJobOpeningListWithinDateInterval(interval);
++        jobOpenings.removeIf(jobOpening -> !filtered.contains(jobOpening));
++        if (jobOpenings.isEmpty()){
++            throw new NoSuchElementException("There are no job openings in the defined interval.");
++        }
++        return jobOpenings;
++    }
+ }
+Index: jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/RecruitmentProcess.java
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/RecruitmentProcess.java b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/RecruitmentProcess.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/RecruitmentProcess.java	
+@@ -0,0 +1,51 @@
++package jobs4u.base.recruitmentprocessmanagement.domain;
++
++import eapli.framework.domain.model.AggregateRoot;
++import eapli.framework.domain.model.DomainEntities;
++import eapli.framework.validations.Preconditions;
++import jakarta.persistence.*;
++import jobs4u.base.jobopeningmanagement.domain.JobOpening;
++
++import java.util.List;
++
++@Entity
++@Table(name = "T_RECRUITMENTPROCESS")
++public class RecruitmentProcess implements AggregateRoot<Long> {
++
++    @Id
++    @GeneratedValue(strategy = GenerationType.IDENTITY)
++    private Long recruitmentID;
++
++    private RecruitmentPeriod recruitmentPeriod;
++
++    @OneToOne
++    private JobOpening jobOpening;
++
++    @OneToMany(/*mappedBy = "recruitmentprocess",*/ cascade = CascadeType.ALL, fetch = FetchType.EAGER)
++    private List<Phase> phases;
++
++    public RecruitmentProcess(RecruitmentPeriod recruitmentPeriod, JobOpening jobOpening, List<Phase> phases) {
++        Preconditions.noneNull(recruitmentPeriod, jobOpening, phases);
++        this.recruitmentPeriod = recruitmentPeriod;
++        this.jobOpening = jobOpening;
++        this.phases = phases;
++    }
++
++    protected RecruitmentProcess() {
++        //for ORM
++    }
++
++    @Override
++    public boolean sameAs(Object other) {
++        return DomainEntities.areEqual(this, other);
++    }
++
++    @Override
++    public Long identity() {
++        return this.recruitmentID;
++    }
++
++    public void setPhases(List<Phase> phases) {
++        this.phases = phases;
++    }
++}
+Index: jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/repository/RecruitmentProcessRepository.java
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/repository/RecruitmentProcessRepository.java b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/repository/RecruitmentProcessRepository.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/repository/RecruitmentProcessRepository.java	
+@@ -0,0 +1,8 @@
++package jobs4u.base.recruitmentprocessmanagement.repository;
++
++import eapli.framework.domain.repositories.DomainRepository;
++import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
++
++public interface RecruitmentProcessRepository
++        extends DomainRepository<Long, RecruitmentProcess> {
++}
+Index: jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaRecruitmentProcessRepository.java
+===================================================================
+diff --git a/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaRecruitmentProcessRepository.java b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaRecruitmentProcessRepository.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaRecruitmentProcessRepository.java	
+@@ -0,0 +1,21 @@
++package jobs4u.base.persistence.impl.jpa;
++
++import eapli.framework.domain.repositories.TransactionalContext;
++import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
++import jobs4u.base.Application;
++import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
++import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
++
++
++public class JpaRecruitmentProcessRepository
++        extends JpaAutoTxRepository<RecruitmentProcess, Long, Long>
++        implements RecruitmentProcessRepository {
++
++    public JpaRecruitmentProcessRepository(final TransactionalContext autoTx) {
++        super(autoTx, "recruitmentID");
++    }
++
++    public JpaRecruitmentProcessRepository(final String puname) {
++        super(puname, Application.settings().getExtendedPersistenceProperties(), "recruitmentID");
++    }
++}
+Index: jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryRecruitmentProcessRepository.java
+===================================================================
+diff --git a/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryRecruitmentProcessRepository.java b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryRecruitmentProcessRepository.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryRecruitmentProcessRepository.java	
+@@ -0,0 +1,14 @@
++package jobs4u.base.persistence.impl.inmemory;
++
++import eapli.framework.infrastructure.repositories.impl.inmemory.InMemoryDomainRepository;
++import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
++import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
++
++public class InMemoryRecruitmentProcessRepository
++        extends InMemoryDomainRepository<RecruitmentProcess, Long>
++        implements RecruitmentProcessRepository {
++
++    static {
++        InMemoryInitializer.init();
++    }
++}
+Index: jobs4u.core/src/main/java/jobs4u/base/requirementsmanagement/domain/RequirementDescription.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/requirementsmanagement/domain/RequirementDescription.java b/jobs4u.core/src/main/java/jobs4u/base/requirementsmanagement/domain/RequirementDescription.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/requirementsmanagement/domain/RequirementDescription.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/requirementsmanagement/domain/RequirementDescription.java	
+@@ -17,7 +17,7 @@
+         this.description = description;
+     }
+ 
+-    public RequirementDescription() {
++    protected RequirementDescription() {
+         //for ORM
+     }
+ 
+Index: jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhaseTypeEnum.java
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhaseTypeEnum.java b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhaseTypeEnum.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhaseTypeEnum.java	
+@@ -0,0 +1,5 @@
++package jobs4u.base.recruitmentprocessmanagement.domain;
++
++public enum PhaseTypeEnum {
++    APPLICATION, SCREENING, INTERVIEWS, ANALYSIS, RESULT
++}
+Index: jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhaseStatus.java
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhaseStatus.java b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhaseStatus.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhaseStatus.java	
+@@ -0,0 +1,37 @@
++package jobs4u.base.recruitmentprocessmanagement.domain;
++
++import eapli.framework.domain.model.ValueObject;
++import eapli.framework.validations.Preconditions;
++import jakarta.persistence.Embeddable;
++import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatus;
++import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatusEnum;
++
++@Embeddable
++public class PhaseStatus implements ValueObject {
++
++    private String statusDescription;
++
++    protected PhaseStatus(){
++        //for ORM
++    }
++
++    public PhaseStatus(PhaseStatusEnum statusDescription) {
++        Preconditions.noneNull(statusDescription);
++        this.statusDescription = String.valueOf(statusDescription);
++    }
++
++    public void setStatusDescriptionAsPLANNED(){
++        this.statusDescription = String.valueOf(PhaseStatusEnum.PLANNED);
++    }
++    public void setStatusDescriptionAsON_GOING(){
++        this.statusDescription = String.valueOf(PhaseStatusEnum.ON_GOING);
++    }
++
++    public void setStatusDescriptionAsCONCLUDED(){
++        this.statusDescription = String.valueOf(PhaseStatusEnum.CONCLUDED);
++    }
++
++    public static PhaseStatus valueOf(PhaseStatusEnum enumVal) {
++        return new PhaseStatus(enumVal);
++    }
++}
+Index: jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhasePeriod.java
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhasePeriod.java b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhasePeriod.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhasePeriod.java	
+@@ -0,0 +1,34 @@
++package jobs4u.base.recruitmentprocessmanagement.domain;
++
++import eapli.framework.domain.model.ValueObject;
++import eapli.framework.time.domain.model.DateInterval;
++import jakarta.persistence.Embeddable;
++
++import java.util.Calendar;
++
++@Embeddable
++public class PhasePeriod implements ValueObject {
++
++    private DateInterval phasePeriod;
++
++    public PhasePeriod() {
++        //for ORM
++    }
++
++    public PhasePeriod(DateInterval phasePeriod) {
++        this.phasePeriod = phasePeriod;
++    }
++
++    public DateInterval getPhasePeriod() {
++        return phasePeriod;
++    }
++
++    public Calendar getStartDate(){
++        return phasePeriod.start();
++    }
++
++    public Calendar getEndDate(){
++        return phasePeriod.end();
++    }
++
++}
+Index: jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhaseStatusEnum.java
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhaseStatusEnum.java b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhaseStatusEnum.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/domain/PhaseStatusEnum.java	
+@@ -0,0 +1,5 @@
++package jobs4u.base.recruitmentprocessmanagement.domain;
++
++public enum PhaseStatusEnum {
++    PLANNED, ON_GOING,CONCLUDED
++}
+Index: jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/repositories/JobOpeningRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/repositories/JobOpeningRepository.java b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/repositories/JobOpeningRepository.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/repositories/JobOpeningRepository.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/repositories/JobOpeningRepository.java	
+@@ -1,10 +1,24 @@
+ package jobs4u.base.jobopeningmanagement.repositories;
+ 
+ import eapli.framework.domain.repositories.DomainRepository;
++import eapli.framework.time.domain.model.DateInterval;
++import jobs4u.base.customermanagement.domain.Customer;
++import jobs4u.base.customermanagement.domain.CustomerCode;
+ import jobs4u.base.jobopeningmanagement.domain.JobOpening;
+ import jobs4u.base.jobopeningmanagement.domain.JobReference;
+ 
++import java.util.List;
++import java.util.Set;
++
+ public interface JobOpeningRepository extends DomainRepository<JobReference, JobOpening> {
+ 
+     JobReference lastJobReference(String customerCode);
++
++    List<JobOpening> getJobOpeningListMatchingCustomerCodesList(Set<CustomerCode> customerCode);
++
++    List<JobOpening> getJobOpeningListMatchingCustomer(Customer customer);
++
++    List<JobOpening> getJobOpeningListMatchingStatus(String started);
++
++    List<JobOpening> getJobOpeningListWithinDateInterval(DateInterval interval);
+ }
+Index: jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaRepositoryFactory.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaRepositoryFactory.java b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaRepositoryFactory.java
+--- a/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaRepositoryFactory.java	
++++ b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaRepositoryFactory.java	
+@@ -22,6 +22,7 @@
+ 
+ import jobs4u.base.Application;
+ import jobs4u.base.clientusermanagement.repositories.SignupRequestRepository;
++import jobs4u.base.criteriamanagement.repository.CriteriaRepository;
+ import jobs4u.base.customermanagement.repository.CustomerRepository;
+ import jobs4u.base.infrastructure.persistence.RepositoryFactory;
+ import eapli.framework.domain.repositories.TransactionalContext;
+@@ -31,6 +32,8 @@
+ import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
+ import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
+ import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
++import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
++import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
+ import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
+ 
+ /**
+@@ -120,6 +123,36 @@
+         return new JpaJobOpeningRepository(Application.settings().getPersistenceUnitName());
+     }
+ 
++    @Override
++    public CriteriaRepository criteria(final TransactionalContext autoTx) {
++        return new JpaCriteriaRepository(autoTx);
++    }
++
++    @Override
++    public CriteriaRepository criteria() {
++        return new JpaCriteriaRepository(Application.settings().getPersistenceUnitName());
++    }
++
++    @Override
++    public RecruitmentProcessRepository recruitmentProcesses(final TransactionalContext autoTx) {
++        return new JpaRecruitmentProcessRepository(autoTx);
++    }
++
++    @Override
++    public RecruitmentProcessRepository recruitmentProcesses() {
++        return new JpaRecruitmentProcessRepository(Application.settings().getPersistenceUnitName());
++    }
++
++    @Override
++    public PhaseRepository phases(final TransactionalContext autoTx) {
++        return new JpaPhaseRepository(autoTx);
++    }
++
++    @Override
++    public PhaseRepository phases() {
++        return new JpaPhaseRepository(Application.settings().getPersistenceUnitName());
++    }
++
+     @Override
+     public TransactionalContext newTransactionalContext() {
+         return JpaAutoTxRepository.buildTransactionalContext(Application.settings().getPersistenceUnitName(),
+Index: jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobOpening.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobOpening.java b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobOpening.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobOpening.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobOpening.java	
+@@ -2,11 +2,13 @@
+ 
+ import eapli.framework.domain.model.AggregateRoot;
+ import eapli.framework.domain.model.DomainEntities;
++import eapli.framework.representations.dto.DTOable;
+ import eapli.framework.validations.Preconditions;
+ import jakarta.persistence.*;
+-import jobs4u.base.customermanagement.domain.CustomerCode;
+-import jobs4u.base.customermanagement.dto.CustomerDTO;
+ import jobs4u.base.jobopeningmanagement.domain.rank.Rank;
++import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
++import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentPeriod;
++import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
+ import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
+ import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
+ import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
+@@ -15,7 +17,7 @@
+ 
+ @Entity
+ @Table(name = "T_JOBOPENING")
+-public class JobOpening implements AggregateRoot<JobReference> {
++public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeningDTO> {
+ 
+     private static final long serialVersionUID = 1L;
+     @Version
+@@ -29,7 +31,6 @@
+     @ManyToOne(optional = false)
+     @JoinColumn(nullable = false)
+     private  WorkMode workMode;
+-    @Enumerated(EnumType.STRING)
+     @Column(nullable = false)
+     private JobOpeningStatus status;
+     @EmbeddedId
+@@ -44,21 +45,19 @@
+     @JoinColumn(nullable = false)
+     private RequirementSpecification requirementSpecification;
+ 
++    @OneToOne
++    private RecruitmentProcess recruitmentProcess;
++
+     @OneToOne(optional = false, cascade = CascadeType.ALL)
+     @PrimaryKeyJoinColumn
+     private Rank rank;
+-    @Transient
+-    private String company;
+-    @AttributeOverride(name = "value", column = @Column(name = "Company"))
+-    private CustomerCode customerCode;
+ 
+     public JobOpening(String function, ContractTypeDTO contractTypeDenomination, WorkModeDTO workModeDenomination,
+                       String streetName, String city, String district, String streetNumber, String zipcode, Integer numVacancies,
+-                      String description, RequirementSpecification requirementsFile, JobReference lastReference,
+-                      CustomerDTO companyInfo) {
++                      String description, RequirementSpecification requirementsFile, JobReference lastReference) {
+ 
+         Preconditions.noneNull(function, description, district, streetNumber, lastReference, requirementsFile, zipcode,
+-                city, contractTypeDenomination, workModeDenomination, numVacancies, streetName, companyInfo);
++                city, contractTypeDenomination, workModeDenomination, numVacancies, streetName);
+ 
+         JobReference newJobReference = generateNewSequencialJobReference(lastReference);
+         this.jobReference = newJobReference;
+@@ -69,9 +68,8 @@
+         this.description = Description.valueOf(description);
+         this.numVacancies = NumberVacancy.valueOf(numVacancies);
+         this.requirementSpecification = requirementsFile;
+-        this.status = JobOpeningStatus.UNFINISHED;
+-        this.company = companyInfo.companyName();
+-        this.customerCode = CustomerCode.valueOf(companyInfo.customerCode());
++        this.status = new JobOpeningStatus();
++        this.status.setStatusDescriptionAsUNFINISHED();
+         this.rank = new Rank(newJobReference);
+     }
+ 
+@@ -82,7 +80,8 @@
+         Preconditions.noneNull(function, description, address, lastReference, requirementsFile, contractTypeDenomination,
+                 workModeDenomination, numVacancies);
+ 
+-        this.jobReference = generateNewSequencialJobReference(lastReference);
++        JobReference newJobReference = generateNewSequencialJobReference(lastReference);
++        this.jobReference = newJobReference;
+         this.function = JobFunction.valueOf(function);
+         this.address = address;
+         this.contractType = ContractType.valueOf(contractTypeDenomination.contractTypeName());
+@@ -90,11 +89,12 @@
+         this.description = Description.valueOf(description);
+         this.numVacancies = NumberVacancy.valueOf(numVacancies);
+         this.requirementSpecification = requirementsFile;
+-        this.status = JobOpeningStatus.UNFINISHED;
+-        //SEE RANK ATTRIBUTE
++        this.status = new JobOpeningStatus();
++        this.status.setStatusDescriptionAsUNFINISHED();
++        this.rank = new Rank(newJobReference);
+     }
+ 
+-    public JobOpening() {
++    protected JobOpening() {
+         //for ORM
+     }
+ 
+@@ -123,11 +123,57 @@
+         if (this == o) return true;
+         if (!(o instanceof JobOpening)) return false;
+         JobOpening that = (JobOpening) o;
+-        return Objects.equals(version, that.version) && Objects.equals(function, that.function) && Objects.equals(contractType, that.contractType) && Objects.equals(workMode, that.workMode) && status == that.status && Objects.equals(jobReference, that.jobReference) && Objects.equals(address, that.address) && Objects.equals(description, that.description) && Objects.equals(numVacancies, that.numVacancies) && Objects.equals(requirementSpecification, that.requirementSpecification) && Objects.equals(rank, that.rank) && Objects.equals(company, that.company) && Objects.equals(customerCode, that.customerCode);
++        return Objects.equals(version, that.version) && Objects.equals(function, that.function) && Objects.equals(contractType, that.contractType) && Objects.equals(workMode, that.workMode) && status == that.status && Objects.equals(jobReference, that.jobReference) && Objects.equals(address, that.address) && Objects.equals(description, that.description) && Objects.equals(numVacancies, that.numVacancies) && Objects.equals(requirementSpecification, that.requirementSpecification) && Objects.equals(rank, that.rank);
+     }
+ 
+     @Override
+     public int hashCode() {
+         return DomainEntities.hashCode(this);
+     }
++
++    public JobFunction getFunction() {
++        return function;
++    }
++
++    public ContractType getContractType() {
++        return contractType;
++    }
++
++    public WorkMode getWorkMode() {
++        return workMode;
++    }
++
++    public JobOpeningStatus getStatus() {
++        return status;
++    }
++
++    public JobReference getJobReference() {
++        return jobReference;
++    }
++
++    public Address getAddress() {
++        return address;
++    }
++
++    public Description getDescription() {
++        return description;
++    }
++
++    public NumberVacancy getNumVacancies() {
++        return numVacancies;
++    }
++
++    public RequirementSpecification getRequirementSpecification() {
++        return requirementSpecification;
++    }
++
++    public Rank getRank() {
++        return rank;
++    }
++
++    @Override
++    public JobOpeningDTO toDTO() {
++        return new JobOpeningDTO(address, function, description, status, contractType, workMode, numVacancies,
++                requirementSpecification.requirementName(), jobReference);
++    }
+ }
+Index: jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/repository/PhaseRepository.java
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/repository/PhaseRepository.java b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/repository/PhaseRepository.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.core/src/main/java/jobs4u/base/recruitmentprocessmanagement/repository/PhaseRepository.java	
+@@ -0,0 +1,9 @@
++package jobs4u.base.recruitmentprocessmanagement.repository;
++
++import eapli.framework.domain.repositories.DomainRepository;
++import jobs4u.base.recruitmentprocessmanagement.domain.Phase;
++import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
++
++public interface PhaseRepository
++        extends DomainRepository<Long, Phase> {
++}
+Index: jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/RegisterJobOpeningController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/RegisterJobOpeningController.java b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/RegisterJobOpeningController.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/RegisterJobOpeningController.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/RegisterJobOpeningController.java	
+@@ -50,6 +50,7 @@
+     }
+ 
+     public List<ContractTypeDTO> getContractTypesList() {
++        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
+         List<ContractTypeDTO> contractTypes = new ArrayList<>();
+         for (ContractType type : contractTypeRepository.contractTypes()) {
+             contractTypes.add(type.toDTO());
+@@ -58,6 +59,7 @@
+     }
+ 
+     public List<WorkModeDTO> getWorkModesList() {
++        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
+         List<WorkModeDTO> workModes = new ArrayList<>();
+         for (WorkMode mode : workModeRepository.workModes()) {
+             workModes.add(mode.toDTO());
+@@ -66,6 +68,7 @@
+     }
+ 
+     public List<RequirementSpecificationDTO> getRequirementsSpecificationsList() {
++        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
+         List<RequirementSpecificationDTO> requirementSpecifications = new ArrayList<>();
+         for (RequirementSpecification requirement : requirementSpecificationRepository.requirementsSpecifications()) {
+             requirementSpecifications.add(requirement.toDTO());
+@@ -80,6 +83,7 @@
+                                                    String description, RequirementSpecificationDTO requirementsFileName,
+                                                    CustomerDTO companyInfo) {
+ 
++        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
+         Optional<RequirementSpecification> requirementSpecification = requirementSpecificationRepository.getFileByName(requirementsFileName.filename());
+ 
+         if (requirementSpecification.isEmpty()) {
+Index: jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaPhaseRepository.java
+===================================================================
+diff --git a/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaPhaseRepository.java b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaPhaseRepository.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaPhaseRepository.java	
+@@ -0,0 +1,20 @@
++package jobs4u.base.persistence.impl.jpa;
++
++import eapli.framework.domain.repositories.TransactionalContext;
++import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
++import jobs4u.base.Application;
++import jobs4u.base.recruitmentprocessmanagement.domain.Phase;
++import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
++
++public class JpaPhaseRepository
++        extends JpaAutoTxRepository<Phase, Long, Long>
++        implements PhaseRepository {
++
++    public JpaPhaseRepository(final TransactionalContext autoTx) {
++        super(autoTx, "phaseId");
++    }
++
++    public JpaPhaseRepository(final String puname) {
++        super(puname, Application.settings().getExtendedPersistenceProperties(), "phaseId");
++    }
++}
+Index: jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryPhaseRepository.java
+===================================================================
+diff --git a/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryPhaseRepository.java b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryPhaseRepository.java
+new file mode 100644
+--- /dev/null	
++++ b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryPhaseRepository.java	
+@@ -0,0 +1,16 @@
++package jobs4u.base.persistence.impl.inmemory;
++
++import eapli.framework.infrastructure.repositories.impl.inmemory.InMemoryDomainRepository;
++import jobs4u.base.recruitmentprocessmanagement.domain.Phase;
++import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
++import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
++import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
++
++public class InMemoryPhaseRepository
++        extends InMemoryDomainRepository<Phase, Long>
++        implements PhaseRepository {
++
++    static {
++        InMemoryInitializer.init();
++    }
++}
+Index: jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryRepositoryFactory.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryRepositoryFactory.java b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryRepositoryFactory.java
+--- a/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryRepositoryFactory.java	
++++ b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryRepositoryFactory.java	
+@@ -22,6 +22,7 @@
+ 
+ import jobs4u.base.clientusermanagement.repositories.ClientUserRepository;
+ import jobs4u.base.clientusermanagement.repositories.SignupRequestRepository;
++import jobs4u.base.criteriamanagement.repository.CriteriaRepository;
+ import jobs4u.base.customermanagement.repository.CustomerRepository;
+ import jobs4u.base.infrastructure.bootstrapers.BaseBootstrapper;
+ import jobs4u.base.infrastructure.persistence.RepositoryFactory;
+@@ -31,6 +32,8 @@
+ import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
+ import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
+ import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
++import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
++import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
+ import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
+ 
+ /**
+@@ -120,6 +123,36 @@
+         return jobOpenings(null);
+     }
+ 
++    @Override
++    public CriteriaRepository criteria(TransactionalContext tx) {
++        return new InMemoryCriteriaRepository();
++    }
++
++    @Override
++    public CriteriaRepository criteria() {
++        return criteria(null);
++    }
++
++    @Override
++    public RecruitmentProcessRepository recruitmentProcesses(TransactionalContext autoTx) {
++        return new InMemoryRecruitmentProcessRepository();
++    }
++
++    @Override
++    public RecruitmentProcessRepository recruitmentProcesses() {
++        return recruitmentProcesses(null);
++    }
++
++    @Override
++    public PhaseRepository phases(TransactionalContext autoTx) {
++        return new InMemoryPhaseRepository();
++    }
++
++    @Override
++    public PhaseRepository phases() {
++        return phases(null);
++    }
++
+     @Override
+     public SignupRequestRepository signupRequests(final TransactionalContext tx) {
+         return new InMemorySignupRequestRepository();
+Index: jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaJobOpeningRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaJobOpeningRepository.java b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaJobOpeningRepository.java
+--- a/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaJobOpeningRepository.java	
++++ b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaJobOpeningRepository.java	
+@@ -2,12 +2,19 @@
+ 
+ import eapli.framework.domain.repositories.TransactionalContext;
+ import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
++import eapli.framework.time.domain.model.DateInterval;
++import jakarta.persistence.TemporalType;
++import jakarta.persistence.TypedQuery;
+ import jobs4u.base.Application;
++import jobs4u.base.customermanagement.domain.Customer;
++import jobs4u.base.customermanagement.domain.CustomerCode;
+ import jobs4u.base.jobopeningmanagement.domain.JobOpening;
+ import jobs4u.base.jobopeningmanagement.domain.JobReference;
+ import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
++import org.hibernate.HibernateException;
+ 
+-import java.util.NoSuchElementException;
++
++import java.util.*;
+ 
+ public class JpaJobOpeningRepository
+         extends JpaAutoTxRepository<JobOpening, JobReference, JobReference>
+@@ -39,4 +46,66 @@
+         }
+         return lastJobReference;
+     }
++
++    @Override
++    public List<JobOpening> getJobOpeningListMatchingCustomerCodesList(Set<CustomerCode> customerCodes) {
++        List<JobOpening> jobOpenings = new ArrayList<>();
++        for (CustomerCode code : customerCodes){
++            try{
++                jobOpenings.addAll(match("e.jobReference.companyCode = :code","code", code.custumerCode()));
++            }catch (HibernateException ex){
++                jobOpenings.addAll(match("e=(SELECT c FROM JobOpening c WHERE c.jobReference.companyCode=:code)",
++                        "code", code.custumerCode()));
++            }
++        }
++        return jobOpenings;
++    }
++
++    @Override
++    public List<JobOpening> getJobOpeningListMatchingCustomer(Customer customer) {
++        try{
++            return match("e.jobReference.companyCode = :code", "code", customer.customerCode().toString());
++        }catch (HibernateException ex){
++            return match("e=(SELECT c FROM JobOpening c WHERE c.jobReference.companyCode=:code)",
++                    "code", customer.customerCode().custumerCode());
++        }
++    }
++
++    @Override
++    public List<JobOpening> getJobOpeningListMatchingStatus(String started) {
++        try{
++            return match("e.status.statusDescription = :status", "status", started);
++        }catch (HibernateException ex){
++            return match("e=(SELECT c FROM JobOpening c WHERE c.status.statusDescription = :status)",
++                    "status", started);
++        }
++    }
++
++    public List<Calendar> getStartDateRecruitmentList(){
++        final TypedQuery<Calendar> q = createQuery(
++                "SELECT e FROM JobOpening e WHERE e.recruitmentProcess.recruitmentPeriod.recruitmentInterval.dateStart <= :start AND e.recruitmentProcess.recruitmentPeriod.recruitmentInterval.dateEnd >= :end",
++                Calendar.class);
++        return q.getResultList();
++    }
++
++
++    @Override
++    public List<JobOpening> getJobOpeningListWithinDateInterval(DateInterval interval) {
++
++        final TypedQuery<JobOpening> q = createQuery(
++                "SELECT e FROM JobOpening e WHERE e.recruitmentProcess.recruitmentPeriod.recruitmentInterval.dateStart <= :start AND e.recruitmentProcess.recruitmentPeriod.recruitmentInterval.dateEnd >= :end",
++                JobOpening.class);
++        q.setParameter("start", interval.start(), TemporalType.DATE);
++        q.setParameter("end", interval.end(), TemporalType.DATE);
++        return q.getResultList();
++
++
++//        final Map<String, Object> params = new HashMap<>();
++//        params.put("start", interval.start());
++//        params.put("end", interval.start());
++//        return match("e.recruitmentProcess.recruitmentPeriod.recruitmentInterval.dateStart >= :start" +
++//                "AND e.recruitmentProcess.recruitmentPeriod.recruitmentInterval.dateEnd <= :end", params);
++    }
++
++
+ }
+Index: jobs4u.persistence.impl/src/main/resources/META-INF/persistence.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.persistence.impl/src/main/resources/META-INF/persistence.xml b/jobs4u.persistence.impl/src/main/resources/META-INF/persistence.xml
+--- a/jobs4u.persistence.impl/src/main/resources/META-INF/persistence.xml	
++++ b/jobs4u.persistence.impl/src/main/resources/META-INF/persistence.xml	
+@@ -26,6 +26,9 @@
+         <class>jobs4u.base.candidatemanagement.Candidate</class>
+         <class>jobs4u.base.jobopeningmanagement.domain.rank.Rank</class>
+         <class>jobs4u.base.jobopeningmanagement.domain.rank.RankEntry</class>
++        <class>jobs4u.base.criteriamanagement.domain.Criteria</class>
++        <class>jobs4u.base.recruitmentprocessmanagement.domain.Phase</class>
++        <class>jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess</class>
+ 
+         <properties>
+             <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:tcp://localhost/~/jobs4u"/>
+Index: jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryJobOpeningRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryJobOpeningRepository.java b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryJobOpeningRepository.java
+--- a/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryJobOpeningRepository.java	
++++ b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryJobOpeningRepository.java	
+@@ -1,11 +1,17 @@
+ package jobs4u.base.persistence.impl.inmemory;
+ 
+ import eapli.framework.infrastructure.repositories.impl.inmemory.InMemoryDomainRepository;
++import eapli.framework.time.domain.model.DateInterval;
++import jobs4u.base.customermanagement.domain.Customer;
++import jobs4u.base.customermanagement.domain.CustomerCode;
+ import jobs4u.base.jobopeningmanagement.domain.JobOpening;
+ import jobs4u.base.jobopeningmanagement.domain.JobReference;
+ import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
+ 
++import java.util.ArrayList;
++import java.util.List;
+ import java.util.NoSuchElementException;
++import java.util.Set;
+ 
+ public class InMemoryJobOpeningRepository
+         extends InMemoryDomainRepository<JobOpening, JobReference>
+@@ -32,4 +38,39 @@
+         }
+         return lastJobReference;
+     }
++
++    @Override
++    public List<JobOpening> getJobOpeningListMatchingCustomerCodesList(Set<CustomerCode> customerCode) {
++        throw new UnsupportedOperationException("yet to implement");
++    }
++
++    @Override
++    public List<JobOpening> getJobOpeningListMatchingCustomer(Customer customer) {
++        List<JobOpening> jobOpeningArrayList = new ArrayList<>();
++
++        Iterable<JobOpening> jobOpenings = match(e -> {
++            e.jobReference().getcustomerCode();
++            customer.customerCode();
++            return false;
++        });
++        for (JobOpening element : jobOpenings) {
++            jobOpeningArrayList.add(element);
++        }
++        return jobOpeningArrayList;
++    }
++
++    @Override
++    public List<JobOpening> getJobOpeningListMatchingStatus(String started) {
++        List<JobOpening> jobOpeningArrayList = new ArrayList<>();
++        Iterable<JobOpening> jobOpenings = match(e -> e.getStatus().toString().equals(started));
++        for (JobOpening element : jobOpenings) {
++            jobOpeningArrayList.add(element);
++        }
++        return jobOpeningArrayList;
++    }
++
++    @Override
++    public List<JobOpening> getJobOpeningListWithinDateInterval(DateInterval interval) {
++        return null;
++    }
+ }
+Index: jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/ContractType.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/ContractType.java b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/ContractType.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/ContractType.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/ContractType.java	
+@@ -2,6 +2,7 @@
+ 
+ import eapli.framework.domain.model.AggregateRoot;
+ import eapli.framework.domain.model.DomainEntities;
++import eapli.framework.domain.model.ValueObject;
+ import eapli.framework.representations.dto.DTOable;
+ import eapli.framework.validations.Preconditions;
+ 
+@@ -14,7 +15,7 @@
+ 
+ @Entity
+ @Table(name = "T_CONTRACTTYPE")
+-public class ContractType implements DTOable<ContractTypeDTO>, AggregateRoot<String> {
++public class ContractType implements DTOable<ContractTypeDTO>, ValueObject, AggregateRoot<String> {
+ 
+     @Id
+     private String denomination;
+Index: jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/WorkMode.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/WorkMode.java b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/WorkMode.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/WorkMode.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/WorkMode.java	
+@@ -26,7 +26,7 @@
+         this.denomination = denomination;
+     }
+ 
+-    public WorkMode() {
++    protected WorkMode() {
+         //for ORM
+     }
+ 
+Index: jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryCustomerRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryCustomerRepository.java b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryCustomerRepository.java
+--- a/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryCustomerRepository.java	
++++ b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/inmemory/InMemoryCustomerRepository.java	
+@@ -1,14 +1,12 @@
+ package jobs4u.base.persistence.impl.inmemory;
+ 
+-import eapli.framework.infrastructure.authz.domain.model.SystemUser;
+ import eapli.framework.infrastructure.authz.domain.model.Username;
+ import eapli.framework.infrastructure.repositories.impl.inmemory.InMemoryDomainRepository;
+ import jobs4u.base.customermanagement.domain.Customer;
+ import jobs4u.base.customermanagement.domain.CustomerCode;
+ import jobs4u.base.customermanagement.repository.CustomerRepository;
+ 
+-import java.util.ArrayList;
+-import java.util.List;
++import java.util.*;
+ 
+ public class InMemoryCustomerRepository
+         extends InMemoryDomainRepository<Customer, CustomerCode>
+@@ -24,4 +22,9 @@
+         }
+         return assignedCustomers;
+     }
++
++    @Override
++    public Optional<Customer> getCustomerByCustomerCode(String customerCode) {
++        return matchOne(e -> e.customerCode().custumerCode().equals(customerCode));
++    }
+ }
+Index: jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaCustomerRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaCustomerRepository.java b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaCustomerRepository.java
+--- a/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaCustomerRepository.java	
++++ b/jobs4u.persistence.impl/src/main/java/jobs4u/base/persistence/impl/jpa/JpaCustomerRepository.java	
+@@ -1,18 +1,16 @@
+ package jobs4u.base.persistence.impl.jpa;
+ 
+ import eapli.framework.domain.repositories.TransactionalContext;
+-import eapli.framework.infrastructure.authz.domain.model.SystemUser;
+ import eapli.framework.infrastructure.authz.domain.model.Username;
+ import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
+ import jobs4u.base.Application;
+ import jobs4u.base.customermanagement.domain.Customer;
+ import jobs4u.base.customermanagement.domain.CustomerCode;
+ import jobs4u.base.customermanagement.repository.CustomerRepository;
++import org.hibernate.HibernateException;
+ 
+ 
+-import java.util.ArrayList;
+-import java.util.List;
+-import java.util.Optional;
++import java.util.*;
+ 
+ public class JpaCustomerRepository extends JpaAutoTxRepository<Customer, Long, CustomerCode>
+         implements CustomerRepository {
+@@ -28,11 +26,23 @@
+     @Override
+     public List<Customer> getCustomersByUsername(Username username) {
+         List<Customer> assignedCustomers = new ArrayList<>();
+-        Iterable<Customer> entities = match("e=(SELECT c FROM Customer c WHERE c.customerManager.username=:name)", "name", username);
++        Iterable<Customer> entities;
++        try{
++            entities = match("e=(SELECT c FROM Customer c WHERE c.customerManager.username=:name)", "name", username);
++        }catch (HibernateException ex){
++            entities = match("e.customerManager.username=:name", "name", username);
++        }
+ 
+         for (Customer Customer : entities) {
+             assignedCustomers.add(Customer);
+         }
+         return assignedCustomers;
+     }
++
++    @Override
++    public Optional<Customer> getCustomerByCustomerCode(String customerCode) {
++        final Map<String, Object> params = new HashMap<>();
++        params.put("code", customerCode);
++        return matchOne("e.code.customerCode = :code", params);
++    }
+ }
+Index: jobs4u.core/src/main/java/jobs4u/base/infrastructure/persistence/RepositoryFactory.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/infrastructure/persistence/RepositoryFactory.java b/jobs4u.core/src/main/java/jobs4u/base/infrastructure/persistence/RepositoryFactory.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/infrastructure/persistence/RepositoryFactory.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/infrastructure/persistence/RepositoryFactory.java	
+@@ -24,10 +24,13 @@
+ import jobs4u.base.clientusermanagement.repositories.SignupRequestRepository;
+ import eapli.framework.domain.repositories.TransactionalContext;
+ import eapli.framework.infrastructure.authz.domain.repositories.UserRepository;
++import jobs4u.base.criteriamanagement.repository.CriteriaRepository;
+ import jobs4u.base.customermanagement.repository.CustomerRepository;
+ import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
+ import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
+ import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
++import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
++import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
+ import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
+ 
+ /**
+@@ -166,4 +169,52 @@
+      * @return
+      */
+     JobOpeningRepository jobOpenings();
++
++
++    /**
++     *
++     * @param autoTx
++     *            the transactional context to enroll
++     * @return
++     */
++    CriteriaRepository criteria(TransactionalContext autoTx);
++
++    /**
++     * repository will be created in auto transaction mode
++     *
++     * @return
++     */
++    CriteriaRepository criteria();
++
++    /**
++     *
++     * @param autoTx
++     *            the transactional context to enroll
++     * @return
++     */
++    RecruitmentProcessRepository recruitmentProcesses(TransactionalContext autoTx);
++
++    /**
++     * repository will be created in auto transaction mode
++     *
++     * @return
++     */
++    RecruitmentProcessRepository recruitmentProcesses();
++
++
++    /**
++     *
++     * @param autoTx
++     *            the transactional context to enroll
++     * @return
++     */
++    PhaseRepository phases(TransactionalContext autoTx);
++
++    /**
++     * repository will be created in auto transaction mode
++     *
++     * @return
++     */
++    PhaseRepository phases();
++
+ }
+Index: jobs4u.core/src/main/java/jobs4u/base/requirementsmanagement/domain/RequirementSpecification.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/requirementsmanagement/domain/RequirementSpecification.java b/jobs4u.core/src/main/java/jobs4u/base/requirementsmanagement/domain/RequirementSpecification.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/requirementsmanagement/domain/RequirementSpecification.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/requirementsmanagement/domain/RequirementSpecification.java	
+@@ -29,7 +29,7 @@
+         this.plugin = plugin;
+     }
+ 
+-    public RequirementSpecification() {
++    protected RequirementSpecification() {
+         //for ORM
+     }
+ 
+Index: jobs4u.core/src/main/java/jobs4u/base/customermanagement/application/CustomerManagementService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/customermanagement/application/CustomerManagementService.java b/jobs4u.core/src/main/java/jobs4u/base/customermanagement/application/CustomerManagementService.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/customermanagement/application/CustomerManagementService.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/customermanagement/application/CustomerManagementService.java	
+@@ -17,15 +17,11 @@
+ import jobs4u.base.customermanagement.domain.events.NewCustomerUserRegisteredEvent;
+ 
+ import jobs4u.base.infrastructure.persistence.PersistenceContext;
+-import jobs4u.base.jobopeningmanagement.application.CustomerListDTOService;
+ import jobs4u.base.jobopeningmanagement.domain.Address;
+ import jobs4u.base.usermanagement.application.GeneratePasswordService;
+ import jobs4u.base.usermanagement.domain.BaseRoles;
+ 
+-import java.util.ArrayList;
+-import java.util.HashSet;
+-import java.util.List;
+-import java.util.Set;
++import java.util.*;
+ 
+ 
+ public class CustomerManagementService {
+@@ -59,4 +55,13 @@
+         }
+         return service.convertToDTO(customersList);
+     }
++
++
++    public Optional<Customer> getCustomerByDTO(CustomerDTO object) {
++       return customerRepository.ofIdentity(CustomerCode.valueOf(object.customerCode()));
++    }
++
++    public Optional<Customer> getCustomerByCustomerCode(String customerCode) {
++        return customerRepository.getCustomerByCustomerCode(customerCode);
++    }
+ }
+Index: jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobFunction.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobFunction.java b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobFunction.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobFunction.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobFunction.java	
+@@ -1,7 +1,6 @@
+ package jobs4u.base.jobopeningmanagement.domain;
+ 
+ import eapli.framework.domain.model.ValueObject;
+-import eapli.framework.representations.dto.DTOable;
+ import eapli.framework.validations.Preconditions;
+ import jakarta.persistence.Embeddable;
+ 
+@@ -18,7 +17,7 @@
+         this.jobFunction = jobFunction;
+     }
+ 
+-    public JobFunction() {
++    protected JobFunction() {
+         //for ORM
+     }
+ 
+@@ -39,4 +38,8 @@
+     public int hashCode() {
+         return Objects.hash(jobFunction);
+     }
++
++    public String getJobFunction() {
++        return jobFunction;
++    }
+ }
+Index: jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobOpeningStatus.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobOpeningStatus.java b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobOpeningStatus.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobOpeningStatus.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/JobOpeningStatus.java	
+@@ -1,7 +1,42 @@
+ package jobs4u.base.jobopeningmanagement.domain;
+ 
+ import eapli.framework.domain.model.ValueObject;
++import eapli.framework.validations.Preconditions;
++import jakarta.persistence.Embeddable;
++
++@Embeddable
++public class JobOpeningStatus implements ValueObject {
++    private String statusDescription;
++
++    protected JobOpeningStatus() {
++        //for ORM
++    }
++
++    public JobOpeningStatus(JobOpeningStatusEnum enumVal) {
++        Preconditions.noneNull(enumVal);
++        this.statusDescription = String.valueOf(enumVal);
++    }
+ 
+-public enum JobOpeningStatus implements ValueObject {
+-    UNFINISHED, NOT_STARTED, STARTED, ENDED
++    public void setStatusDescriptionAsUNFINISHED(){
++        this.statusDescription = String.valueOf(JobOpeningStatusEnum.UNFINISHED);
++    }
++    public void setStatusDescriptionAsSTARTED(){
++        this.statusDescription = String.valueOf(JobOpeningStatusEnum.STARTED);
++    }
++
++    public void setStatusDescriptionAsNOT_STARTED(){
++        this.statusDescription = String.valueOf(JobOpeningStatusEnum.NOT_STARTED);
++    }
++
++    public void setStatusDescriptionAsENDED(){
++        this.statusDescription = String.valueOf(JobOpeningStatusEnum.ENDED);
++    }
++
++    public static JobOpeningStatus valueOf(JobOpeningStatusEnum enumVal) {
++        return new JobOpeningStatus(enumVal);
++    }
++
++    public String getStatusDescription() {
++        return statusDescription;
++    }
+ }
+Index: jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/RegisterJobOpeningUI.java
+===================================================================
+diff --git a/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/RegisterJobOpeningUI.java b/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/registration/RegisterJobOpeningUI.java
+rename from jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/RegisterJobOpeningUI.java
+rename to jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/registration/RegisterJobOpeningUI.java
+--- a/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/RegisterJobOpeningUI.java	
++++ b/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/registration/RegisterJobOpeningUI.java	
+@@ -1,12 +1,10 @@
+-package jobs4u.base.app.backoffice.console.presentation.jobopening;
++package jobs4u.base.app.backoffice.console.presentation.jobopening.registration;
+ 
+ import eapli.framework.domain.repositories.ConcurrencyException;
+ import eapli.framework.domain.repositories.IntegrityViolationException;
+ import eapli.framework.io.util.Console;
+ import eapli.framework.presentation.console.AbstractUI;
+ import eapli.framework.presentation.console.SelectWidget;
+-import jobs4u.base.customermanagement.domain.CompanyName;
+-import jobs4u.base.customermanagement.domain.CustomerCode;
+ import jobs4u.base.customermanagement.dto.CustomerDTO;
+ import jobs4u.base.jobopeningmanagement.application.RegisterJobOpeningController;
+ import jobs4u.base.jobopeningmanagement.domain.JobOpening;
+Index: jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/Description.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/Description.java b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/Description.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/Description.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/Description.java	
+@@ -3,16 +3,12 @@
+ import eapli.framework.domain.model.ValueObject;
+ import eapli.framework.validations.Preconditions;
+ import jakarta.persistence.Embeddable;
+-import jakarta.persistence.Embedded;
+-import jakarta.persistence.EmbeddedId;
+-import jakarta.persistence.Id;
+ 
+ import java.util.Objects;
+ 
+ @Embeddable
+ public class Description implements ValueObject {
+ 
+-
+     private String descriptionText;
+ 
+     public Description(String text) {
+@@ -41,4 +37,8 @@
+     public int hashCode() {
+         return Objects.hash(descriptionText);
+     }
++
++    public String getDescriptionText() {
++        return descriptionText;
++    }
+ }
+Index: jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/RegisterJobOpeningAction.java
+===================================================================
+diff --git a/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/RegisterJobOpeningAction.java b/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/registration/RegisterJobOpeningAction.java
+rename from jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/RegisterJobOpeningAction.java
+rename to jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/registration/RegisterJobOpeningAction.java
+--- a/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/RegisterJobOpeningAction.java	
++++ b/jobs4u.app.backoffice.console/src/main/java/jobs4u/base/app/backoffice/console/presentation/jobopening/registration/RegisterJobOpeningAction.java	
+@@ -1,4 +1,4 @@
+-package jobs4u.base.app.backoffice.console.presentation.jobopening;
++package jobs4u.base.app.backoffice.console.presentation.jobopening.registration;
+ 
+ import eapli.framework.actions.Action;
+ 
+Index: jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/NumberVacancy.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/NumberVacancy.java b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/NumberVacancy.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/NumberVacancy.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/domain/NumberVacancy.java	
+@@ -17,7 +17,7 @@
+         this.numVacancies = num;
+     }
+ 
+-    public NumberVacancy() {
++    protected NumberVacancy() {
+         //for ORM
+     }
+ 
+@@ -38,4 +38,9 @@
+     public int hashCode() {
+         return Objects.hash(numVacancies);
+     }
++
++    @Override
++    public String toString() {
++        return String.valueOf(numVacancies);
++    }
+ }
+Index: jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/CustomerListDTOService.java
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/CustomerListDTOService.java b/jobs4u.core/src/main/java/jobs4u/base/customermanagement/application/CustomerListDTOService.java
+rename from jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/CustomerListDTOService.java
+rename to jobs4u.core/src/main/java/jobs4u/base/customermanagement/application/CustomerListDTOService.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/jobopeningmanagement/application/CustomerListDTOService.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/customermanagement/application/CustomerListDTOService.java	
+@@ -1,4 +1,4 @@
+-package jobs4u.base.jobopeningmanagement.application;
++package jobs4u.base.customermanagement.application;
+ 
+ import eapli.framework.infrastructure.authz.application.AuthorizationService;
+ import eapli.framework.infrastructure.authz.application.AuthzRegistry;
+Index: jobs4u.core/src/main/java/jobs4u/base/customermanagement/dto/CustomerDTO.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/jobs4u.core/src/main/java/jobs4u/base/customermanagement/dto/CustomerDTO.java b/jobs4u.core/src/main/java/jobs4u/base/customermanagement/dto/CustomerDTO.java
+--- a/jobs4u.core/src/main/java/jobs4u/base/customermanagement/dto/CustomerDTO.java	
++++ b/jobs4u.core/src/main/java/jobs4u/base/customermanagement/dto/CustomerDTO.java	
+@@ -1,16 +1,18 @@
+ package jobs4u.base.customermanagement.dto;
+ 
+-import jobs4u.base.customermanagement.domain.CompanyName;
+-import jobs4u.base.customermanagement.domain.CustomerCode;
++import eapli.framework.representations.dto.DTO;
++import lombok.AllArgsConstructor;
++
+ 
+ public class CustomerDTO {
+     private final String custumerCode;
+     private final String companyName;
+ 
+-    public CustomerDTO(CompanyName companyName, CustomerCode customerCode) {
+-        this.custumerCode = customerCode.costumerCode();
+-        this.companyName = companyName.companyName();
++    public CustomerDTO(String custumerCode, String companyName) {
++        this.custumerCode = custumerCode;
++        this.companyName = companyName;
+     }
++
+     public String companyName(){
+         return this.companyName;
+     }

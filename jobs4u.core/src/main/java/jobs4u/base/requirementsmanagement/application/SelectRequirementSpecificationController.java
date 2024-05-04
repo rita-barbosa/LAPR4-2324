@@ -41,7 +41,7 @@ public class SelectRequirementSpecificationController {
 
     public boolean updateRequirementSpecification(JobOpeningDTO jobOpeningDTO, RequirementSpecificationDTO requirementSpecificationDTO) {
         authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN);
-        Optional<JobOpening> j = jobOpeningRepository.ofIdentity(new JobReference(jobOpeningDTO.jobReference));
+        Optional<JobOpening> j = jobOpeningRepository.ofIdentity(new JobReference(jobOpeningDTO.getJobReference()));
         if (j.isPresent()) {
             Optional<RequirementSpecification> r = requirementSpecificationRepository
                     .ofIdentity(new RequirementName(requirementSpecificationDTO.filename()));

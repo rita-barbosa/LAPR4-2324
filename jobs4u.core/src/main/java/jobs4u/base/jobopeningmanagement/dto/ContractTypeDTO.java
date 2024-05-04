@@ -1,5 +1,7 @@
 package jobs4u.base.jobopeningmanagement.dto;
 
+import eapli.framework.validations.Preconditions;
+
 import java.util.Objects;
 
 public class ContractTypeDTO {
@@ -7,6 +9,8 @@ public class ContractTypeDTO {
     private final String contractTypeName;
 
     public ContractTypeDTO(String denomination) {
+        Preconditions.nonEmpty(denomination);
+        Preconditions.noneNull(denomination);
         this.contractTypeName = denomination;
     }
 

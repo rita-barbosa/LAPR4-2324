@@ -27,10 +27,13 @@ import jobs4u.base.clientusermanagement.repositories.ClientUserRepository;
 import jobs4u.base.clientusermanagement.repositories.SignupRequestRepository;
 import eapli.framework.domain.repositories.TransactionalContext;
 import eapli.framework.infrastructure.authz.domain.repositories.UserRepository;
+import jobs4u.base.criteriamanagement.repository.CriteriaRepository;
 import jobs4u.base.customermanagement.repository.CustomerRepository;
 import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
+import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
+import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
 import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
 
 /**
@@ -188,5 +191,53 @@ public interface RepositoryFactory {
     CandidateRepository candidates(TransactionalContext tx);
 
     CandidateRepository candidates();
+
+
+
+    /**
+     *
+     * @param autoTx
+     *            the transactional context to enroll
+     * @return
+     */
+    CriteriaRepository criteria(TransactionalContext autoTx);
+
+    /**
+     * repository will be created in auto transaction mode
+     *
+     * @return
+     */
+    CriteriaRepository criteria();
+
+    /**
+     *
+     * @param autoTx
+     *            the transactional context to enroll
+     * @return
+     */
+    RecruitmentProcessRepository recruitmentProcesses(TransactionalContext autoTx);
+
+    /**
+     * repository will be created in auto transaction mode
+     *
+     * @return
+     */
+    RecruitmentProcessRepository recruitmentProcesses();
+
+
+    /**
+     *
+     * @param autoTx
+     *            the transactional context to enroll
+     * @return
+     */
+    PhaseRepository phases(TransactionalContext autoTx);
+
+    /**
+     * repository will be created in auto transaction mode
+     *
+     * @return
+     */
+    PhaseRepository phases();
 
 }

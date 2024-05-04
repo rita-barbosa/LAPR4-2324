@@ -17,13 +17,19 @@
         <class>jobs4u.base.customermanagement.domain.CustomerCode</class>
         <class>jobs4u.base.customermanagement.domain.CompanyName</class>
         <class>jobs4u.base.jobopeningmanagement.domain.Address</class>
-        <class>jobs4u.base.candidatemanagement.Candidate</class>
+        <class>jobs4u.base.candidatemanagement.domain.CandidateUser</class>
+        <class>jobs4u.base.candidatemanagement.domain.PhoneNumber</class>
         <class>jobs4u.base.jobopeningmanagement.domain.rank.Rank</class>
         <class>jobs4u.base.jobopeningmanagement.domain.rank.RankEntry</class>
         <class>jobs4u.base.jobopeningmanagement.domain.ContractType</class>
         <class>jobs4u.base.jobopeningmanagement.domain.WorkMode</class>
         <class>jobs4u.base.jobopeningmanagement.domain.JobOpening</class>
         <class>jobs4u.base.requirementsmanagement.domain.RequirementSpecification</class>
+        <class>jobs4u.base.jobopeningmanagement.domain.rank.Rank</class>
+        <class>jobs4u.base.jobopeningmanagement.domain.rank.RankEntry</class>
+        <class>jobs4u.base.criteriamanagement.domain.Criteria</class>
+        <class>jobs4u.base.recruitmentprocessmanagement.domain.Phase</class>
+        <class>jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:tcp://localhost/~/jobs4u"/>

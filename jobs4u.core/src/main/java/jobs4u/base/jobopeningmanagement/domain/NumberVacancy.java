@@ -25,9 +25,6 @@ public class NumberVacancy implements ValueObject {
         return new NumberVacancy(num);
     }
 
-    public Integer numberVacancies() {
-        return numVacancies;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -40,5 +37,14 @@ public class NumberVacancy implements ValueObject {
     @Override
     public int hashCode() {
         return Objects.hash(numVacancies);
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(numVacancies);
+    }
+
+    public int getNumVacancies() {
+        return numVacancies;
     }
 }
