@@ -5,7 +5,7 @@ exportFormat="svg"
 extra="-SdefaultFontSize=20"
 #extra="-SdefaultFontName=Times New Roman -SdefaultFontSize=10"
 
-for aFile in `find docs -name "*.puml" -type f`;
+for aFile in `find docs/sb_us_1009 -name "*.puml" -type f`;
 do
   #-Smonochrome=$monochrome
   echo "Processing file: $aFile"
