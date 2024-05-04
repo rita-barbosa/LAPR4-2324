@@ -1,4 +1,4 @@
-package jobs4u.base.requirementsmanagement.domain;
+package jobs4u.base.languageenginnermanagement.requirementsmanagement.domain;
 
 import eapli.framework.domain.model.ValueObject;
 import eapli.framework.validations.Preconditions;

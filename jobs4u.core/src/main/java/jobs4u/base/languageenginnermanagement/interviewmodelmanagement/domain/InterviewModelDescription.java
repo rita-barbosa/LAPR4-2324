@@ -1,4 +1,4 @@
-package jobs4u.base.interviewmodelmanagement.domain;
+package jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain;
 
 import eapli.framework.domain.model.ValueObject;
 import eapli.framework.validations.Preconditions;

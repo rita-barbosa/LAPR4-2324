@@ -1,13 +1,11 @@
-package jobs4u.base.requirementsmanagement.domain;
+package jobs4u.base.languageenginnermanagement.requirementsmanagement.domain;
 
 import eapli.framework.domain.model.AggregateRoot;
 import eapli.framework.domain.model.DomainEntities;
 import eapli.framework.representations.dto.DTOable;
 import eapli.framework.validations.Preconditions;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jobs4u.base.requirementsmanagement.dto.RequirementSpecificationDTO;
+import jakarta.persistence.*;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.dto.RequirementSpecificationDTO;
 
 import java.util.Objects;
 
@@ -15,18 +13,21 @@ import java.util.Objects;
 @Table(name = "T_REQUIREMENTSPECIFICATION")
 public class RequirementSpecification implements DTOable<RequirementSpecificationDTO>, AggregateRoot<RequirementName> {
 
-    @Id
+    @EmbeddedId
     private RequirementName requirementName;
 
     private RequirementDescription description;
 
-    private PluginJarFile plugin;
+    private FullClassName plugin;
 
-    public RequirementSpecification(RequirementName requirementName, RequirementDescription description, PluginJarFile plugin) {
+    public RequirementSpecification(String requirementName, String description, String plugin) {
         Preconditions.noneNull(requirementName, description, plugin);
-        this.requirementName = requirementName;
-        this.description = description;
-        this.plugin = plugin;
+        Preconditions.nonEmpty(requirementName);
+        Preconditions.nonEmpty(description);
+        Preconditions.nonEmpty(plugin);
+        this.requirementName = new RequirementName(requirementName);
+        this.description = new RequirementDescription(description);
+        this.plugin = new FullClassName(plugin);
     }
 
     protected RequirementSpecification() {
@@ -56,7 +57,7 @@ public class RequirementSpecification implements DTOable<RequirementSpecificatio
         return description;
     }
 
-    public PluginJarFile pluginJarFile() {
+    public FullClassName pluginJarFile() {
         return plugin;
     }
 

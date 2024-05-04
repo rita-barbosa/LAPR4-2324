@@ -1,14 +1,12 @@
-package jobs4u.base.interviewmodelmanagement.domain;
+package jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain;
 
 import eapli.framework.domain.model.AggregateRoot;
 import eapli.framework.domain.model.DomainEntities;
-import eapli.framework.representations.dto.DTOable;
 import eapli.framework.validations.Preconditions;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jobs4u.base.requirementsmanagement.domain.PluginJarFile;
-import jobs4u.base.requirementsmanagement.dto.RequirementSpecificationDTO;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.FullClassName;
 
 import java.util.Objects;
 
@@ -16,18 +14,21 @@ import java.util.Objects;
 @Table(name = "T_INTERVIEWMODEL")
 public class InterviewModel implements AggregateRoot<InterviewModelName> {
 
-    @Id
+    @EmbeddedId
     private InterviewModelName interviewModelName;
 
     private InterviewModelDescription description;
 
-    private PluginJarFile plugin;
+    private FullClassName plugin;
 
-    public InterviewModel(InterviewModelName interviewModelName, InterviewModelDescription description, PluginJarFile plugin) {
-        Preconditions.noneNull(interviewModelName,description,plugin);
-        this.interviewModelName = interviewModelName;
-        this.description = description;
-        this.plugin = plugin;
+    public InterviewModel(String interviewModelName, String description, String fullClassName) {
+        Preconditions.noneNull(interviewModelName,description,fullClassName);
+        Preconditions.nonEmpty(interviewModelName);
+        Preconditions.nonEmpty(description);
+        Preconditions.nonEmpty(fullClassName);
+        this.interviewModelName = new InterviewModelName(interviewModelName);
+        this.description = new InterviewModelDescription(description);
+        this.plugin = new FullClassName(fullClassName);
     }
 
     public InterviewModel() {
@@ -52,7 +53,7 @@ public class InterviewModel implements AggregateRoot<InterviewModelName> {
         return description;
     }
 
-    public PluginJarFile pluginJarFile() {
+    public FullClassName pluginJarFile() {
         return plugin;
     }
 
