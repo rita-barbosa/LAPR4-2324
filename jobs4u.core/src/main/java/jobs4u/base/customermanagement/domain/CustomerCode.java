@@ -22,7 +22,7 @@ public class CustomerCode implements Comparable<CustomerCode>, ValueObject {
         this.customerCode = code;
     }
 
-    public String customerCode() {
+    public String costumerCode() {
         return this.customerCode;
     }
 
@@ -32,6 +32,11 @@ public class CustomerCode implements Comparable<CustomerCode>, ValueObject {
 
     @Override
     public int compareTo(CustomerCode o) {
-        throw new UnsupportedOperationException("Yet to implement");
+        return customerCode.compareTo(o.customerCode);
+    }
+
+    @Override
+    public String toString() {
+        return customerCode;
     }
 }

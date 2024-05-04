@@ -1,12 +1,10 @@
-package jobs4u.base.app.backoffice.console.presentation.jobopening;
+package jobs4u.base.app.backoffice.console.presentation.jobopening.registration;
 
 import eapli.framework.domain.repositories.ConcurrencyException;
 import eapli.framework.domain.repositories.IntegrityViolationException;
 import eapli.framework.io.util.Console;
 import eapli.framework.presentation.console.AbstractUI;
 import eapli.framework.presentation.console.SelectWidget;
-import jobs4u.base.customermanagement.domain.CompanyName;
-import jobs4u.base.customermanagement.domain.CustomerCode;
 import jobs4u.base.customermanagement.dto.CustomerDTO;
 import jobs4u.base.jobopeningmanagement.application.RegisterJobOpeningController;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;

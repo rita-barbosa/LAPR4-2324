@@ -50,6 +50,7 @@ public class RegisterJobOpeningController {
     }
 
     public List<ContractTypeDTO> getContractTypesList() {
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
         List<ContractTypeDTO> contractTypes = new ArrayList<>();
         for (ContractType type : contractTypeRepository.contractTypes()) {
             contractTypes.add(type.toDTO());
@@ -58,6 +59,7 @@ public class RegisterJobOpeningController {
     }
 
     public List<WorkModeDTO> getWorkModesList() {
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
         List<WorkModeDTO> workModes = new ArrayList<>();
         for (WorkMode mode : workModeRepository.workModes()) {
             workModes.add(mode.toDTO());
@@ -66,6 +68,7 @@ public class RegisterJobOpeningController {
     }
 
     public List<RequirementSpecificationDTO> getRequirementsSpecificationsList() {
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
         List<RequirementSpecificationDTO> requirementSpecifications = new ArrayList<>();
         for (RequirementSpecification requirement : requirementSpecificationRepository.requirementsSpecifications()) {
             requirementSpecifications.add(requirement.toDTO());
@@ -80,6 +83,7 @@ public class RegisterJobOpeningController {
                                                    String description, RequirementSpecificationDTO requirementsFileName,
                                                    CustomerDTO companyInfo) {
 
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
         Optional<RequirementSpecification> requirementSpecification = requirementSpecificationRepository.getFileByName(requirementsFileName.filename());
 
         if (requirementSpecification.isEmpty()) {

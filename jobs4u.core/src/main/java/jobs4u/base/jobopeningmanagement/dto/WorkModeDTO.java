@@ -1,6 +1,6 @@
 package jobs4u.base.jobopeningmanagement.dto;
 
-import eapli.framework.domain.model.DomainEntities;
+import eapli.framework.validations.Preconditions;
 
 import java.util.Objects;
 
@@ -9,6 +9,8 @@ public class WorkModeDTO {
     private final String workModeName;
 
     public WorkModeDTO(String denomination) {
+        Preconditions.nonEmpty(denomination);
+        Preconditions.noneNull(denomination);
         this.workModeName = denomination;
     }
 

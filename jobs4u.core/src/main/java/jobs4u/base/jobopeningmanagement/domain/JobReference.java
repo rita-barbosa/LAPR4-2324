@@ -3,6 +3,7 @@ package jobs4u.base.jobopeningmanagement.domain;
 
 import eapli.framework.domain.model.ValueObject;
 import eapli.framework.validations.Preconditions;
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
@@ -11,12 +12,12 @@ import java.util.Objects;
 @Embeddable
 public class JobReference implements Comparable<JobReference>, ValueObject {
 
+    @AttributeOverride(name = "value", column = @Column(name = "Company"))
     private String companyCode;
-
     @Column(unique = true, nullable = false)
     private Integer sequentialCode;
 
-    public JobReference() {
+    protected JobReference() {
         // FOR ORM
     }
 
@@ -24,7 +25,7 @@ public class JobReference implements Comparable<JobReference>, ValueObject {
         Preconditions.noneNull(custumerCode, sequentialCode);
         Preconditions.noneNull(custumerCode);
         Preconditions.nonEmpty(custumerCode);
-        Preconditions.isPositive(sequentialCode);
+        Preconditions.nonNegative(sequentialCode);
         this.companyCode = custumerCode;
         this.sequentialCode = sequentialCode;
     }
@@ -44,7 +45,6 @@ public class JobReference implements Comparable<JobReference>, ValueObject {
         }
         return Integer.compare(this.sequentialCode, other.sequentialCode);
     }
-
 
     @Override
     public String toString() {

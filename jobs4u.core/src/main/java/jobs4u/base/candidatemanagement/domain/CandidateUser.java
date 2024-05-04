@@ -39,7 +39,6 @@ public class CandidateUser implements AggregateRoot<PhoneNumber> {
     @Version
     private Long version;
 
-    @EmbeddedId
     private PhoneNumber phoneNumber;
 
     /**

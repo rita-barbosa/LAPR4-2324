@@ -1,4 +1,4 @@
-package jobs4u.base.app.backoffice.console.presentation.jobopening;
+package jobs4u.base.app.backoffice.console.presentation.jobopening.registration;
 
 import eapli.framework.actions.Action;
 

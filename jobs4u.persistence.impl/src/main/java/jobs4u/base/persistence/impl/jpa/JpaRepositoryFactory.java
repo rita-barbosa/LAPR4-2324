@@ -22,7 +22,9 @@ package jobs4u.base.persistence.impl.jpa;
 
 import jobs4u.base.Application;
 import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
+import jobs4u.base.candidatemanagement.repository.CandidateRepository;
 import jobs4u.base.clientusermanagement.repositories.SignupRequestRepository;
+import jobs4u.base.criteriamanagement.repository.CriteriaRepository;
 import jobs4u.base.customermanagement.repository.CustomerRepository;
 import jobs4u.base.infrastructure.persistence.RepositoryFactory;
 import eapli.framework.domain.repositories.TransactionalContext;
@@ -32,6 +34,8 @@ import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
 import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
+import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
+import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
 import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
 
 /**
@@ -120,24 +124,55 @@ public class JpaRepositoryFactory implements RepositoryFactory {
     public JobOpeningRepository jobOpenings() {
         return new JpaJobOpeningRepository(Application.settings().getPersistenceUnitName());
     }
-    public JpaCandidateRepository candidates(final TransactionalContext autoTx) {
-        return new JpaCandidateRepository(autoTx);
-    }
-    @Override
-    public JpaCandidateRepository candidates() {
-        return new JpaCandidateRepository((Application.settings().getPersistenceUnitName()));
-    }
-
-
 
     @Override
-    public ApplicationRepository applications(TransactionalContext autoTx) {
-        return null;
+    public ApplicationRepository applications(final TransactionalContext autoTx) {
+        return new JpaApplicationRepository(autoTx);
     }
 
     @Override
     public ApplicationRepository applications() {
-        return null;
+        return new JpaApplicationRepository(Application.settings().getPersistenceUnitName());
+    }
+
+    @Override
+    public CandidateRepository candidates(final TransactionalContext tx) {
+        return new JpaCandidateRepository(tx);
+    }
+
+    @Override
+    public CandidateRepository candidates() {
+        return new JpaCandidateRepository(Application.settings().getPersistenceUnitName());
+    }
+
+    @Override
+    public CriteriaRepository criteria(final TransactionalContext autoTx) {
+        return new JpaCriteriaRepository(autoTx);
+    }
+
+    @Override
+    public CriteriaRepository criteria() {
+        return new JpaCriteriaRepository(Application.settings().getPersistenceUnitName());
+    }
+
+    @Override
+    public RecruitmentProcessRepository recruitmentProcesses(final TransactionalContext autoTx) {
+        return new JpaRecruitmentProcessRepository(autoTx);
+    }
+
+    @Override
+    public RecruitmentProcessRepository recruitmentProcesses() {
+        return new JpaRecruitmentProcessRepository(Application.settings().getPersistenceUnitName());
+    }
+
+    @Override
+    public PhaseRepository phases(final TransactionalContext autoTx) {
+        return new JpaPhaseRepository(autoTx);
+    }
+
+    @Override
+    public PhaseRepository phases() {
+        return new JpaPhaseRepository(Application.settings().getPersistenceUnitName());
     }
 
     @Override

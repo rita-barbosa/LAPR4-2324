@@ -33,10 +33,6 @@ public class JobReferenceTest {
         assertThrows(IllegalArgumentException.class, () -> new JobReference("ISEP", -1));
     }
 
-    @Test
-    public void ensureSequentialCodeZeroIsInvalid() {
-        assertThrows(IllegalArgumentException.class, () -> new JobReference("ISEP", 0));
-    }
 
     @Test
     public void ensureJobReferenceIsSequential() {

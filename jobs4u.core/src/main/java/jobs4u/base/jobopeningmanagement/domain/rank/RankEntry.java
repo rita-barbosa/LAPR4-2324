@@ -17,7 +17,7 @@ public class RankEntry implements ValueObject {
 
     private Integer numberRanked;
 
-    public RankEntry() {
+    protected RankEntry() {
         //for ORM
     }
 

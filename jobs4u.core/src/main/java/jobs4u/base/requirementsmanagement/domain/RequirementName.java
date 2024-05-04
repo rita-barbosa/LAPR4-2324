@@ -17,7 +17,7 @@ public class RequirementName implements ValueObject, Comparable<RequirementName>
         this.name = name;
     }
 
-    public RequirementName() {
+    protected RequirementName() {
         //for ORM
     }
 

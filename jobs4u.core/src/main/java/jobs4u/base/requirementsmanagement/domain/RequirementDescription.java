@@ -17,7 +17,7 @@ public class RequirementDescription implements ValueObject {
         this.description = description;
     }
 
-    public RequirementDescription() {
+    protected RequirementDescription() {
         //for ORM
     }
 
