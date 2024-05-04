@@ -6,7 +6,7 @@ import eapli.framework.representations.dto.DTOable;
 import eapli.framework.validations.Preconditions;
 import jakarta.persistence.*;
 import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
-import jobs4u.base.candidatemanagement.Candidate;
+import jobs4u.base.candidatemanagement.domain.Candidate;
 
 import java.io.File;
 import java.util.Date;
@@ -33,83 +33,95 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
     private Date applicationDate;
     @Column(nullable = false)
     private ApplicationStatus applicationStatus;
-    @ManyToOne(optional = false)
-    @JoinColumn(nullable = false)
-    private Candidate candidate;
-    @Column(nullable = false)
+//    @ManyToOne(optional = false)
+//    @JoinColumn(nullable = false)
+//    private Candidate candidate;
+    @Column
     private Interview interview;
 
+//    @ManyToOne
+//    @JoinColumn
+//    private JobOpening jobOpening;
 
-    public Application(Long id, RequirementAnswer requirementAnswer, RequirementResult requirementResult, File file, Date applicationDate, ApplicationStatus applicationStatus, Candidate candidate, Interview interview) {
 
-        Preconditions.noneNull(requirementAnswer, requirementAnswer, file, applicationDate, applicationStatus, candidate, interview);
+//    public Application(RequirementAnswer requirementAnswer, RequirementResult requirementResult, File file, Date applicationDate, ApplicationStatus applicationStatus, Candidate candidate, Interview interview) {
+//
+//        Preconditions.noneNull(requirementAnswer, requirementAnswer, file, applicationDate, applicationStatus, candidate, interview);
+//
+//        this.requirementAnswer = requirementAnswer;
+//        this.requirementResult = requirementResult;
+//        this.file = file;
+//        this.applicationDate = applicationDate;
+//        this.applicationStatus = applicationStatus;
+//        this.candidate = candidate;
+//        this.interview = interview;
+//    }
+//
+//    public Application(RequirementAnswer requirementAnswer, RequirementResult requirementResult, File file, Date applicationDate, Candidate candidate, Interview interview) {
+//
+//        Preconditions.noneNull(requirementAnswer, requirementResult, file, applicationDate, candidate);
+//
+//        this.requirementAnswer = requirementAnswer;
+//        this.requirementResult = requirementResult;
+//        this.file = file;
+//        this.applicationDate = applicationDate;
+//        this.applicationStatus = new ApplicationStatus();
+//        this.applicationStatus.setStatusDescriptionAsNOT_CHECKED();
+//        this.candidate = candidate;
+//        this.interview = interview;
+//    }
+//
 
-        this.id = id;
-        this.requirementAnswer = requirementAnswer;
-        this.requirementResult = requirementResult;
-        this.file = file;
-        this.applicationDate = applicationDate;
-        this.applicationStatus = applicationStatus;
-        this.candidate = candidate;
-        this.interview = interview;
-    }
+    public Application(RequirementAnswer requirementAnswer, RequirementResult requirementResult, File file, Date applicationDate, Interview interview) {
 
-    public Application(Long id, RequirementAnswer requirementAnswer, RequirementResult requirementResult, File file, Date applicationDate, Candidate candidate, Interview interview) {
+        Preconditions.noneNull(requirementAnswer, requirementResult, file, applicationDate);
 
-        Preconditions.noneNull(requirementAnswer, requirementAnswer, file, applicationDate, candidate);
-
-        this.id = id;
         this.requirementAnswer = requirementAnswer;
         this.requirementResult = requirementResult;
         this.file = file;
         this.applicationDate = applicationDate;
         this.applicationStatus = new ApplicationStatus();
         this.applicationStatus.setStatusDescriptionAsNOT_CHECKED();
-        this.candidate = candidate;
         this.interview = interview;
     }
 
-    public Application(Long id, RequirementAnswer requirementAnswer, RequirementResult requirementResult, File file, Date applicationDate, Interview interview) {
+//    public Application(RequirementAnswer requirementAnswer, RequirementResult requirementResult, File file, Date applicationDate, ApplicationStatus applicationStatus, Candidate candidate, String interviewTypeDenomination, Date schedule, InterviewResult interviewResult, String interviewAnswer) {
+//
+//        Preconditions.noneNull(requirementAnswer, requirementResult, file, applicationDate, applicationStatus, candidate);
+//
+//        this.requirementAnswer = requirementAnswer;
+//        this.requirementResult = requirementResult;
+//        this.file = file;
+//        this.applicationDate = applicationDate;
+//        this.applicationStatus = applicationStatus;
+//        this.candidate = candidate;
+//        this.interview = new Interview(interviewTypeDenomination, schedule, interviewResult, interviewAnswer);
+//    }
+//
+//    public Application(String requirementAnswer, Boolean requirementResult, File file, Date applicationDate, String applicationStatus, Candidate candidate, Interview interview) {
+//
+//        Preconditions.noneNull(requirementAnswer, requirementResult, file, applicationDate, applicationStatus, candidate);
+//
+//        this.requirementAnswer = RequirementAnswer.valueOf(requirementAnswer);
+//        this.requirementResult = RequirementResult.valueOf(requirementResult);
+//        this.file = file;
+//        this.applicationDate = applicationDate;
+//        this.applicationStatus = new ApplicationStatus();
+//        this.applicationStatus.setStatusDescriptionAsNOT_CHECKED();
+//        this.candidate = candidate;
+//        this.interview = interview;
+//    }
 
-        Preconditions.noneNull(requirementAnswer, requirementAnswer, file, applicationDate);
+    public Application(RequirementAnswer requirementAnswer, RequirementResult requirementResult, File file, Date applicationDate) {
 
-        this.id = id;
+        Preconditions.noneNull(requirementAnswer, requirementResult, file, applicationDate);
+
         this.requirementAnswer = requirementAnswer;
         this.requirementResult = requirementResult;
         this.file = file;
         this.applicationDate = applicationDate;
         this.applicationStatus = new ApplicationStatus();
         this.applicationStatus.setStatusDescriptionAsNOT_CHECKED();
-        this.interview = interview;
-    }
-
-    public Application(Long id, RequirementAnswer requirementAnswer, RequirementResult requirementResult, File file, Date applicationDate, ApplicationStatus applicationStatus, Candidate candidate, String interviewTypeDenomination, Date schedule, InterviewResult interviewResult, String interviewAnswer) {
-
-        Preconditions.noneNull(requirementAnswer, requirementAnswer, file, applicationDate, applicationStatus, candidate);
-
-        this.id = id;
-        this.requirementAnswer = requirementAnswer;
-        this.requirementResult = requirementResult;
-        this.file = file;
-        this.applicationDate = applicationDate;
-        this.applicationStatus = applicationStatus;
-        this.candidate = candidate;
-        this.interview = new Interview(interviewTypeDenomination, schedule, interviewResult, interviewAnswer);
-    }
-
-    public Application(Long id, String requirementAnswer, Boolean requirementResult, File file, Date applicationDate, String applicationStatus, Candidate candidate, Interview interview) {
-
-        Preconditions.noneNull(requirementAnswer, requirementAnswer, file, applicationDate, applicationStatus, candidate);
-
-        this.id = id;
-        this.requirementAnswer = RequirementAnswer.valueOf(requirementAnswer);
-        this.requirementResult = RequirementResult.valueOf(requirementResult);
-        this.file = file;
-        this.applicationDate = applicationDate;
-        this.applicationStatus = new ApplicationStatus();
-        this.applicationStatus.setStatusDescriptionAsNOT_CHECKED();
-        this.candidate = candidate;
-        this.interview = interview;
     }
 
     protected Application(){
@@ -148,6 +160,6 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
     @Override
     public ApplicationDTO toDTO() {
         return new ApplicationDTO(id, requirementAnswer.requirementAnswer(), requirementResult.requirementResult(),
-                file, applicationDate, applicationStatus.toString(), candidate);
+                file, applicationDate, applicationStatus.toString());
     }
 }

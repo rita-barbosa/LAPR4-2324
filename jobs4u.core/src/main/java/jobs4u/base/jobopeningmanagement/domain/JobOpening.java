@@ -49,12 +49,12 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
     @JoinColumn(nullable = false)
     private RequirementSpecification requirementSpecification;
 
-//    @ManyToOne(optional = false)
+//    @ManyToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 //    @JoinColumn(nullable = false)
 //    private InterviewModel interviewModel;
 
-//    @OneToMany
-//    private final Set<Application> applications = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Application> applications = new HashSet<>();
 
     @OneToOne
     private RecruitmentProcess recruitmentProcess;
@@ -127,27 +127,28 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
 //        this.rank = new Rank(newJobReference);
 //    }
 //
-//    public JobOpening(String function, ContractTypeDTO contractTypeDenomination, WorkModeDTO workModeDenomination,
-//                      Address address, Integer numVacancies, String description, RequirementSpecification requirementsFile,
-//                      InterviewModel interviewFile, JobReference lastReference) {
-//
-//        Preconditions.noneNull(function, description, address, lastReference, requirementsFile, interviewFile, contractTypeDenomination,
-//                workModeDenomination, numVacancies);
-//
-//        JobReference newJobReference = generateNewSequencialJobReference(lastReference);
-//        this.jobReference = generateNewSequencialJobReference(lastReference);
-//        this.function = JobFunction.valueOf(function);
-//        this.address = address;
-//        this.contractType = ContractType.valueOf(contractTypeDenomination.contractTypeName());
-//        this.workMode = WorkMode.valueOf(workModeDenomination.workModeName());
-//        this.description = Description.valueOf(description);
-//        this.numVacancies = NumberVacancy.valueOf(numVacancies);
-//        this.requirementSpecification = requirementsFile;
+    public JobOpening(String function, ContractTypeDTO contractTypeDenomination, WorkModeDTO workModeDenomination,
+                      Address address, Integer numVacancies, String description, RequirementSpecification requirementsFile,
+                       JobReference lastReference, Set<Application> applications) {
+
+        Preconditions.noneNull(function, description, address, lastReference, requirementsFile, contractTypeDenomination,
+                workModeDenomination, numVacancies);
+
+        JobReference newJobReference = generateNewSequencialJobReference(lastReference);
+        this.jobReference = generateNewSequencialJobReference(lastReference);
+        this.function = JobFunction.valueOf(function);
+        this.address = address;
+        this.contractType = ContractType.valueOf(contractTypeDenomination.contractTypeName());
+        this.workMode = WorkMode.valueOf(workModeDenomination.workModeName());
+        this.description = Description.valueOf(description);
+        this.numVacancies = NumberVacancy.valueOf(numVacancies);
+        this.requirementSpecification = requirementsFile;
 //        this.interviewModel = interviewFile;
-//        this.status = new JobOpeningStatus();
-//        this.status.setStatusDescriptionAsUNFINISHED();
-//        this.rank = new Rank(newJobReference);
-//    }
+        this.status = new JobOpeningStatus();
+        this.status.setStatusDescriptionAsUNFINISHED();
+        this.rank = new Rank(newJobReference);
+        this.applications = applications;
+    }
 
     protected JobOpening() {
         //for ORM
@@ -233,9 +234,9 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         return rank;
     }
 
-//    public Set<Application> getApplications() {
-//        return applications;
-//    }
+    public Set<Application> getApplications() {
+        return applications;
+    }
 
     @Override
     public JobOpeningDTO toDTO() {
@@ -254,5 +255,9 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
 
     public RecruitmentProcess getRecruitmentProcess() {
         return recruitmentProcess;
+    }
+
+    public void setApplications(Set<Application> applications) {
+        this.applications = applications;
     }
 }

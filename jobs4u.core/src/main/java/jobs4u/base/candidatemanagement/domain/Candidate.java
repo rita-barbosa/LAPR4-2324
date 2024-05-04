@@ -32,8 +32,8 @@ import jakarta.persistence.*;
 import jobs4u.base.candidatemanagement.dto.CandidateDTO;
 
 @Entity
-@Table(name = "CANDIDATE")
-public class CandidateUser implements AggregateRoot<PhoneNumber> {
+@Table(name = "T_CANDIDATE")
+public class Candidate implements AggregateRoot<PhoneNumber> {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -51,7 +51,7 @@ public class CandidateUser implements AggregateRoot<PhoneNumber> {
     @OneToOne()
     private SystemUser systemUser;
 
-    public CandidateUser(final SystemUser user, final PhoneNumber phoneNumber) {
+    public Candidate(final SystemUser user, final PhoneNumber phoneNumber) {
         if (phoneNumber == null || user == null) {
             throw new IllegalArgumentException();
         }
@@ -59,7 +59,7 @@ public class CandidateUser implements AggregateRoot<PhoneNumber> {
         this.phoneNumber = phoneNumber;
     }
 
-    protected CandidateUser() {
+    protected Candidate() {
     }
 
     public SystemUser user() {
