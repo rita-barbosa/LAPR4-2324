@@ -193,4 +193,8 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
 
         this.requirementSpecification = requirementSpecification;
     }
+
+    public RecruitmentProcess getRecruitmentProcess() {
+        return recruitmentProcess;
+    }
 }

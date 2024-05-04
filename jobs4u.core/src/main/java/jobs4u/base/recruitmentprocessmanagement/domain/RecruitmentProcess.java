@@ -48,4 +48,8 @@ public class RecruitmentProcess implements AggregateRoot<Long> {
     public void setPhases(List<Phase> phases) {
         this.phases = phases;
     }
+
+    public RecruitmentPeriod getRecruitmentPeriod() {
+        return recruitmentPeriod;
+    }
 }

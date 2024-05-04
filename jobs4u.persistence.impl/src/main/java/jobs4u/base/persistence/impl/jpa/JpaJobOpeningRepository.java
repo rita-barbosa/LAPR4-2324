@@ -86,23 +86,37 @@ public class JpaJobOpeningRepository
         }
     }
 
-    public List<Calendar> getStartDateRecruitmentList(){
-        final TypedQuery<Calendar> q = createQuery(
-                "SELECT e FROM JobOpening e WHERE e.recruitmentProcess.recruitmentPeriod.recruitmentInterval.dateStart <= :start AND e.recruitmentProcess.recruitmentPeriod.recruitmentInterval.dateEnd >= :end",
-                Calendar.class);
-        return q.getResultList();
-    }
+//    public List<Calendar> getStartDateRecruitmentList(){
+//        final TypedQuery<Calendar> q = createQuery(
+//                "SELECT e.recruitmentProcess.recruitmentPeriod.recruitmentInterval.dateStart FROM JobOpening e",
+//                Calendar.class);
+//        return q.getResultList();
+//    }
 
 
     @Override
     public List<JobOpening> getJobOpeningListWithinDateInterval(DateInterval interval) {
-
-        final TypedQuery<JobOpening> q = createQuery(
-                "SELECT e FROM JobOpening e WHERE e.recruitmentProcess.recruitmentPeriod.recruitmentInterval.dateStart <= :start AND e.recruitmentProcess.recruitmentPeriod.recruitmentInterval.dateEnd >= :end",
+        final TypedQuery<JobOpening> q = createQuery("SELECT e FROM JobOpening e WHERE e.recruitmentProcess.recruitmentPeriod.recruitmentInterval.dateStart BETWEEN :start AND :end",
                 JobOpening.class);
         q.setParameter("start", interval.start(), TemporalType.DATE);
         q.setParameter("end", interval.end(), TemporalType.DATE);
-        return q.getResultList();
+        List<JobOpening> startMatch = q.getResultList();
+
+        final TypedQuery<JobOpening> s = createQuery("SELECT e FROM JobOpening e WHERE e.recruitmentProcess.recruitmentPeriod.recruitmentInterval.dateEnd BETWEEN :start AND :end",
+                JobOpening.class);
+        s.setParameter("start", interval.start(), TemporalType.DATE);
+        s.setParameter("end", interval.end(), TemporalType.DATE);
+        List<JobOpening> endMatch = s.getResultList();
+
+        List<JobOpening> resultList = new ArrayList<>(startMatch);
+        resultList.retainAll(endMatch);
+
+        return resultList;
+//        final TypedQuery<Meal> q = createQuery(
+//                "SELECT e FROM Meal e WHERE e.day BETWEEN :beginDate AND :endDate",
+//                Meal.class);
+//        q.setParameter("beginDate", beginDate, TemporalType.DATE);
+//        q.setParameter("endDate", endDate, TemporalType.DATE);
 
 
 //        final Map<String, Object> params = new HashMap<>();
