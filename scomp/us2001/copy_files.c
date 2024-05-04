@@ -49,7 +49,7 @@ void copy_files(int n, char *input_directory, char *output_directory){
                 exit(EXIT_FAILURE);
             }
 
-             printf("The file %s from %s was copied to %s\n", entry->d_name, input_directory, subdirectory);
+             printf("«----» [ File %s copied to %s ] «----»\n", entry->d_name, subdirectory);
         }
         
     }

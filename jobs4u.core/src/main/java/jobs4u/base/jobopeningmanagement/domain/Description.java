@@ -11,8 +11,6 @@ import java.util.Objects;
 
 @Embeddable
 public class Description implements ValueObject {
-
-
     private String descriptionText;
 
     public Description(String text) {
@@ -21,12 +19,15 @@ public class Description implements ValueObject {
         this.descriptionText = text;
     }
 
-    public Description() {
-        //for ORM
+    protected Description() {
     }
 
     public static Description valueOf(final String text) {
         return new Description(text);
+    }
+
+    public String description() {
+        return descriptionText;
     }
 
     @Override
@@ -41,4 +42,5 @@ public class Description implements ValueObject {
     public int hashCode() {
         return Objects.hash(descriptionText);
     }
+
 }

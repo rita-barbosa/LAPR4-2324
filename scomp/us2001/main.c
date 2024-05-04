@@ -31,7 +31,7 @@ void handle_signal(int signo)
     }
 }
 
-// VERSION: 
+// VERSION:
 // 03/05/2024
 // Group: 2DG2
 int main(int argc, char *argv[])
@@ -52,25 +52,29 @@ int main(int argc, char *argv[])
 
     // CREATES THE OUTPUT DIRECTORY IF IT DOESN'T EXIST
     //==Work done by: Ana Guterres======================================================
-
     DIR *dir_output;
-
     dir_output = opendir(config.output_directory);
-    if (!dir_output) {
+    if (!dir_output)
+    {
         printf("The %s directory doesn't exist!\nCreating the directory!\n", config.output_directory);
-        if (errno == ENOENT) {
+        if (errno == ENOENT)
+        {
             // If the output directory doesn't exist, it will be created
-            if (mkdir(config.output_directory, 0777) == -1) {
+            if (mkdir(config.output_directory, 0777) == -1)
+            {
                 perror("mkdir");
                 exit(EXIT_FAILURE);
             }
 
             dir_output = opendir(config.output_directory);
-            if (!dir_output) {
+            if (!dir_output)
+            {
                 perror("opendir");
                 exit(EXIT_FAILURE);
             }
-        } else {
+        }
+        else
+        {
             perror("opendir");
             exit(EXIT_FAILURE);
         }
@@ -94,7 +98,7 @@ int main(int argc, char *argv[])
         perror("sigaction");
         return 1;
     }
-    
+
     if (pipe(shared_p) == -1)
     {
         perror("pipe");
@@ -163,7 +167,6 @@ int main(int argc, char *argv[])
     {
         // CHILD THAT WILL PERIODICALLY MONITOR THE INPUT DIRECTORY
         int newFileLine = 0;     // last line refering to a file
-        char returnNumberInChar; // line refering to a file after input directory check-in
         int returnNumber = 0;    // line refering to a file after input directory check-in
         int status;
         int newFilePipe[2];            // pipe between last sub-child and parent-child
@@ -218,14 +221,14 @@ int main(int argc, char *argv[])
                     printf("Something wrong happened with the new file sub-child process.\n");
                 }
             }
-            n = read(newFilePipe[0], &returnNumberInChar, sizeof(returnNumberInChar)); // reads number of files currently on the input directory
+            n = read(newFilePipe[0], &returnNumber, sizeof(returnNumber)); // reads number of files currently on the input directory
             if (n < 0)
             {
                 perror("Couldn't read all the information.");
                 exit(1);
             }
 
-            returnNumber = (int)returnNumberInChar - '0';
+            // returnNumber = (int)returnNumberInChar - '0';
 
             if (returnNumber > newFileLine)
             {
@@ -251,7 +254,7 @@ int main(int argc, char *argv[])
 
     // PARENT WILL DELEGATE WORK TO THE CHILD WORKERS
     //==Work done by: Rita Barbosa======================================================
-    int availableChild = 0, lastCandidate = 0, copiedCandDiff = 0;
+    int availableChild = 0, lastCandidate = 0, copiedCandDiff = 0, reported_child = 0;
     close(shared_p[i]); // Close write end of shared pipe in parent
     while (!time_to_terminate)
     {
@@ -266,7 +269,6 @@ int main(int argc, char *argv[])
         else
         {
             get_new_candidates(config.input_directory, &lastCandidate, &copiedCandDiff);
-
             int childworker = 0;
 
             while (copiedCandDiff != 0)
@@ -287,7 +289,12 @@ int main(int argc, char *argv[])
                 childworker++;
             }
         }
-        // TO-DO: report generator
+
+        // GENERATES REPORT OF THE PROCESSED CANDIDATES
+        //==Work done by: José Afonso======================================================
+        generate_report(reported_child, config.output_directory);
+        reported_child = lastCandidate;
+        //===================================================================================
     }
     //===================================================================================
 

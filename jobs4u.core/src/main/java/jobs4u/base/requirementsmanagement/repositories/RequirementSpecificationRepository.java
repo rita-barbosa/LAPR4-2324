@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface RequirementSpecificationRepository
         extends DomainRepository<RequirementName, RequirementSpecification> {
 
-    List<RequirementSpecification> requirementsSpecifications();
+    Iterable<RequirementSpecification> requirementsSpecifications();
 
     Optional<RequirementSpecification> getFileByName(String filename);
 }

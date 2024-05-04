@@ -35,7 +35,7 @@ deactivate AUTH
 CTRL ->JOMS: activeJobOpenings()
 activate JOMS
 
-JOMS -> JO_REPO: activeJobOpenings()
+JOMS -> JO_REPO: findAllJobOpeningsNotStarted()
 activate JO_REPO
 
 JO_REPO --> JOMS: jobOpenings
@@ -78,7 +78,7 @@ deactivate AUTH
 CTRL ->RSMS: availableRequirementSpecifications()
 activate RSMS
 
-RSMS -> RS_REPO: availableRequirementSpecifications()
+RSMS -> RS_REPO: 4equirementSpecifications()
 activate RS_REPO
 
 RS_REPO --> RSMS: requirementSpecifications
@@ -96,7 +96,7 @@ RS --> RSMS_DTO: requirementSpecificationDto
 deactivate RS
 end
 
-RSMS_DTO --> RSMS: requirementSpecifications
+RSMS_DTO --> RSMS: requirementSpecificationDtos
 deactivate RSMS_DTO
 
 RSMS --> CTRL: requirementSpecificationsDtos
@@ -115,8 +115,6 @@ CTRL -> AUTH:  ensureAuthenticatedUserHasAnyOf(roles)
 activate AUTH
 deactivate AUTH
 
-CTRL -> CTRL: updateRequirementSpecification(jobOpeningDto, requirementSpecificationDto)
-activate CTRL
 
 CTRL -> JO_REPO: ofIdentity(jobReference)
 activate JO_REPO
@@ -152,8 +150,6 @@ CTRL -> JO_REPO: save(jobOpening)
 activate JO_REPO
 deactivate JO_REPO
 
-CTRL --> CTRL: jobOpening
-deactivate CTRL
 
 CTRL --> UI: success
 deactivate CTRL

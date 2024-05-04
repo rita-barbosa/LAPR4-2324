@@ -1,8 +1,10 @@
 package jobs4u.base.requirementsmanagement.dto;
 
+import eapli.framework.representations.dto.DTO;
 import jobs4u.base.requirementsmanagement.domain.PluginJarFile;
 import jobs4u.base.requirementsmanagement.domain.RequirementDescription;
 import jobs4u.base.requirementsmanagement.domain.RequirementName;
+import lombok.AllArgsConstructor;
 
 public class RequirementSpecificationDTO {
 
@@ -10,26 +12,26 @@ public class RequirementSpecificationDTO {
     private final String description;
     private String plugin;
 
-    public RequirementSpecificationDTO(RequirementName requirementName, RequirementDescription description) {
-        this.name = requirementName.name() ;
-        this.description = description.description();
+    public RequirementSpecificationDTO(String requirementName, String description) {
+        this.name = requirementName;
+        this.description = description;
     }
 
-    public RequirementSpecificationDTO(RequirementName requirementName, RequirementDescription description, PluginJarFile plugin) {
-        this.name = requirementName.name() ;
-        this.description = description.description();
-        this.plugin = plugin.pluginName();
+    public RequirementSpecificationDTO(String name, String description, String plugin) {
+        this.name = name;
+        this.description = description;
+        this.plugin = plugin;
     }
 
-    public String filename(){
+    public String filename() {
         return this.name;
     }
 
     @Override
     public String toString() {
-        if (plugin == null){
-            return String.format("Name: %s\nDescription: %s", name, description);
+        if (plugin == null) {
+            return String.format("Name: %s | Description: %s", name, description);
         }
-        return String.format("Name: %s | Plugin : %s |\nDescription: %s", name, plugin, description);
+        return String.format("Name: %s | Plugin : %s | Description: %s", name, plugin, description);
     }
 }

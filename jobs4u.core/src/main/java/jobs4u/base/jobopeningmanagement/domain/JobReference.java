@@ -29,6 +29,13 @@ public class JobReference implements Comparable<JobReference>, ValueObject {
         this.sequentialCode = sequentialCode;
     }
 
+    public JobReference(String jobReference) {
+        Preconditions.noneNull(jobReference);
+        Preconditions.nonEmpty(jobReference);
+        this.companyCode = jobReference.split("-")[0];
+        this.sequentialCode = Integer.valueOf(jobReference.split("-")[1]);
+    }
+
     @Override
     public int compareTo(JobReference other) {
         int customerCodeComparison = CharSequence.compare(this.companyCode, other.companyCode);
@@ -37,7 +44,6 @@ public class JobReference implements Comparable<JobReference>, ValueObject {
         }
         return Integer.compare(this.sequentialCode, other.sequentialCode);
     }
-
 
 
     @Override
