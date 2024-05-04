@@ -19,6 +19,10 @@ public class RequirementAnswer implements ValueObject {
         //for ORM
     }
 
+    public String requirementAnswer(){
+        return requirementAnswer;
+    }
+
     public static RequirementAnswer valueOf(final String answer){
         return new RequirementAnswer(answer);
     }

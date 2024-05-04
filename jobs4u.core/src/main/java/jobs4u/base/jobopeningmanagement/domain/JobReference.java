@@ -71,4 +71,8 @@ public class JobReference implements Comparable<JobReference>, ValueObject {
     public int hashCode() {
         return Objects.hash(companyCode, getSequentialCode());
     }
+
+    public String getCompanyCode() {
+        return companyCode;
+    }
 }

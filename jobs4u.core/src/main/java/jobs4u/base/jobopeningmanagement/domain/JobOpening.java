@@ -5,6 +5,8 @@ import eapli.framework.domain.model.DomainEntities;
 import eapli.framework.representations.dto.DTOable;
 import eapli.framework.validations.Preconditions;
 import jakarta.persistence.*;
+import jobs4u.base.applicationmanagement.domain.Application;
+import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
 import jobs4u.base.jobopeningmanagement.domain.rank.Rank;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentPeriod;
@@ -14,7 +16,9 @@ import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
 import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "T_JOBOPENING")
@@ -45,6 +49,13 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
     private RequirementSpecification requirementSpecification;
+
+//    @ManyToOne(optional = false)
+//    @JoinColumn(nullable = false)
+//    private InterviewModel interviewModel;
+
+//    @OneToMany
+//    private final Set<Application> applications = new HashSet<>();
 
     @OneToOne
     private RecruitmentProcess recruitmentProcess;
@@ -94,6 +105,50 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         this.status.setStatusDescriptionAsUNFINISHED();
         this.rank = new Rank(newJobReference);
     }
+
+//    public JobOpening(String function, ContractTypeDTO contractTypeDenomination, WorkModeDTO workModeDenomination,
+//                      String streetName, String city, String district, String streetNumber, String zipcode, Integer numVacancies,
+//                      String description, RequirementSpecification requirementsFile, InterviewModel interviewFile, JobReference lastReference) {
+//
+//        Preconditions.noneNull(function, description, district, streetNumber, lastReference, requirementsFile, zipcode,
+//                city, contractTypeDenomination, workModeDenomination, numVacancies, streetName);
+//
+//        JobReference newJobReference = generateNewSequencialJobReference(lastReference);
+//        this.jobReference = newJobReference;
+//        this.function = JobFunction.valueOf(function);
+//        this.address = new Address(streetName, city, district, streetNumber, zipcode);
+//        this.contractType = ContractType.valueOf(contractTypeDenomination.contractTypeName());
+//        this.workMode = WorkMode.valueOf(workModeDenomination.workModeName());
+//        this.description = Description.valueOf(description);
+//        this.numVacancies = NumberVacancy.valueOf(numVacancies);
+//        this.requirementSpecification = requirementsFile;
+//        this.interviewModel = interviewFile;
+//        this.status = new JobOpeningStatus();
+//        this.status.setStatusDescriptionAsUNFINISHED();
+//        this.rank = new Rank(newJobReference);
+//    }
+//
+//    public JobOpening(String function, ContractTypeDTO contractTypeDenomination, WorkModeDTO workModeDenomination,
+//                      Address address, Integer numVacancies, String description, RequirementSpecification requirementsFile,
+//                      InterviewModel interviewFile, JobReference lastReference) {
+//
+//        Preconditions.noneNull(function, description, address, lastReference, requirementsFile, interviewFile, contractTypeDenomination,
+//                workModeDenomination, numVacancies);
+//
+//        JobReference newJobReference = generateNewSequencialJobReference(lastReference);
+//        this.jobReference = generateNewSequencialJobReference(lastReference);
+//        this.function = JobFunction.valueOf(function);
+//        this.address = address;
+//        this.contractType = ContractType.valueOf(contractTypeDenomination.contractTypeName());
+//        this.workMode = WorkMode.valueOf(workModeDenomination.workModeName());
+//        this.description = Description.valueOf(description);
+//        this.numVacancies = NumberVacancy.valueOf(numVacancies);
+//        this.requirementSpecification = requirementsFile;
+//        this.interviewModel = interviewFile;
+//        this.status = new JobOpeningStatus();
+//        this.status.setStatusDescriptionAsUNFINISHED();
+//        this.rank = new Rank(newJobReference);
+//    }
 
     protected JobOpening() {
         //for ORM
@@ -178,6 +233,10 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
     public Rank getRank() {
         return rank;
     }
+
+//    public Set<Application> getApplications() {
+//        return applications;
+//    }
 
     @Override
     public JobOpeningDTO toDTO() {
