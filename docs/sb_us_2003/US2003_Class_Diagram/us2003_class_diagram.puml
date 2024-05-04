@@ -13,21 +13,17 @@ class GenerateRequirementsTemplateFileUI <<presentation>>  {
 
 class GenerateRequirementsTemplateFileController <<application>> {
 + create()
-+ choosePlugin()
-+ exportTemplateFile(String pluginFileName)
++ getJobOpeningList()
++ exportTemplateFile(JobOpeningDTO jobOpeningDTO)
 }
 
 class RequirementsTemplateManagerService <<service>> {
-+ requirementPluginsList()
-+ generateNewTemplate(String pluginFileName)
++ getRequirementFromJobOpening(JobOpeningDTO jobOpeningDTO)
++ generateNewTemplate(RequirementSpecification requirementSpecification)
 }
 
 class RequirementSpecificationRepository <<persistence>>\n<<repository>> {
-+ requirementPlugins()
-}
-
-class RequirementSpecification <<domain>> {
-+ toDTO()
++ requirementSpecificationFromDTO(JobOpeningDTO jobOpeningDTO)
 }
 
 class RequirementsTemplatePlugin <<plugin>> {
@@ -40,16 +36,73 @@ class RequirementsTemplateParser <<parser>> {
 + checkFileSyntax(File templateFile)
 }
 
+class AuthorizationService <<service>> {
++ loggedinUserWithPermissions(Role ... Action BaseRole.CUSTOMER_MANAGER)
+}
+
+class JobOpeningRepository <<Persistence>> <<Repository>> {
++ rebuild(JobOpening: entity)
++ getJobOpeningListMatchingCostumerCode(CustomerCode costumerCode)
+}
+
+class CustomerManagementService <<Service>> {
++ getAssignedCostumerCodesList(EmailAddress username)
+}
+
+class CustomerRepository  <<Persistence>> <<Repository>>  {
++ save(e: Customer)
++ getCostumersByUsername(EmailAddress username)
+}
+
+
+class Customer <<Domain>> <<Aggregate Root>> {
+- CustomerCode customerCode
+- CompanyName companyName
+- EmailAddress costumerManagerEmail
++ customerCode()
++ companyName()
+}
+
+class JobOpeningManagementService <<Service>> {
++ getJobOpeningsFromCostumerCodes(List<CustomerCode> assignedCostumerCodesList)
+}
+
+class JobOpeningListDTOService <<Service>> {
++ convertToDTO(List<JobOpening> jobOpeningList)
+}
+
+class JobOpening <<Domain>> <<Aggregate Root>> {
+- String function
+- ContractType contractType
+- WorkMode workMode
+- Address jobOpeningAddress
+- String jobReference
+- Integer numVacancies
+- String description
+- File requirementsSpecificationsFile
++ create()
+}
 
 
 'Associations
-AbstractUI <|.up. GenerateRequirementsTemplateFileUI
-
-
+AbstractUI <|.up. GenerateRequirementsTemplateFileUI : implements
 GenerateRequirementsTemplateFileUI .left.> GenerateRequirementsTemplateFileController
+
+GenerateRequirementsTemplateFileController .left.> AuthorizationService
+GenerateRequirementsTemplateFileController ...> CustomerManagementService
+GenerateRequirementsTemplateFileController ...> JobOpeningManagementService
+GenerateRequirementsTemplateFileController ..> JobOpeningListDTOService
 GenerateRequirementsTemplateFileController ..> RequirementsTemplateManagerService
+
+'Domain Layer
+CustomerManagementService -down-> CustomerRepository
+CustomerManagementService --> Customer
+JobOpeningManagementService --> JobOpeningRepository
+JobOpeningManagementService --> JobOpening
+JobOpeningListDTOService --> JobOpening
+JobOpeningRepository -> JobOpening
+
 RequirementsTemplateManagerService ..> RequirementSpecificationRepository
-RequirementSpecificationRepository --> RequirementSpecification
 RequirementsTemplateManagerService ..> RequirementsTemplatePlugin
 RequirementsTemplatePlugin ..> RequirementsTemplateParser
 
