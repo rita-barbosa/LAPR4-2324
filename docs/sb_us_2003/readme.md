@@ -12,7 +12,7 @@ of a job opening (so the data is used to verify the requirements of the job open
 **Acceptance Criteria:**
 
 - **2003.1** The usage of **_ANTLR_** tool is required.
-- **2003.2** The question type are to be one of the established types: True/False, Short Text Answer, Choice with Single-Answer,
+- **2003.2** The question types have established types: True/False, Short Text Answer, Choice with Single-Answer,
   Choice with Multiple-Answer, Integer Number, Decimal Number, Date, Time and Numeric Scale.
 - **2003.3** A requirement template must have at least one requirement entry.
 
@@ -94,7 +94,6 @@ Requirements can have different natures:
 * **Date** - A question which answer is a date
 * **Time** - A question which answer is a time
 * **Numeric Scale** - A question which answer is one option in a range of integers (ex: 1-5)
-
 
 Below there's a System Sequence Diagram (SSD) illustrating the expected behaviour of this functionality. After this diagram
 is a partial domain model, with emphasis on US2003's concepts.
@@ -245,6 +244,7 @@ This topic presents the classes with the patterns applied to them along with jus
 
 >**Service Pattern**
 > * RequirementsTemplateManagerService
+> * AuthorizationService
 >
 > **Justifications**
 >
