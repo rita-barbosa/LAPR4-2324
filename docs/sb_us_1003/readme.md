@@ -184,48 +184,44 @@ This topic presents the classes with the patterns applied to them along with jus
 ### 4.4. Tests
 
 
-**Test 1:** Verifies that listing by costumer code is supported
+**Test 1:** Verifies that a criteria cannot have its denomination null
 
-**Refers to Acceptance Criteria:** 1003.1
-
+**Refers to Acceptance Criteria:** ----
 ````
 @Test
-public void ensureListingByCostumerCodeIsValid() {
-...
+public void ensureCriteriaDenominationNullIsInvalid() {
+    assertThrows(IllegalArgumentException.class, () -> new Criteria(null, Criteria.class.getSimpleName()));
 }
 ````
 
-**Test 2:** Verifies that listing by company name is supported
+**Test 2:** Verifies that a criteria cannot have its denomination empty
 
-**Refers to Acceptance Criteria:** 1003.1
-
+**Refers to Acceptance Criteria:** ----
 ````
 @Test
-public void ensureListingByCompanyNameIsValid() {
-...
+public void ensureCriteriaDenominationEmptyIsInvalid() {
+    assertThrows(IllegalArgumentException.class, () -> new Criteria("", Criteria.class.getSimpleName()));
 }
 ````
 
-**Test 3:** Verifies that the only job openings listed are from costumers assigned to the Costumer Manager in session
 
-**Refers to Acceptance Criteria:** 1003.2
+**Test 3:** Verifies that a criteria cannot have its className null
 
+**Refers to Acceptance Criteria:** ----
 ````
 @Test
-public void ensureListedJobOpeningsAreFromAssignedCostumers() {
-...
+public void ensureCriteriaClassNameNullIsInvalid() {
+    assertThrows(IllegalArgumentException.class, () -> new Criteria("criteria", null));
 }
 ````
 
-**Test 4:** Verifies that it is not possible to access job openings from others costumers that are not assigned to the
-Costumer Manager in session
+**Test 4:** Verifies that a criteria cannot have its className empty
 
-**Refers to Acceptance Criteria:** 1003.2
-
+**Refers to Acceptance Criteria:** ----
 ````
 @Test
-public void ensureOtherCostumersJobOpeningsAccessIsDenied() {
-...
+public void ensureCriteriaClassNameEmptyIsInvalid() {
+    assertThrows(IllegalArgumentException.class, () -> new Criteria("criteria", ""));
 }
 ````
 
