@@ -5,6 +5,8 @@ import eapli.framework.infrastructure.authz.domain.model.Role;
 import eapli.framework.infrastructure.authz.domain.model.SystemUser;
 import eapli.framework.time.domain.model.DateInterval;
 import eapli.framework.time.util.Calendars;
+import jobs4u.base.applicationmanagement.domain.*;
+import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
 import jobs4u.base.candidatemanagement.application.CandidateManagementService;
 import jobs4u.base.candidatemanagement.domain.PhoneNumber;
 import jobs4u.base.criteriamanagement.domain.Criteria;
@@ -12,6 +14,10 @@ import jobs4u.base.criteriamanagement.repository.CriteriaRepository;
 import jobs4u.base.customermanagement.application.CustomerManagementService;
 import jobs4u.base.infrastructure.bootstrapers.UsersBootstrapperBase;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
+import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
+import jobs4u.base.interviewmodelmanagement.domain.InterviewModelDescription;
+import jobs4u.base.interviewmodelmanagement.domain.InterviewModelName;
+import jobs4u.base.interviewmodelmanagement.repositories.InterviewModelRepository;
 import jobs4u.base.jobopeningmanagement.domain.*;
 import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
 import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
@@ -28,6 +34,7 @@ import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
 import jobs4u.base.usermanagement.domain.BaseRoles;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -41,13 +48,17 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
     private ContractTypeRepository contractTypeRepository;
     private WorkModeRepository workModeRepository;
     private RequirementSpecificationRepository requirementSpecificationRepository;
+    private InterviewModelRepository interviewModelRepository;
 
     private JobOpeningRepository jobOpeningRepository;
     private CriteriaRepository criteriaRepository;
     private RecruitmentProcessRepository recruitmentProcessRepository;
     private PhaseRepository phaseRepository;
 
+    private ApplicationRepository applicationRepository;
+
     List<RequirementSpecification> requirementSpecificationsList = new ArrayList<>();
+    List<InterviewModel> interviewModelList = new ArrayList<>();
 
     @Override
     public boolean execute() {
@@ -57,8 +68,10 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         persistContractTypes();
         persistWorkModes();
         persistRequirementSpecifications();
+        persistInterviewModels();
         persistJobOpenings();
         persistCandidates();
+        persistApplications();
         //persistRecruitmentProcesses();
         return true;
     }
@@ -67,10 +80,12 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         this.contractTypeRepository = PersistenceContext.repositories().contractTypes();
         this.workModeRepository = PersistenceContext.repositories().workModes();
         this.requirementSpecificationRepository = PersistenceContext.repositories().requirementSpecifications();
+        this.interviewModelRepository = PersistenceContext.repositories().interviewModels();
         this.jobOpeningRepository = PersistenceContext.repositories().jobOpenings();
         this.criteriaRepository = PersistenceContext.repositories().criteria();
         this.recruitmentProcessRepository = PersistenceContext.repositories().recruitmentProcesses();
         this.phaseRepository = PersistenceContext.repositories().phases();
+        this.applicationRepository = PersistenceContext.repositories().applications();
     }
 
     private void persistCriteria() {
@@ -178,6 +193,24 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         requirementSpecificationRepository.save(requirementSpecification1);
     }
 
+    private void persistInterviewModels(){
+        InterviewModelName interviewName = new InterviewModelName("[Back End] Senior Developer");
+        InterviewModelDescription interviewModelDescription = new InterviewModelDescription("Interview for back end senior developers");
+        PluginJarFile pluginJarFile = new PluginJarFile("interview-back-end-senior-developer.jar");
+        InterviewModel interviewModel = new InterviewModel(interviewName, interviewModelDescription, pluginJarFile);
+
+        InterviewModelName interviewName1 = new InterviewModelName("[Front End] Junior Developer");
+        InterviewModelDescription interviewModelDescription1 = new InterviewModelDescription("Interview for front end junior developers");
+        PluginJarFile pluginJarFile1 = new PluginJarFile("interview-front-end-junior-developer.jar");
+        InterviewModel interviewModel1 = new InterviewModel(interviewName1, interviewModelDescription1, pluginJarFile1);
+
+        interviewModelList.add(interviewModel);
+        interviewModelList.add(interviewModel1);
+
+        interviewModelRepository.save(interviewModel);
+        interviewModelRepository.save(interviewModel1);
+    }
+
     private void persistCustomers() {
         final Set<Role> roles = new HashSet<>();
         roles.add(BaseRoles.CUSTOMER_MANAGER);
@@ -212,5 +245,19 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
 
         contractTypeRepository.save(contractType);
         contractTypeRepository.save(contractType1);
+    }
+
+    private void persistApplications(){
+        RequirementAnswer requirementAnswer = new RequirementAnswer("The requirement was complete!");
+        RequirementResult requirementResult = new RequirementResult(true);
+        File file = new File("example.txt");
+        Date date = new Date(2024, Calendar.JANUARY, 5);
+        Interview interview = new Interview("interview1", new Date(2024, Calendar.FEBRUARY, 2),
+                new InterviewResult("correct", 50, "wrong"), "answer");
+
+
+        Application application = new Application(1L, requirementAnswer, requirementResult, file, date, interview);
+
+        applicationRepository.save(application);
     }
 }

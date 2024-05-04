@@ -6,19 +6,22 @@ import eapli.framework.validations.Preconditions;
 import java.util.Objects;
 
 public class RequirementResult implements ValueObject {
-    private String RequirementResult;
+    private Boolean requirementResult;
 
-    public RequirementResult(String answer){
+    public RequirementResult(Boolean answer){
         Preconditions.noneNull(answer);
-        Preconditions.nonEmpty(answer);
-        this.RequirementResult = answer;
+        this.requirementResult = answer;
     }
 
     public RequirementResult(){
         //for ORM
     }
 
-    public static RequirementResult valueOf(final String answer){
+    public Boolean requirementResult(){
+        return requirementResult;
+    }
+
+    public static RequirementResult valueOf(final Boolean answer){
         return new RequirementResult(answer);
     }
 
@@ -27,11 +30,11 @@ public class RequirementResult implements ValueObject {
         if (this == o) return true;
         if (!(o instanceof RequirementResult)) return false;
         RequirementResult that = (RequirementResult) o;
-        return Objects.equals(RequirementResult, that.RequirementResult);
+        return Objects.equals(requirementResult, that.requirementResult);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(RequirementResult);
+        return Objects.hash(requirementResult);
     }
 }

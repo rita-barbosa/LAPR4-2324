@@ -25,8 +25,11 @@ package jobs4u.base.candidatemanagement.domain;
 
 import eapli.framework.domain.model.AggregateRoot;
 import eapli.framework.domain.model.DomainEntities;
+import eapli.framework.general.domain.model.EmailAddress;
+import eapli.framework.infrastructure.authz.domain.model.Name;
 import eapli.framework.infrastructure.authz.domain.model.SystemUser;
 import jakarta.persistence.*;
+import jobs4u.base.candidatemanagement.dto.CandidateDTO;
 
 @Entity
 @Table(name = "CANDIDATE")
@@ -63,6 +66,9 @@ public class CandidateUser implements AggregateRoot<PhoneNumber> {
         return this.systemUser;
     }
 
+    public EmailAddress email(){ return this.systemUser.email();}
+    public Name name(){ return this.systemUser.name();}
+
     @Override
     public boolean equals(final Object o) {
         return DomainEntities.areEqual(this, o);
@@ -76,6 +82,9 @@ public class CandidateUser implements AggregateRoot<PhoneNumber> {
     @Override
     public boolean sameAs(final Object other) {
         return DomainEntities.areEqual(this, other);
+    }
+    public CandidateDTO toDTO() {
+        return new CandidateDTO(systemUser.name().toString(), systemUser.email().toString(), phoneNumber.number());
     }
 
     public PhoneNumber phoneNumber() {

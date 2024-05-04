@@ -41,11 +41,8 @@ public class ListJobOpeningsController {
         this.criteriaRepository = PersistenceContext.repositories().criteria();
     }
 
-
     public List<JobOpeningDTO> filterJobOpeningList(Object object) {
-
         List<JobOpening> jobOpeningList = new ArrayList<>();
-
         switch (object.getClass().getSimpleName()) {
             case "CustomerDTO":
                 Optional<Customer> customer = customerManagementService.getCustomerByDTO((CustomerDTO) object);
@@ -54,18 +51,12 @@ public class ListJobOpeningsController {
                 }
                 break;
             case "DateInterval":
-                assert object instanceof DateInterval;
-               // try {
                     jobOpeningList = filterJobOpeningListByDateInterval((DateInterval) object, virgemJobOpeningList());
-                //}catch (NoSuchElementException e){
-                  //  System.out.println(e.getMessage());
-                //}
                 break;
             case "String":
                 if (object.equals("STARTED")) {
                     jobOpeningList = filterJobOpeningListBySTARTEDStatus(virgemJobOpeningList());
                 } else {
-                    assert object instanceof String;
                     jobOpeningList = filterJobOpeningListByCustomerCode((String) object);
                 }
                 break;

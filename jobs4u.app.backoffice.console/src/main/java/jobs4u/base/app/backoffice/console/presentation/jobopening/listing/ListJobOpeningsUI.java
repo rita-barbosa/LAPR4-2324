@@ -52,6 +52,8 @@ public class ListJobOpeningsUI extends AbstractListUI<JobOpeningDTO> {
                         default:
                             break;
                     }
+                }else {
+                    super.show();
                 }
                 answer = Console.readLine("Finish listing? [y/n]").trim().toLowerCase();
                 if (!answer.equals("y") && !answer.equals("n")) {
@@ -59,15 +61,15 @@ public class ListJobOpeningsUI extends AbstractListUI<JobOpeningDTO> {
                 }
             } while (!answer.equals("y"));
             return false;
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return false;
         }
     }
 
     private DateInterval buildNewDateInterval() {
-        Calendar start = Console.readCalendar("Provide the start date:");
-        Calendar end = Console.readCalendar("Provide the end date:");
+        Calendar start = Console.readCalendar("Provide the start date [DD-MM-YYYY]:");
+        Calendar end = Console.readCalendar("Provide the end date [DD-MM-YYYY]:");
         return new DateInterval(start, end);
     }
 
