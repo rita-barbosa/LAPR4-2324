@@ -6,8 +6,8 @@ import eapli.framework.presentation.console.AbstractUI;
 import eapli.framework.presentation.console.SelectWidget;
 import jobs4u.base.app.backoffice.console.presentation.authz.EnableDisableUserUI;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.dto.RequirementSpecificationDTO;
 import jobs4u.base.requirementsmanagement.application.SelectRequirementSpecificationController;
-import jobs4u.base.requirementsmanagement.dto.RequirementSpecificationDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

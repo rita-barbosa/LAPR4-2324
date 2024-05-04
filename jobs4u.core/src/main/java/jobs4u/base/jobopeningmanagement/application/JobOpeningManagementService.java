@@ -6,7 +6,7 @@ import jobs4u.base.customermanagement.domain.Customer;
 import jobs4u.base.customermanagement.domain.CustomerCode;
 import jobs4u.base.customermanagement.dto.CustomerDTO;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
-import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementSpecification;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;

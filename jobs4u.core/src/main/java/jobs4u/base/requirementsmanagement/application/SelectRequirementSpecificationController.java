@@ -8,10 +8,10 @@ import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
-import jobs4u.base.requirementsmanagement.domain.RequirementName;
-import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
-import jobs4u.base.requirementsmanagement.dto.RequirementSpecificationDTO;
-import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementName;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementSpecification;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.dto.RequirementSpecificationDTO;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.repositories.RequirementSpecificationRepository;
 import jobs4u.base.usermanagement.domain.BaseRoles;
 
 import java.util.Optional;
@@ -43,8 +43,7 @@ public class SelectRequirementSpecificationController {
         authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN);
         Optional<JobOpening> j = jobOpeningRepository.ofIdentity(new JobReference(jobOpeningDTO.getJobReference()));
         if (j.isPresent()) {
-            Optional<RequirementSpecification> r = requirementSpecificationRepository
-                    .ofIdentity(new RequirementName(requirementSpecificationDTO.filename()));
+            Optional<RequirementSpecification> r = requirementSpecificationRepository.ofIdentity(new RequirementName(requirementSpecificationDTO.filename()));
             if (r.isPresent()) {
                 j.get().changeRequirementSpecification(r.get());
                 jobOpeningRepository.save(j.get());

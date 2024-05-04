@@ -2,7 +2,6 @@ package jobs4u.base.jobopeningmanagement.dto;
 
 import eapli.framework.validations.Preconditions;
 import jobs4u.base.jobopeningmanagement.domain.*;
-import jobs4u.base.requirementsmanagement.domain.RequirementName;
 
 import java.util.Objects;
 

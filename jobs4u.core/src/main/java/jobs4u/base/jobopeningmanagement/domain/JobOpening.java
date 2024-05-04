@@ -6,13 +6,12 @@ import eapli.framework.representations.dto.DTOable;
 import eapli.framework.validations.Preconditions;
 import jakarta.persistence.*;
 import jobs4u.base.applicationmanagement.domain.Application;
-import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
 import jobs4u.base.jobopeningmanagement.domain.rank.Rank;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentPeriod;
 import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
-import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementSpecification;
 import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
 import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
 
