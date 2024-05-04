@@ -18,14 +18,12 @@ public class RegisterCustomerUI extends AbstractUI {
         final String email = Console.readLine("Email");
 
         try {
-            this.controller.registerNewCustomer(companyName, address, customerCode, email);
+            return this.controller.registerNewCustomer(companyName, address, customerCode, email);
         } catch (final IntegrityViolationException | ConcurrencyException e) {
             System.out.println(
                     "Unfortunatelly there was an unexpected error in the application. Please try again and if the problem persists, contact your system admnistrator.");
         }
-
-
-        return true;
+        return false;
     }
 
     @Override
