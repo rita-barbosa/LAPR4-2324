@@ -48,4 +48,9 @@ public class InMemoryCandidateUserRepository
     public Optional<Candidate> findByPhoneNumber(final PhoneNumber number) {
         return matchOne(e -> e.identity().equals(number));
     }
+
+    @Override
+    public boolean checksIfExits(PhoneNumber number) {
+        return matchOne(e -> e.identity().equals(number)).isPresent();
+    }
 }

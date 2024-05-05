@@ -1,7 +1,7 @@
 package jobs4u.base.requirementsmanagement.application;
 
 import eapli.framework.validations.Preconditions;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.dto.RequirementSpecificationDTO;
+import jobs4u.base.requirementsmanagement.dto.RequirementSpecificationDTO;
 import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 
 

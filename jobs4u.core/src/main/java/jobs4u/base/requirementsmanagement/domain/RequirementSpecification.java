@@ -1,17 +1,15 @@
 package jobs4u.base.requirementsmanagement.domain;
 
-import com.sun.source.util.Plugin;
 import eapli.framework.domain.model.AggregateRoot;
 import eapli.framework.domain.model.DomainEntities;
 import eapli.framework.representations.dto.DTOable;
 import eapli.framework.validations.Preconditions;
 import jakarta.persistence.*;
 
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.dto.RequirementSpecificationDTO;
+import jobs4u.base.requirementsmanagement.dto.RequirementSpecificationDTO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 @Entity

@@ -28,6 +28,7 @@ import eapli.framework.domain.model.DomainEntities;
 import eapli.framework.general.domain.model.EmailAddress;
 import eapli.framework.infrastructure.authz.domain.model.Name;
 import eapli.framework.infrastructure.authz.domain.model.SystemUser;
+import eapli.framework.validations.Preconditions;
 import jakarta.persistence.*;
 import jobs4u.base.candidatemanagement.dto.CandidateDTO;
 
@@ -52,9 +53,7 @@ public class Candidate implements AggregateRoot<PhoneNumber> {
     private SystemUser systemUser;
 
     public Candidate(final SystemUser user, final PhoneNumber phoneNumber) {
-        if (phoneNumber == null || user == null) {
-            throw new IllegalArgumentException();
-        }
+        Preconditions.noneNull(user, phoneNumber);
         this.systemUser = user;
         this.phoneNumber = phoneNumber;
     }

@@ -14,7 +14,7 @@ import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
 import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
 import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
 import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.dto.RequirementSpecificationDTO;
+import jobs4u.base.requirementsmanagement.dto.RequirementSpecificationDTO;
 import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 
 import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;

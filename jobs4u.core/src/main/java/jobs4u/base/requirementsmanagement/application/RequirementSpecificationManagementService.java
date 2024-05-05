@@ -2,7 +2,7 @@ package jobs4u.base.requirementsmanagement.application;
 
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.dto.RequirementSpecificationDTO;
+import jobs4u.base.requirementsmanagement.dto.RequirementSpecificationDTO;
 import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
 
 

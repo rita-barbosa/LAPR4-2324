@@ -45,4 +45,12 @@ public class JpaCandidateRepository extends JpaAutoTxRepository<Candidate, Long,
         params.put("phoneNumber", phoneNumber);
         return matchOne("e.phoneNumber = :phoneNumber", params);
     }
+
+    @Override
+    public boolean checksIfExits(PhoneNumber number) {
+        final Map<String, Object> params = new HashMap<>();
+        params.put("phoneNumber", number);
+        return matchOne("e.phoneNumber = :phoneNumber", params).isPresent();
+    }
+
 }

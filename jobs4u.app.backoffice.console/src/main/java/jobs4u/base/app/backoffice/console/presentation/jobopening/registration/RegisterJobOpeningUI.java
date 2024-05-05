@@ -10,7 +10,7 @@ import jobs4u.base.jobopeningmanagement.application.RegisterJobOpeningController
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
 import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.dto.RequirementSpecificationDTO;
+import jobs4u.base.requirementsmanagement.dto.RequirementSpecificationDTO;
 
 
 import java.util.List;

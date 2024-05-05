@@ -46,4 +46,12 @@ public class CandidateManagementService {
         candidatesListOrdered.sort(Comparator.comparing(Candidate::email));
         return candidatesListOrdered;
     }
+
+    public boolean alreadyExits(String phoneNumber){
+        return candidateRepository.checksIfExits(new PhoneNumber("+351", phoneNumber));
+    }
+
+    public Optional<Candidate> getCandidateByPhoneNumber(String phoneNumber){
+        return candidateRepository.findByPhoneNumber(new PhoneNumber("+351", phoneNumber));
+    }
 }

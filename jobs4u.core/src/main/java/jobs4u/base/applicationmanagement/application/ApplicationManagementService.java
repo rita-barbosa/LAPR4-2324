@@ -4,12 +4,15 @@ import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.applicationmanagement.domain.ApplicationFile;
 import jobs4u.base.applicationmanagement.domain.RequirementAnswer;
 import jobs4u.base.applicationmanagement.domain.RequirementResult;
+import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
 import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
 import jobs4u.base.candidatemanagement.domain.Candidate;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 public class ApplicationManagementService {
@@ -32,6 +35,16 @@ public class ApplicationManagementService {
 
         applicationRepository.save(application);
         return application;
+    }
+
+    public List<ApplicationDTO> getAllApplicationsThatHaveCandidate(Candidate candidate){
+        List<ApplicationDTO> list = new ArrayList<>();
+        for(Application application : applicationRepository.applications()){
+            if(application.getCandidate().sameAs(candidate)){
+                list.add(application.toDTO());
+            }
+        }
+        return list;
     }
 
 }

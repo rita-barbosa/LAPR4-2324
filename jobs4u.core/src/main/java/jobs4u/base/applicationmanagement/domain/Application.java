@@ -143,6 +143,9 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
         //for ORM
     }
 
+    public Candidate getCandidate() {
+        return candidate;
+    }
 
     @Override
     public boolean sameAs(Object other){

@@ -1,4 +1,4 @@
-package jobs4u.base.languageenginnermanagement.requirementsmanagement.dto;
+package jobs4u.base.requirementsmanagement.dto;
 
 public class RequirementSpecificationDTO {
 
