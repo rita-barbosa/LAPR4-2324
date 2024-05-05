@@ -78,20 +78,14 @@ To be able to promote encapsulation between layers, it will be used DTOs.
 
 * JobOpening
 * Application
-
-**Persistence Layer Classes**
-
-* RepositoryFactory
-* JobOpeningRepository
-* ApplicationRepository
+* JobOpeningManagementService
+* ApplicationManagementService
 
 
 **Application Layer Classes**
 
 * ListJobOpeningApplicationsController
-* JobOpeningMapper
 * JobOpeningDTO
-* ApplicationMapper
 * ApplicationDTO
 
 
@@ -105,16 +99,8 @@ To be able to promote encapsulation between layers, it will be used DTOs.
 
 * **US1005 Sequence Diagram (Split)**
 
-![US1005 Split Sequence Diagram](US1005_sd_split.svg)
+![US1005 Split Sequence Diagram](US1005_SD.svg)
 
-* **[US1005 Partial SD] Convert Job Opening List to DTO**
-
-![US1005 Convert Job Opening List to DTO](US1005_partial_convert_job_opening_list_to_DTO.svg)
-
-
-* **[US1005 Partial SD] Convert Application List to DTO**
-
-![US1002 Convert Application List to DTO](US1005_partial_convert_application_list_to_DTO.svg)
 
 ### 4.2. Class Diagram
 
@@ -123,16 +109,6 @@ To be able to promote encapsulation between layers, it will be used DTOs.
 ### 4.3. Applied Patterns
 
 To make the design of this user story, were used the following patterns:
-
->**_Factory Pattern_**
->* Classes
->  * JobOpeningFactory
->  * ApplicationFactory
->
->* Justification
->
->  The JobOpening is immutable, so the instances of this class will come from a job opening factory. The same thing
->happens with Application.
 
 
 >**_Repository Pattern_**
@@ -148,28 +124,13 @@ To make the design of this user story, were used the following patterns:
   
 >**_Service Pattern_**
 >* Classes
->  * ListJobOpeningApplicationsUI
->  * ListJobOpeningApplicationsController
->  * JobOpeningMapper
->  * ApplicationMapper
->
->* Justification
->* 
->  The UI is considered a service, since it is not a concept in the domain, and there is no justification to assign these
->responsibilities to a domain class.
->  The controller is used as a bridge between the UI and the domain classes, processing the UI requests and assigning the
->responsibilities to the respective domain class.
->  The Mappers have the responsibility of converting a domain object in a DTO.
-
-
->**_DTO Pattern_**
->* Classes
->  * JobOpeningDTO
->  * ApplicationDTO
+>  * JobOpeningManagementService
+>  * ApplicationManagementService
 >
 >* Justification
 >
-> The DTO's is used to transfer the data between layers without behavior or business logic, promoting encapsulation.
+>  JobOpeningManagementService and ApplicationManagementService are in charge of managing request regarding
+>jobOpenings and applications, serving as encapsulation between the controller and the JobOpeningRepository/ApplicationRepository along with the domain classes.
 
 
 ### 4.4. Tests
@@ -211,25 +172,75 @@ public void ensureListedJobOpeningsAreFromAssignedCostumers() {
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+### ListJobOpeningApplicationsController
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+````
+ public List<JobOpeningDTO> getJobOpeningsList() {
+        return jobOpeningManagementService.getJobOpeningsList();
+    }
+````
+
+````
+public List<ApplicationDTO> getApplicationsList(JobOpeningDTO jobOpeningDTO) {
+        JobOpening jobOpening = jobOpeningManagementService.getJobOpening(jobOpeningDTO);
+
+        List<ApplicationDTO> applicationDTO = new ArrayList<>();
+        if (jobOpening != null){
+            applicationDTO = applicationManagementService.getApplicationsList(jobOpening);
+        }
+
+        return applicationDTO;
+    }
+````
+
+
+### ApplicationManagementService
+
+````
+  public List<ApplicationDTO> getApplicationsList(JobOpening jobOpening){
+        List<ApplicationDTO> applicationDTO = new ArrayList<>();
+
+            for (Application application : jobOpening.getApplications()) {
+                applicationDTO.add(application.toDTO());
+            }
+
+        return applicationDTO;
+    }
+````
+
+
+### JobOpeningManagementService
+
+````
+public List<JobOpeningDTO> getJobOpeningsList(){
+        List<JobOpeningDTO> jobOpenings = new ArrayList<>();
+        for (JobOpening jobOpening : jobOpeningRepository.findAll()) {
+            jobOpenings.add(jobOpening.toDTO());
+
+        }
+        return  jobOpenings;
+    }
+````
+
+````
+public JobOpening getJobOpening(JobOpeningDTO jobOpeningDTO){
+        String jobReference = jobOpeningDTO.getJobReference();
+        JobOpening jobOpening = null;
+
+        for (JobOpening job : jobOpeningRepository.findAll()) {
+            if (job.getJobReference().toString().equals(jobReference)){
+                jobOpening = job;
+            }
+        }
+        return jobOpening;
+    }
+````
+
+
+
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
-
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
-
-## 7. Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
+To activate this feature, you'll need to run the script named `run-backoffice-app` and log in with Customer Manager
+permissions. Then, navigate to the "Job Opening" menu and select option 5 - `List Job Opening Applications` - to access this
+feature.

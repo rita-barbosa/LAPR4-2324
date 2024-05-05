@@ -5,16 +5,9 @@ title US1005 Class Diagram
 
 'DTO
 'package <<DTO>> {
-class JobOpeningMapper {
-+ convertToDTO(jobOpeningList)
-}
 
 class JobOpeningDTO {
 + create(e: element)
-}
-
-class ApplicationMapper {
-+ convertToDTO(applicationList)
 }
 
 class ApplicationDTO {
@@ -33,10 +26,17 @@ class ListJobOpeningApplicationsUI <<Presentation>> {
 class ListJobOpeningApplicationsController <<Application>> {
 + getJobOpeningList()
 + getApplicationList()
-+ toDTO(jobOpeningList)
-+ toDTO(applicationList)
 }
 '}
+
+class JobOpeningManagementService <<Service>> {
++ getJobOpeningList()
++ getJobOpening(jobOpeningDTO)
+}
+
+class ApplicationManagementService <<Service>> {
++ getApplicationsList(jobOpening)
+}
 
 
 'package <<Domain>> {
@@ -103,11 +103,11 @@ class Interview <<Domain>> <<Value Object>> {
 'package <<Persistence>> {
 class JobOpeningRepository <<Persistence>> <<Repository>> {
 + getJobOpeningList()
++ getJobOpening(JobOpeningDTO)
 }
 
 class ApplicationRepository <<Persistence>> <<Repository>> {
-+ save(Application: entity)
-+ getApplicationList(jobOpening)
+
 }
 
 interface RepositoryDatabase <<Persistence>> {
@@ -123,13 +123,16 @@ CostumerManager ..> ListJobOpeningApplicationsController
 ListJobOpeningApplicationsUI ..> ListJobOpeningApplicationsController
 ListJobOpeningApplicationsController ..> JobOpeningRepository
 ListJobOpeningApplicationsController ..> ApplicationRepository
+ListJobOpeningApplicationsController ..> ApplicationManagementService
+ListJobOpeningApplicationsController ..> JobOpeningManagementService
 
 'Domain Layer
-'JobOpeningFactory "1" --> "*" JobOpening : creates
-'AddressFactory "1" --> "*" Address : produces
-'Address "1" --> "*" JobOpening : locates
 WorkMode "1" --> "*" JobOpening : characterizes
 ContractType "1" --> "*" JobOpening  : characterizes
+JobOpeningManagementService --> JobOpeningRepository
+JobOpeningManagementService --> JobOpening
+ApplicationManagementService --> Application
+ApplicationManagementService --> ApplicationRepository
 
 
 ''Persistence Layer
@@ -140,7 +143,6 @@ JobOpeningRepository <.. JobOpening : persisted by
 ApplicationRepository <.. Application : persisted by
 ApplicationRepository "1" --> "*" Interview : rebuilds
 
-'RequirementsSpecificationsRepository "1" -> "*" RequirementSpecification : aggregates
 '
 ''Interface implementation
 RepositoryDatabase <|.. JobOpeningRepository : implements
@@ -148,14 +150,6 @@ RepositoryDatabase <|.. ApplicationRepository : implements
 
 
 ''DTO
-JobOpeningMapper ..> JobOpeningDTO
-ApplicationMapper ..> ApplicationDTO
-ApplicationMapper ..> Application
-ListJobOpeningApplicationsController ..> ApplicationMapper
-ListJobOpeningApplicationsController ...> JobOpeningMapper
-JobOpeningMapper ..> ContractType
-JobOpeningMapper ..> WorkMode
-ApplicationMapper ..> Interview
 ListJobOpeningApplicationsUI ..> JobOpeningDTO
 ListJobOpeningApplicationsUI ..> ApplicationDTO
 
