@@ -2,10 +2,7 @@ package jobs4u.base.jobopeningmanagement.domain;
 
 import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
 import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.FullClassName;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementDescription;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementName;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementSpecification;
+import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 import org.junit.Test;
 
 import static org.junit.Assert.assertThrows;

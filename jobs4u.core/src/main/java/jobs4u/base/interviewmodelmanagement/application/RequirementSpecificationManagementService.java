@@ -1,10 +1,9 @@
-package jobs4u.base.languageenginnermanagement.interviewmodelmanagement.application;
+package jobs4u.base.interviewmodelmanagement.application;
 
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModelName;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementName;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementSpecification;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.repositories.RequirementSpecificationRepository;
+import jobs4u.base.requirementsmanagement.domain.RequirementName;
+import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
+import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
 
 public class RequirementSpecificationManagementService {
 

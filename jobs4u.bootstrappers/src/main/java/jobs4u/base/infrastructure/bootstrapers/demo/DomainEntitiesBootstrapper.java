@@ -22,10 +22,10 @@ import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
 import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModel;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.repositories.InterviewModelRepository;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementSpecification;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.repositories.RequirementSpecificationRepository;
+import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
+import jobs4u.base.interviewmodelmanagement.repositories.InterviewModelRepository;
+import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
+import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
 import jobs4u.base.recruitmentprocessmanagement.domain.*;
 import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
 import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
@@ -67,10 +67,10 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         persistWorkModes();
         persistRequirementSpecifications();
         persistInterviewModels();
+        persistRecruitmentProcesses();
         persistJobOpenings();
         persistCandidates();
         persistApplications();
-        //persistRecruitmentProcesses();
         return true;
     }
 
@@ -95,52 +95,115 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
     }
 
     private void persistRecruitmentProcesses() {
-        ContractTypeDTO contract = new ContractTypeDTO("full-time");
-        WorkModeDTO mode = new WorkModeDTO("remote");
-        String description = "UX/UI Design.";
-        JobReference jobReference2 = new JobReference("ISEP", 3);
-
-        JobOpening jobOpening2 = new JobOpening("Back End Senior Developer", contract, mode, "HELLO Street",
-                "HELLO Town", "HELLO District", "HELLO", "85206", 8, description,
-                requirementSpecificationsList.get(0), jobReference2);
-        jobOpening2.getStatus().setStatusDescriptionAsSTARTED();
-
-        DateInterval dateInterval = null;
+        DateInterval dateInterval1 = null;
+        DateInterval dateInterval2 = null;
+        DateInterval dateInterval3 = null;
         try {
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-            Calendar start = Calendars.fromDate(df.parse("25-04-2024"));
-            Calendar end = Calendars.fromDate(df.parse("17-06-2024"));
-            dateInterval = new DateInterval(start, end);
+
+            Calendar start1 = Calendars.fromDate(df.parse("25-04-2024"));
+            Calendar end1 = Calendars.fromDate(df.parse("17-06-2024"));
+            dateInterval1 = new DateInterval(start1, end1);
+
+            Calendar start2 = Calendars.fromDate(df.parse("10-01-2024"));
+            Calendar end2 = Calendars.fromDate(df.parse("10-02-2024"));
+            dateInterval2 = new DateInterval(start2, end2);
+
+            Calendar start3 = Calendars.fromDate(df.parse("10-03-2024"));
+            Calendar end3 = Calendars.fromDate(df.parse("10-04-2024"));
+            dateInterval3 = new DateInterval(start3, end3);
         }catch (ParseException e){
             System.out.println(e.getMessage());
         }
 
-        List<Phase> phases = new ArrayList<>();
-        RecruitmentProcess recruitmentProcess = new RecruitmentProcess(new RecruitmentPeriod(dateInterval), jobOpening2, phases);
+        List<Phase> phases1 = new ArrayList<>();
 
-        Phase application = new Phase(new PhaseType(PhaseTypeEnum.APPLICATION), new PhaseDescription("Candidates send applications."),
-                new PhaseStatus(PhaseStatusEnum.CONCLUDED), new PhasePeriod()/*, recruitmentProcess*/);
-        Phase screening = new Phase(new PhaseType(PhaseTypeEnum.SCREENING), new PhaseDescription("Candidates screening."),
-                new PhaseStatus(PhaseStatusEnum.ON_GOING), new PhasePeriod()/*, recruitmentProcess*/);
-        Phase analysis = new Phase(new PhaseType(PhaseTypeEnum.ANALYSIS), new PhaseDescription("Candidates analysis."),
-                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod()/*, recruitmentProcess*/);
-        Phase interview = new Phase(new PhaseType(PhaseTypeEnum.INTERVIEWS), new PhaseDescription("Candidates get interviewed."),
-                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod()/*, recruitmentProcess*/);
-        Phase result = new Phase(new PhaseType(PhaseTypeEnum.RESULT), new PhaseDescription("Candidates get results."),
-                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod()/*, recruitmentProcess*/);
+        List<Phase> phases2 = new ArrayList<>();
 
-        phases.add(application);
-        phases.add(screening);
-        phases.add(analysis);
-        phases.add(interview);
-        phases.add(result);
+        List<Phase> phases3 = new ArrayList<>();
 
-        for (Phase phase : phases){
-            phaseRepository.save(phase);
+        RecruitmentProcess recruitmentProcess1 = new RecruitmentProcess(dateInterval1.start(), dateInterval1.end(), phases1);
+
+        RecruitmentProcess recruitmentProcess2 = new RecruitmentProcess(dateInterval2.start(), dateInterval2.end(), phases2);
+
+        RecruitmentProcess recruitmentProcess3 = new RecruitmentProcess(dateInterval3.start(), dateInterval3.end(), phases3);
+
+
+        Phase application1 = new Phase(new PhaseType(PhaseTypeEnum.APPLICATION), new PhaseDescription("Candidates send applications."),
+                new PhaseStatus(PhaseStatusEnum.CONCLUDED), new PhasePeriod(dateInterval1));
+        Phase screening1 = new Phase(new PhaseType(PhaseTypeEnum.SCREENING), new PhaseDescription("Candidates screening."),
+                new PhaseStatus(PhaseStatusEnum.ON_GOING), new PhasePeriod(dateInterval1));
+        Phase analysis1 = new Phase(new PhaseType(PhaseTypeEnum.ANALYSIS), new PhaseDescription("Candidates analysis."),
+                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod(dateInterval1));
+        Phase interview1 = new Phase(new PhaseType(PhaseTypeEnum.INTERVIEWS), new PhaseDescription("Candidates get interviewed."),
+                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod(dateInterval1));
+        Phase result1 = new Phase(new PhaseType(PhaseTypeEnum.RESULT), new PhaseDescription("Candidates get results."),
+                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod(dateInterval1));
+
+        Phase application2 = new Phase(new PhaseType(PhaseTypeEnum.APPLICATION), new PhaseDescription("Candidates send applications."),
+                new PhaseStatus(PhaseStatusEnum.CONCLUDED), new PhasePeriod(dateInterval2));
+        Phase screening2 = new Phase(new PhaseType(PhaseTypeEnum.SCREENING), new PhaseDescription("Candidates screening."),
+                new PhaseStatus(PhaseStatusEnum.ON_GOING), new PhasePeriod(dateInterval2));
+        Phase analysis2 = new Phase(new PhaseType(PhaseTypeEnum.ANALYSIS), new PhaseDescription("Candidates analysis."),
+                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod(dateInterval2));
+        Phase interview2 = new Phase(new PhaseType(PhaseTypeEnum.INTERVIEWS), new PhaseDescription("Candidates get interviewed."),
+                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod(dateInterval2));
+        Phase result2 = new Phase(new PhaseType(PhaseTypeEnum.RESULT), new PhaseDescription("Candidates get results."),
+                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod(dateInterval2));
+
+
+        Phase application3 = new Phase(new PhaseType(PhaseTypeEnum.APPLICATION), new PhaseDescription("Candidates send applications."),
+                new PhaseStatus(PhaseStatusEnum.CONCLUDED), new PhasePeriod(dateInterval3));
+        Phase screening3 = new Phase(new PhaseType(PhaseTypeEnum.SCREENING), new PhaseDescription("Candidates screening."),
+                new PhaseStatus(PhaseStatusEnum.ON_GOING), new PhasePeriod(dateInterval3));
+        Phase analysis3 = new Phase(new PhaseType(PhaseTypeEnum.ANALYSIS), new PhaseDescription("Candidates analysis."),
+                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod(dateInterval3));
+        Phase interview3 = new Phase(new PhaseType(PhaseTypeEnum.INTERVIEWS), new PhaseDescription("Candidates get interviewed."),
+                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod(dateInterval3));
+        Phase result3 = new Phase(new PhaseType(PhaseTypeEnum.RESULT), new PhaseDescription("Candidates get results."),
+                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod(dateInterval3));
+
+
+        phases1.add(application1);
+        phases1.add(screening1);
+        phases1.add(analysis1);
+        phases1.add(interview1);
+        phases1.add(result1);
+
+        phases2.add(application2);
+        phases2.add(screening2);
+        phases2.add(analysis2);
+        phases2.add(interview2);
+        phases2.add(result2);
+
+        phases3.add(application3);
+        phases3.add(screening3);
+        phases3.add(analysis3);
+        phases3.add(interview3);
+        phases3.add(result3);
+
+        List<Phase> phases11 = new ArrayList<>();
+        List<Phase> phases22 = new ArrayList<>();
+        List<Phase> phases33 = new ArrayList<>();
+        for (Phase phase : phases1){
+            Phase phase1 = phaseRepository.save(phase);
+            phases11.add(phase1);
+        }
+        for (Phase phase : phases2){
+            Phase phase2 = phaseRepository.save(phase);
+            phases22.add(phase2);
+        }
+        for (Phase phase : phases3){
+            Phase phase3 = phaseRepository.save(phase);
+            phases33.add(phase3);
         }
 
-        recruitmentProcess.setPhases(phases);
-        recruitmentProcessRepository.save(recruitmentProcess);
+        recruitmentProcess1.setPhases(phases11);
+        recruitmentProcess2.setPhases(phases22);
+        recruitmentProcess3.setPhases(phases33);
+        recruitmentProcessRepository.save(recruitmentProcess1);
+        recruitmentProcessRepository.save(recruitmentProcess2);
+        recruitmentProcessRepository.save(recruitmentProcess3);
     }
 
 

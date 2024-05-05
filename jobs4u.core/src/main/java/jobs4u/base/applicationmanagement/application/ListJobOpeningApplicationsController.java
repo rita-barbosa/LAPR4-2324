@@ -11,6 +11,7 @@ import jobs4u.base.jobopeningmanagement.application.JobOpeningManagementService;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
+import jobs4u.base.usermanagement.domain.BaseRoles;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,31 +24,21 @@ public class ListJobOpeningApplicationsController {
 
     private final JobOpeningRepository jobOpeningRepository = PersistenceContext.repositories().jobOpenings();
 
-    public List<JobOpeningDTO> getJobOpeningsList() {
-        List<JobOpeningDTO> jobOpenings = new ArrayList<>();
-        for (JobOpening jobOpening : jobOpeningRepository.findAll()) {
-            jobOpenings.add(jobOpening.toDTO());
+    private final JobOpeningManagementService jobOpeningManagementService = new JobOpeningManagementService();
 
-        }
-        return jobOpenings;
+    private final ApplicationManagementService applicationManagementService = new ApplicationManagementService();
+
+    public List<JobOpeningDTO> getJobOpeningsList() {
+        return jobOpeningManagementService.getJobOpeningsList();
     }
 
     public List<ApplicationDTO> getApplicationsList(JobOpeningDTO jobOpeningDTO) {
-        String jobReference = jobOpeningDTO.getJobReference();
-        JobOpening jobOpening = null;
+        JobOpening jobOpening = jobOpeningManagementService.getJobOpening(jobOpeningDTO);
 
-        for (JobOpening job : jobOpeningRepository.findAll()) {
-            if (job.getJobReference().toString().equals(jobReference)){
-                jobOpening = job;
-            }
-        }
         List<ApplicationDTO> applicationDTO = new ArrayList<>();
         if (jobOpening != null){
-            for (Application application : jobOpening.getApplications()) {
-                applicationDTO.add(application.toDTO());
-            }
+            applicationDTO = applicationManagementService.getApplicationsList(jobOpening);
         }
-
 
         return applicationDTO;
     }

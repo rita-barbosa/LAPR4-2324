@@ -9,11 +9,9 @@ import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatus;
 import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatusEnum;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
+import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 public class InMemoryJobOpeningRepository
         extends InMemoryDomainRepository<JobOpening, JobReference>
@@ -100,10 +98,21 @@ public class InMemoryJobOpeningRepository
         return jobOpeningArrayList;
     }
 
+
     @Override
     public Iterable<JobOpening> findAllJobOpeningsNotStarted() {
         return match(e -> e.jobOpeningStatus().getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED))
                 || e.jobOpeningStatus().getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED)));
+    }
+
+    @Override
+    public Iterable<JobOpening> findAllJobOpeningsWithoutRecruitmentProcess() {
+        return match(e -> e.jobOpeningStatus().getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED)));
+    }
+
+    @Override
+    public Optional<JobOpening> getJobOpeningByJobReference(JobReference id) {
+        return matchOne(e -> e.identity().equals(id));
     }
 
 }

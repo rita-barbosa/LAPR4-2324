@@ -2,7 +2,7 @@ package jobs4u.base.interviewmodelmanagement.application;
 
 import eapli.framework.validations.Preconditions;
 import jobs4u.base.interviewmodelmanagement.dto.InterviewModelDTO;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModel;
+import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
 
 import java.util.ArrayList;
 import java.util.List;

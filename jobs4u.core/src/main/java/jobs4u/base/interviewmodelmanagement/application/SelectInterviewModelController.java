@@ -9,9 +9,9 @@ import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModel;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModelName;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.repositories.InterviewModelRepository;
+import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
+import jobs4u.base.interviewmodelmanagement.domain.InterviewModelName;
+import jobs4u.base.interviewmodelmanagement.repositories.InterviewModelRepository;
 
 import jobs4u.base.usermanagement.domain.BaseRoles;
 
@@ -30,7 +30,7 @@ public class SelectInterviewModelController {
     public Iterable<JobOpeningDTO> activeJobOpenings() {
         authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN);
 
-        return jobOpeningManagementService.acticeJobOpenings();
+        return jobOpeningManagementService.activeJobOpenings();
     }
 
     public Iterable<InterviewModelDTO> availableInterviewModels() {

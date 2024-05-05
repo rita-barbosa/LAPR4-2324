@@ -15,6 +15,11 @@ public class PhaseStatus implements ValueObject {
         //for ORM
     }
 
+    public PhaseStatus(String statusDescription) {
+        Preconditions.noneNull(statusDescription);
+        this.statusDescription = String.valueOf(statusDescription);
+    }
+
     public PhaseStatus(PhaseStatusEnum statusDescription) {
         Preconditions.noneNull(statusDescription);
         this.statusDescription = String.valueOf(statusDescription);

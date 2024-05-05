@@ -14,9 +14,10 @@ import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
 import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
 import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
 import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementSpecification;
 import jobs4u.base.languageenginnermanagement.requirementsmanagement.dto.RequirementSpecificationDTO;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.repositories.RequirementSpecificationRepository;
+import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
+
+import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
 import jobs4u.base.usermanagement.domain.BaseRoles;
 
 import java.util.*;

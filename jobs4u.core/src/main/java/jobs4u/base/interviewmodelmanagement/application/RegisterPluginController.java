@@ -1,8 +1,6 @@
-package jobs4u.base.languageenginnermanagement.application;
+package jobs4u.base.interviewmodelmanagement.application;
 
-import jobs4u.base.infrastructure.persistence.PersistenceContext;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.application.InterviewModelManagementService;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.application.RequirementSpecificationManagementService;
+import jobs4u.base.interviewmodelmanagement.application.RequirementSpecificationManagementService;
 
 public class RegisterPluginController {
 

@@ -1,9 +1,9 @@
 package jobs4u.base.persistence.impl.inmemory;
 
 import eapli.framework.infrastructure.repositories.impl.inmemory.InMemoryDomainRepository;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModel;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModelName;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.repositories.InterviewModelRepository;
+import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
+import jobs4u.base.interviewmodelmanagement.domain.InterviewModelName;
+import jobs4u.base.interviewmodelmanagement.repositories.InterviewModelRepository;
 
 import java.util.ArrayList;
 import java.util.List;

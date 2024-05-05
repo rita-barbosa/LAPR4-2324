@@ -6,6 +6,11 @@ import jobs4u.base.Application;
 import jobs4u.base.recruitmentprocessmanagement.domain.Phase;
 import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 public class JpaPhaseRepository
         extends JpaAutoTxRepository<Phase, Long, Long>
         implements PhaseRepository {
@@ -17,4 +22,18 @@ public class JpaPhaseRepository
     public JpaPhaseRepository(final String puname) {
         super(puname, Application.settings().getExtendedPersistenceProperties(), "phaseId");
     }
+
+    @Override
+    public Iterable<Phase> phases() {
+        return findAll();
+    }
+
+    @Override
+    public Optional<Phase> getPhaseById(long id) {
+        final Map<String, Object> params = new HashMap<>();
+        params.put("phaseId", id);
+        return matchOne("e.requirementName.name=:filename", params);
+    }
+
+
 }

@@ -8,11 +8,14 @@ import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public interface JobOpeningRepository extends DomainRepository<JobReference, JobOpening> {
 
     public Iterable<JobOpening> findAllJobOpeningsNotStarted();
+
+    public Iterable<JobOpening> findAllJobOpeningsWithoutRecruitmentProcess();
 
     JobReference lastJobReference(String customerCode);
 
@@ -25,4 +28,6 @@ public interface JobOpeningRepository extends DomainRepository<JobReference, Job
     List<JobOpening> getJobOpeningListWithinDateInterval(DateInterval interval);
 
     Iterable<JobOpening> getUNFINISHEDJobOpeningList();
+
+    Optional<JobOpening> getJobOpeningByJobReference(JobReference id);
 }

@@ -1,28 +1,28 @@
-package jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain;
+package jobs4u.base.requirementsmanagement.domain;
 
 import eapli.framework.domain.model.ValueObject;
 import eapli.framework.validations.Preconditions;
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
 @Embeddable
-public class InterviewModelName implements ValueObject, Comparable<InterviewModelName> {
+public class RequirementName implements ValueObject, Comparable<RequirementName> {
 
     private String name;
 
-    public InterviewModelName(String name) {
+    public RequirementName(String name) {
         Preconditions.noneNull(name);
         Preconditions.nonEmpty(name);
         this.name = name;
     }
 
-    public InterviewModelName() {
+    protected RequirementName() {
         //for ORM
     }
 
     @Override
-    public int compareTo(InterviewModelName o) {
+    public int compareTo(RequirementName o) {
         return 0;
     }
 
@@ -33,8 +33,8 @@ public class InterviewModelName implements ValueObject, Comparable<InterviewMode
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof InterviewModelName)) return false;
-        InterviewModelName that = (InterviewModelName) o;
+        if (!(o instanceof RequirementName)) return false;
+        RequirementName that = (RequirementName) o;
         return Objects.equals(name, that.name);
     }
 

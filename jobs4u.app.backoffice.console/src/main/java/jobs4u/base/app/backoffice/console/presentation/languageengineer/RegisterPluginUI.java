@@ -2,7 +2,7 @@ package jobs4u.base.app.backoffice.console.presentation.languageengineer;
 
 import eapli.framework.io.util.Console;
 import eapli.framework.presentation.console.AbstractUI;
-import jobs4u.base.languageenginnermanagement.application.RegisterPluginController;
+import jobs4u.base.interviewmodelmanagement.application.RegisterPluginController;
 
 public class RegisterPluginUI extends AbstractUI {
 

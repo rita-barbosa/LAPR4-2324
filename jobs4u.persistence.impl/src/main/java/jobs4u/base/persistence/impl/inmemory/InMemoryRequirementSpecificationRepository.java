@@ -1,9 +1,9 @@
 package jobs4u.base.persistence.impl.inmemory;
 
 import eapli.framework.infrastructure.repositories.impl.inmemory.InMemoryDomainRepository;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementName;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementSpecification;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.repositories.RequirementSpecificationRepository;
+import jobs4u.base.requirementsmanagement.domain.RequirementName;
+import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
+import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
 
 import java.util.ArrayList;
 import java.util.List;

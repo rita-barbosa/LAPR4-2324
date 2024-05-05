@@ -2,10 +2,13 @@ package jobs4u.base.recruitmentprocessmanagement.domain;
 
 import eapli.framework.domain.model.AggregateRoot;
 import eapli.framework.domain.model.DomainEntities;
+import eapli.framework.time.domain.model.DateInterval;
 import eapli.framework.validations.Preconditions;
 import jakarta.persistence.*;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.List;
 
 @Entity
@@ -18,16 +21,16 @@ public class RecruitmentProcess implements AggregateRoot<Long> {
 
     private RecruitmentPeriod recruitmentPeriod;
 
+    @OneToMany
+    private List<Phase> phases;
+
     @OneToOne
     private JobOpening jobOpening;
 
-    @OneToMany(/*mappedBy = "recruitmentprocess",*/ cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Phase> phases;
-
-    public RecruitmentProcess(RecruitmentPeriod recruitmentPeriod, JobOpening jobOpening, List<Phase> phases) {
-        Preconditions.noneNull(recruitmentPeriod, jobOpening, phases);
-        this.recruitmentPeriod = recruitmentPeriod;
-        this.jobOpening = jobOpening;
+    public RecruitmentProcess(Calendar initialDate, Calendar finalDate, List<Phase> phases) {
+        Preconditions.noneNull(initialDate,finalDate, phases);
+        Preconditions.ensure(initialDate.before(finalDate));
+        this.recruitmentPeriod = new RecruitmentPeriod(new DateInterval(initialDate, finalDate));
         this.phases = phases;
     }
 
@@ -43,6 +46,10 @@ public class RecruitmentProcess implements AggregateRoot<Long> {
     @Override
     public Long identity() {
         return this.recruitmentID;
+    }
+
+    public List<Phase> allPhases(){
+        return phases;
     }
 
     public void setPhases(List<Phase> phases) {

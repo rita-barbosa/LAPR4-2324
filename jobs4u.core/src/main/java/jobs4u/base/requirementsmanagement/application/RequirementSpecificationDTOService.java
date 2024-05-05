@@ -1,10 +1,9 @@
 package jobs4u.base.requirementsmanagement.application;
 
 import eapli.framework.validations.Preconditions;
-import jobs4u.base.jobopeningmanagement.domain.JobOpening;
-import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementSpecification;
 import jobs4u.base.languageenginnermanagement.requirementsmanagement.dto.RequirementSpecificationDTO;
+import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
+
 
 import java.util.ArrayList;
 import java.util.List;

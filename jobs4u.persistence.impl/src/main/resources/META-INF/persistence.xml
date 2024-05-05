@@ -22,18 +22,23 @@
         <class>jobs4u.base.jobopeningmanagement.domain.ContractType</class>
         <class>jobs4u.base.jobopeningmanagement.domain.WorkMode</class>
         <class>jobs4u.base.jobopeningmanagement.domain.JobOpening</class>
-        <class>jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementSpecification</class>
-        <class>jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementName</class>
-        <class>jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementDescription</class>
-        <class>jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.FullClassName</class>
-        <class>jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModel</class>
-        <class>jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModelDescription</class>
-        <class>jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModelName</class>
+        <class>jobs4u.base.requirementsmanagement.domain.RequirementSpecification</class>
+        <class>jobs4u.base.requirementsmanagement.domain.RequirementName</class>
+        <class>jobs4u.base.requirementsmanagement.domain.RequirementDescription</class>
+        <class>jobs4u.base.requirementsmanagement.domain.FullClassName</class>
+        <class>jobs4u.base.interviewmodelmanagement.domain.InterviewModel</class>
+        <class>jobs4u.base.interviewmodelmanagement.domain.InterviewModelDescription</class>
+        <class>jobs4u.base.interviewmodelmanagement.domain.InterviewModelName</class>
         <class>jobs4u.base.jobopeningmanagement.domain.rank.Rank</class>
         <class>jobs4u.base.jobopeningmanagement.domain.rank.RankEntry</class>
         <class>jobs4u.base.criteriamanagement.domain.Criteria</class>
         <class>jobs4u.base.recruitmentprocessmanagement.domain.Phase</class>
+        <class>jobs4u.base.recruitmentprocessmanagement.domain.PhaseDescription</class>
+        <class>jobs4u.base.recruitmentprocessmanagement.domain.PhasePeriod</class>
+        <class>jobs4u.base.recruitmentprocessmanagement.domain.PhaseStatus</class>
+        <class>jobs4u.base.recruitmentprocessmanagement.domain.PhaseType</class>
         <class>jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess</class>
+        <class>jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentPeriod</class>
         <class>jobs4u.base.applicationmanagement.domain.Application</class>
         <class>jobs4u.base.applicationmanagement.domain.ApplicationFile</class>
         <!--        <class>jobs4u.base.interviewmodelmanagement.domain.InterviewModel</class>-->

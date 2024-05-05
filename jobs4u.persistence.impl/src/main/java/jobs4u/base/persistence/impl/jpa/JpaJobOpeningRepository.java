@@ -37,6 +37,11 @@ public class JpaJobOpeningRepository
     }
 
     @Override
+    public Iterable<JobOpening> findAllJobOpeningsWithoutRecruitmentProcess() {
+        return match("e.status.statusDescription = 'UNFINISHED'");
+    }
+
+    @Override
     public JobReference lastJobReference(String customerCode) {
         int size = (int) size();
         JobReference lastJobReference = null;
@@ -124,5 +129,11 @@ public class JpaJobOpeningRepository
         }
     }
 
+    @Override
+    public Optional<JobOpening> getJobOpeningByJobReference(JobReference id) {
+        final Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        return matchOne("e.jobReference=:id", params);
+    }
 
 }

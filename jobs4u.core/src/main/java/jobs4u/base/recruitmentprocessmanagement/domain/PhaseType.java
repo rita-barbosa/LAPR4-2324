@@ -13,6 +13,11 @@ public class PhaseType implements ValueObject {
         //for ORM
     }
 
+    public PhaseType(String typeDenomination) {
+        Preconditions.noneNull(typeDenomination);
+        this.typeDenomination = typeDenomination;
+    }
+
     public PhaseType(PhaseTypeEnum typeDenomination) {
         Preconditions.noneNull(typeDenomination);
         this.typeDenomination = String.valueOf(typeDenomination);
