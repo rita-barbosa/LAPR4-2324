@@ -1,4 +1,7 @@
 package jobs4u.base.requirementsmanagement.domain;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.FullClassName;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementDescription;
+import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementName;
 import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementSpecification;
 import org.junit.jupiter.api.Test;
 
