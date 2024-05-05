@@ -37,19 +37,25 @@ public class JpaJobOpeningRepository
     }
 
     @Override
+    public Iterable<JobOpening> findAllJobOpeningsWithCustomerCode(String c) {
+        return match("e.jobReference.companyCode = :code", "code", c);
+    }
+
+    @Override
     public Iterable<JobOpening> findAllJobOpeningsWithoutRecruitmentProcess() {
         return match("e.status.statusDescription = 'UNFINISHED'");
     }
 
     @Override
     public JobReference lastJobReference(String customerCode) {
-        int size = (int) size();
+        Iterable<JobOpening> jobOpenings = findAllJobOpeningsWithCustomerCode(customerCode);
+        List<JobOpening> c = (List<JobOpening>) jobOpenings;
+        int size = c.size();
         JobReference lastJobReference = null;
-        if (size == 0){
+        if (size == 0) {
             System.out.println("First job opening being registered in the system!");
             return new JobReference(customerCode, 0);
         }
-        Iterable<JobOpening> jobOpenings = findAll();
         for (JobOpening element : jobOpenings) {
             lastJobReference = element.identity();
         }
@@ -62,10 +68,10 @@ public class JpaJobOpeningRepository
     @Override
     public List<JobOpening> getJobOpeningListMatchingCustomerCodesList(Set<CustomerCode> customerCodes) {
         List<JobOpening> jobOpenings = new ArrayList<>();
-        for (CustomerCode code : customerCodes){
-            try{
-                jobOpenings.addAll(match("e.jobReference.companyCode = :code","code", code.costumerCode()));
-            }catch (HibernateException ex){
+        for (CustomerCode code : customerCodes) {
+            try {
+                jobOpenings.addAll(match("e.jobReference.companyCode = :code", "code", code.costumerCode()));
+            } catch (HibernateException ex) {
                 jobOpenings.addAll(match("e=(SELECT c FROM JobOpening c WHERE c.jobReference.companyCode=:code)",
                         "code", code.costumerCode()));
             }
@@ -75,9 +81,9 @@ public class JpaJobOpeningRepository
 
     @Override
     public List<JobOpening> getJobOpeningListMatchingCustomer(Customer customer) {
-        try{
+        try {
             return match("e.jobReference.companyCode = :code", "code", customer.customerCode().toString());
-        }catch (HibernateException ex){
+        } catch (HibernateException ex) {
             return match("e=(SELECT c FROM JobOpening c WHERE c.jobReference.companyCode=:code)",
                     "code", customer.customerCode().costumerCode());
         }
@@ -85,9 +91,9 @@ public class JpaJobOpeningRepository
 
     @Override
     public List<JobOpening> getJobOpeningListMatchingStatus(String started) {
-        try{
+        try {
             return match("e.status.statusDescription = :status", "status", started);
-        }catch (HibernateException ex){
+        } catch (HibernateException ex) {
             return match("e=(SELECT c FROM JobOpening c WHERE c.status.statusDescription = :status)",
                     "status", started);
         }
@@ -121,9 +127,9 @@ public class JpaJobOpeningRepository
     @Override
     public Iterable<JobOpening> getUNFINISHEDJobOpeningList() {
         String status = new JobOpeningStatus(JobOpeningStatusEnum.UNFINISHED).getStatusDescription();
-        try{
+        try {
             return match("e.status.statusDescription = :status", "status", status);
-        }catch (HibernateException ex){
+        } catch (HibernateException ex) {
             return match("e=(SELECT c FROM JobOpening c WHERE c.status.statusDescription = :status)",
                     "status", status);
         }

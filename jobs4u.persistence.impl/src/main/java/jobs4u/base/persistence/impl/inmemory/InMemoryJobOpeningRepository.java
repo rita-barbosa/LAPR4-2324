@@ -38,7 +38,10 @@ public class InMemoryJobOpeningRepository
         }
         return lastJobReference;
     }
-
+    @Override
+    public Iterable<JobOpening> findAllJobOpeningsWithCustomerCode(String c) {
+        return null;
+    }
     @Override
     public List<JobOpening> getJobOpeningListMatchingCustomerCodesList(Set<CustomerCode> customerCodes) {
         List<JobOpening> jobOpeningArrayList = new ArrayList<>();

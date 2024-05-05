@@ -37,7 +37,7 @@ public class SelectInterviewModelUI extends AbstractUI {
 
             return controller.updateJobOpening(jobOpeningDTO, interviewModelDTO);
         } catch (NullPointerException ex) {
-            System.out.println("Error: Please select a job opening and an interview model.");
+            System.out.println("Error: Please select a job opening and an interview model."+ex.getMessage());
 
         } catch (IntegrityViolationException | ConcurrencyException ex) {LOGGER.error("Error, please try again", ex);
             System.out.println("An unexpected error occurred. Please try again or contact the administrator.");

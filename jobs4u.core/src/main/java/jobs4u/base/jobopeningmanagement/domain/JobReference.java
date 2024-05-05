@@ -14,7 +14,7 @@ public class JobReference implements Comparable<JobReference>, ValueObject {
 
     @AttributeOverride(name = "value", column = @Column(name = "Company"))
     private String companyCode;
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private Integer sequentialCode;
 
     protected JobReference() {

@@ -28,6 +28,6 @@ public interface JobOpeningRepository extends DomainRepository<JobReference, Job
     List<JobOpening> getJobOpeningListWithinDateInterval(DateInterval interval);
 
     Iterable<JobOpening> getUNFINISHEDJobOpeningList();
-
+    Iterable<JobOpening> findAllJobOpeningsWithCustomerCode(String c);
     Optional<JobOpening> getJobOpeningByJobReference(JobReference id);
 }
