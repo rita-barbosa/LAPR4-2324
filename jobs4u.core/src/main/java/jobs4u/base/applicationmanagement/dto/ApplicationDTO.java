@@ -11,17 +11,13 @@ import java.util.Set;
 public class ApplicationDTO {
 
     private Long id;
-    private String requirementAnswer;
-    private Boolean requirementResult;
     private Set<ApplicationFile> files;
     private Date applicationDate;
     private String applicationStatus;
     private String candidate;
 
-    public ApplicationDTO(Long id, String requirementAnswer, Boolean requirementResult, Set<ApplicationFile> files, Date applicationDate, String applicationStatus, String candidate) {
+    public ApplicationDTO(Long id, Set<ApplicationFile> files, Date applicationDate, String applicationStatus, String candidate) {
         this.id = id;
-        this.requirementAnswer = requirementAnswer;
-        this.requirementResult = requirementResult;
         this.files = files;
         this.applicationDate = applicationDate;
         this.applicationStatus = applicationStatus;
@@ -32,24 +28,14 @@ public class ApplicationDTO {
     @Override
     public String toString() {
         return String.format("\n=====================================================================\n" +
-                "#Application: %d\n" +
-                        "#Requirement Answer: %s\n" +
-                        "#Requirement Result: %s\n" +
+                        "#Application: %d\n" +
                         "#File: %s\n" +
                         "#Application Date: %s\n" +
                         "#Application Status: %s\n" +
                         "#Candidate username: %s\n" +
                         "=====================================================================\n",
-                id, requirementAnswer, requirementResult, files, applicationDate,
+                id, files, applicationDate,
                 applicationStatus, candidate);
-    }
-
-    public String getRequirementAnswer() {
-        return requirementAnswer;
-    }
-
-    public Boolean getRequirementResult() {
-        return requirementResult;
     }
 
     public Set<ApplicationFile> getApplicationFiles() {

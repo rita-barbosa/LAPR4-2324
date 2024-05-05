@@ -26,7 +26,6 @@ public class ApplicationManagementService {
                                            Date applicationDate, Candidate candidate){
         Application application = new Application(files, applicationDate, candidate);
 
-        applicationRepository.save(application);
         return application;
     }
 
@@ -34,7 +33,6 @@ public class ApplicationManagementService {
                                            Date applicationDate){
         Application application = new Application(files, applicationDate);
 
-        applicationRepository.save(application);
         return application;
     }
 
