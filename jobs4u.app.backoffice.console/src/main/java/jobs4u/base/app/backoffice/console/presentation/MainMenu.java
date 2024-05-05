@@ -72,27 +72,27 @@ public class MainMenu extends AbstractUI {
     private static final int DEACTIVATE_USER_OPTION = 3;
 
     //OPERATOR
-    private static final int REGISTER_CANDIDATE = 1;
-    private static final int LIST_CANDIDATES = 2;
-    private static final int REGISTER_APPLICATIONS = 1;
+//    private static final int REGISTER_CANDIDATE = 1;
+//    private static final int LIST_CANDIDATES = 2;
+//    private static final int REGISTER_APPLICATIONS = 1;
     private static final int PLUGIN_OPTION = 4;
-    private static final int GENERATE_REQUIREMENT_TEMPLATE = 1;
+//    private static final int GENERATE_REQUIREMENT_TEMPLATE = 1;
 
     // CUSTOMER MANAGER SETTINGS
-    private static final int REGISTER_JOB_OPENING = 1;
-    private static final int LIST_JOB_OPENINGS = 2;
-    private static final int SELECT_REQ_SPEC = 3;
-    private static final int SELECT_INT_MODEL = 4;
-    private static final int LIST_JOB_OPENING_APPLICATIONS = 5;
-    private static final int SETUP_RECRUITMENT_PROC = 6;
-
-    private static final int SEE_CANDIDATE_INFO = 7;
-    private static final int REGISTER_CUSTOMERS = 1;
+//    private static final int REGISTER_JOB_OPENING = 1;
+//    private static final int LIST_JOB_OPENINGS = 2;
+//    private static final int SELECT_REQ_SPEC = 3;
+//    private static final int SELECT_INT_MODEL = 4;
+//    private static final int LIST_JOB_OPENING_APPLICATIONS = 5;
+//    private static final int SETUP_RECRUITMENT_PROC = 6;
+//
+//    private static final int SEE_CANDIDATE_INFO = 7;
+//    private static final int REGISTER_CUSTOMERS = 1;
     private static final int PLUGIN_OPTION_CUSTOMER = 5;
-    private static final int GENERATE_INTERVIEW_TEMPLATE = 1;
-
-    // LANGUAGE ENGINEER SETTINGS
-    private static final int REGISTER_PLUGIN = 1;
+//    private static final int GENERATE_INTERVIEW_TEMPLATE = 1;
+//
+//    // LANGUAGE ENGINEER SETTINGS
+//    private static final int REGISTER_PLUGIN = 1;
 
     // MAIN MENU
     private static final int MY_USER_OPTION = 1;
@@ -190,38 +190,38 @@ public class MainMenu extends AbstractUI {
 
     private Menu buildCustomerManagerCandidateMenu() {
         final Menu menu = new Menu("Candidates >");
-        menu.addItem(SEE_CANDIDATE_INFO, "See all data of a candidate", new ListCandidateDataAction());
+        menu.addItem(1, "See all data of a candidate", new ListCandidateDataAction());
         return menu;
     }
 
     private Menu buildOperatorPluginMenu() {
         final Menu menu = new Menu("Plugins >");
-        menu.addItem(GENERATE_REQUIREMENT_TEMPLATE,"Generate and export Requirement Specification Template", new GenerateRequirementsTemplateFileUI()::show);
+        menu.addItem(1,"Generate and export Requirement Specification Template", new GenerateRequirementsTemplateFileUI()::show);
         return menu;
     }
 
     private Menu buildCustomerManagerPluginMenu(){
         final Menu menu = new Menu("Plugins >");
-        menu.addItem(GENERATE_INTERVIEW_TEMPLATE, "Generate and export Interview Model Template", new GenerateInterviewModelTemplateFileUI()::show);
+        menu.addItem(1, "Generate and export Interview Model Template", new GenerateInterviewModelTemplateFileUI()::show);
         return menu;
     }
 
     private Menu buildLanguageEngineerSettingsMenu(){
         final Menu menu = new Menu("Language Engineer >");
-        menu.addItem(REGISTER_PLUGIN,"Register a new plugin",new RegisterPluginAction());
+        menu.addItem(1,"Register a new plugin",new RegisterPluginAction());
         return menu;
     }
 
     private Menu buildOperatorCandidateMenu() {
         final Menu menu = new Menu("Candidates >");
-        menu.addItem(REGISTER_CANDIDATE,"Register a new candidate",new RegisterCandidateAction());
-        menu.addItem(LIST_CANDIDATES, "List All Candidates", new ListAllCandidatesAction());
+        menu.addItem(1,"Register a new candidate",new RegisterCandidateAction());
+        menu.addItem(2, "List All Candidates", new ListAllCandidatesAction());
         return menu;
     }
 
     private Menu buildOperatorApplicationMenu(){
         final Menu menu = new Menu("Applications >");
-        menu.addItem(REGISTER_APPLICATIONS, "Register Job Opening Applications", new RegisterJobOpeningApplicationsAction());
+        menu.addItem(1, "Register Job Opening Applications", new RegisterJobOpeningApplicationsAction());
         return menu;
     }
 
@@ -229,7 +229,7 @@ public class MainMenu extends AbstractUI {
     private Menu buildCustomerManagerCustomerMenu() {
         final Menu menu = new Menu("Customers >");
 
-            menu.addItem(REGISTER_CUSTOMERS, "Register a Customer", new RegisterCustomerAction());
+            menu.addItem(1, "Register a Customer", new RegisterCustomerAction());
             menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
 
             return menu;
@@ -238,12 +238,12 @@ public class MainMenu extends AbstractUI {
     private Menu buildCustomerManagerJobOpeningMenu() {
         final Menu menu = new Menu("Job Opening >");
 
-        menu.addItem(REGISTER_JOB_OPENING, "Register a job opening", new RegisterJobOpeningAction());
-        menu.addItem(LIST_JOB_OPENINGS, "List job openings", new ListJobOpeningsAction());
-        menu.addItem(SELECT_REQ_SPEC, "Select a requirement specification", new SelectRequirementSpecificationAction());
-        menu.addItem(SELECT_INT_MODEL, "Select an interview model", new SelectInterviewModelAction());
-        menu.addItem(LIST_JOB_OPENING_APPLICATIONS, "List job opening applications", new ListJobOpeningApplicationsAction());
-        menu.addItem(SETUP_RECRUITMENT_PROC, "Setup a recruitment process", new SetupRecruitmentProcessAction());
+        menu.addItem(1, "Register a job opening", new RegisterJobOpeningAction());
+        menu.addItem(2, "List job openings", new ListJobOpeningsAction());
+        menu.addItem(3, "Select a requirement specification", new SelectRequirementSpecificationAction());
+        menu.addItem(4, "Select an interview model", new SelectInterviewModelAction());
+        menu.addItem(5, "List job opening applications", new ListJobOpeningApplicationsAction());
+        menu.addItem(6, "Setup a recruitment process", new SetupRecruitmentProcessAction());
         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
 
             return menu;
