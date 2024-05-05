@@ -162,21 +162,21 @@ public class MainMenu extends AbstractUI {
 
         if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.CUSTOMER_MANAGER)) {
             final Menu jobOpeningMenu = buildCustomerManagerJobOpeningMenu();
-            mainMenu.addSubMenu(1, jobOpeningMenu);
+            mainMenu.addSubMenu(2, jobOpeningMenu);
             final Menu customerMenu = buildCustomerManagerCustomerMenu();
-            mainMenu.addSubMenu(2, customerMenu);
+            mainMenu.addSubMenu(3, customerMenu);
             final Menu candidateMenu = buildCustomerManagerCandidateMenu();
-            mainMenu.addSubMenu(3, candidateMenu);
+            mainMenu.addSubMenu(4, candidateMenu);
             final Menu pluginMenu = buildCustomerManagerPluginMenu();
-            mainMenu.addSubMenu(4, pluginMenu);
+            mainMenu.addSubMenu(5, pluginMenu);
         }
         if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.OPERATOR)) {
             final Menu pluginMenu = buildOperatorPluginMenu();
-            mainMenu.addSubMenu(1, pluginMenu);
+            mainMenu.addSubMenu(2, pluginMenu);
             final Menu candidateMenu = buildOperatorCandidateMenu();
-            mainMenu.addSubMenu(2, candidateMenu);
+            mainMenu.addSubMenu(3, candidateMenu);
             final Menu application = buildOperatorApplicationMenu();
-            mainMenu.addSubMenu(3, application);
+            mainMenu.addSubMenu(4, application);
         }
 
         if (!Application.settings().isMenuLayoutHorizontal()) {
