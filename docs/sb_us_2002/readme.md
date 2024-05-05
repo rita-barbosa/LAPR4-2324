@@ -142,18 +142,18 @@ To be able to promote encapsulation between layers, it will be used DTOs.
 
 **Application Layer Classes**
 
-* RegisterApplicationController
+* RegisterJobOpeningApplicationController
 
 **Presentation Layer Classes**
 
-* RegisterApplicationUI
+* RegisterJobOpeningApplicationUI
 
 
 ### 4.1. Realization
 
 * **US2002 Sequence Diagram**
 
-![US2002 Split Sequence Diagram](us2002_sd.svg)
+![US2002 Sequence Diagram](us_2002_SD.svg)
 
 ### 4.2. Class Diagram
 
@@ -166,24 +166,20 @@ In this functionality are applied two different patterns:
 >**_Repository Pattern_**
 > * CandidateRepository
 > * ApplicationRepository
+> * JobOpeningRepository
 >
 >* Justification
 >
->  The Candidate and Application repository have the purpose of keeping the persistence of the candidates and
+>  The Candidate Application, JobOpening repository have the purpose of keeping the persistence of the candidates and
 >application instances created.
 
 
 >**_Service Pattern_**
-> * RegisterApplicationUI
-> * RegisterApplicationController
 > * ApplicationManagementService
+> * JobOpeningManagementService
 >
 >* Justification
 >*
->  The UI is considered a service, since it is not a concept in the domain, and there is no justification to assign these
->responsibilities to a domain class.
->  The controller is used as a bridge between the UI and the domain classes, processing the UI requests and assigning the
->responsibilities to the respective domain class.
 > The service is in charge of managing requests about applications entities.
 
 
@@ -237,25 +233,102 @@ public void ensureCandidateWasCreated() {
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+### RegisterJobOpeningApplicationController
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+````
+ public List<JobOpeningDTO> getJobOpeningsList() {
+        return jobOpeningManagementService.getJobOpeningsList();
+    }
+
+````
+
+````
+public boolean registerCandidate(String name, String email, String extension, String number){
+        return controller.registerCandidate(name, email, extension, number);
+    }
+````
+
+
+````
+public Optional<Application> registerApplication(Set<ApplicationFile> files, Date applicationDate, PhoneNumber phone, JobOpeningDTO jobOpeningDTO){
+
+        Optional<Application> application = registerApplication(files, applicationDate, phone);
+
+        if (application.isPresent()){
+            JobOpening jobOpening = jobOpeningManagementService.getJobOpening(jobOpeningDTO);
+
+            Set<Application> orign = jobOpening.getApplications();
+
+            Set<Application> newApplications = new HashSet<>(orign);
+            newApplications.add(application.get());
+
+            jobOpening.setApplications(newApplications);
+            jobOpeningRepository.save(jobOpening);
+        }
+
+        return application;
+    }
+````
+
+
+````
+ private Optional<Application> registerApplication(Set<ApplicationFile> files, Date applicationDate, PhoneNumber phone){
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.OPERATOR);
+
+        Optional<Candidate> opCandidate = candidateRepository.findByPhoneNumber(phone);
+
+        if (opCandidate.isPresent()){
+            Candidate candidate = opCandidate.get();
+            return Optional.of(applicationManagementService.registerApplication(files,
+                    applicationDate, candidate));
+        } else {
+            return Optional.of(applicationManagementService.registerApplicationWithoutCandidate(files, applicationDate));
+        }
+    }
+````
+
+````
+ public boolean getCandidate(PhoneNumber number) {
+        Optional<Candidate> opCandidate = candidateRepository.findByPhoneNumber(number);
+
+        return opCandidate.isPresent();
+    }
+````
+
+
+### JobOpeningManagementService
+
+````
+  public JobOpening getJobOpening(JobOpeningDTO jobOpeningDTO){
+        String jobReference = jobOpeningDTO.getJobReference();
+        JobOpening jobOpening = null;
+
+        for (JobOpening job : jobOpeningRepository.findAll()) {
+            if (job.getJobReference().toString().equals(jobReference)){
+                jobOpening = job;
+            }
+        }
+        return jobOpening;
+    }
+````
+
+
+### ApplicationManagementService
+
+````
+public Application registerApplication(Set<ApplicationFile> files,
+                                           Date applicationDate, Candidate candidate){
+        Application application = new Application(files, applicationDate, candidate);
+
+        return application;
+    }
+````
+
+
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
+To activate this feature, you'll need to run the script named `run-backoffice-app` and log in with Operator
+permissions. Then, navigate to the "Applications" menu and select option 1 - `Register Job Opening Applications` - to access this
+feature.
 
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
-
-## 7. Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*

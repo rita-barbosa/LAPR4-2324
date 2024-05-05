@@ -15,48 +15,15 @@ deactivate SYS
 USER -> SYS : selects the shared folder
 activate SYS
 
+SYS --> USER : shows the job openings and asks\n to select one
+deactivate SYS
+
+USER -> SYS : selects the jobOpening
+activate SYS
+
 SYS --> USER : shows operation success
 deactivate SYS
 
-
-'SYS --> USER : imports the information of the given files
-'deactivate SYS
-
-'USER -> SYS : selects the candidate's email
-'activate SYS
-
-'SYS --> USER : asks the candidate's email
-'deactivate SYS
-'
-'USER -> SYS : selects the candidate's email
-'activate SYS
-
-'alt if the candidate doesn't exist
-'
-'SYS --> USER : import the candidate information from the files and register the candidate
-''activate SYS
-'deactivate SYS
-'
-'end alt
-
-'SYS --> USER : asks for the job opening
-'deactivate SYS
-'
-'USER -> SYS : selects the job opening
-'activate SYS
-
-
-'SYS --> USER : imports the information of the given files and register the application
-'activate SYS
-'
-'deactivate SYS
-
-'USER -> SYS : selects the job opening
-'activate SYS
-'
-'
-'SYS --> USER : register the application
-'deactivate SYS
 
 deactivate USER
 
