@@ -12,6 +12,7 @@ import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
 import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
 import jobs4u.base.languageenginnermanagement.requirementsmanagement.dto.RequirementSpecificationDTO;
 
+
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;

@@ -6,7 +6,9 @@ import jobs4u.base.customermanagement.domain.Customer;
 import jobs4u.base.customermanagement.domain.CustomerCode;
 import jobs4u.base.customermanagement.dto.CustomerDTO;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementSpecification;
+import jobs4u.base.recruitmentprocessmanagement.application.RecruitmentProcessManagementService;
+import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
+import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
@@ -22,6 +24,8 @@ public class JobOpeningManagementService {
             .repositories().jobOpenings();
 
     private final JobOpeningDTOService dtoSvc = new JobOpeningDTOService();
+
+    private final RecruitmentProcessManagementService recruitmentProcessManagementService = new RecruitmentProcessManagementService();
 
     private final CustomerManagementService customerManagementService = new CustomerManagementService();
 
@@ -44,10 +48,17 @@ public class JobOpeningManagementService {
         return jobOpening;
     }
 
-    public Iterable<JobOpeningDTO> acticeJobOpenings() {
+    public Iterable<JobOpeningDTO> activeJobOpenings() {
         return dtoSvc.convertToDTO(jobOpeningRepository.findAllJobOpeningsNotStarted());
     }
 
+    public boolean checkJobOpeningByJobRef(String customerCode, int sequentialCode){
+        return jobOpeningRepository.containsOfIdentity(new JobReference(customerCode, sequentialCode));
+    }
+
+    public Optional<JobOpening> getJobOpeningByJobRef(String customerCode, int sequentialCode){
+        return jobOpeningRepository.ofIdentity(new JobReference(customerCode, sequentialCode));
+    }
 
     public List<JobOpening> getJobOpeningsFromCustomerCodes(List<CustomerDTO> customerDTOList) {
         Set<CustomerCode> customerCodes = new HashSet<>();
@@ -87,4 +98,17 @@ public class JobOpeningManagementService {
         }
         return jobOpenings;
     }
+
+    public Iterable<JobOpening> getAllUnfinishedJobOpenings(){
+        return jobOpeningRepository.findAllJobOpeningsWithoutRecruitmentProcess();
+    }
+
+    public boolean setupJobOpeningWithRecruitmentProcess(RecruitmentProcess recruitmentProcess, JobOpening jobOpening){
+        JobOpening jobOpening1 = jobOpeningRepository.ofIdentity(jobOpening.getJobReference()).get();
+        jobOpening1.updateStatusToNotStarted();
+        jobOpening1.addRecruitmentProcess(recruitmentProcess);
+        jobOpeningRepository.save(jobOpening1);
+        return true;
+    }
+
 }

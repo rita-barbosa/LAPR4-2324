@@ -36,6 +36,7 @@ import jobs4u.base.app.backoffice.console.presentation.jobopening.registration.R
 import jobs4u.base.app.backoffice.console.presentation.listApplications.ListJobOpeningApplicationsAction;
 import jobs4u.base.app.backoffice.console.presentation.requirementTemplate.GenerateRequirementsTemplateFileUI;
 import jobs4u.base.app.backoffice.console.presentation.operator.RegisterJobOpeningApplicationsAction;
+import jobs4u.base.app.backoffice.console.presentation.recruitmentprocess.SetupRecruitmentProcessAction;
 import jobs4u.base.app.backoffice.console.presentation.requirementspecification.SelectRequirementSpecificationAction;
 import jobs4u.base.app.backoffice.console.presentation.languageengineer.RegisterPluginAction;
 import jobs4u.base.app.common.console.presentation.authz.MyUserMenu;
@@ -82,6 +83,7 @@ public class MainMenu extends AbstractUI {
     private static final int SELECT_REQ_SPEC = 3;
     private static final int SELECT_INT_MODEL = 4;
     private static final int LIST_JOB_OPENING_APPLICATIONS = 5;
+    private static final int SETUP_RECRUITMENT_PROC = 6;
     private static final int REGISTER_CUSTOMERS = 1;
 
     // LANGUAGE ENGINEER SETTINGS
@@ -209,6 +211,7 @@ public class MainMenu extends AbstractUI {
         menu.addItem(SELECT_REQ_SPEC, "Select a requirement specification", new SelectRequirementSpecificationAction());
         menu.addItem(SELECT_INT_MODEL, "Select an interview model", new SelectInterviewModelAction());
         menu.addItem(LIST_JOB_OPENING_APPLICATIONS, "List job opening applications", new ListJobOpeningApplicationsAction());
+        menu.addItem(SETUP_RECRUITMENT_PROC, "Setup a recruitment process", new SetupRecruitmentProcessAction());
         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
 
             return menu;

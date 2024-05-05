@@ -34,8 +34,8 @@ import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
 import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
 import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.repositories.InterviewModelRepository;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.repositories.RequirementSpecificationRepository;
+import jobs4u.base.interviewmodelmanagement.repositories.InterviewModelRepository;
+import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
 
 /**
  *
