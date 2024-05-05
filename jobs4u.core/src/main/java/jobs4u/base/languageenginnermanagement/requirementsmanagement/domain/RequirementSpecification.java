@@ -1,17 +1,23 @@
 package jobs4u.base.languageenginnermanagement.requirementsmanagement.domain;
 
+import com.sun.source.util.Plugin;
 import eapli.framework.domain.model.AggregateRoot;
 import eapli.framework.domain.model.DomainEntities;
 import eapli.framework.representations.dto.DTOable;
 import eapli.framework.validations.Preconditions;
 import jakarta.persistence.*;
 import jobs4u.base.languageenginnermanagement.requirementsmanagement.dto.RequirementSpecificationDTO;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
 
 @Entity
 @Table(name = "T_REQUIREMENTSPECIFICATION")
 public class RequirementSpecification implements DTOable<RequirementSpecificationDTO>, AggregateRoot<RequirementName> {
+
+    private static final Logger LOGGER = LogManager.getLogger(RequirementSpecification.class);
 
     @EmbeddedId
     private RequirementName requirementName;

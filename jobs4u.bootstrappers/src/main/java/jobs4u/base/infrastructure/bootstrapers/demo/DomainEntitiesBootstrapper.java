@@ -24,9 +24,6 @@ import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
 import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModel;
 import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.repositories.InterviewModelRepository;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.FullClassName;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementDescription;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementName;
 import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementSpecification;
 import jobs4u.base.languageenginnermanagement.requirementsmanagement.repositories.RequirementSpecificationRepository;
 import jobs4u.base.recruitmentprocessmanagement.domain.*;
@@ -94,7 +91,7 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         criteriaRepository.save(new Criteria("Status [STARTED]", JobOpening.class.getSimpleName()));
         criteriaRepository.save(new Criteria("Company Name", JobOpening.class.getSimpleName()));
         criteriaRepository.save(new Criteria("Customer Code", JobOpening.class.getSimpleName()));
-        criteriaRepository.save(new Criteria("Time Interval", JobOpening.class.getSimpleName()));
+      //  criteriaRepository.save(new Criteria("Time Interval", JobOpening.class.getSimpleName()));
     }
 
     private void persistRecruitmentProcesses() {
@@ -159,7 +156,7 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
 
         JobOpening jobOpening = new JobOpening("Front End Junior Developer", contract, mode, "123 Main Street",
                 "Flagtown", "Star District", "USA", "12345", 10, description,
-                requirementSpecificationsList.get(1),interviewModelsList.get(0), jobReference);
+                requirementSpecificationsList.get(0),interviewModelsList.get(0), jobReference);
 
         JobOpening jobOpening1 = new JobOpening("Back End Senior Developer", contract, mode, "456 Elm Street",
                 "Maple Town", "Moonlight District", "Canada", "54321", 15, description,
@@ -176,22 +173,26 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
     }
 
     private void persistRequirementSpecifications() {
-        String description1 = "Back-End Developer With Experience in Java";
-        String name1 = "Back_End_Dev_Requirement_Plugin.jar";
-        String fullClassName1 = "plugin.src.java.pluginRequirement";
-        RequirementSpecification requirementSpecification1 = new RequirementSpecification(name1, description1, fullClassName1);
+//        String description1 = "Back-End Developer With Experience in Java";
+//        String name1 = "Back_End_Dev_Requirement_Plugin.jar";
+//        String fullClassName1 = "plugin.src.java.pluginRequirement";
+//        RequirementSpecification requirementSpecification1 = new RequirementSpecification(name1, description1, fullClassName1);
 
 
-        String description2 = "Front-End Developer With Experience in HTML";
-        String name2 = "Front_End_Dev_Requirement_Plugin.jar";
-        String fullClassName2 = "plugin.src.java.pluginRequirement";
-        RequirementSpecification requirementSpecification2 = new RequirementSpecification(name2, description2, fullClassName2);
+        String description3 = "Programmer Test";
+        String name3 = "InterviewPlugin_Programmer.jar";
+        String fullClassName3 = "Plugins/Requirements/JobRequirementProgrammer/InterviewPlugin_Programmer.jar";
+        RequirementSpecification requirementSpecification3 = new RequirementSpecification(name3, description3, fullClassName3);
 
-        requirementSpecificationsList.add(requirementSpecification1);
-        requirementSpecificationsList.add(requirementSpecification2);
 
-        requirementSpecificationRepository.save(requirementSpecification1);
-        requirementSpecificationRepository.save(requirementSpecification2);
+
+    //    requirementSpecificationsList.add(requirementSpecification1);
+     //   requirementSpecificationsList.add(requirementSpecification2);
+        requirementSpecificationsList.add(requirementSpecification3);
+
+     //   requirementSpecificationRepository.save(requirementSpecification1);
+     //   requirementSpecificationRepository.save(requirementSpecification2);
+        requirementSpecificationRepository.save(requirementSpecification3);
     }
 
     private void persistInterviewModels() {

@@ -18,8 +18,6 @@ public class JobOpeningListDTOService {
         Preconditions.noneNull(listToDisplay);
         Preconditions.nonEmpty(listToDisplay);
 
-        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
-
         List<JobOpeningDTO> dtoList = new ArrayList<>();
         for (JobOpening jobOpening : listToDisplay){
             dtoList.add(jobOpening.toDTO());
