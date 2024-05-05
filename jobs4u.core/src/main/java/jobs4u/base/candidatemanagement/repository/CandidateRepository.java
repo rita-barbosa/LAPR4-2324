@@ -10,8 +10,6 @@ import java.util.Optional;
 public interface CandidateRepository extends DomainRepository<PhoneNumber, Candidate> {
     Optional<Candidate> findByUsername(Username name);
 
-    default Optional<Candidate> findByPhoneNumber(final PhoneNumber number) {
-        return ofIdentity(number);
-    }
+    Optional<Candidate> findByPhoneNumber(final PhoneNumber number);
 
 }

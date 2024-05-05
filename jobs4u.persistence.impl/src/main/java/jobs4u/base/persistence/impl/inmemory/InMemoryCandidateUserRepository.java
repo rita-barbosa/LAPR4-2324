@@ -44,4 +44,8 @@ public class InMemoryCandidateUserRepository
         return matchOne(e -> e.user().username().equals(name));
     }
 
+    @Override
+    public Optional<Candidate> findByPhoneNumber(final PhoneNumber number) {
+        return matchOne(e -> e.identity().equals(number));
+    }
 }

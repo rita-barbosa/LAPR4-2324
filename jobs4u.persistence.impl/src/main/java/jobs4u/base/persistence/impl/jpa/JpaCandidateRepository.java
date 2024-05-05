@@ -9,6 +9,8 @@ import jobs4u.base.candidatemanagement.domain.PhoneNumber;
 import jobs4u.base.candidatemanagement.repository.CandidateRepository;
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class JpaCandidateRepository extends JpaAutoTxRepository<Candidate, Long, PhoneNumber>
@@ -35,5 +37,12 @@ public class JpaCandidateRepository extends JpaAutoTxRepository<Candidate, Long,
     @Override
     public Optional<Candidate> findByUsername(Username name) {
         return Optional.empty();
+
+    }
+    @Override
+    public Optional<Candidate> findByPhoneNumber(final PhoneNumber phoneNumber){
+        final Map<String, Object> params = new HashMap<>();
+        params.put("phoneNumber", phoneNumber);
+        return matchOne("e.phoneNumber = :phoneNumber", params);
     }
 }
