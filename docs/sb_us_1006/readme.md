@@ -10,10 +10,11 @@ This is the first time this US is being worked on. It is related to an action of
 
 ### Acceptance Criteria:
 
-- **1006.1.** The system should not try to show candidate data of a candidate that does not have data. If such a situation were to happen the system should return an error and inform the user of what occurred.
+- **1006.1.** The system should use the phone number to identify a candidate.
 
+- **1006.2.** The system should let the user write the phone number that identifies the candidate it wants to check information on.
 
-- **1006.2.** The system should show the name, phone number and email address of the candidate. In case one of the parameters does not have information it should show the message **"NO DATA FOUND"**. 
+- **1006.3.** The system should make sure the given phone number is valid, and if not, should let the user try again.
 
 ### Client Clarifications:
 
@@ -103,6 +104,9 @@ Because of the usage and display of the information of already existing objects,
 - CandidateName
 - PhoneNumber
 - Email
+- ApplicationDTO
+- CandidateDTO
+- CandidateDataDTO
 
 *CandidateName, PhoneNumber and Email are value objects belonging to the Candidate entity.*
 
@@ -135,40 +139,331 @@ To create a layer of abstraction between the Domain layer and the Application la
 
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
+Due to the nature of this US all tests of this US that refer to the acceptance criteria are checks made in the UI of the US:
 
-**Test 1:** Verifies that it is not possible to ...
+**Check 1:** Makes sure the system gives the user the opportunity to select a customer. If it fails to find a candidate lets the user try again.
 
-**Refers to Acceptance Criteria:** G002.1
-
+**Refers to Acceptance Criteria:** 1006.1, 1006.2 and 1006.3
 ````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
-...
-}
+String option = Console.readNonEmptyLine("Candidate's phone number (no extension):", "Mandatory.");
+
+        while(!listCandidateDataController.alreadyExits(option)){
+            System.out.println("That phone number does not belong to anyone, please try again.");
+            option = Console.readNonEmptyLine("Candidate's phone number (no extension):", "Mandatory.");
+        }
 ````
+
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+### ListCandidateDataUI
+````
+package jobs4u.base.app.backoffice.console.presentation.candidate;
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+import eapli.framework.io.util.Console;
+import eapli.framework.presentation.console.AbstractUI;
+import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
+import jobs4u.base.candidatemanagement.application.ListCandidateDataController;
+import jobs4u.base.candidatemanagement.domain.Candidate;
+import jobs4u.base.candidatemanagement.dto.CandidateDataDTO;
 
+import java.util.List;
+
+public class ListCandidateDataUI extends AbstractUI {
+
+    private final static ListCandidateDataController listCandidateDataController = new ListCandidateDataController();
+
+    @Override
+    protected boolean doShow() {
+
+        System.out.println("Select one of the candidates to see information on:");
+
+        List<Candidate> candidateList = listCandidateDataController.listCandidates();
+
+        for (Candidate candidate : candidateList){
+            System.out.println("Name: "+candidate.name().toString()+" | Email: "+candidate.email().toString()+" | Phone Number: "+candidate.phoneNumber().extension()+" "+candidate.phoneNumber().number());
+        }
+        String option = Console.readNonEmptyLine("Candidate's phone number (no extension):", "Mandatory.");
+
+        while(!listCandidateDataController.alreadyExits(option)){
+            System.out.println("That phone number does not belong to anyone, please try again.");
+            option = Console.readNonEmptyLine("Candidate's phone number (no extension):", "Mandatory.");
+        }
+
+        CandidateDataDTO candidateDataDTO = listCandidateDataController.getAllRelevantInfoFromCandidate(option);
+
+        System.out.println("Info from candidate:");
+        System.out.println("Candidate's Name : "+candidateDataDTO.getCandidateDTO().getCandidateName());
+        System.out.println("Candidate's Phone Number : "+candidateDataDTO.getCandidateDTO().getCandidatePhoneNumber());
+        System.out.println("Candidate's Email : "+candidateDataDTO.getCandidateDTO().getCandidateEmail());
+        System.out.println();
+        System.out.println("Applications Of Candidate:");
+        if (candidateDataDTO.getApplicationsDTOList().isEmpty()){
+            System.out.println("NO APPLICATIONS FOUND FOR THIS CANDIDATE");
+        } else {
+            for (ApplicationDTO applicationDTO : candidateDataDTO.getApplicationsDTOList()){
+                System.out.println(applicationDTO.toString());
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public String headline() {
+        return "Show data of a candidate";
+    }
+}
+````
+
+### ListCandidateDataController
+````
+package jobs4u.base.candidatemanagement.application;
+
+import jobs4u.base.applicationmanagement.application.ApplicationManagementService;
+import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
+import jobs4u.base.candidatemanagement.domain.Candidate;
+import jobs4u.base.candidatemanagement.domain.PhoneNumber;
+import jobs4u.base.candidatemanagement.dto.CandidateDTO;
+import jobs4u.base.candidatemanagement.dto.CandidateDataDTO;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+public class ListCandidateDataController {
+
+    private final static CandidateManagementService candidateManagementService = new CandidateManagementService();
+
+    private final static ApplicationManagementService applicationManagementService = new ApplicationManagementService();
+
+    public List<Candidate> listCandidates(){
+        return candidateManagementService.getCandidatesList();
+    }
+
+    public boolean alreadyExits(String phoneNumber){
+        return candidateManagementService.alreadyExits(phoneNumber);
+    }
+
+    public Optional<Candidate> getCandidateByPhoneNumber(String phoneNumber){
+        return candidateManagementService.getCandidateByPhoneNumber(phoneNumber);
+    }
+
+    public CandidateDataDTO getAllRelevantInfoFromCandidate(String phoneNumber){
+
+        List<ApplicationDTO> list = new ArrayList<>();
+
+        Candidate candidate = getCandidateByPhoneNumber(phoneNumber).get();
+
+        CandidateDataDTO candidateDataDTO = new CandidateDataDTO(getCandidateByPhoneNumber(phoneNumber).get().toDTO(), applicationManagementService.getAllApplicationsThatHaveCandidate(candidate));
+
+        return candidateDataDTO;
+    }
+
+}
+````
+
+### CandidateManagementService
+````
+package jobs4u.base.candidatemanagement.application;
+
+import eapli.framework.domain.events.DomainEvent;
+import eapli.framework.infrastructure.authz.application.AuthzRegistry;
+import eapli.framework.infrastructure.authz.application.UserManagementService;
+import eapli.framework.infrastructure.authz.domain.model.Role;
+import eapli.framework.infrastructure.authz.domain.model.SystemUser;
+import eapli.framework.infrastructure.pubsub.EventPublisher;
+import eapli.framework.infrastructure.pubsub.impl.inprocess.service.InProcessPubSub;
+import jobs4u.base.candidatemanagement.domain.Candidate;
+import jobs4u.base.candidatemanagement.domain.PhoneNumber;
+import jobs4u.base.candidatemanagement.domain.events.NewCandidateUserRegisteredEvent;
+import jobs4u.base.candidatemanagement.repository.CandidateRepository;
+import jobs4u.base.infrastructure.persistence.PersistenceContext;
+import jobs4u.base.usermanagement.application.GeneratePasswordService;
+import jobs4u.base.usermanagement.domain.BaseRoles;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+public class CandidateManagementService {
+    private final GeneratePasswordService passwordService = new GeneratePasswordService();
+    private final CandidateRepository candidateRepository= PersistenceContext.repositories().candidates();
+    private final UserManagementService userManagementService = AuthzRegistry.userService();
+
+    private final EventPublisher dispatcher = InProcessPubSub.publisher();
+
+    public void registerCandidate(String name, String email, PhoneNumber phoneNumber) {
+        String password = passwordService.generatePassword();
+
+        final Set<Role> roles = new HashSet<>();
+        roles.add(BaseRoles.CANDIDATE_USER);
+
+        SystemUser sysUser = userManagementService.registerNewUser(email, password, name,"Candidate",email, roles);
+
+        final DomainEvent event = new NewCandidateUserRegisteredEvent(sysUser,phoneNumber);
+        dispatcher.publish(event);
+    }
+
+    public List<Candidate> getCandidatesList() {
+        Iterable<Candidate> candidatesList = candidateRepository.findAll();
+        //Transformar Iterable em List
+        List<Candidate> candidatesListOrdered = StreamSupport.stream(candidatesList.spliterator(),false).collect(Collectors.toList());
+
+        candidatesListOrdered.sort(Comparator.comparing(Candidate::email));
+        return candidatesListOrdered;
+    }
+
+    public boolean alreadyExits(String phoneNumber){
+        return candidateRepository.checksIfExits(new PhoneNumber("+351", phoneNumber));
+    }
+
+    public Optional<Candidate> getCandidateByPhoneNumber(String phoneNumber){
+        return candidateRepository.findByPhoneNumber(new PhoneNumber("+351", phoneNumber));
+    }
+}
+````
+
+### CandidateDataDTO
+````
+package jobs4u.base.candidatemanagement.dto;
+
+import jobs4u.base.applicationmanagement.domain.Application;
+import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
+
+import java.util.List;
+
+public class CandidateDataDTO {
+
+    private final CandidateDTO candidateDTO;
+    private final List<ApplicationDTO> applicationsDTOList;
+
+    public CandidateDataDTO(CandidateDTO candidateDTO, List<ApplicationDTO> applicationsDTOList) {
+        this.candidateDTO = candidateDTO;
+        this.applicationsDTOList = applicationsDTOList;
+    }
+
+    public CandidateDTO getCandidateDTO() {
+        return candidateDTO;
+    }
+
+    public List<ApplicationDTO> getApplicationsDTOList() {
+        return applicationsDTOList;
+    }
+}
+````
+
+### CandidateDTO
+````
+package jobs4u.base.candidatemanagement.dto;
+
+public class CandidateDTO {
+
+    private final String candidateName;
+    private final String candidateEmail;
+
+    private final String candidatePhoneNumber;
+
+    public CandidateDTO(String candidateName, String candidateEmail, String candidatePhoneNumber) {
+        this.candidateName = candidateName;
+        this.candidateEmail = candidateEmail;
+        this.candidatePhoneNumber=candidatePhoneNumber;
+    }
+
+    public String getCandidateName(){
+        return this.candidateName;
+    }
+
+    public String getCandidateEmail(){
+        return this.candidateEmail;
+    }
+    public String getCandidatePhoneNumber(){return this.candidatePhoneNumber;}
+
+    @Override
+    public String toString() {
+        return String.format("%s | %s | %s", candidateName, candidateEmail,candidatePhoneNumber);
+    }
+}
+````
+
+### ApplicationDTO
+````
+package jobs4u.base.applicationmanagement.dto;
+
+import jobs4u.base.applicationmanagement.domain.ApplicationFile;
+import jobs4u.base.candidatemanagement.domain.Candidate;
+
+import java.io.File;
+import java.util.Date;
+import java.util.Set;
+
+
+public class ApplicationDTO {
+
+    private Long id;
+    private String requirementAnswer;
+    private Boolean requirementResult;
+    private Set<ApplicationFile> files;
+    private Date applicationDate;
+    private String applicationStatus;
+    private String candidate;
+
+    public ApplicationDTO(Long id, String requirementAnswer, Boolean requirementResult, Set<ApplicationFile> files, Date applicationDate, String applicationStatus, String candidate) {
+        this.id = id;
+        this.requirementAnswer = requirementAnswer;
+        this.requirementResult = requirementResult;
+        this.files = files;
+        this.applicationDate = applicationDate;
+        this.applicationStatus = applicationStatus;
+        this.candidate = candidate;
+    }
+
+
+    @Override
+    public String toString() {
+        return String.format("\n=====================================================================\n" +
+                "#Application: %d\n" +
+                        "#Requirement Answer: %s\n" +
+                        "#Requirement Result: %s\n" +
+                        "#File: %s\n" +
+                        "#Application Date: %s\n" +
+                        "#Application Status: %s\n" +
+                        "#Candidate username: %s\n" +
+                        "=====================================================================\n",
+                id, requirementAnswer, requirementResult, files, applicationDate,
+                applicationStatus, candidate);
+    }
+
+    public String getRequirementAnswer() {
+        return requirementAnswer;
+    }
+
+    public Boolean getRequirementResult() {
+        return requirementResult;
+    }
+
+    public Set<ApplicationFile> getApplicationFiles() {
+        return files;
+    }
+
+    public Date getApplicationDate() {
+        return applicationDate;
+    }
+
+    public String getApplicationStatus() {
+        return applicationStatus;
+    }
+
+    public String getCandidate(){
+        return candidate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+}
+````
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
+This US is an added part of the US 1006, because of that, we made it one functionality to save time and additional classes that would just be copies of other classes.
 
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
-
-## 7. Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
