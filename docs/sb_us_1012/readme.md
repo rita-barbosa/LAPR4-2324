@@ -175,7 +175,7 @@ To be able to promote encapsulation between layers, it will be used DTOs.
 
 **US1012 Sequence diagram**
 
-![US1012 Sequence diagram](us1012_SD.svg)
+![US1012 Sequence diagram](us_1012_SD.svg)
 
 ### 4.2. Class Diagram
 
@@ -206,7 +206,7 @@ This topic presents the classes with the patterns applied to them along with jus
 > **Justifications**
 >
 > Many plugins can exist, so they must be stored and persisted in a repository. It is from here that the plugins available
-> to generate a interview model template file are.
+> to generate an interview model template file are.
 >
 > The JobOpeningRepository has stored all the jobOpening instances created in all sessions in its database, it's where
 > the instances can be rebuilt.
@@ -263,25 +263,78 @@ public void ensureIncorrectFormatIsInvalid() {
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+### GenerateInterviewModelTemplateFileController
+
+````
+public List<JobOpeningDTO> getJobOpeningList() {
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
+        List<JobOpening> jobOpenings = new ArrayList<>();
+        for (JobOpening job : jobOpeningManagementService.getUNFINISHEDJobOpenings()){
+            jobOpenings.add(job);
+        }
+        return jobOpeningListDTOService.convertToDTO(jobOpenings);
+    }
+    
+````
+````
+ public boolean exportTemplateFile(JobOpeningDTO jobOpeningDTO, String directoryPath) {
+        return interviewTemplateManagerService.generateNewTemplate(interviewTemplateManagerService.getInterviewFromJobOpening(jobOpeningDTO), directoryPath);
+    }
+````
+
+
+### JobOpeningManagementService
+
+````
+public Iterable<JobOpening> getUNFINISHEDJobOpenings(){
+        return jobOpeningRepository.getUNFINISHEDJobOpeningList();
+    }
+````
+
+### JobOpeningListDTOService
+
+````
+    public List<JobOpeningDTO> convertToDTO(List<JobOpening> listToDisplay){
+        Preconditions.noneNull(listToDisplay);
+        Preconditions.nonEmpty(listToDisplay);
+
+        List<JobOpeningDTO> dtoList = new ArrayList<>();
+        for (JobOpening jobOpening : listToDisplay){
+            dtoList.add(jobOpening.toDTO());
+        }
+        return dtoList;
+    }
+````
+
+### InterviewTemplateManagerService
+
+````
+public boolean generateNewTemplate(InterviewModel interviewModel, String outputDirectory) {
+        try {
+            String[] command = {"java", "-jar", interviewModel.pluginJarFile().pluginName(), "-template", (outputDirectory + "\\")};
+
+            ProcessBuilder processBuilder = new ProcessBuilder(command);
+            Process process = processBuilder.start();
+
+            int exitCode = process.waitFor();
+            System.out.println("Template command executed. Process exited with code: " + exitCode);
+            if (exitCode == 0){
+                return true;
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+````
+
+
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
+To activate this feature, you'll need to run the script named `run-backoffice-app` and log in with Customer Manager
+permissions. Then, navigate to the "Plugins" menu and select option 1 - `Generate and export Interview Model Template` - to access this
+feature.
 
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
 
-## 7. Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*

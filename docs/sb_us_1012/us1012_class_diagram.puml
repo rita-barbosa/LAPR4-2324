@@ -3,67 +3,108 @@
 
 title 1012 Class Diagram
 
+interface AbstractUI {
+# doShow()
+}
+
 class GenerateInterviewTemplateFileUI <<presentation>>  {
 + doShow()
-+ newOptionText()
 }
 
 class GenerateInterviewTemplateFileController <<application>> {
 + create()
-+ defineTemplateFileName(filename)
-+ registerQuestionType(questionTypeDenomination)
-+ addNewQuestion(questionTypeDenomination,\n questionDescription, optionsList)
-+ exportTemplateFile()
++ getJobOpeningList()
++ exportTemplateFile(JobOpeningDTO jobOpeningDTO)
 }
-
 
 class InterviewTemplateManagerService <<service>> {
-+ questionTypes()
-+ createQuestion(questionTypeDenomination,\n  questionDescription,  optionsList)
-+ generateNewTemplate(filename)
++ getInterviewModelFromJobOpening(JobOpeningDTO jobOpeningDTO)
++ generateNewTemplate(InterviewModel interviewModel)
 }
 
-class InterviewTemplateEvaluatorService <<service>> {
-+ evaluateWithGrammar(InterviewTemplate templateFile)
+class InterviewModelRepository <<persistence>>\n<<repository>> {
++ interviewModelFromDTO(JobOpeningDTO jobOpeningDTO)
 }
 
-class QuestionType <<domain>> {
-+ toDTO()
-+ valueOf(questionTypeDenomination)
+class InterviewModelPlugin <<plugin>> {
++ newInterviewModel()
++ generateFile()
++ export()
+}
+
+class InterviewModelParser <<parser>> {
++ checkFileSyntax(File templateFile)
+}
+
+class AuthorizationService <<service>> {
++ loggedinUserWithPermissions(Role ... Action BaseRole.CUSTOMER_MANAGER)
+}
+
+class JobOpeningRepository <<Persistence>> <<Repository>> {
++ rebuild(JobOpening: entity)
++ getJobOpeningListMatchingCostumerCode(CustomerCode costumerCode)
+}
+
+class CustomerManagementService <<Service>> {
++ getAssignedCostumerCodesList(EmailAddress username)
+}
+
+class CustomerRepository  <<Persistence>> <<Repository>>  {
++ save(e: Customer)
++ getCostumersByUsername(EmailAddress username)
 }
 
 
-class InterviewTemplateBuilder <<builder>> {
-+ build()
+class Customer <<Domain>> <<Aggregate Root>> {
+- CustomerCode customerCode
+- CompanyName companyName
+- EmailAddress costumerManagerEmail
++ customerCode()
++ companyName()
 }
 
-class QuestionBuilder <<builder>> {
-+ build()
+class JobOpeningManagementService <<Service>> {
++ getJobOpeningsFromCostumerCodes(List<CustomerCode> assignedCostumerCodesList)
 }
 
-class Question <<domain>> {
-+ Question(questionTypeDenomination,\n questionDescription, optionsList)
+class JobOpeningListDTOService <<Service>> {
++ convertToDTO(List<JobOpening> jobOpeningList)
 }
 
-
-class InterviewTemplate <<domain>> {
-+ RequirementsTemplate(filename, questionsList)
+class JobOpening <<Domain>> <<Aggregate Root>> {
+- String function
+- ContractType contractType
+- WorkMode workMode
+- Address jobOpeningAddress
+- String jobReference
+- Integer numVacancies
+- String description
+- File requirementsSpecificationsFile
++ create()
 }
 
 
 'Associations
-GenerateInterviewTemplateFileUI ..> GenerateInterviewTemplateFileController
-GenerateInterviewTemplateFileController ..> InterviewTemplateManagerService
-InterviewTemplateManagerService ..> InterviewTemplateEvaluatorService
+AbstractUI <|.up. GenerateInterviewTemplateFileUI : implements
+GenerateInterviewTemplateFileUI .left.> GenerateInterviewTemplateFileController
 
-InterviewTemplateManagerService ..> QuestionType
-InterviewTemplateManagerService ..> QuestionBuilder
-InterviewTemplateManagerService ..> InterviewTemplateBuilder
-InterviewTemplateEvaluatorService ..> InterviewTemplate
+GenerateInterviewTemplateFileController .left.> AuthorizationService
+GenerateInterviewTemplateFileController ...> CustomerManagementService
+GenerateInterviewTemplateFileController ...> JobOpeningManagementService
+GenerateInterviewTemplateFileController ..> JobOpeningListDTOService
+GenerateInterviewTemplateFileController ..>InterviewTemplateManagerService
 
-InterviewTemplateBuilder --> InterviewTemplate
-QuestionBuilder --> Question
-Question -right-> QuestionType
-InterviewTemplate -right-> Question
+'Domain Layer
+CustomerManagementService -down-> CustomerRepository
+CustomerManagementService --> Customer
+JobOpeningManagementService --> JobOpeningRepository
+JobOpeningManagementService --> JobOpening
+JobOpeningListDTOService --> JobOpening
+JobOpeningRepository -> JobOpening
+
+InterviewTemplateManagerService ..> InterviewModelRepository
+InterviewTemplateManagerService ..> InterviewModelPlugin
+InterviewModelPlugin ..> InterviewModelParser
+
 
 @enduml

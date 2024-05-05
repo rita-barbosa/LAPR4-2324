@@ -2,149 +2,133 @@
 
 title US1012 Sequence Diagram
 
-actor "Operator" as USER
+actor "Customer Manager" as USER
+|||
 
+'box System
 participant "<<presentation>>\n:GenerateInterviewModelTemplateFileUI" as UI
 participant "<<application>>\n:GenerateInterviewModelTemplateFileController" as CTRL
-participant "<<service>>\n:InterviewTemplateManagerService" as InterviewService
-participant "<<builder>>\n:InterviewTemplateBuilder" as InterviewBuilder
-participant "<<builder>>\n:QuestionBuilder" as QuestionBuilder
-participant "<<domain>>\n:Question" as Question
-participant "<<domain>>\n:QuestionType" as QuestionType
-participant "<<domain>>\n:InterviewTemplate" as InterviewTemplate
-participant "<<builder>>\n:InterviewTemplateEvaluator" as InterviewEvaluator
+participant "<<service>>\n:AuthorizationService" as AuthSvc
+participant "<<service>>\n:CustomerManagementService" as CustomerManagement
+database "<<repository>>\n:CustomerRepository" as CustomerRepository
+participant "<<domain>>\n:Customer" as Customer
+participant "<<service>>\n:JobOpeningManagementService" as JobManagement
+participant "<<service>>\n:JobOpeningListDTOService" as JobOpeningListDTO
+database "<<repository>>\n:JobOpeningRepository" as JobOpeningRepository
+participant "<<domain>>\n:JobOpening" as JobOpening
+participant "<<service>>\n:InterviewTemplateManagerService" as Manager
+database "<<repository>>\n:InterviewModelRepository" as ReqRep
+'end box
 
+box Plugin
+participant "<<Plugin>>\n:InterviewModelPlugin" as Plugin
+participant "<<Parser/Interpreter>>\n:InterviewModelParser" as Parser
+end box
 
 activate USER
+USER -> UI : asks to generate a new interview\n model file
 
-USER -> UI : asks to generate a new interview model file
 activate UI
 
-UI --> USER : asks for template file name
+    UI --> USER : shows job Openings to select
 deactivate UI
 
-
-USER -> UI : writes the file name
+USER -> UI : selects a job Opening
 activate UI
+
 
 UI -> CTRL : create()
 activate CTRL
+deactivate CTRL
 
-UI -> CTRL : definesTemplateFileName(fileName)
+UI -> CTRL : getJobOpeningList()
+activate CTRL
 
-CTRL -> InterviewService :  questionTypes()
-activate InterviewService
+    CTRL -> AuthSvc : loggedinUserWithPermissions(BaseRole.CUSTOMER_MANAGER)
+    activate AuthSvc
+    deactivate AuthSvc
 
+    CTRL -> CustomerManagement : getAssignedCustomerCodesList(username)
+    activate CustomerManagement
 
-    loop for all question types
-        InterviewService -> QuestionType : toDTO()
-    deactivate InterviewService
-    activate QuestionType
-        QuestionType -[#white]> QuestionType
-    deactivate QuestionType
+        CustomerManagement -> CustomerRepository : getCustomersByUsername(username)
+        note right: Username is the Customer\n Manager's email
+        activate CustomerRepository
+        deactivate CustomerRepository
+
+        loop for all codes
+            CustomerManagement -> Customer : customerCode()
+            activate Customer
+            deactivate Customer
+        end loop
+
+    deactivate CustomerManagement
+
+    CTRL -> JobManagement : getJobOpeningsFromCustomerCodes(assignedCustomerCodesList)
+    activate JobManagement
+        loop for each code
+        JobManagement -> JobOpeningRepository : getJobOpeningListMatchingCustomerCode(customerCode)
+        activate JobOpeningRepository
+        deactivate JobOpeningRepository
+        end loop
+    deactivate JobManagement
+
+CTRL -> JobOpeningListDTO : convertToDTO(jobOpeningList)
+activate JobOpeningListDTO
+
+    loop for each JobOpening
+        JobOpeningListDTO -> JobOpening : toDTO()
+        activate JobOpening
+        deactivate JobOpening
     end loop
+deactivate JobOpeningListDTO
 
-loop until the user wants
-
-CTRL --> UI : questionTypeListDTO
+CTRL --> UI : jobOpeningListDTO
 deactivate CTRL
 
-UI --> USER : presents the questions type list and asks to select an option
-deactivate UI
 
-USER -> UI : selects the question type
+UI -> CTRL : exportTemplateFile(jobOpeningDTO)
 
- alt New question type
-        activate UI
-
-                UI --> USER : asks to introduce the new question type
-                deactivate UI
-
-                USER -> UI : defines the question type
-
-                activate UI
-
-'                UI --> UI : registers the new question type in the questions type list
-
-    end alt
-
-
-UI -> CTRL : registerQuestionType(questionTypeDenomination)
+'get job positions/plugins
 activate CTRL
 
-CTRL -> QuestionType : create(questionTypeDenomination)
-activate QuestionType
-deactivate QuestionType
+CTRL -> Manager : getInterviewFromJobOpening(jobOpeningDTO)
+activate Manager
 
+Manager -> ReqRep : interviewModelFromDTO(jobOpeningDTO)
+deactivate Manager
+activate ReqRep
+
+ReqRep -[#lightblue]> ReqRep
+deactivate ReqRep
+
+
+    CTRL -> Manager : generateNewTemplate(interviewModel)
+    activate Manager
+
+        Manager -> Plugin : newInterviewModelTemplate()
+    activate Plugin
+
+        Plugin -> Plugin : generateFile()
+
+        Plugin -> Parser : checkFileSyntax(templateFile)
+        note left: Along with the requirements\n template grammar.
+
+        activate Parser
+        deactivate Parser
+
+        Plugin -> Plugin : export()
+       Plugin --> Manager : confirmation
+    deactivate Plugin
+
+    Manager --> CTRL : confirmation
+    deactivate Manager
+
+    CTRL --> UI : confirmation
 deactivate CTRL
 
-UI --> USER : asks to define the question
 deactivate UI
 
-USER -> UI : defines the question
-activate UI
-
-UI --> USER : asks to define the question answer
-deactivate UI
-
-USER -> UI : defines the answer
-activate UI
-
-
-UI -> CTRL : addNewQuestion(questionTypeDenomination,\n questionDescription, optionsList)
-activate CTRL
-
-
-CTRL -> InterviewService : createQuestion(questionTypeDenomination,\n questionDescription, optionsList)
-deactivate CTRL
-activate InterviewService
-
-    InterviewService -> QuestionBuilder : build()
-    deactivate InterviewService
-    activate QuestionBuilder
-
-    QuestionBuilder -> Question: createQuestion(questionTypeDenomination,\n questionDescription, optionsList)
-    deactivate QuestionBuilder
-    activate Question
-        Question -> QuestionType : valueOf(questionTypeDenomination)
-        deactivate Question
-        activate QuestionType
-           QuestionType -[#white]> QuestionType
-        deactivate QuestionType
-|||
-
-UI --> USER : confirm that the question was successfully set within the file
-deactivate UI
-
-
-end loop
-
-USER -> UI : asks to export the file
-activate UI
-
-UI -> CTRL : exportTemplateFile()
-activate CTRL
-
-    CTRL -> InterviewService : generateNewTemplate(filename)
-    activate InterviewService
-
-        InterviewService -> InterviewBuilder : build()
-    activate InterviewBuilder
-
-        InterviewBuilder -> InterviewTemplate : RequirementsTemplate(filename, questionsList)
-    deactivate InterviewBuilder
-    activate InterviewTemplate
-        InterviewTemplate -[#white]> InterviewTemplate
-    deactivate InterviewTemplate
-
-    InterviewService -> InterviewEvaluator : evaluateWithGrammar(templateFile)
-    note left: With a lexer, a parser and\n other associated classes\n along with the requirements\n template grammar.
-    activate InterviewEvaluator
-    deactivate InterviewEvaluator
-
-    InterviewService -> InterviewService : exportTemplate()
-    InterviewService --> CTRL
-    deactivate InterviewService
 
     CTRL --> UI : confirmation
     deactivate CTRL

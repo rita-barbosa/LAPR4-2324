@@ -1,73 +1,39 @@
-@startuml US2003_SSD
+@startuml US1012_SSD
 autonumber
 
-actor "Operator" as OP
+actor "Customer Manager" as CM
 participant "System" as SYS
+participant "Plugin" as PLU
 
-activate OP
+activate CM
 
-OP -> SYS : asks to generate a new interview model file
+CM -> SYS : asks to generate a new interview\n model file
 
 activate SYS
 
-SYS --> OP : asks for template file name
+    SYS --> CM : shows job Openings to select
 deactivate SYS
 
-OP -> SYS : writes the file name
+CM -> SYS : selects a job Opening
 activate SYS
 
 
-loop Until the user wants
-|||
+SYS -> PLU : generate and export template file
+activate PLU
 
-    SYS --> OP : presents the questions type list and asks to select an option
-    deactivate SYS
+PLU -> PLU : generates file
 
-    OP -> SYS : selects the question type
+PLU -> PLU : validates the generated template\n file with a specific grammar
 
-    alt New question type
-        activate SYS
+PLU -> PLU : exports the interview\n model file
 
-                SYS --> OP : asks to introduce the new question type
-                deactivate SYS
+PLU --> SYS : confirms exportation
+deactivate PLU
 
-                OP -> SYS : defines the question type
-
-                activate SYS
-
-                SYS --> SYS : registers the new question \ntype in the questions type list
-
-    end alt
-
-        SYS --> OP : asks to define the question
-        deactivate SYS
-
-        OP -> SYS : defines the question
-        activate SYS
-
-        SYS --> OP : asks to define the question answer
-        deactivate SYS
-
-        OP -> SYS : defines the answer
-        activate SYS
-
-        SYS --> OP : confirm that the question was successfully set within the file
-        deactivate SYS
-|||
-end loop
-
-OP -> SYS : asks to export the file
-
-activate SYS
-
-SYS --> SYS : validates file with grammar
-
-SYS --> SYS : exports the interview model file
-
-SYS --> OP : confirms the success of the exportation of the file
+SYS --> CM : confirms the successful\n exportation of the file
 deactivate SYS
 
 
-deactivate OP
+deactivate CM
 
 @enduml
