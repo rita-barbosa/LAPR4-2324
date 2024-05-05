@@ -28,6 +28,7 @@ import jobs4u.base.app.backoffice.console.presentation.authz.AddUserUI;
 import jobs4u.base.app.backoffice.console.presentation.authz.EnableDisableUserAction;
 import jobs4u.base.app.backoffice.console.presentation.authz.ListUsersAction;
 import jobs4u.base.app.backoffice.console.presentation.candidate.ListAllCandidatesAction;
+import jobs4u.base.app.backoffice.console.presentation.candidate.ListCandidateDataAction;
 import jobs4u.base.app.backoffice.console.presentation.candidate.RegisterCandidateAction;
 import jobs4u.base.app.backoffice.console.presentation.customer.RegisterCustomerAction;
 import jobs4u.base.app.backoffice.console.presentation.interviewmodel.SelectInterviewModelAction;
@@ -84,6 +85,8 @@ public class MainMenu extends AbstractUI {
     private static final int SELECT_INT_MODEL = 4;
     private static final int LIST_JOB_OPENING_APPLICATIONS = 5;
     private static final int SETUP_RECRUITMENT_PROC = 6;
+
+    private static final int SEE_CANDIDATE_INFO = 7;
     private static final int REGISTER_CUSTOMERS = 1;
 
     // LANGUAGE ENGINEER SETTINGS
@@ -94,8 +97,10 @@ public class MainMenu extends AbstractUI {
     private static final int USERS_OPTION = 2;
     private static final int JOB_OPENING_OPTION = 3;
     private static final int CUSTOMER_OPTION = 4;
-    private static final int CANDIDATE_OPTION = 5;
+    private static final int CANDIDATE_OPERATOR_OPTION = 5;
     private static final int LANGUAGE_ENGINEER_OPTION = 6;
+
+    private static final int CANDIDATE_CUSTOMER_M_OPTION = 7;
 
     private static final String SEPARATOR_LABEL = "--------------";
 
@@ -157,12 +162,14 @@ public class MainMenu extends AbstractUI {
             mainMenu.addSubMenu(JOB_OPENING_OPTION, jobOpeningMenu);
             final Menu customerMenu = buildCustomerManagerCustomerMenu();
             mainMenu.addSubMenu(CUSTOMER_OPTION, customerMenu);
+            final Menu candidateMenu = buildCustomerManagerCandidateMenu();
+            mainMenu.addSubMenu(CANDIDATE_CUSTOMER_M_OPTION, candidateMenu);
         }
         if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.OPERATOR)) {
             final Menu pluginMenu = buildOperatorPluginMenu();
             mainMenu.addSubMenu(PLUGIN_OPTION, pluginMenu);
             final Menu candidateMenu = buildOperatorCandidateMenu();
-            mainMenu.addSubMenu(CANDIDATE_OPTION, candidateMenu);
+            mainMenu.addSubMenu(CANDIDATE_OPERATOR_OPTION, candidateMenu);
         }
 
         if (!Application.settings().isMenuLayoutHorizontal()) {
@@ -172,6 +179,12 @@ public class MainMenu extends AbstractUI {
         mainMenu.addItem(EXIT_OPTION, "Exit", new ExitWithMessageAction("Closing."));
 
         return mainMenu;
+    }
+
+    private Menu buildCustomerManagerCandidateMenu() {
+        final Menu menu = new Menu("Candidates >");
+        menu.addItem(SEE_CANDIDATE_INFO, "See all data of a candidate", new ListCandidateDataAction());
+        return menu;
     }
 
     private Menu buildOperatorPluginMenu() {

@@ -42,21 +42,21 @@ skinparam sequenceMessageAlign left
 
         UI -> UI: show()
 
-        UI --> CM: prompts user to choose a candidate (email as identifier)
+        UI --> CM: prompts user to choose a candidate (phone number as identifier)
 
-        alt Invalid email address
+        alt Invalid phone number
 
-            CM -> UI: Inputs an invalid email address
+            CM -> UI: Inputs an invalid phone number
 
-            UI -> CTRL: listCandidateData(email)
+            UI -> CTRL: listCandidateData(phoneNumber)
 
-            CTRL -> SERVICE: listCandidateData(email)
+            CTRL -> SERVICE: listCandidateData(phoneNumber)
 
             Activate SERVICE
 
             SERVICE -> CREPO: instance()
 
-            SERVICE -> CREPO: findById(email)
+            SERVICE -> CREPO: findById(phoneNumber)
 
             loop returns null since it doesn't match
                 CREPO -> CREPO: searches
@@ -74,21 +74,21 @@ skinparam sequenceMessageAlign left
 
             UI --> CM: Notifies the user it's invalid and asks to try again
 
-        else Valid email address
+        else Valid phone number
 
-            CM -> UI: Inputs a valid email address
+            CM -> UI: Inputs a valid phone number
 
-            UI -> CTRL: listCandidateData(email)
+            UI -> CTRL: listCandidateData(phoneNumber)
 
-                        CTRL -> SERVICE: listCandidateData(email)
+                        CTRL -> SERVICE: listCandidateData(phoneNumber)
 
                         Activate SERVICE
 
                         SERVICE -> CREPO: instance()
 
-                        SERVICE -> CREPO: findById(email)
+                        SERVICE -> CREPO: findById(phoneNumber)
 
-                        loop returns the candidate when it matches the email
+                        loop returns the candidate when it matches the phone number
                             CREPO -> CREPO: searches
                         end
 
@@ -116,7 +116,7 @@ skinparam sequenceMessageAlign left
 
                             SERVICE -> ALIST: app = get(i)
 
-                            alt if app.email == candidate.email
+                            alt if app.phoneNumber == candidate.phoneNumber
 
                             Activate ALIST
 
