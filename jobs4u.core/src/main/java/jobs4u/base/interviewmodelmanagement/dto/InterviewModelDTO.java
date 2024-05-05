@@ -1,9 +1,5 @@
 package jobs4u.base.interviewmodelmanagement.dto;
 
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModelDescription;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModelName;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.FullClassName;
-
 public class InterviewModelDTO {
 
     private final String name;

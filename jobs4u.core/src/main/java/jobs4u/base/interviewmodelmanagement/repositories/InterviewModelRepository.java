@@ -1,8 +1,8 @@
-package jobs4u.base.languageenginnermanagement.interviewmodelmanagement.repositories;
+package jobs4u.base.interviewmodelmanagement.repositories;
 
 import eapli.framework.domain.repositories.DomainRepository;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModel;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModelName;
+import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
+import jobs4u.base.interviewmodelmanagement.domain.InterviewModelName;
 
 import java.util.List;
 import java.util.Optional;

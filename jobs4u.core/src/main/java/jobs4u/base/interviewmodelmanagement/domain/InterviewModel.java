@@ -1,4 +1,4 @@
-package jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain;
+package jobs4u.base.interviewmodelmanagement.domain;
 
 import eapli.framework.domain.model.AggregateRoot;
 import eapli.framework.domain.model.DomainEntities;
@@ -7,7 +7,7 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jobs4u.base.interviewmodelmanagement.dto.InterviewModelDTO;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.FullClassName;
+import jobs4u.base.requirementsmanagement.domain.FullClassName;
 
 import java.util.Objects;
 
