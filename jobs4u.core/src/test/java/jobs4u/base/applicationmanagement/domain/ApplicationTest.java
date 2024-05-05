@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,21 +14,21 @@ class ApplicationTest {
 
     RequirementAnswer requirementAnswer = new RequirementAnswer("The requirement was complete!");
     RequirementResult requirementResult = new RequirementResult(true);
-    File file = new File("example.txt");
+    Set<ApplicationFile> files = new HashSet<>();
+
     Date date = new Date(2024, Calendar.JANUARY, 5);
     Interview interview = new Interview("interview1", new Date(2024, Calendar.FEBRUARY, 2),
             new InterviewResult("correct", 50, "wrong"), "answer");
 
 
-
     @Test
     public void ensureMustHaveRequirementAnswer() {
-        assertThrows(IllegalArgumentException.class, () -> new Application(null, requirementResult, file, date, interview));
+        assertThrows(IllegalArgumentException.class, () -> new Application(null, requirementResult, files, date, interview));
     }
 
     @Test
     public void ensureMustHaveRequirementResult() {
-        assertThrows(IllegalArgumentException.class, () -> new Application(requirementAnswer, null, file, date, interview));
+        assertThrows(IllegalArgumentException.class, () -> new Application(requirementAnswer, null, files, date, interview));
     }
     @Test
     public void ensureMustHaveFile() {
@@ -35,7 +37,7 @@ class ApplicationTest {
 
     @Test
     public void ensureMustHaveDate() {
-        assertThrows(IllegalArgumentException.class, () -> new Application(requirementAnswer, requirementResult, file, null, interview));
+        assertThrows(IllegalArgumentException.class, () -> new Application(requirementAnswer, requirementResult, files, null, interview));
     }
 
 
