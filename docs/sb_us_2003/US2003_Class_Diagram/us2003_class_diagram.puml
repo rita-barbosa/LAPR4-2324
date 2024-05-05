@@ -14,12 +14,12 @@ class GenerateRequirementsTemplateFileUI <<presentation>>  {
 class GenerateRequirementsTemplateFileController <<application>> {
 + create()
 + getJobOpeningList()
-+ exportTemplateFile(JobOpeningDTO jobOpeningDTO)
++ exportTemplateFile(JobOpeningDTO jobOpeningDTO, String directoryPath)
 }
 
 class RequirementsTemplateManagerService <<service>> {
 + getRequirementFromJobOpening(JobOpeningDTO jobOpeningDTO)
-+ generateNewTemplate(RequirementSpecification requirementSpecification)
++ generateNewTemplate(RequirementSpecification requirementSpecification, String directoryPath)
 }
 
 class RequirementSpecificationRepository <<persistence>>\n<<repository>> {
@@ -37,34 +37,16 @@ class RequirementsTemplateParser <<parser>> {
 }
 
 class AuthorizationService <<service>> {
-+ loggedinUserWithPermissions(Role ... Action BaseRole.CUSTOMER_MANAGER)
++ loggedinUserWithPermissions(Role ... Action BaseRole.OPERATOR)
 }
 
 class JobOpeningRepository <<Persistence>> <<Repository>> {
 + rebuild(JobOpening: entity)
-+ getJobOpeningListMatchingCostumerCode(CustomerCode costumerCode)
-}
-
-class CustomerManagementService <<Service>> {
-+ getAssignedCostumerCodesList(EmailAddress username)
-}
-
-class CustomerRepository  <<Persistence>> <<Repository>>  {
-+ save(e: Customer)
-+ getCostumersByUsername(EmailAddress username)
-}
-
-
-class Customer <<Domain>> <<Aggregate Root>> {
-- CustomerCode customerCode
-- CompanyName companyName
-- EmailAddress costumerManagerEmail
-+ customerCode()
-+ companyName()
++ getUNFINISHEDJobOpenings()
 }
 
 class JobOpeningManagementService <<Service>> {
-+ getJobOpeningsFromCostumerCodes(List<CustomerCode> assignedCostumerCodesList)
++ getUNFINISHEDJobOpenings()
 }
 
 class JobOpeningListDTOService <<Service>> {
@@ -89,14 +71,11 @@ AbstractUI <|.up. GenerateRequirementsTemplateFileUI : implements
 GenerateRequirementsTemplateFileUI .left.> GenerateRequirementsTemplateFileController
 
 GenerateRequirementsTemplateFileController .left.> AuthorizationService
-GenerateRequirementsTemplateFileController ...> CustomerManagementService
 GenerateRequirementsTemplateFileController ...> JobOpeningManagementService
 GenerateRequirementsTemplateFileController ..> JobOpeningListDTOService
 GenerateRequirementsTemplateFileController ..> RequirementsTemplateManagerService
 
 'Domain Layer
-CustomerManagementService -down-> CustomerRepository
-CustomerManagementService --> Customer
 JobOpeningManagementService --> JobOpeningRepository
 JobOpeningManagementService --> JobOpening
 JobOpeningListDTOService --> JobOpening
