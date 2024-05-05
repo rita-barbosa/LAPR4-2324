@@ -35,6 +35,7 @@
         <class>jobs4u.base.recruitmentprocessmanagement.domain.Phase</class>
         <class>jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess</class>
         <class>jobs4u.base.applicationmanagement.domain.Application</class>
+        <class>jobs4u.base.applicationmanagement.domain.ApplicationFile</class>
         <!--        <class>jobs4u.base.interviewmodelmanagement.domain.InterviewModel</class>-->
 
         <properties>
