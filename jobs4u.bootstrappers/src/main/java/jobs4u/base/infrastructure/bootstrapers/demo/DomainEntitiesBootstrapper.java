@@ -236,38 +236,32 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
     }
 
     private void persistRequirementSpecifications() {
-//        String description1 = "Back-End Developer With Experience in Java";
-//        String name1 = "Back_End_Dev_Requirement_Plugin.jar";
-//        String fullClassName1 = "plugin.src.java.pluginRequirement";
-//        RequirementSpecification requirementSpecification1 = new RequirementSpecification(name1, description1, fullClassName1);
+        String description1 = "Back-End Developer With Experience in Java";
+        String name1 = "Requirements_Back_End_Dev.jar";
+        String fullClassName1 = "Plugins/Requirements/Back_End_Dev/Requirements_Back_End_Dev.jar";
+        RequirementSpecification requirementSpecification1 = new RequirementSpecification(name1, description1, fullClassName1);
 
+        String description2 = "Front-End Developer With Experience in Java";
+        String name2 = "Requirements_Front_End_Dev.jar";
+        String fullClassName2 = "Plugins/Requirements/Front_End_Dev/Requirements_Front_End_Dev.jar";
+        RequirementSpecification requirementSpecification2 = new RequirementSpecification(name2, description2, fullClassName2);
 
-        String description3 = "Programmer Test";
-        String name3 = "InterviewPlugin_Programmer.jar";
-        String fullClassName3 = "Plugins/Requirements/JobRequirementProgrammer/InterviewPlugin_Programmer.jar";
-        RequirementSpecification requirementSpecification3 = new RequirementSpecification(name3, description3, fullClassName3);
-
-
-
-    //    requirementSpecificationsList.add(requirementSpecification1);
-     //   requirementSpecificationsList.add(requirementSpecification2);
-        requirementSpecificationsList.add(requirementSpecification3);
-
-     //   requirementSpecificationRepository.save(requirementSpecification1);
-     //   requirementSpecificationRepository.save(requirementSpecification2);
-        requirementSpecificationRepository.save(requirementSpecification3);
+        requirementSpecificationsList.add(requirementSpecification1);
+        requirementSpecificationsList.add(requirementSpecification2);
+        requirementSpecificationRepository.save(requirementSpecification1);
+        requirementSpecificationRepository.save(requirementSpecification2);
     }
 
     private void persistInterviewModels() {
         String description1 = "Back-End Developer With Experience in Java";
-        String name1 = "Back_End_Dev_Interview_Plugin.jar";
-        String fullClassName1 = "plugin.src.java.pluginInterview";
+        String name1 = "Interview_Back_End_Dev.jar";
+        String fullClassName1 = "Plugins/Interviews/Back_End_Dev/Interview_Back_End_Dev.jar";
         InterviewModel interviewModel1 = new InterviewModel(name1, description1, fullClassName1);
 
 
         String description2 = "Front-End Developer With Experience in Java";
-        String name2 = "Front_End_Dev_Interview_Plugin.jar";
-        String fullClassName2 = "plugin.src.java.pluginInterview";
+        String name2 = "Interview_Front_End_Dev.jar";
+        String fullClassName2 = "Plugins/Interviews/Front_End_Dev/Interview_Front_End_Dev.jar";
         InterviewModel interviewModel2 = new InterviewModel(name2, description2, fullClassName2);
 
         interviewModelsList.add(interviewModel1);

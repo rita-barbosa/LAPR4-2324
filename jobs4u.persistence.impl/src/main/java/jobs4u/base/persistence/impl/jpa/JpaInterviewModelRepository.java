@@ -7,7 +7,8 @@ import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
 import jobs4u.base.interviewmodelmanagement.domain.InterviewModelName;
 import jobs4u.base.interviewmodelmanagement.repositories.InterviewModelRepository;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class JpaInterviewModelRepository
@@ -24,13 +25,15 @@ public class JpaInterviewModelRepository
     }
 
     @Override
-    public List<InterviewModel> interviewModels() {
-        return null;
+    public Iterable<InterviewModel> interviewModels() {
+        return findAll();
     }
 
     @Override
     public Optional<InterviewModel> getFileByName(String filename) {
-        return Optional.empty();
+        final Map<String, Object> params = new HashMap<>();
+        params.put("filename", filename);
+        return matchOne("e.interviewModelName.name=:filename", params);
     }
 
 }

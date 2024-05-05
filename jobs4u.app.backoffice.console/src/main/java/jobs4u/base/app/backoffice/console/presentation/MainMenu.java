@@ -31,6 +31,7 @@ import jobs4u.base.app.backoffice.console.presentation.candidate.ListAllCandidat
 import jobs4u.base.app.backoffice.console.presentation.candidate.ListCandidateDataAction;
 import jobs4u.base.app.backoffice.console.presentation.candidate.RegisterCandidateAction;
 import jobs4u.base.app.backoffice.console.presentation.customer.RegisterCustomerAction;
+import jobs4u.base.app.backoffice.console.presentation.interviewTemplate.GenerateInterviewModelTemplateFileUI;
 import jobs4u.base.app.backoffice.console.presentation.interviewmodel.SelectInterviewModelAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.listing.ListJobOpeningsAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.registration.RegisterJobOpeningAction;
@@ -41,7 +42,6 @@ import jobs4u.base.app.backoffice.console.presentation.recruitmentprocess.SetupR
 import jobs4u.base.app.backoffice.console.presentation.requirementspecification.SelectRequirementSpecificationAction;
 import jobs4u.base.app.backoffice.console.presentation.languageengineer.RegisterPluginAction;
 import jobs4u.base.app.common.console.presentation.authz.MyUserMenu;
-import jobs4u.base.requirementTemplate.application.GenerateRequirementsTemplateFileController;
 import jobs4u.base.usermanagement.domain.BaseRoles;
 import eapli.framework.actions.Actions;
 import eapli.framework.actions.menu.Menu;
@@ -74,7 +74,7 @@ public class MainMenu extends AbstractUI {
     //OPERATOR
     private static final int REGISTER_CANDIDATE = 1;
     private static final int LIST_CANDIDATES = 2;
-    private static final int REGISTER_APPLICATIONS = 3;
+    private static final int REGISTER_APPLICATIONS = 1;
     private static final int PLUGIN_OPTION = 4;
     private static final int GENERATE_REQUIREMENT_TEMPLATE = 1;
 
@@ -88,6 +88,8 @@ public class MainMenu extends AbstractUI {
 
     private static final int SEE_CANDIDATE_INFO = 7;
     private static final int REGISTER_CUSTOMERS = 1;
+    private static final int PLUGIN_OPTION_CUSTOMER = 5;
+    private static final int GENERATE_INTERVIEW_TEMPLATE = 1;
 
     // LANGUAGE ENGINEER SETTINGS
     private static final int REGISTER_PLUGIN = 1;
@@ -98,6 +100,7 @@ public class MainMenu extends AbstractUI {
     private static final int JOB_OPENING_OPTION = 3;
     private static final int CUSTOMER_OPTION = 4;
     private static final int CANDIDATE_OPERATOR_OPTION = 5;
+    private static final int APPLICATION_OPTION = 6;
     private static final int LANGUAGE_ENGINEER_OPTION = 6;
 
     private static final int CANDIDATE_CUSTOMER_M_OPTION = 7;
@@ -164,12 +167,16 @@ public class MainMenu extends AbstractUI {
             mainMenu.addSubMenu(CUSTOMER_OPTION, customerMenu);
             final Menu candidateMenu = buildCustomerManagerCandidateMenu();
             mainMenu.addSubMenu(CANDIDATE_CUSTOMER_M_OPTION, candidateMenu);
+            final Menu pluginMenu = buildCustomerManagerPluginMenu();
+            mainMenu.addSubMenu(PLUGIN_OPTION_CUSTOMER, pluginMenu);
         }
         if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.OPERATOR)) {
             final Menu pluginMenu = buildOperatorPluginMenu();
             mainMenu.addSubMenu(PLUGIN_OPTION, pluginMenu);
             final Menu candidateMenu = buildOperatorCandidateMenu();
             mainMenu.addSubMenu(CANDIDATE_OPERATOR_OPTION, candidateMenu);
+            final Menu application = buildOperatorApplicationMenu();
+            mainMenu.addSubMenu(APPLICATION_OPTION, application);
         }
 
         if (!Application.settings().isMenuLayoutHorizontal()) {
@@ -193,6 +200,12 @@ public class MainMenu extends AbstractUI {
         return menu;
     }
 
+    private Menu buildCustomerManagerPluginMenu(){
+        final Menu menu = new Menu("Plugins >");
+        menu.addItem(GENERATE_INTERVIEW_TEMPLATE, "Generate and export Interview Model Template", new GenerateInterviewModelTemplateFileUI()::show);
+        return menu;
+    }
+
     private Menu buildLanguageEngineerSettingsMenu(){
         final Menu menu = new Menu("Language Engineer >");
         menu.addItem(REGISTER_PLUGIN,"Register a new plugin",new RegisterPluginAction());
@@ -203,9 +216,15 @@ public class MainMenu extends AbstractUI {
         final Menu menu = new Menu("Candidates >");
         menu.addItem(REGISTER_CANDIDATE,"Register a new candidate",new RegisterCandidateAction());
         menu.addItem(LIST_CANDIDATES, "List All Candidates", new ListAllCandidatesAction());
+        return menu;
+    }
+
+    private Menu buildOperatorApplicationMenu(){
+        final Menu menu = new Menu("Applications >");
         menu.addItem(REGISTER_APPLICATIONS, "Register Job Opening Applications", new RegisterJobOpeningApplicationsAction());
         return menu;
     }
+
 
     private Menu buildCustomerManagerCustomerMenu() {
         final Menu menu = new Menu("Customers >");

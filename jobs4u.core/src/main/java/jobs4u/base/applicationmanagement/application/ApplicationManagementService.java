@@ -8,6 +8,7 @@ import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
 import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
 import jobs4u.base.candidatemanagement.domain.Candidate;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
+import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -45,6 +46,16 @@ public class ApplicationManagementService {
             }
         }
         return list;
+    }
+
+    public List<ApplicationDTO> getApplicationsList(JobOpening jobOpening){
+        List<ApplicationDTO> applicationDTO = new ArrayList<>();
+
+            for (Application application : jobOpening.getApplications()) {
+                applicationDTO.add(application.toDTO());
+            }
+
+        return applicationDTO;
     }
 
 }

@@ -111,4 +111,25 @@ public class JobOpeningManagementService {
         return true;
     }
 
+    public List<JobOpeningDTO> getJobOpeningsList(){
+        List<JobOpeningDTO> jobOpenings = new ArrayList<>();
+        for (JobOpening jobOpening : jobOpeningRepository.findAll()) {
+            jobOpenings.add(jobOpening.toDTO());
+
+        }
+        return  jobOpenings;
+    }
+
+    public JobOpening getJobOpening(JobOpeningDTO jobOpeningDTO){
+        String jobReference = jobOpeningDTO.getJobReference();
+        JobOpening jobOpening = null;
+
+        for (JobOpening job : jobOpeningRepository.findAll()) {
+            if (job.getJobReference().toString().equals(jobReference)){
+                jobOpening = job;
+            }
+        }
+        return jobOpening;
+    }
+
 }
