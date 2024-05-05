@@ -58,6 +58,8 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
 
     List<RequirementSpecification> requirementSpecificationsList = new ArrayList<>();
 
+    List<RecruitmentProcess> recruitmentProcessList = new ArrayList<>();
+
     @Override
     public boolean execute() {
         instantiateRepositories();
@@ -91,7 +93,7 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         criteriaRepository.save(new Criteria("Status [STARTED]", JobOpening.class.getSimpleName()));
         criteriaRepository.save(new Criteria("Company Name", JobOpening.class.getSimpleName()));
         criteriaRepository.save(new Criteria("Customer Code", JobOpening.class.getSimpleName()));
-      //  criteriaRepository.save(new Criteria("Time Interval", JobOpening.class.getSimpleName()));
+        //  criteriaRepository.save(new Criteria("Time Interval", JobOpening.class.getSimpleName()));
     }
 
     private void persistRecruitmentProcesses() {
@@ -218,6 +220,9 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
             phaseRepository.save(phase);
         }
 
+        recruitmentProcessList.add(recruitmentProcess1);
+        recruitmentProcessList.add(recruitmentProcess2);
+        recruitmentProcessList.add(recruitmentProcess3);
     }
 
 
@@ -231,22 +236,36 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         JobReference jobReference1 = new JobReference("ISEP", 1);
         JobReference jobReference2 = new JobReference("ISEP", 2);
 
-        JobOpening jobOpening = new JobOpening("Front End Junior Developer", contract, mode, "123 Main Street",
+        JobOpening jobOpening1 = new JobOpening("Front End Junior Developer", contract, mode, "123 Main Street",
                 "Flagtown", "Star District", "USA", "12345", 10, description,
                 requirementSpecificationsList.get(0),interviewModelsList.get(0), jobReference);
 
-        JobOpening jobOpening1 = new JobOpening("Back End Senior Developer", contract, mode, "456 Elm Street",
+        JobOpening jobOpening2 = new JobOpening("Back End Senior Developer", contract, mode, "456 Elm Street",
                 "Maple Town", "Moonlight District", "Canada", "54321", 15, description,
                 requirementSpecificationsList.get(0),interviewModelsList.get(0), jobReference1);
 
-        JobOpening jobOpening2 = new JobOpening("Back End Senior Developer", contract, mode, "MM Street",
+        JobOpening jobOpening3 = new JobOpening("Back End Senior Developer", contract, mode, "MM Street",
                 "MM Town", "MM District", "MMM", "54321", 8, description,
                 requirementSpecificationsList.get(0), interviewModelsList.get(0),jobReference2);
         jobOpening2.getStatus().setStatusDescriptionAsSTARTED();
 
-        jobOpeningRepository.save(jobOpening);
-        jobOpeningRepository.save(jobOpening1);
-        jobOpeningRepository.save(jobOpening2);
+        jobOpening1 = jobOpeningRepository.save(jobOpening1);
+        jobOpening2 = jobOpeningRepository.save(jobOpening2);
+        jobOpening3 = jobOpeningRepository.save(jobOpening3);
+
+        List<JobOpening> jobOpenings = new ArrayList<>();
+
+        jobOpenings.add(jobOpening1);
+        jobOpenings.add(jobOpening2);
+        jobOpenings.add(jobOpening3);
+
+        for (int i = 0; i < 3; i++) {
+            jobOpenings.get(i).addRecruitmentProcess(recruitmentProcessList.get(i));
+            recruitmentProcessList.get(i).setJobOpening(jobOpenings.get(i));
+            jobOpeningRepository.save(jobOpenings.get(i));
+            recruitmentProcessRepository.save(recruitmentProcessList.get(i));
+        }
+
     }
 
     private void persistRequirementSpecifications() {
