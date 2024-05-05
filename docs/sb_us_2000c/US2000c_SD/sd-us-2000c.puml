@@ -22,7 +22,7 @@ UI -> CTRL **: create
 UI -> CTRL : getCandidatesList()
 activate CTRL
 
-CTRL -> AUTHZ:  ensureUserWithPermissions(roles)
+CTRL -> AUTHZ:  ensureAuthenticatedUserHasAnyOf(BaseRoles.OPERATOR)
 activate AUTHZ
 AUTHZ -> CTRL:  return if the logged user has the right permissions
 deactivate AUTHZ
