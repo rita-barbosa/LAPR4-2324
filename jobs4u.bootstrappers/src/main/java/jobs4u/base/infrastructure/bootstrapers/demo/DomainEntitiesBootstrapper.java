@@ -252,32 +252,35 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
     private void persistApplications(){
         RequirementAnswer requirementAnswer = new RequirementAnswer("The requirement was complete!");
         RequirementResult requirementResult = new RequirementResult(true);
-        File file = new File("example.txt");
+        ApplicationFile file = new ApplicationFile(new File("example.txt"));
+        Set<ApplicationFile> files = new HashSet<>();
+        files.add(file);
         Date date = new Date(2024 - 1900, Calendar.JANUARY, 5);
         Interview interview = new Interview("interview1", new Date(2024 - 1900, Calendar.MARCH, 2),
                 new InterviewResult("passed", 50, "the grade is above 50"), "accepted");
 
-        Optional<Candidate> opCandidate = candidateRepository.findByPhoneNumber(new PhoneNumber("+351", "910000034"));
+        PhoneNumber phone = new PhoneNumber("+351", "910000034");
 
-        Application application;
-        if (opCandidate.isPresent()){
-            Candidate candidate = opCandidate.get();
-            application = new Application(requirementAnswer, requirementResult, file, date, candidate, interview);
-        } else {
-            application = new Application(requirementAnswer, requirementResult, file, date, interview);
-        }
+        Optional<Candidate> opCandidate = candidateRepository.findByPhoneNumber(phone);
 
-//        PhoneNumber phoneNumber = new PhoneNumber("+351", "910000034");
-//        candidateManagementService.registerCandidate("Joana","candidate@email.com",phoneNumber);
-//
         RequirementAnswer requirementAnswer1 = new RequirementAnswer("The requirement was complete!");
         RequirementResult requirementResult1 = new RequirementResult(true);
-        File file1 = new File("example1.txt");
+        ApplicationFile file1 = new ApplicationFile(new File("example1.txt"));
+        Set<ApplicationFile> files1 = new HashSet<>();
+        files1.add(file1);
         Date date1 = new Date(2024 - 1900, Calendar.JANUARY, 6);
         Interview interview1 = new Interview("interview1", new Date(2024 - 1900, Calendar.MARCH, 3),
                 new InterviewResult("passed", 60, "the grade is above 50"), "accepted");
 
-        Application application1 = new Application(requirementAnswer1, requirementResult1, file1, date1, interview1);
+        Application application, application1;
+        if (opCandidate.isPresent()){
+            Candidate candidate = opCandidate.get();
+            application = new Application(requirementAnswer, requirementResult, files, date, candidate, interview);
+            application1 = new Application(requirementAnswer1, requirementResult1, files1, date1, candidate, interview1);
+        } else {
+            application = new Application(requirementAnswer, requirementResult, files, date, interview);
+            application1 = new Application(requirementAnswer1, requirementResult1, files1, date1, interview1);
+        }
 
 
         Set<Application> applicationsSet = new HashSet<>();
@@ -296,8 +299,5 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
 
         jobs.get(1).setApplications(applicationsSet1);
         jobOpeningRepository.save(jobs.get(1));
-
-
-
     }
 }
