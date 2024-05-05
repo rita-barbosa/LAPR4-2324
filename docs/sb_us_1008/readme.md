@@ -208,7 +208,7 @@ package jobs4u.base.app.backoffice.console.presentation.languageengineer;
 
 import eapli.framework.io.util.Console;
 import eapli.framework.presentation.console.AbstractUI;
-import jobs4u.base.languageenginnermanagement.application.RegisterPluginController;
+import jobs4u.base.interviewmodelmanagement.application.RegisterPluginController;
 
 public class RegisterPluginUI extends AbstractUI {
 
@@ -268,7 +268,7 @@ package jobs4u.base.languageenginnermanagement.application;
 
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.application.InterviewModelManagementService;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.application.RequirementSpecificationManagementService;
+import jobs4u.base.interviewmodelmanagement.application.RequirementSpecificationManagementService;
 
 public class RegisterPluginController {
 
@@ -301,9 +301,9 @@ The following code belongs to both services of this functionality, respectively,
 package jobs4u.base.languageenginnermanagement.interviewmodelmanagement.application;
 
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModel;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModelName;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.repositories.InterviewModelRepository;
+import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
+import jobs4u.base.interviewmodelmanagement.domain.InterviewModelName;
+import jobs4u.base.interviewmodelmanagement.repositories.InterviewModelRepository;
 
 public class InterviewModelManagementService {
     private static final InterviewModelRepository interviewModelRepository = PersistenceContext.repositories().interviewModels();
@@ -323,10 +323,10 @@ public class InterviewModelManagementService {
 package jobs4u.base.languageenginnermanagement.interviewmodelmanagement.application;
 
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
-import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModelName;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementName;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementSpecification;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.repositories.RequirementSpecificationRepository;
+import jobs4u.base.interviewmodelmanagement.domain.InterviewModelName;
+import jobs4u.base.requirementsmanagement.domain.RequirementName;
+import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
+import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
 
 public class RequirementSpecificationManagementService {
 

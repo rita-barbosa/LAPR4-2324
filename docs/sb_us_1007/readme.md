@@ -10,15 +10,9 @@ This is the first time this US is being worked on.
 
 ### Acceptance Criteria:
 
-- **1007.1.** To identify the job openings, the Customer Manager must use the job reference of the job opening it wants to setup the phases of.
+- **1007.1.** The start and end dates of a recruitment process must not be the same.
 
-- **1007.2.** The system must let the user know if the reference provided does not match a job opening and let it try again until the user gives a valid job reference.
-
-- **1007.3.** The system must not accept a non-existent job reference.
-
-- **1007.4.** The system must not accept the job reference from a closed job reference.
-
-- **1007.5.** The system must only accept a job reference that is within the business rules for a valid job reference.
+- **1007.2.** The start and end dates of a phase must not be the same.
 
 ### Client Clarifications:
 
@@ -158,38 +152,379 @@ Due to the data needed for this functionality being several entities in the Doma
 
 *Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
 
-**Test 1:** Verifies that it is not possible to ...
+**Test 1 and 2:** Verifies that it is not possible to create a recruitment process with overlapping or equal start and end dates
 
-**Refers to Acceptance Criteria:** G002.1
+**Refers to Acceptance Criteria:** 1007.1
 
 ````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
-...
-}
+ @Test
+    void ensureItCantCreatePhaseWithSameEndAndStartDate() {
+
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        Calendar start = null;
+        Calendar finish = null;
+        List<Phase> phases = new ArrayList<>();
+        try {
+            start = Calendars.fromDate(df.parse("16-03-2024"));
+            finish = Calendars.fromDate(df.parse("16-03-2024"));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        Calendar finalFinish = finish;
+        Calendar finalStart = start;
+        assertThrows(IllegalArgumentException.class, () -> new RecruitmentProcess(finalStart, finalFinish, phases));
+
+    }
+
+    @Test
+    void ensureItCantCreatePhaseWithStartDateAfterEndDate() {
+
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        Calendar start = null;
+        Calendar finish = null;
+        List<Phase> phases = new ArrayList<>();
+        try {
+            start = Calendars.fromDate(df.parse("18-03-2024"));
+            finish = Calendars.fromDate(df.parse("16-03-2024"));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        Calendar finalFinish = finish;
+        Calendar finalStart = start;
+        assertThrows(IllegalArgumentException.class, () -> new RecruitmentProcess(finalStart, finalFinish, phases));
+
+    }
+````
+
+
+**Test 3 and 4:** Verifies that it is not possible to create a phase with overlapping or equal start and end dates
+
+**Refers to Acceptance Criteria:** 1007.2
+
+````
+  @Test
+    void ensureItCantCreatePhaseWithSameEndAndStartDate() {
+
+        String phaseType = "TestPhase";
+        String phaseDescription = "Testing purposes";
+        String phaseStatus = "Test test and test";
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        Calendar start = null;
+        Calendar finish = null;
+        try {
+            start = Calendars.fromDate(df.parse("16-03-2024"));
+            finish = Calendars.fromDate(df.parse("16-03-2024"));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        Calendar finalFinish = finish;
+        Calendar finalStart = start;
+        assertThrows(IllegalArgumentException.class, () -> new Phase(phaseType, phaseDescription,phaseStatus, finalStart, finalFinish));
+
+    }
+
+    @Test
+    void ensureItCantCreatePhaseWithStartDateAfterEndDate() {
+
+        String phaseType = "TestPhase";
+        String phaseDescription = "Testing purposes";
+        String phaseStatus = "Test test and test";
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        Calendar start = null;
+        Calendar finish = null;
+        try {
+            start = Calendars.fromDate(df.parse("18-03-2024"));
+            finish = Calendars.fromDate(df.parse("16-03-2024"));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        Calendar finalFinish = finish;
+        Calendar finalStart = start;
+        assertThrows(IllegalArgumentException.class, () -> new Phase(phaseType, phaseDescription,phaseStatus, finalStart, finalFinish));
+
+    }
 ````
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+### DTOs
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+**AllPhasesDTO:** 
+
+Due to the high amount of input that was needed from the user to create a phase we found it to be best practice to use a DTO like PhaseDTO to keep each data refering to a Phase object that would be later created and the class AllPhasesDTO to very easily transport all of the data related to the Phases from the Presentation layer to the Application layer.
+````
+package jobs4u.base.recruitmentprocessmanagement.dto;
+
+import java.util.List;
+import java.util.Objects;
+
+public class AllPhasesDTO {
+
+    private List<PhaseDTO> listOfPhases;
+
+    public AllPhasesDTO(List<PhaseDTO> listOfPhases){
+        this.listOfPhases = listOfPhases;
+    }
+
+    public List<PhaseDTO> getListOfPhases() {
+        return listOfPhases;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AllPhasesDTO that = (AllPhasesDTO) o;
+        return Objects.equals(listOfPhases, that.listOfPhases);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(listOfPhases);
+    }
+}
+
+````
+
+**PhaseDTO**
+````
+package jobs4u.base.recruitmentprocessmanagement.dto;
+
+import eapli.framework.time.domain.model.DateInterval;
+import eapli.framework.validations.Preconditions;
+
+import java.util.Calendar;
+import java.util.Objects;
+
+public class PhaseDTO {
+
+    private String phaseType;
+
+    private String description;
+
+    private String status;
+
+    private DateInterval period;
+
+    public PhaseDTO(String phaseType, String description, String status, DateInterval period){
+        Preconditions.noneNull(phaseType,description,period,status);
+        Preconditions.nonEmpty(phaseType);
+        Preconditions.nonEmpty(description);
+        Preconditions.nonEmpty(status);
+
+        this.description = description;
+        this.phaseType = phaseType;
+        this.status = status;
+        this.period = period;
+    }
+
+    public String getPhaseType() {
+        return phaseType;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public Calendar getInitialDate() {
+        return period.start();
+    }
+
+    public Calendar getFinalDate() {
+        return period.end();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PhaseDTO phaseDTO = (PhaseDTO) o;
+        return Objects.equals(phaseType, phaseDTO.phaseType) && Objects.equals(description, phaseDTO.description) && Objects.equals(status, phaseDTO.status);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(phaseType, description, status);
+    }
+}
+````
+The usage of DTO's was already described in the design part of this documentation.
+
+### Services
+
+#### RecruitmentProcessManagementService
+````
+package jobs4u.base.recruitmentprocessmanagement.application;
+
+import eapli.framework.time.domain.model.DateInterval;
+import jobs4u.base.infrastructure.persistence.PersistenceContext;
+import jobs4u.base.jobopeningmanagement.domain.JobOpening;
+import jobs4u.base.recruitmentprocessmanagement.domain.Phase;
+import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
+import jobs4u.base.recruitmentprocessmanagement.dto.AllPhasesDTO;
+import jobs4u.base.recruitmentprocessmanagement.dto.PhaseDTO;
+import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
+import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+public class RecruitmentProcessManagementService {
+
+    private static final RecruitmentProcessRepository recruitmentProcessRepository = PersistenceContext.repositories().recruitmentProcesses();
+
+    private static final PhaseRepository phaseRepository = PersistenceContext.repositories().phases();
+
+    public static RecruitmentProcess setupRecruitmentProcess(Calendar start, Calendar end, AllPhasesDTO allPhasesDTO, JobOpening jobOpening){
+
+        List<Phase> listPhases = new ArrayList<>();
+
+        RecruitmentProcess recruitmentProcess = new RecruitmentProcess(start, end, listPhases);
+
+        for (PhaseDTO phaseDTO : allPhasesDTO.getListOfPhases()){
+            Phase phase = new Phase(phaseDTO.getPhaseType(), phaseDTO.getDescription(), phaseDTO.getStatus(), phaseDTO.getInitialDate(), phaseDTO.getFinalDate());
+            phase = phaseRepository.save(phase);
+            listPhases.add(phase);
+        }
+
+        recruitmentProcess.setPhases(listPhases);
+
+        recruitmentProcess = recruitmentProcessRepository.save(recruitmentProcess);
+
+        return recruitmentProcess;
+    }
+
+}
+````
+Due to the need to manage entities as of the likes of the RecruitmentProcesses and the Phases we created a service with the sole objective to be the class storing and letting other controllers use it's services to be able to effectively manage all RecruitmentProcesses and Phases alike.
+The same mentality also gave way to the usage of the:
+
+#### JobOpeningManagementService
+````
+package jobs4u.base.jobopeningmanagement.application;
+
+import eapli.framework.time.domain.model.DateInterval;
+import jobs4u.base.customermanagement.application.CustomerManagementService;
+import jobs4u.base.customermanagement.domain.Customer;
+import jobs4u.base.customermanagement.domain.CustomerCode;
+import jobs4u.base.customermanagement.dto.CustomerDTO;
+import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
+import jobs4u.base.recruitmentprocessmanagement.application.RecruitmentProcessManagementService;
+import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
+import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
+import jobs4u.base.infrastructure.persistence.PersistenceContext;
+import jobs4u.base.jobopeningmanagement.domain.JobOpening;
+import jobs4u.base.jobopeningmanagement.domain.JobReference;
+import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
+import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
+import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
+
+import java.util.*;
+
+public class JobOpeningManagementService {
+
+    private final JobOpeningRepository jobOpeningRepository = PersistenceContext
+            .repositories().jobOpenings();
+
+    private final JobOpeningDTOService dtoSvc = new JobOpeningDTOService();
+
+    private final RecruitmentProcessManagementService recruitmentProcessManagementService = new RecruitmentProcessManagementService();
+
+    private final CustomerManagementService customerManagementService = new CustomerManagementService();
+
+    public JobOpening registerJobOpening(String function, ContractTypeDTO contractTypeDenomination,
+                                         WorkModeDTO workModeDenomination, String streetName, String city,
+                                         String district, String state, String zipcode, int numVacancies,
+                                         String description, RequirementSpecification requirementsFile,
+                                         CustomerDTO companyInfo){
+
+        JobReference lastReference = jobOpeningRepository.lastJobReference(companyInfo.customerCode());
+
+        JobOpening jobOpening = new JobOpening(function, contractTypeDenomination, workModeDenomination, streetName, city,
+                district, state, zipcode, numVacancies, description, requirementsFile, lastReference);
+
+        jobOpeningRepository.save(jobOpening);
+        return jobOpening;
+    }
+
+    public Iterable<JobOpeningDTO> activeJobOpenings() {
+        return dtoSvc.convertToDTO(jobOpeningRepository.findAllJobOpeningsNotStarted());
+    }
+
+    public boolean checkJobOpeningByJobRef(String customerCode, int sequentialCode){
+        return jobOpeningRepository.containsOfIdentity(new JobReference(customerCode, sequentialCode));
+    }
+
+    public Optional<JobOpening> getJobOpeningByJobRef(String customerCode, int sequentialCode){
+        return jobOpeningRepository.ofIdentity(new JobReference(customerCode, sequentialCode));
+    }
+
+    public List<JobOpening> getJobOpeningsFromCustomerCodes(List<CustomerDTO> customerDTOList) {
+        Set<CustomerCode> customerCodes = new HashSet<>();
+        for (CustomerDTO customerDTO : customerDTOList){
+            customerCodes.add(new CustomerCode(customerDTO.customerCode()));
+        }
+       return jobOpeningRepository.getJobOpeningListMatchingCustomerCodesList(customerCodes);
+    }
+
+    public List<JobOpening> filterJobOpeningListByCompanyName(CustomerDTO dto) {
+        Optional<Customer> customer = customerManagementService.getCustomerByDTO(dto);
+        if (customer.isPresent()){
+            return jobOpeningRepository.getJobOpeningListMatchingCustomer(customer.get());
+        }
+        throw new NoSuchElementException("Failure - filterJobOpeningListByCompanyName");
+    }
+
+    public List<JobOpening> filterJobOpeningListByCustomerCode(String customerCode) {
+        Optional<Customer> customer = customerManagementService.getCustomerByCustomerCode(customerCode);
+        if (customer.isPresent()){
+            return jobOpeningRepository.getJobOpeningListMatchingCustomer(customer.get());
+        }
+        throw new NoSuchElementException("Unable to retrieve the customer with customer code " + customerCode);
+    }
+
+    public List<JobOpening> filterJobOpeningListBySTARTEDStatus(String started, List<JobOpening> virgemJobOpeningList) {
+        List<JobOpening> filtered = jobOpeningRepository.getJobOpeningListMatchingStatus(started);
+        virgemJobOpeningList.removeIf(jobOpening -> !filtered.contains(jobOpening));
+        return virgemJobOpeningList;
+    }
+
+    public List<JobOpening> filterJobOpeningListByDateInterval(DateInterval interval, List<JobOpening> jobOpenings) {
+        List<JobOpening> filtered = jobOpeningRepository.getJobOpeningListWithinDateInterval(interval);
+        jobOpenings.removeIf(jobOpening -> !filtered.contains(jobOpening));
+        if (jobOpenings.isEmpty()){
+            throw new NoSuchElementException("There are no job openings in the defined interval.");
+        }
+        return jobOpenings;
+    }
+
+    public Iterable<JobOpening> getAllUnfinishedJobOpenings(){
+        return jobOpeningRepository.findAllJobOpeningsWithoutRecruitmentProcess();
+    }
+
+    public boolean setupJobOpeningWithRecruitmentProcess(RecruitmentProcess recruitmentProcess, JobOpening jobOpening){
+        JobOpening jobOpening1 = jobOpeningRepository.ofIdentity(jobOpening.getJobReference()).get();
+        jobOpening1.updateStatusToNotStarted();
+        jobOpening1.addRecruitmentProcess(recruitmentProcess);
+        jobOpeningRepository.save(jobOpening1);
+        return true;
+    }
+
+}
+````
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
+This US is fundamental to later user stories to be able to start recruitment processes.
 
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
+In this sprint B this US can be used by US 1003 in part due to the filtering functionality it uses with the recruitment processes.
 
-## 7. Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
