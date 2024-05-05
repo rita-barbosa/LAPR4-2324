@@ -97,13 +97,13 @@ public class MainMenu extends AbstractUI {
     // MAIN MENU
     private static final int MY_USER_OPTION = 1;
     private static final int USERS_OPTION = 2;
-    private static final int JOB_OPENING_OPTION = 3;
-    private static final int CUSTOMER_OPTION = 4;
-    private static final int CANDIDATE_OPERATOR_OPTION = 5;
-    private static final int APPLICATION_OPTION = 6;
+//    private static final int JOB_OPENING_OPTION = 3;
+//    private static final int CUSTOMER_OPTION = 4;
+//    private static final int CANDIDATE_OPERATOR_OPTION = 5;
+//    private static final int APPLICATION_OPTION = 6;
     private static final int LANGUAGE_ENGINEER_OPTION = 6;
 
-    private static final int CANDIDATE_CUSTOMER_M_OPTION = 7;
+//    private static final int CANDIDATE_CUSTOMER_M_OPTION = 7;
 
     private static final String SEPARATOR_LABEL = "--------------";
 
@@ -162,21 +162,21 @@ public class MainMenu extends AbstractUI {
 
         if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.CUSTOMER_MANAGER)) {
             final Menu jobOpeningMenu = buildCustomerManagerJobOpeningMenu();
-            mainMenu.addSubMenu(JOB_OPENING_OPTION, jobOpeningMenu);
+            mainMenu.addSubMenu(1, jobOpeningMenu);
             final Menu customerMenu = buildCustomerManagerCustomerMenu();
-            mainMenu.addSubMenu(CUSTOMER_OPTION, customerMenu);
+            mainMenu.addSubMenu(2, customerMenu);
             final Menu candidateMenu = buildCustomerManagerCandidateMenu();
-            mainMenu.addSubMenu(CANDIDATE_CUSTOMER_M_OPTION, candidateMenu);
+            mainMenu.addSubMenu(3, candidateMenu);
             final Menu pluginMenu = buildCustomerManagerPluginMenu();
-            mainMenu.addSubMenu(PLUGIN_OPTION_CUSTOMER, pluginMenu);
+            mainMenu.addSubMenu(4, pluginMenu);
         }
         if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.OPERATOR)) {
             final Menu pluginMenu = buildOperatorPluginMenu();
-            mainMenu.addSubMenu(PLUGIN_OPTION, pluginMenu);
+            mainMenu.addSubMenu(1, pluginMenu);
             final Menu candidateMenu = buildOperatorCandidateMenu();
-            mainMenu.addSubMenu(CANDIDATE_OPERATOR_OPTION, candidateMenu);
+            mainMenu.addSubMenu(2, candidateMenu);
             final Menu application = buildOperatorApplicationMenu();
-            mainMenu.addSubMenu(APPLICATION_OPTION, application);
+            mainMenu.addSubMenu(3, application);
         }
 
         if (!Application.settings().isMenuLayoutHorizontal()) {
