@@ -9,9 +9,7 @@ import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.jobopeningmanagement.domain.rank.Rank;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.languageenginnermanagement.interviewmodelmanagement.domain.InterviewModel;
-import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentPeriod;
 import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
-import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementSpecification;
 import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
 import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
@@ -50,8 +48,8 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
     @JoinColumn(nullable = false)
     private RequirementSpecification requirementSpecification;
 
-    @ManyToOne(optional = false)
-//    @JoinColumn(nullable = false)
+    //tem de ser true, porque quando se regista uma job opening esta ainda nao tem interview model
+    @ManyToOne(optional = true)
     private InterviewModel interviewModel;
 
 
@@ -145,7 +143,6 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         this.description = Description.valueOf(description);
         this.numVacancies = NumberVacancy.valueOf(numVacancies);
         this.requirementSpecification = requirementsFile;
-//        this.interviewModel = interviewFile;
         this.status = new JobOpeningStatus();
         this.status.setStatusDescriptionAsUNFINISHED();
         this.rank = new Rank(newJobReference);

@@ -13,4 +13,5 @@ public interface RequirementSpecificationRepository
     Iterable<RequirementSpecification> requirementsSpecifications();
 
     Optional<RequirementSpecification> getFileByName(String filename);
+
 }

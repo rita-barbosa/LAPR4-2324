@@ -25,6 +25,10 @@ public class JobOpeningManagementService {
 
     private final CustomerManagementService customerManagementService = new CustomerManagementService();
 
+    public Iterable<JobOpening> getUNFINISHEDJobOpenings(){
+        return jobOpeningRepository.getUNFINISHEDJobOpeningList();
+    }
+
     public JobOpening registerJobOpening(String function, ContractTypeDTO contractTypeDenomination,
                                          WorkModeDTO workModeDenomination, String streetName, String city,
                                          String district, String state, String zipcode, int numVacancies,

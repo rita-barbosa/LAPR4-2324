@@ -1,11 +1,5 @@
 package jobs4u.base.languageenginnermanagement.requirementsmanagement.dto;
 
-import eapli.framework.representations.dto.DTO;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.FullClassName;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementDescription;
-import jobs4u.base.languageenginnermanagement.requirementsmanagement.domain.RequirementName;
-import lombok.AllArgsConstructor;
-
 public class RequirementSpecificationDTO {
 
     private final String name;

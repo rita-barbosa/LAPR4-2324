@@ -5,6 +5,7 @@ import eapli.framework.time.domain.model.DateInterval;
 import jobs4u.base.customermanagement.domain.Customer;
 import jobs4u.base.customermanagement.domain.CustomerCode;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
+import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatus;
 import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatusEnum;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
@@ -82,6 +83,17 @@ public class InMemoryJobOpeningRepository
         List<JobOpening> jobOpeningArrayList = new ArrayList<>();
         Iterable<JobOpening> jobOpenings = match(e -> e.getRecruitmentProcess().getRecruitmentPeriod().getRecruitmentInterval().start().compareTo(interval.start()) >= 0
                 || e.getRecruitmentProcess().getRecruitmentPeriod().getRecruitmentInterval().end().compareTo(interval.end()) <= 0);
+        for (JobOpening element : jobOpenings) {
+            jobOpeningArrayList.add(element);
+        }
+        return jobOpeningArrayList;
+    }
+
+    @Override
+    public Iterable<JobOpening> getUNFINISHEDJobOpeningList() {
+        String status = new JobOpeningStatus(JobOpeningStatusEnum.UNFINISHED).getStatusDescription();
+        List<JobOpening> jobOpeningArrayList = new ArrayList<>();
+        Iterable<JobOpening> jobOpenings = match(e -> e.getStatus().toString().equals(status));
         for (JobOpening element : jobOpenings) {
             jobOpeningArrayList.add(element);
         }

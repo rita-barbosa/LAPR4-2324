@@ -9,6 +9,8 @@ import jobs4u.base.Application;
 import jobs4u.base.customermanagement.domain.Customer;
 import jobs4u.base.customermanagement.domain.CustomerCode;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
+import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatus;
+import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatusEnum;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import org.hibernate.HibernateException;
@@ -86,14 +88,6 @@ public class JpaJobOpeningRepository
         }
     }
 
-//    public List<Calendar> getStartDateRecruitmentList(){
-//        final TypedQuery<Calendar> q = createQuery(
-//                "SELECT e.recruitmentProcess.recruitmentPeriod.recruitmentInterval.dateStart FROM JobOpening e",
-//                Calendar.class);
-//        return q.getResultList();
-//    }
-
-
     @Override
     public List<JobOpening> getJobOpeningListWithinDateInterval(DateInterval interval) {
         final TypedQuery<JobOpening> q = createQuery("SELECT e FROM JobOpening e WHERE e.recruitmentProcess.recruitmentPeriod.recruitmentInterval.dateStart BETWEEN :start AND :end",
@@ -112,18 +106,22 @@ public class JpaJobOpeningRepository
         resultList.retainAll(endMatch);
 
         return resultList;
-//        final TypedQuery<Meal> q = createQuery(
-//                "SELECT e FROM Meal e WHERE e.day BETWEEN :beginDate AND :endDate",
-//                Meal.class);
-//        q.setParameter("beginDate", beginDate, TemporalType.DATE);
-//        q.setParameter("endDate", endDate, TemporalType.DATE);
-
-
 //        final Map<String, Object> params = new HashMap<>();
 //        params.put("start", interval.start());
 //        params.put("end", interval.start());
-//        return match("e.recruitmentProcess.recruitmentPeriod.recruitmentInterval.dateStart >= :start" +
+//        return match("e.recruitmentProcess.recruitmentPeriod.recruitmentInt   erval.dateStart >= :start" +
 //                "AND e.recruitmentProcess.recruitmentPeriod.recruitmentInterval.dateEnd <= :end", params);
+    }
+
+    @Override
+    public Iterable<JobOpening> getUNFINISHEDJobOpeningList() {
+        String status = new JobOpeningStatus(JobOpeningStatusEnum.UNFINISHED).getStatusDescription();
+        try{
+            return match("e.status.statusDescription = :status", "status", status);
+        }catch (HibernateException ex){
+            return match("e=(SELECT c FROM JobOpening c WHERE c.status.statusDescription = :status)",
+                    "status", status);
+        }
     }
 
 

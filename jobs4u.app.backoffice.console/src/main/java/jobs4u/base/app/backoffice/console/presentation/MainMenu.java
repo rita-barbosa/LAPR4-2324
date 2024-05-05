@@ -34,10 +34,12 @@ import jobs4u.base.app.backoffice.console.presentation.interviewmodel.SelectInte
 import jobs4u.base.app.backoffice.console.presentation.jobopening.listing.ListJobOpeningsAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.registration.RegisterJobOpeningAction;
 import jobs4u.base.app.backoffice.console.presentation.listApplications.ListJobOpeningApplicationsAction;
+import jobs4u.base.app.backoffice.console.presentation.requirementTemplate.GenerateRequirementsTemplateFileUI;
 import jobs4u.base.app.backoffice.console.presentation.operator.RegisterJobOpeningApplicationsAction;
 import jobs4u.base.app.backoffice.console.presentation.requirementspecification.SelectRequirementSpecificationAction;
 import jobs4u.base.app.backoffice.console.presentation.languageengineer.RegisterPluginAction;
 import jobs4u.base.app.common.console.presentation.authz.MyUserMenu;
+import jobs4u.base.requirementTemplate.application.GenerateRequirementsTemplateFileController;
 import jobs4u.base.usermanagement.domain.BaseRoles;
 import eapli.framework.actions.Actions;
 import eapli.framework.actions.menu.Menu;
@@ -71,6 +73,8 @@ public class MainMenu extends AbstractUI {
     private static final int REGISTER_CANDIDATE = 1;
     private static final int LIST_CANDIDATES = 2;
     private static final int REGISTER_APPLICATIONS = 3;
+    private static final int PLUGIN_OPTION = 4;
+    private static final int GENERATE_REQUIREMENT_TEMPLATE = 1;
 
     // CUSTOMER MANAGER SETTINGS
     private static final int REGISTER_JOB_OPENING = 1;
@@ -88,10 +92,11 @@ public class MainMenu extends AbstractUI {
     private static final int USERS_OPTION = 2;
     private static final int JOB_OPENING_OPTION = 3;
     private static final int CUSTOMER_OPTION = 4;
-    private static final int OPERATORS_OPTION = 5;
+    private static final int CANDIDATE_OPTION = 5;
     private static final int LANGUAGE_ENGINEER_OPTION = 6;
 
     private static final String SEPARATOR_LABEL = "--------------";
+
 
     private final AuthorizationService authz = AuthzRegistry.authorizationService();
 
@@ -152,8 +157,10 @@ public class MainMenu extends AbstractUI {
             mainMenu.addSubMenu(CUSTOMER_OPTION, customerMenu);
         }
         if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.OPERATOR)) {
+            final Menu pluginMenu = buildOperatorPluginMenu();
+            mainMenu.addSubMenu(PLUGIN_OPTION, pluginMenu);
             final Menu candidateMenu = buildOperatorCandidateMenu();
-            mainMenu.addSubMenu(OPERATORS_OPTION, candidateMenu);
+            mainMenu.addSubMenu(CANDIDATE_OPTION, candidateMenu);
         }
 
         if (!Application.settings().isMenuLayoutHorizontal()) {
@@ -165,6 +172,12 @@ public class MainMenu extends AbstractUI {
         return mainMenu;
     }
 
+    private Menu buildOperatorPluginMenu() {
+        final Menu menu = new Menu("Plugins >");
+        menu.addItem(GENERATE_REQUIREMENT_TEMPLATE,"Generate and export Requirement Specification Template", new GenerateRequirementsTemplateFileUI()::show);
+        return menu;
+    }
+
     private Menu buildLanguageEngineerSettingsMenu(){
         final Menu menu = new Menu("Language Engineer >");
         menu.addItem(REGISTER_PLUGIN,"Register a new plugin",new RegisterPluginAction());
@@ -172,7 +185,7 @@ public class MainMenu extends AbstractUI {
     }
 
     private Menu buildOperatorCandidateMenu() {
-        final Menu menu = new Menu("Operator >");
+        final Menu menu = new Menu("Candidates >");
         menu.addItem(REGISTER_CANDIDATE,"Register a new candidate",new RegisterCandidateAction());
         menu.addItem(LIST_CANDIDATES, "List All Candidates", new ListAllCandidatesAction());
         menu.addItem(REGISTER_APPLICATIONS, "Register Job Opening Applications", new RegisterJobOpeningApplicationsAction());
