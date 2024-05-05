@@ -5,6 +5,7 @@ import jobs4u.base.usermanagement.domain.BaseRoles;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CandidateTest {
@@ -33,80 +34,22 @@ class CandidateTest {
         assertTrue(expected);
     }
 
-    @Disabled
     @Test
-    public void ensureEqualsCandidateUsersFailsForSamePhoneNumber() throws Exception {
+    public void ensureEqualsCandidateUsersFailsForDiferentPhoneNumber() throws Exception {
 
         final Candidate candidate1 = new Candidate(getNewDummyUser(),phoneNumber1);
         final Candidate candidate2 = new Candidate(getNewDummyUser(),phoneNumber2);
 
         final boolean expected = candidate1.equals(candidate2);
 
-        assertTrue(expected);
-    }
-/*
-    @Test
-    public void ensureClientUserEqualsFailsForDifferenteMecanographicNumber() throws Exception {
-        final Set<Role> roles = new HashSet<>();
-        roles.add(BaseRoles.ADMIN);
-
-        final ClientUser aClientUser = new ClientUserBuilder().withMecanographicNumber(aMecanographicNumber)
-                .withSystemUser(getNewDummyUser()).build();
-
-        final ClientUser anotherClientUser = new ClientUserBuilder()
-                .withMecanographicNumber(anotherMecanographicNumber).withSystemUser(getNewDummyUser()).build();
-
-        final boolean expected = aClientUser.equals(anotherClientUser);
-
         assertFalse(expected);
     }
-
     @Test
-    public void ensureClientUserEqualsAreTheSameForTheSameInstance() throws Exception {
-        final ClientUser aClientUser = new ClientUser();
-
-        final boolean expected = aClientUser.equals(aClientUser);
-
-        assertTrue(expected);
+    public void ensureCandidateUserWithoutPhoneNumberFails(){
+        assertThrows(IllegalArgumentException.class, () -> new Candidate(getNewDummyUser(), null));
     }
-
     @Test
-    public void ensureClientUserEqualsFailsForDifferenteObjectTypes() throws Exception {
-        final Set<Role> roles = new HashSet<>();
-        roles.add(BaseRoles.ADMIN);
-
-        final ClientUser aClientUser = new ClientUserBuilder().withMecanographicNumber("DUMMY")
-                .withSystemUser(getNewDummyUser()).build();
-
-        @SuppressWarnings("unlikely-arg-type")
-        final boolean expected = aClientUser.equals(getNewDummyUser());
-
-        assertFalse(expected);
+    public void ensureCandidateUserWithoutSystemUserFails(){
+        assertThrows(IllegalArgumentException.class, () -> new Candidate(null, phoneNumber1));
     }
-
-    @Test
-    public void ensureClientUserIsTheSameAsItsInstance() throws Exception {
-        final ClientUser aClientUser = new ClientUserBuilder().withMecanographicNumber("DUMMY")
-                .withSystemUser(getNewDummyUser()).build();
-
-        final boolean expected = aClientUser.sameAs(aClientUser);
-
-        assertTrue(expected);
-    }
-
-    @Test
-    public void ensureTwoClientUserWithDifferentMecanographicNumbersAreNotTheSame() throws Exception {
-        final Set<Role> roles = new HashSet<>();
-        roles.add(BaseRoles.ADMIN);
-        final ClientUser aClientUser = new ClientUserBuilder().withMecanographicNumber(aMecanographicNumber)
-                .withSystemUser(getNewDummyUser()).build();
-
-        final ClientUser anotherClientUser = new ClientUserBuilder()
-                .withMecanographicNumber(anotherMecanographicNumber).withSystemUser(getNewDummyUser()).build();
-
-        final boolean expected = aClientUser.sameAs(anotherClientUser);
-
-        assertFalse(expected);
-    }
-    */
 }

@@ -10,7 +10,7 @@
 
 **Acceptance Criteria:**
 
-- 2000a.1. The system should generate a unique password each user
+- 2000a.1. The phone number must have extension and the number
 
 - 2000a.2. The Operator should input the information manually
 
@@ -108,40 +108,139 @@ candidate creation.
 >
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
+**Test 1:** Verifies if equal users are detected
 
-**Test 1:** Verifies that it is not possible to ...
-
-**Refers to Acceptance Criteria:** G002.1
+**Refers to Acceptance Criteria:** 2000a.1
 
 ````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
-...
-}
+    @Test
+    public void ensureEqualsCandidateUsersPassesForSamePhoneNumber() throws Exception {
+
+        final Candidate candidate1 = new Candidate(getNewDummyUser(),phoneNumber1);
+        final Candidate candidate2 = new Candidate(getNewDummyUser(),phoneNumber1);
+
+        final boolean expected = candidate1.equals(candidate2);
+
+        assertTrue(expected);
+    }
+````
+**Test 2:** Verifies if a candidate without phone number fails
+
+**Refers to Acceptance Criteria:** 2000a.2
+
+````
+    @Test
+    public void ensureCandidateUserWithoutPhoneNumberFails(){
+        assertThrows(IllegalArgumentException.class, () -> new Candidate(getNewDummyUser(), null));
+    }
+````
+**Test 3:** Verifies if a candidate without system user fails
+
+**Refers to Acceptance Criteria:** 2000a.2
+
+````
+    @Test
+    public void ensureCandidateUserWithoutSystemUserFails(){
+        assertThrows(IllegalArgumentException.class, () -> new Candidate(null, phoneNumber1));
+    }
+````
+**Test 4:** Verifies if a phone number without extension Fails
+
+**Refers to Acceptance Criteria:** 2000a.1
+
+````
+    @Test
+    public void ensurePhoneNumberWithoutExtensionFails() {
+        assertThrows(NullPointerException.class, () -> new PhoneNumber(null, "910000000"));
+    }
+````
+**Test 5:** Verifies if a phone number without number Fails
+
+**Refers to Acceptance Criteria:** 2000a.1
+
+````
+    @Test
+    public void ensurePhoneNumberWithoutNumberFails() {
+        assertThrows(NullPointerException.class, () -> new PhoneNumber("+351", null));
+    }
 ````
 
+**Test 6:** Verifies if an extension without "+" Fails
+
+**Refers to Acceptance Criteria:** 2000a.1
+
+````
+    @Test
+    public void ensureExtensionWithoutPlusFails(){
+        assertThrows(IllegalArgumentException.class, () -> new PhoneNumber("351", "12345678"));
+    }
+````
+
+**Test 6 and 7:** Verifies if a number with less than 8 digits and plus than 15 digits Fails
+
+**Refers to Acceptance Criteria:** 2000a.1
+
+````
+    @Test
+    public void ensurePhoneNumberLessThan8DigitsFails() {
+        assertThrows(IllegalArgumentException.class, () -> new PhoneNumber("+351", "1234567"));
+    }
+    
+    @Test
+    public void ensurePhoneNumberPlusThan15DigitsFails() {
+        assertThrows(IllegalArgumentException.class, () -> new PhoneNumber("+351", "1234567890123456"));
+
+    }
+````
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+### RegisterCandidateController
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+```
+ public boolean registerCandidate(String name, String email, String extension, String number){
+        Optional<SystemUser> operator = authz.loggedinUserWithPermissions(BaseRoles.OPERATOR);
+        PhoneNumber phoneNumber = new PhoneNumber(extension, number);
+        operator.ifPresent(systemUser -> candidateManagementService.registerCandidate(name, email, phoneNumber));
 
+        return true;
+    }
+```
+### CandidateManagementService
+
+```
+ public void registerCandidate(String name, String email, PhoneNumber phoneNumber) {
+        String password = passwordService.generatePassword();
+
+        final Set<Role> roles = new HashSet<>();
+        roles.add(BaseRoles.CANDIDATE_USER);
+
+        SystemUser sysUser = userManagementService.registerNewUser(email, password, name,"Candidate",email, roles);
+
+        final DomainEvent event = new NewCandidateUserRegisteredEvent(sysUser,phoneNumber);
+        dispatcher.publish(event);
+    }
+```
+### NewCandidateUserRegisteredWatchDog
+
+```
+ @Override
+    public void onEvent(final DomainEvent domainEvent) {
+        assert domainEvent instanceof NewCandidateUserRegisteredEvent;
+
+        final NewCandidateUserRegisteredEvent newCandidateUserRegisteredEvent = (NewCandidateUserRegisteredEvent) domainEvent;
+
+        final AddCandidateOnNewCandidateUserRegisteredController controller = new AddCandidateOnNewCandidateUserRegisteredController();
+        controller.registerNewCandidate(newCandidateUserRegisteredEvent);
+    }
+```
+### AddCandidateOnNewCandidateUserRegisteredController
+
+```
+ public void registerNewCandidate(NewCandidateUserRegisteredEvent event) {
+        candidateRepository.save(new Candidate(event.systemUser(), event.phoneNumber()));
+    }
+```
 ## 6. Integration/Demonstration
+To execute this functionality it is necessary to run the script named `run-backoffice-app` and log in with Operator permissions
+after it, must select the menu `Operator` followed by `Register a Candidate`.
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
-
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
-
-## 7. Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
