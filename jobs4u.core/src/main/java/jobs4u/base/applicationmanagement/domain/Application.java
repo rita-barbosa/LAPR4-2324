@@ -177,7 +177,7 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
 
     @Override
     public ApplicationDTO toDTO() {
-        return new ApplicationDTO(id, requirementAnswer.requirementAnswer(), requirementResult.requirementResult(),
-                files, applicationDate, applicationStatus.getStatusDescription(),candidate.user().username().toString());
+        return new ApplicationDTO(id, files, applicationDate,
+                applicationStatus.getStatusDescription(),candidate.user().username().toString());
     }
 }

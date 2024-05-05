@@ -314,11 +314,20 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         return applications;
     }
 
+    public InterviewModel getInterviewModel() {
+        return interviewModel;
+    }
+
     @Override
     public JobOpeningDTO toDTO() {
+        if(interviewModel == null){
+            return new JobOpeningDTO(address.toString(), function.jobFunction(), description.description(), status.getStatusDescription(),
+                    contractType.getDenomination(), workMode.denomination(), numVacancies.getNumVacancies(),
+                    requirementSpecification.requirementName().name(), jobReference.toString(), jobReference.getcustomerCode(), "");
+        }
         return new JobOpeningDTO(address.toString(), function.jobFunction(), description.description(), status.getStatusDescription(),
-                contractType.getDenomination(), workMode.denomination(), String.valueOf(numVacancies.getNumVacancies()),
-                requirementSpecification.requirementName().name(), jobReference.toString(), jobReference.getcustomerCode());
+                contractType.getDenomination(), workMode.denomination(), numVacancies.getNumVacancies(),
+                requirementSpecification.requirementName().name(), jobReference.toString(), jobReference.getcustomerCode(), interviewModel.interviewModelName().name());
     }
 
     public void changeRequirementSpecification(RequirementSpecification requirementSpecification) {
@@ -348,4 +357,5 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         }
 
     }
+
 }

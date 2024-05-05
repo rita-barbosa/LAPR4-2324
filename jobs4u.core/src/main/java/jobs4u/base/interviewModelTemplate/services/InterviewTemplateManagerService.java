@@ -15,7 +15,7 @@ public class InterviewTemplateManagerService {
     private final InterviewModelRepository interviewModelRepository = PersistenceContext.repositories().interviewModels();
 
     public InterviewModel getInterviewFromJobOpening(JobOpeningDTO jobOpeningDTO) {
-        Optional<InterviewModel> optional = interviewModelRepository.getFileByName(jobOpeningDTO.getRequirementName());
+        Optional<InterviewModel> optional = interviewModelRepository.getFileByName(jobOpeningDTO.getInterviewModelName());
         if (optional.isPresent()) {
             return optional.get();
         }

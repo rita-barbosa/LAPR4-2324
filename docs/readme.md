@@ -58,34 +58,3 @@ The assignment of tasks (requirements/user stories/use cases) during the project
 | **[1221933](1221933/readme.md)** | Ana Guterres   | [1221933 - Justification](1221933/lapr4/sprinta/readme.md) |                     |                            |           |            |             |                   |
 | **[1211273](1211273/readme.md)** | Vitor Fardilha | [1211273 - Justification](1211273/lapr4/sprinta/readme.md) |                     |                            |           |            |             |                   |
 
-## 4. Technical Decisions
-
-### Project Structure
-
-The team opted to use the Eapli framework and project for establishing the project's initial structure.
-Furthermore, we'll integrate the existing code for UIs and authentication/authorization into the applications. However,
-this latter aspect will undergo modifications to align with the client's requirements and business domain.
-
-### Organization
-
-The team reached a unanimous decision to enhance organization by adding tags to the beginning of the user stories
-folders, indicating the sprint they belong to. However, user stories that are addressed globally throughout the
-project's duration will not need this additional identification.
-
-**Example:**
-
-* For Sprint B US's: _sb_us_1000_
-* For SprintC US's: _sc_us_1000_
-* For Global US's: _us_g007_
-
-### TDD
-
-Given the necessity of implementing test-driven development within our project, following a discussion with our EAPLI
-professor, we collectively decided to formulate a plan for the tests to be conducted. This choice primarily stems from
-the product owner's insistence that the project on GitHub must consistently compile error-free, alongside the
-requirement for a workflow that incorporates test execution. It's clear that without a thoroughly completed
-implementation, the development of tests becomes impractical. Thus, this realization guided us to the previously mentioned
-decision.
-
-Despite adhering to this methodology, all team members are responsible for delineating the required tests. This involves
-specifying the test class, its objectives, and the corresponding acceptance criteria it addresses.

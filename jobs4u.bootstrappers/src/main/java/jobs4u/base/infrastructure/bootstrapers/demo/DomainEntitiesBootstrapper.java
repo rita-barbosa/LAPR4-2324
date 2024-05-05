@@ -63,13 +63,13 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         instantiateRepositories();
         persistCriteria();
         persistCustomers();
+        persistCandidates();
         persistContractTypes();
         persistWorkModes();
         persistRequirementSpecifications();
         persistInterviewModels();
         persistRecruitmentProcesses();
         persistJobOpenings();
-        persistCandidates();
         persistApplications();
         return true;
     }

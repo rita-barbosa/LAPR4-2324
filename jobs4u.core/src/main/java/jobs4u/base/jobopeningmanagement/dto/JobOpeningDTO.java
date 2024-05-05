@@ -12,18 +12,19 @@ public class JobOpeningDTO {
     private final String status;
     private final String contractType;
     private final String workMode;
-    private final String numVacancies;
+    private final Integer numVacancies;
     private final String requirementName;
+    private final String interviewModelName;
     private final String customerCode;
     private final String jobReference;
     private final String address;
 
 
     public JobOpeningDTO(String address, String function, String description, String status, String contractType,
-                         String workMode, String numVacancies, String requirementName,
-                         String jobReference, String customerCode) {
+                         String workMode, Integer numVacancies, String requirementName,
+                         String jobReference, String customerCode, String interviewModelName) {
 
-        Preconditions.noneNull(address, function, description, status, contractType, workMode, numVacancies, requirementName, jobReference);
+        Preconditions.noneNull(address, function, description, status, contractType, workMode, numVacancies, requirementName, jobReference, interviewModelName);
 
         this.function = function;
         this.description = description;
@@ -35,6 +36,7 @@ public class JobOpeningDTO {
         this.customerCode = customerCode;
         this.jobReference = jobReference;
         this.address = address;
+        this.interviewModelName = interviewModelName;
     }
 
 
@@ -58,7 +60,7 @@ public class JobOpeningDTO {
         return workMode;
     }
 
-    public String getNumVacancies() {
+    public Integer getNumVacancies() {
         return numVacancies;
     }
 
@@ -78,6 +80,10 @@ public class JobOpeningDTO {
         return address;
     }
 
+    public String getInterviewModelName() {
+        return interviewModelName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -90,4 +96,19 @@ public class JobOpeningDTO {
     public int hashCode() {
         return Objects.hash(getFunction(), getDescription(), getStatus(), getContractType(), getWorkMode(), getNumVacancies(), getRequirementName(), getCustomerCode(), getJobReference(), getAddress());
     }
+
+    @Override
+    public String toString() {
+        return String.format("»» Job Reference: %s\n" +
+                        " » Function: %s |" +
+                        " » Contract Type: %s |" +
+                        " » Work Mode: %s\n" +
+                        " » Address: %s\n" +
+                        " » Description: %s\n" +
+                        " » Number of Vacancies: %d\n" +
+                        " » Company: %s\n",
+                jobReference, function, contractType, workMode, address,
+                description, numVacancies, customerCode);
+    }
+
 }
