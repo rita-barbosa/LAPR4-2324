@@ -121,19 +121,19 @@ To display the requirement specification plugins available, DTO's must be used t
 **New Domain Layer Classes**
 * RequirementsTemplateManagerService
 * RequirementSpecification
+* AuthorizationService
+* JobOpeningManagementService
+* JobOpeningListDTOService
 
 **New Persistence Layer Classes**
 * RequirementSpecificationRepository
+* JobOpeningRepository
 
 **New Application Layer Classes**
 * GenerateRequirementsTemplateFileController
 
 **New Presentation Layer Classes**
 * GenerateRequirementsTemplateFileUI
-
-**Plugin Classes**
-* RequirementsTemplatePlugin
-* RequirementsTemplateParser
 
 The further topics illustrate and explain this functionality usage flow, and the correlation between its components.
 
@@ -224,7 +224,6 @@ This topic presents the classes with the patterns applied to them along with jus
 > * RequirementsTemplateManagerService
 > * JobOpeningManagementService
 > * AuthorizationService
-> * CustomerManagementService
 > * JobOpeningListDTOService
 >
 > **Justifications**
@@ -232,11 +231,6 @@ This topic presents the classes with the patterns applied to them along with jus
 > * RequirementsTemplateManagerService is necessary because it manages a set of operations and responsibilities that don't
     belong to any class. It's in charge of managing the process of getting the plugins available from their repository,
     overseeing the conversion of the data into DTOs and bridging the system to the chosen plugin.
-> 
-> * To get the customers that are assigned to the current Customer Manager in-session, we must get something to identify them.
-    The AuthorizationService allows to get the username (user's email), which is essential to then filter the CustomerRepository
-    to the desired customers, which will allow us to get desired job openings. This set of instructions is used in other
-    functionalities too.
 >
 > * CustomerManagementService is used in more than one functionality, and its in charge of managing request regarding entities,
     serving as encapsulation between the controller and the CustomerRepository along with the domain classes.
@@ -249,7 +243,6 @@ This topic presents the classes with the patterns applied to them along with jus
 
 >**Repository Pattern**
 > * RequirementsSpecificationsRepository
-> * CustomerRepository
 > * JobOpeningRepository
 >
 > **Justifications**
@@ -259,82 +252,130 @@ This topic presents the classes with the patterns applied to them along with jus
 > 
 > * The JobOpeningRepository has stored all the jobOpening instances created in all sessions in its database, it's where
    the instances can be rebuilt.
-> 
-> * Customers have their Customer Manager email as an attribute, so by using the email we can track which customers are assigned 
-    to said user and retrieve their costumer codes. This is all stored in the database represented by the repository.
-
 
 ### 4.5. Tests
 
-**Test 1:** Grammar verifies correctly formatted requirement is valid.
+**Test 1:** Verifies that a requirement cannot have its name null
 
-**Refers to Acceptance Criteria:** 2003.1
-
+**Refers to Acceptance Criteria:** ----
 ````
 @Test
-public void ensureCorrectFormatIsValid() {
+void ensureItHasAnRequirementName() {
 ...
 }
 ````
 
-**Test 2:** Grammar verifies incorrect formatted requirement is invalid.
+**Test 2:** Verifies that a requirement cannot have its description null
 
-**Refers to Acceptance Criteria:** 2003.1
-
+**Refers to Acceptance Criteria:** ----
 ````
 @Test
-public void ensureIncorrectFormatIsInvalid() {
+void ensureItHasAnRequirementDescription() {
 ...
 }
 ````
 
-**Test 3:** Verifies that is not possible for a question to have a type that is not defined in the system
+**Test 3:** Verifies that a requirement cannot have its pluginJarFile null
 
-**Refers to Acceptance Criteria:** 2003.2
-
+**Refers to Acceptance Criteria:** ----
 ````
 @Test
-public void ensureValidQuestionType() {
-...
-}
-````
-
-**Test 4:** Verifies that is not possible for a template file to not have a requirement entry
-
-**Refers to Acceptance Criteria:** 2003.1 and 2003.3
-
-````
-@Test
-public void ensureTemplateHasAtLeastOneRequirement() {
+void ensureItHasAPluginJarFile() {
 ...
 }
 ````
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+The following code belongs to the UI of this functionality. All its methods are according to the design.
+
+The doShow() method, declared in the AbstractUI interface. First we show the jobOpenings, then, upon selecting one of the
+list, the requirement associated with it, which has the indication to initiate a specific plugin. Then we ask for the output
+directory, where the generated template will be exported.
+
+To list and select the jobOpenings and the question of Yes/No, the SelectWidget class from **_EAPLI Framework_** was used.
+A printer class was created to define the format of the jobOpening entries on the list and print them.
+
+````
+@Override
+protected boolean doShow() {
+    Path tempDirectory;
+    String directory;
+    JobOpeningDTO jobOpeningDTO = null;
+    SelectWidget<JobOpeningDTO> jobOpeningDTOSelectWidget;
+    List<String> answers = new ArrayList<>();
+    answers.add("Yes");
+    answers.add("No");
+    SelectWidget<String> choice = new SelectWidget<String>("Confirm selection?", answers);
+    String answer = answers.get(1);
+
+    while (answer.equals(answers.get(1))){
+        jobOpeningDTOSelectWidget = new SelectWidget<>("Select a job opening to generate its requirements template file",
+                controller.getJobOpeningList(), new JobOpeningPrinter());
+        jobOpeningDTOSelectWidget.show();
+        jobOpeningDTO = jobOpeningDTOSelectWidget.selectedElement();
+
+        System.out.println("[Requirement Specification] " + jobOpeningDTO.getRequirementName() + "\n");
+
+        choice.show();
+        answer = choice.selectedElement();
+    }
+
+    while(true){
+        directory = Console.readNonEmptyLine("Provide an output directory path:", "An output directory path is obligatory.");
+        File check = new File(directory);
+        if (check.exists() && check.isDirectory()) {
+            break;
+        }
+        System.out.println("Invalid directory path.");
+    }
+
+    try {
+        if(this.controller.exportTemplateFile(jobOpeningDTO, directory)){
+            System.out.println("Requirement Template File successfully exported.");
+        }else{
+            System.out.println("It was not possible to export the requirement template.");
+        }
+        return false;
+    } catch (final IntegrityViolationException | ConcurrencyException e) {
+        System.out.println("Error in exporting the selected job opening's requirement template.\n" + e.getMessage());
+    }
+    return false;
+}
+````
+
+The method to initiate the plugin.
+
+````
+public boolean generateNewTemplate(RequirementSpecification requirementSpecification, String outputDirectory) {
+    try {
+        String[] command = {"java", "-jar", requirementSpecification.pluginJarFile().pluginName(), "-template", (outputDirectory + "\\")};
+
+        ProcessBuilder processBuilder = new ProcessBuilder(command);
+        Process process = processBuilder.start();
+
+        int exitCode = process.waitFor();
+        System.out.println("Template command executed. Process exited with code: " + exitCode);
+        if (exitCode == 0){
+            return true;
+        }
+    } catch (IOException | InterruptedException e) {
+        e.printStackTrace();
+    }
+    return false;
+}
+````
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
+This jobOpening requires the jobOpenings registered in US1002, the requirements selected in US1009. The template generated
+will be used later, for the candidates to answer.
 
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
+The plugins are initiated with parameters with the following order : `java -jar <jar file path> -template <output directory path>`.
+These parameters are retrieved automatically with the selection of the plugins.
 
 ## 7. Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
-
 
 ### 7.1 References
 

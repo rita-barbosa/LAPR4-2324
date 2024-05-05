@@ -183,14 +183,13 @@ This topic presents the classes with the patterns applied to them along with jus
 
 ### 4.4. Tests
 
-
 **Test 1:** Verifies that a criteria cannot have its denomination null
 
 **Refers to Acceptance Criteria:** ----
 ````
 @Test
 public void ensureCriteriaDenominationNullIsInvalid() {
-    assertThrows(IllegalArgumentException.class, () -> new Criteria(null, Criteria.class.getSimpleName()));
+...
 }
 ````
 
@@ -200,7 +199,7 @@ public void ensureCriteriaDenominationNullIsInvalid() {
 ````
 @Test
 public void ensureCriteriaDenominationEmptyIsInvalid() {
-    assertThrows(IllegalArgumentException.class, () -> new Criteria("", Criteria.class.getSimpleName()));
+...
 }
 ````
 
@@ -211,7 +210,7 @@ public void ensureCriteriaDenominationEmptyIsInvalid() {
 ````
 @Test
 public void ensureCriteriaClassNameNullIsInvalid() {
-    assertThrows(IllegalArgumentException.class, () -> new Criteria("criteria", null));
+...
 }
 ````
 
@@ -221,7 +220,7 @@ public void ensureCriteriaClassNameNullIsInvalid() {
 ````
 @Test
 public void ensureCriteriaClassNameEmptyIsInvalid() {
-    assertThrows(IllegalArgumentException.class, () -> new Criteria("criteria", ""));
+...
 }
 ````
 

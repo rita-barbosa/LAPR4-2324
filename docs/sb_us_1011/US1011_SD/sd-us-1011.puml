@@ -105,16 +105,15 @@ deactivate CTRL
 UI -> USER: shows available Interview Models
 USER -> UI: selects an interview model
 
-UI -> CTRL: updateJobOpening(jobOpeningDto, insterviewModelDto)
+UI -> CTRL: updateJobOpening(jobOpeningDTO, interviewModelDTO)
 activate CTRL
 
 
-CTRL -> AUTH:  ensureAuthenticatedUserHasAnyOf(roles)
+CTRL -> AUTH:  ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN)
 activate AUTH
 deactivate AUTH
 
-CTRL -> CTRL: updateJobOpening(jobOpeningDto, insterviewModelDto)
-activate CTRL
+
 
 CTRL -> JOREPO: ofIdentity(jobReference)
 activate JOREPO

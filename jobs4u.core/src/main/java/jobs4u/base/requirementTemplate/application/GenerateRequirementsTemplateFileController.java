@@ -42,6 +42,7 @@ public class GenerateRequirementsTemplateFileController {
     }
 
     public boolean exportTemplateFile(JobOpeningDTO jobOpeningDTO, String directoryPath) {
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.OPERATOR);
         return requirementsTemplateManagerService.generateNewTemplate(requirementsTemplateManagerService.getRequirementFromJobOpeningDTO(jobOpeningDTO), directoryPath);
     }
 

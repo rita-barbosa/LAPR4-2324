@@ -76,38 +76,76 @@ After that, the customer manager chooses an interview model and do the update on
 
 *Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
 
-**Test 1:** Verifies that it is not possible to ...
+**Test 1:** Verifies if recruitment process has an interview model available
 
-**Refers to Acceptance Criteria:** G002.1
+**Refers to Acceptance Criteria:** 1011.2
 
-````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
+@Test
+public void ensureRecruitmentProccessHasInterviewModel() {
 ...
 }
-````
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+### SelectInterviewModelController
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+```
+ public Iterable<JobOpeningDTO> activeJobOpenings() {
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN);
 
+        return jobOpeningManagementService.acticeJobOpenings();
+    }
+
+    public Iterable<InterviewModelDTO> availableInterviewModels() {
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN);
+
+        return interviewModelManagementService.availableInterviewModels();
+    }
+
+    public boolean updateJobOpening(JobOpeningDTO jobOpeningDTO, InterviewModelDTO interviewModelDTO) {
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN);
+        Optional<JobOpening> jo = jobOpeningRepository.ofIdentity(new JobReference(jobOpeningDTO.getJobReference()));
+
+        if (jo.isPresent()) {
+
+            Optional<InterviewModel> im = interviewModelRepository.ofIdentity(new InterviewModelName(interviewModelDTO.filename()));
+
+            if (im.isPresent()) {
+                jo.get().updateJobOpening(im.get());
+                jobOpeningRepository.save(jo.get());
+                return true;
+            }
+        }
+        return false;
+    }
+```
+### InterviewModelManagementService
+
+```
+ public Iterable<InterviewModelDTO> availableInterviewModels() {
+        Iterable<InterviewModel> interviewModels = repository.findAll();
+
+        return dtoService.toDto(interviewModels);
+    }
+```
+### InterviewModelDtoService
+
+```
+  public Iterable<InterviewModelDTO> toDto(Iterable<InterviewModel> interviewModels) {
+        Preconditions.noneNull(interviewModels);
+
+        List<InterviewModelDTO> interviewModelDTOS = new ArrayList<>();
+
+        for (InterviewModel im : interviewModels) {
+
+            interviewModelDTOS.add(im.toDto());
+        }
+
+        return interviewModelDTOS;
+    }
+```
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
+To execute this fucntionality it is necessary to run the script named `run-backoffice-app` and log in with Customer
+Manager permissions. After it, must select the menu `Job Opening` followed by `Select an Interview Model`.
 
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
-
-## 7. Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
