@@ -230,11 +230,12 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
     private void persistJobOpenings() {
         ContractTypeDTO contract = new ContractTypeDTO("full-time");
         WorkModeDTO mode = new WorkModeDTO("remote");
-        String description = "UX/UI Design.";
+        String description = "Night Guard.";
 
         JobReference jobReference = new JobReference("ISEP", 0);
         JobReference jobReference1 = new JobReference("ISEP", 1);
         JobReference jobReference2 = new JobReference("ISEP", 2);
+        JobReference jobReference3 = new JobReference("ISEP", 4);
 
         JobOpening jobOpening1 = new JobOpening("Front End Junior Developer", contract, mode, "123 Main Street",
                 "Flagtown", "Star District", "USA", "12345", 10, description,
@@ -247,8 +248,14 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         JobOpening jobOpening3 = new JobOpening("Back End Senior Developer", contract, mode, "MM Street",
                 "MM Town", "MM District", "MMM", "54321", 8, description,
                 requirementSpecificationsList.get(0), interviewModelsList.get(0),jobReference2);
+
+        JobOpening jobOpening4 = new JobOpening("Night Guard", contract, mode, "Freddy fazbear Street",
+                "Chica Town", "Foxy District", "MMM", "54321", 8, description,
+                requirementSpecificationsList.get(0), interviewModelsList.get(0),jobReference3);
+
         jobOpening2.getStatus().setStatusDescriptionAsSTARTED();
 
+        jobOpeningRepository.save(jobOpening4);
         jobOpening1 = jobOpeningRepository.save(jobOpening1);
         jobOpening2 = jobOpeningRepository.save(jobOpening2);
         jobOpening3 = jobOpeningRepository.save(jobOpening3);
