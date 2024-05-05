@@ -1,12 +1,12 @@
 QUESTION 1
 Type of Question: TRUE/FALSE
 "Is Java a high-level language?"
-R:. True
+R:.
 
 QUESTION 2
 Type of Question: SHORT ANSWER
 "What does SQL stands for?"
-R:. Structured Query Language
+R:.
 
 QUESTION 3
 Type of Question: SINGLE CHOICE
@@ -15,7 +15,7 @@ Type of Question: SINGLE CHOICE
 2) "HTML"
 3) "Java"
 4) "SQL"
-R:. Java
+R:.
 
 QUESTION 4
 Type of Question: MULTIPLE CHOICE
@@ -26,29 +26,29 @@ Type of Question: MULTIPLE CHOICE
 4) "SQL"
 5) "CSS"
 6) "JavaScript"
-R:. 1, 5, 6
+R:.
 
 QUESTION 5
 Type of Question: NUMBER
 "How many bits are in a byte?"
-R:. 8
+R:.
 
 QUESTION 6
 Type of Question: DECIMAL NUMBER
 "What is the value of pi? (two decimal places)"
-R:. 3.14
+R:.
 
 QUESTION 7
 Type of Question: DATE
 "When was released the programming language Python?" DD/MM/YYYY
-R:. 20/02/1991
+R:.
 
 QUESTION 8
 Type of Question: TIME
 "At what time do you usually start coding?" HH:MM
-R:. 16:00
+R:.
 
 QUESTION 9
 Type of Question: NUMERIC SCALE
 "On a scale of 1 to 5 how important is GIT?"
-R:. 5
+R:.

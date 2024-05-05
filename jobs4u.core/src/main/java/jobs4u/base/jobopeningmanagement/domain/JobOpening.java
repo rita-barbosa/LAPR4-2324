@@ -321,6 +321,11 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
 
     @Override
     public JobOpeningDTO toDTO() {
+        if(interviewModel == null){
+            return new JobOpeningDTO(address.toString(), function.jobFunction(), description.description(), status.getStatusDescription(),
+                    contractType.getDenomination(), workMode.denomination(), numVacancies.getNumVacancies(),
+                    requirementSpecification.requirementName().name(), jobReference.toString(), jobReference.getcustomerCode(), "");
+        }
         return new JobOpeningDTO(address.toString(), function.jobFunction(), description.description(), status.getStatusDescription(),
                 contractType.getDenomination(), workMode.denomination(), numVacancies.getNumVacancies(),
                 requirementSpecification.requirementName().name(), jobReference.toString(), jobReference.getcustomerCode(), interviewModel.interviewModelName().name());
