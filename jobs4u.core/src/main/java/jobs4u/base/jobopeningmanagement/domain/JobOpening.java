@@ -56,8 +56,7 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Application> applications = new HashSet<>();
 
-    @OneToOne
-    @JoinColumn
+    @OneToOne(mappedBy = "jobOpening")
     private RecruitmentProcess recruitmentProcess;
 
     @OneToOne(optional = false, cascade = CascadeType.ALL)

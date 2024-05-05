@@ -21,7 +21,7 @@ public class RecruitmentProcess implements AggregateRoot<Long> {
 
     private RecruitmentPeriod recruitmentPeriod;
 
-    @OneToMany
+    @OneToMany(mappedBy = "recruitmentprocess", cascade = CascadeType.ALL)
     private List<Phase> phases;
 
     @OneToOne
@@ -50,6 +50,10 @@ public class RecruitmentProcess implements AggregateRoot<Long> {
 
     public List<Phase> allPhases(){
         return phases;
+    }
+
+    public void setJobOpening(JobOpening jobOpening) {
+        this.jobOpening = jobOpening;
     }
 
     public void setPhases(List<Phase> phases) {

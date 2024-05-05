@@ -201,9 +201,23 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         recruitmentProcess1.setPhases(phases11);
         recruitmentProcess2.setPhases(phases22);
         recruitmentProcess3.setPhases(phases33);
-        recruitmentProcessRepository.save(recruitmentProcess1);
-        recruitmentProcessRepository.save(recruitmentProcess2);
-        recruitmentProcessRepository.save(recruitmentProcess3);
+        recruitmentProcess1 = recruitmentProcessRepository.save(recruitmentProcess1);
+        recruitmentProcess2 = recruitmentProcessRepository.save(recruitmentProcess2);
+        recruitmentProcess3 = recruitmentProcessRepository.save(recruitmentProcess3);
+
+        for (Phase phase : phases1){
+            phase.setRecruitmentprocess(recruitmentProcess1);
+            phaseRepository.save(phase);
+        }
+        for (Phase phase : phases2){
+            phase.setRecruitmentprocess(recruitmentProcess2);
+            phaseRepository.save(phase);
+        }
+        for (Phase phase : phases3){
+            phase.setRecruitmentprocess(recruitmentProcess3);
+            phaseRepository.save(phase);
+        }
+
     }
 
 
