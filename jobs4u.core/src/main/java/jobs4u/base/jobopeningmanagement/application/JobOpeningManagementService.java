@@ -107,7 +107,13 @@ public class JobOpeningManagementService {
         JobOpening jobOpening1 = jobOpeningRepository.ofIdentity(jobOpening.getJobReference()).get();
         jobOpening1.updateStatusToNotStarted();
         jobOpening1.addRecruitmentProcess(recruitmentProcess);
-        jobOpeningRepository.save(jobOpening1);
+
+        jobOpening1 = jobOpeningRepository.save(jobOpening1);
+
+        recruitmentProcess.setJobOpening(jobOpening1);
+
+        recruitmentProcessManagementService.saveToRepository(recruitmentProcess);
+
         return true;
     }
 

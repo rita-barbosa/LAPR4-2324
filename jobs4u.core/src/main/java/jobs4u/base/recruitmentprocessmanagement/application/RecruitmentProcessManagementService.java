@@ -36,7 +36,22 @@ public class RecruitmentProcessManagementService {
 
         recruitmentProcess = recruitmentProcessRepository.save(recruitmentProcess);
 
+        for (Phase phase : listPhases){
+            phase.setRecruitmentprocess(recruitmentProcess);
+            phaseRepository.save(phase);
+        }
+
         return recruitmentProcess;
+    }
+
+    public boolean saveToRepository(RecruitmentProcess recruitmentProcess){
+        List<Phase> list = recruitmentProcess.allPhases();
+        recruitmentProcess = recruitmentProcessRepository.save(recruitmentProcess);
+        for (Phase phase : list){
+            phase.setRecruitmentprocess(recruitmentProcess);
+            phaseRepository.save(phase);
+        }
+        return true;
     }
 
 }

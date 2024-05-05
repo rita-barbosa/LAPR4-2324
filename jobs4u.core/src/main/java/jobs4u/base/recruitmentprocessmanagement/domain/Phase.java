@@ -25,7 +25,7 @@ public class Phase implements AggregateRoot<Long>, ValueObject {
 
     private PhasePeriod period;
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn
     private RecruitmentProcess recruitmentprocess;
 
@@ -61,5 +61,7 @@ public class Phase implements AggregateRoot<Long>, ValueObject {
         return this.phaseId;
     }
 
-
+    public void setRecruitmentprocess(RecruitmentProcess recruitmentprocess) {
+        this.recruitmentprocess = recruitmentprocess;
+    }
 }
