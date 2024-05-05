@@ -261,6 +261,7 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
 
         for (int i = 0; i < 3; i++) {
             jobOpenings.get(i).addRecruitmentProcess(recruitmentProcessList.get(i));
+            jobOpenings.get(i).updateStatusToNotStarted();
             recruitmentProcessList.get(i).setJobOpening(jobOpenings.get(i));
             jobOpeningRepository.save(jobOpenings.get(i));
             recruitmentProcessRepository.save(recruitmentProcessList.get(i));
