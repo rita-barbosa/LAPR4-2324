@@ -121,19 +121,19 @@ To display the requirement specification plugins available, DTO's must be used t
 **New Domain Layer Classes**
 * RequirementsTemplateManagerService
 * RequirementSpecification
+* AuthorizationService
+* JobOpeningManagementService
+* JobOpeningListDTOService
 
 **New Persistence Layer Classes**
 * RequirementSpecificationRepository
+* JobOpeningRepository
 
 **New Application Layer Classes**
 * GenerateRequirementsTemplateFileController
 
 **New Presentation Layer Classes**
 * GenerateRequirementsTemplateFileUI
-
-**Plugin Classes**
-* RequirementsTemplatePlugin
-* RequirementsTemplateParser
 
 The further topics illustrate and explain this functionality usage flow, and the correlation between its components.
 
@@ -224,7 +224,6 @@ This topic presents the classes with the patterns applied to them along with jus
 > * RequirementsTemplateManagerService
 > * JobOpeningManagementService
 > * AuthorizationService
-> * CustomerManagementService
 > * JobOpeningListDTOService
 >
 > **Justifications**
@@ -232,11 +231,6 @@ This topic presents the classes with the patterns applied to them along with jus
 > * RequirementsTemplateManagerService is necessary because it manages a set of operations and responsibilities that don't
     belong to any class. It's in charge of managing the process of getting the plugins available from their repository,
     overseeing the conversion of the data into DTOs and bridging the system to the chosen plugin.
-> 
-> * To get the customers that are assigned to the current Customer Manager in-session, we must get something to identify them.
-    The AuthorizationService allows to get the username (user's email), which is essential to then filter the CustomerRepository
-    to the desired customers, which will allow us to get desired job openings. This set of instructions is used in other
-    functionalities too.
 >
 > * CustomerManagementService is used in more than one functionality, and its in charge of managing request regarding entities,
     serving as encapsulation between the controller and the CustomerRepository along with the domain classes.
@@ -249,7 +243,6 @@ This topic presents the classes with the patterns applied to them along with jus
 
 >**Repository Pattern**
 > * RequirementsSpecificationsRepository
-> * CustomerRepository
 > * JobOpeningRepository
 >
 > **Justifications**
@@ -259,53 +252,35 @@ This topic presents the classes with the patterns applied to them along with jus
 > 
 > * The JobOpeningRepository has stored all the jobOpening instances created in all sessions in its database, it's where
    the instances can be rebuilt.
-> 
-> * Customers have their Customer Manager email as an attribute, so by using the email we can track which customers are assigned 
-    to said user and retrieve their costumer codes. This is all stored in the database represented by the repository.
-
 
 ### 4.5. Tests
 
-**Test 1:** Grammar verifies correctly formatted requirement is valid.
+**Test 1:** Verifies that a requirement cannot have its name null
 
-**Refers to Acceptance Criteria:** 2003.1
-
+**Refers to Acceptance Criteria:** ----
 ````
 @Test
-public void ensureCorrectFormatIsValid() {
+void ensureItHasAnRequirementName() {
 ...
 }
 ````
 
-**Test 2:** Grammar verifies incorrect formatted requirement is invalid.
+**Test 2:** Verifies that a requirement cannot have its description null
 
-**Refers to Acceptance Criteria:** 2003.1
-
+**Refers to Acceptance Criteria:** ----
 ````
 @Test
-public void ensureIncorrectFormatIsInvalid() {
+void ensureItHasAnRequirementDescription() {
 ...
 }
 ````
 
-**Test 3:** Verifies that is not possible for a question to have a type that is not defined in the system
+**Test 3:** Verifies that a requirement cannot have its pluginJarFile null
 
-**Refers to Acceptance Criteria:** 2003.2
-
+**Refers to Acceptance Criteria:** ----
 ````
 @Test
-public void ensureValidQuestionType() {
-...
-}
-````
-
-**Test 4:** Verifies that is not possible for a template file to not have a requirement entry
-
-**Refers to Acceptance Criteria:** 2003.1 and 2003.3
-
-````
-@Test
-public void ensureTemplateHasAtLeastOneRequirement() {
+void ensureItHasAPluginJarFile() {
 ...
 }
 ````

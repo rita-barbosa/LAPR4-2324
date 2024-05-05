@@ -6,9 +6,6 @@ box System #LightBlue
 participant "<<presentation>>\n:GenerateRequirementsTemplateFileUI" as UI
 control "<<application>>\n:GenerateRequirementsTemplateFileController" as CTRL
 participant "<<service>>\n:AuthorizationService" as AuthSvc
-participant "<<service>>\n:CustomerManagementService" as CustomerManagement
-database "<<repository>>\n:CustomerRepository" as CustomerRepository
-participant "<<domain>>\n:Customer" as Customer
 participant "<<service>>\n:JobOpeningManagementService" as JobManagement
 participant "<<service>>\n:JobOpeningListDTOService" as JobOpeningListDTO
 database "<<repository>>\n:JobOpeningRepository" as JobOpeningRepository
@@ -32,33 +29,17 @@ deactivate CTRL
 UI -> CTRL : getJobOpeningList()
 activate CTRL
 
-    CTRL -> AuthSvc : loggedinUserWithPermissions(BaseRole.CUSTOMER_MANAGER)
+    CTRL -> AuthSvc : loggedinUserWithPermissions(BaseRole.OPERATOR)
     activate AuthSvc
     deactivate AuthSvc
 
-    CTRL -> CustomerManagement : getAssignedCustomerCodesList(username)
-    activate CustomerManagement
-
-        CustomerManagement -> CustomerRepository : getCustomersByUsername(username)
-        note right: Username is the Customer\n Manager's email
-        activate CustomerRepository
-        deactivate CustomerRepository
-
-        loop for all codes
-            CustomerManagement -> Customer : customerCode()
-            activate Customer
-            deactivate Customer
-        end loop
-
-    deactivate CustomerManagement
-
-    CTRL -> JobManagement : getJobOpeningsFromCustomerCodes(assignedCustomerCodesList)
+    CTRL -> JobManagement : getUNFINISHEDJobOpenings()
     activate JobManagement
-        loop for each code
-        JobManagement -> JobOpeningRepository : getJobOpeningListMatchingCustomerCode(customerCode)
+
+        JobManagement -> JobOpeningRepository : getUNFINISHEDJobOpeningList()
         activate JobOpeningRepository
         deactivate JobOpeningRepository
-        end loop
+
     deactivate JobManagement
 
 CTRL -> JobOpeningListDTO : convertToDTO(jobOpeningList)
@@ -74,8 +55,7 @@ deactivate JobOpeningListDTO
 CTRL --> UI : jobOpeningListDTO
 deactivate CTRL
 
-
-UI -> CTRL : exportTemplateFile(jobOpeningDTO)
+UI -> CTRL : exportTemplateFile(jobOpeningDTO, directoryPath)
 
 'get job positions/plugins
 activate CTRL
@@ -91,10 +71,10 @@ ReqRep -[#lightblue]> ReqRep
 deactivate ReqRep
 
 
-    CTRL -> Manager : generateNewTemplate(requirementSpecification)
+    CTRL -> Manager : exportTemplateFile(requirementSpecification, directoryPath)
     activate Manager
 
-        Manager -> Plugin : newRequirementsSpecificationsTemplate()
+        Manager -> Plugin : generateNewTemplate(requirementSpecification, directoryPath)
     activate Plugin
 
         Plugin -> Plugin : generateFile()

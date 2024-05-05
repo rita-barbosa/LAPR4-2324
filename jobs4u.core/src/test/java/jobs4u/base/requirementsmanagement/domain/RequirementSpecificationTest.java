@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class RequirementSpecificationTest {
 
     String name = "Prime Minister";
-    String description = "Prime Ministers with experience in running a country.";
+    String description = "Prime Ministers with good experience in running a country.";
     String fullClassName = "Plugins/Requirements/Prime_Minister/Prime_Minister_Requirement_Plugin.jar";
 
     @Test
