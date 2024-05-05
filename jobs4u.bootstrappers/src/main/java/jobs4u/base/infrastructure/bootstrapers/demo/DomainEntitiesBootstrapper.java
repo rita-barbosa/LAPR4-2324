@@ -93,7 +93,7 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         criteriaRepository.save(new Criteria("Status [STARTED]", JobOpening.class.getSimpleName()));
         criteriaRepository.save(new Criteria("Company Name", JobOpening.class.getSimpleName()));
         criteriaRepository.save(new Criteria("Customer Code", JobOpening.class.getSimpleName()));
-        //  criteriaRepository.save(new Criteria("Time Interval", JobOpening.class.getSimpleName()));
+          criteriaRepository.save(new Criteria("Time Interval", JobOpening.class.getSimpleName()));
     }
 
     private void persistRecruitmentProcesses() {
