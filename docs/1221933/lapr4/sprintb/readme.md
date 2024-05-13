@@ -127,7 +127,7 @@
 
 **Justification and Evidences:**
 
-> The user stories' requirements have been done, as evidenced in the readme ([us_1005](../../../sb_us_1005/readme.md);
-> [us_1012](../../../sb_us_1012/readme.md); [us_2001](../../../sb_us_2001/readme.md); [us_2002](../../../sb_us_2002/readme.md)) files. 
+> The user stories' requirements have been done, as evidenced in the readme ([us_1005](../../../SprintB/sb_us_1005/readme.md);
+> [us_1012](../../../SprintB/sb_us_1012/readme.md); [us_2001](../../../SprintB/sb_us_2001/readme.md); [us_2002](../../../SprintB/sb_us_2002/readme.md)) files. 
 > 
 > No other alternatives were discussed.
