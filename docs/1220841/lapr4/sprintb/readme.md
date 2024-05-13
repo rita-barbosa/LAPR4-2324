@@ -147,7 +147,7 @@ unnecessary dependencies.
 **Justification and Evidences:**
 
 The user stories' requirements have been fulfilled, as evidenced in their respective
-readme ([us_g007](../../../us_g007/readme.md); [us_1000](../../../SprintB/sb_us_1000/readme.md); [us_1001](../../../SprintB/sb_us_1001/readme.md); [us_1009](../../../SprintB/sb_us_1009/readme.md) )
+readme ([us_g007](../../../us_g007/readme.md); [us_1000](../../../sprint-b/sb_us_1000/readme.md); [us_1001](../../../sprint-b/sb_us_1001/readme.md); [us_1009](../../../sprint-b/sb_us_1009/readme.md) )
 files, where the acceptance
 criteria are also provided. In terms of testing, it is clear that the tests were designed based on the acceptance
 criteria, with each test referencing the corresponding acceptance criteria.
