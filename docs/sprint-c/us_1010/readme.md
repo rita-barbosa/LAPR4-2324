@@ -38,7 +38,15 @@ This is the first time this US is being worked on. It is related to an action of
 
 ## 3. Analysis
 
+**After questioning the client about this functionality several conclusions were reached:**
+
+1. ***"When one phase closes, the next one opens."***
+2. ***"The Customer Manager's decision to close a phase must assume that the process advances to the next phase automatically (regardless of the dates defined for the phases)."***
+3. ***"The phases must always be sequential. We can consider that closing a phase results in the opening of the next phase (and moving to the next phase means closing the previous one)."***
+
 ### System Sequence Diagram Related
+
+![Helpful-System-Sequence-Diagram.png](SSD%2FHelpful-System-Sequence-Diagram.png)
 
 ## 4. Design
 
