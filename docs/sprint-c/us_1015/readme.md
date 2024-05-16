@@ -1,34 +1,48 @@
-# US XXX
+# US 1004
 
 ## 1. Context
 
-*Explain the context for this task. It is the first time the task is assigned to be developed or this tasks was
-incomplete in a previous sprint and is to be completed in this sprint? Are we fixing some bug?*
+This is the first time this user story is being requested.
 
 ## 2. Requirements
 
-*In this section you should present the functionality that is being developed, how do you understand it, as well as
-possible correlations to other requirements (i.e., dependencies). You should also add acceptance criteria.*
-
-*Example*
-
-**US XXX** As {Ator} I Want...
+**US 1004** As {Customer Manager}, I want to execute the process of verification of requirements of applications for a
+job opening.
 
 **Acceptance Criteria:**
 
-- XXX.1. The system should...Blá Blá Blá ...
-
-- XXX.2. Blá Blá Blá ...
+- 1004.1. The verification must only be done to candidates which requirements file has already been submitted.
 
 **Dependencies/References:**
 
-*Regarding this requirement we understand that it relates to...*
+Regarding this requirement, we acknowledge the reference NFR09 of LPROG, which states that support for this
+functionality must adhere to specific technical requirements outlined in LPROG. As of 17/04/2024, no additional
+requirements have been presented. The ANTLR tool should be used (https://www.antlr.org/).
+
+It is also important to note that this functionality relies on [US 2004](../us_2004/readme.md), as this is the user
+story where the completed
+requirement specifications are submitted into the system for evaluation using this functionality.
+
+**Client Clarifications:**
+
+> **Question:** Should the process be carried out for all candidates or just for some (according to some criteria)?
+>
+> **Answer:** Files with responses to requirements are gradually entered into the system. Perhaps it would be “simpler”
+> for the
+> process to run (i.e., check the requirements) for candidates for whom the requirements file has already been
+> submitted.
+> At some point the process will run with all candidates already having submitted requirements files.
 
 ## 3. Analysis
 
-*In this section, the team should report the study/analysis/comparison that was done in order to take the best design
-decisions for the requirement. This section should also include supporting diagrams/artifacts (such as domain model; use
-case diagrams, etc.)*
+Since the customer manager is responsible for executing this functionality, it must be possible for them to select one
+of the job openings associated with them to evaluate the candidates who have applied for that position. Additionally, as
+clarified in the acceptance criteria, only the requirements of candidates whose requirements file has already been
+submitted should be assessed.
+
+The plugins will evaluate the requirement specifications to determine if the candidate's curriculum meets the
+requisites established by the customer/company for the job opening currently under evaluation. If the evaluation
+results in the rejection of a candidate, a justification must be provided, explaining the reason for the rejection.
 
 ## 4. Design
 
@@ -51,7 +65,7 @@ patterns and the specification of the main tests used to validade the functional
 
 **Test 1:** Verifies that it is not possible to ...
 
-**Refers to Acceptance Criteria:** XXX.1
+**Refers to Acceptance Criteria:** 1004.1
 
 ````
 @Test(expected = IllegalArgumentException.class)
@@ -66,7 +80,8 @@ public void ensureXxxxYyyy() {
 design. It should also describe and explain other important artifacts necessary to fully understand the implementation
 like, for instance, configuration files.*
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this
+requirement.*
 
 ## 6. Integration/Demonstration
 
