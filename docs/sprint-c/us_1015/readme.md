@@ -44,6 +44,11 @@ The plugins will evaluate the requirement specifications to determine if the can
 requisites established by the customer/company for the job opening currently under evaluation. If the evaluation
 results in the rejection of a candidate, a justification must be provided, explaining the reason for the rejection.
 
+### Domain Model
+
+![Domain Model](domain-model.svg)
+
+
 ## 4. Design
 
 *In this sections, the team should present the solution design that was adopted to solve the requirement. This should
