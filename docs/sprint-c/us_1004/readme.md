@@ -66,11 +66,15 @@ longer be changed.
 Despite this, the requirement specifications can be adjusted until the end of the application phase,
 and the interview model can be modified up until the end of the screening phase if the interview phase is set up.
 
-
 The following diagram illustrates the clarification made above:
 
 ![Diagram](analysis-diagram.svg)
 
+
+### Domain Model
+
+
+![Domain Model - US 1004](domain-model.svg)
 
 ## 4. Design
 
