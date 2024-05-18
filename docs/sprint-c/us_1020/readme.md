@@ -1,34 +1,69 @@
-# US XXX
+# US 1020
 
 ## 1. Context
 
-*Explain the context for this task. It is the first time the task is assigned to be developed or this tasks was
-incomplete in a previous sprint and is to be completed in this sprint? Are we fixing some bug?*
+This is the first time this user story is being requested.
 
 ## 2. Requirements
 
-*In this section you should present the functionality that is being developed, how do you understand it, as well as
-possible correlations to other requirements (i.e., dependencies). You should also add acceptance criteria.*
-
-*Example*
-
-**US XXX** As {Ator} I Want...
+**US 1020** As {Customer Manager}, I want to publish the results of the selection of candidates for a job opening, so
+that candidates and customer are notified by email of the result.
 
 **Acceptance Criteria:**
 
-- XXX.1. The system should...Blá Blá Blá ...
+- 1020.1. The number of selected applications/candidates should not surpass the number of vacancies for the job opening.
 
-- XXX.2. Blá Blá Blá ...
+- 1020.2. The system is required to notify both the customer linked to the job opening and the candidate about the
+  selected application.
 
 **Dependencies/References:**
 
-*Regarding this requirement we understand that it relates to...*
+We understand that this requirement pertains to reference NFR11, which specifies that the solution should be deployed
+across multiple network nodes. Specifically, it is expected that the relational database server and the Follow Up Server
+be deployed on nodes separate from localhost, preferably in the cloud. Additionally, the Follow Up Server must handle
+e-mail notification tasks in the background.
+
+**Client Clarifications:**
+
+> **Question:** Regarding the sending of email notifications, is it necessary to keep a record of this?
+>
+>
+> **Answer:** The document does not specifically address this matter. However, from Jobs4u's perspective, it seems
+> appropriate to have this information recorded.
+
+> **Question:** What is the format for this publication?
+>
+>
+> **Answer:** The publication refers to informing candidates and the client, via email. Candidates who are selected must
+> receive an email indicating that they have been selected for their application for the job opening and will be
+> contacted
+> by the company. As far as the company is concerned, it must receive an email with the list of selected candidates,
+> which
+> must include the candidate's name and contact details.
+
+
+> **Question:** Should the email be in English or Portuguese?
+>
+>
+> **Answer:** It can be in Portuguese or English.
 
 ## 3. Analysis
 
-*In this section, the team should report the study/analysis/comparison that was done in order to take the best design
-decisions for the requirement. This section should also include supporting diagrams/artifacts (such as domain model; use
-case diagrams, etc.)*
+It is understood that for this functionality, the customer manager must select candidates to fill the number of
+vacancies for a specific job opening. Consequently, the number of selected candidates cannot exceed the number of
+available vacancies. Furthermore, candidates can only be selected for job openings whose recruitment process is in the
+Result phase.
+
+System-wise, after selection, emails will be sent to both the chosen candidates and the customer. The email to the
+candidate will inform them that their application was selected and that they will be contacted by the company. For the
+company/customer, the email must contain the list of selected candidates, including their names and contact details.
+
+### Domain Model
+
+![Domain Model - US 1020](domain-model.svg)
+
+
+
 
 ## 4. Design
 
@@ -66,7 +101,8 @@ public void ensureXxxxYyyy() {
 design. It should also describe and explain other important artifacts necessary to fully understand the implementation
 like, for instance, configuration files.*
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this
+requirement.*
 
 ## 6. Integration/Demonstration
 
