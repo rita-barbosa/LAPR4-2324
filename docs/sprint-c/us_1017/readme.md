@@ -2,33 +2,58 @@
 
 ## 1. Context
 
-*Explain the context for this task. It is the first time the task is assigned to be developed or this tasks was
-incomplete in a previous sprint and is to be completed in this sprint? Are we fixing some bug?*
+It is the first time the task is assigned.
 
 ## 2. Requirements
 
-*In this section you should present the functionality that is being developed, how do you understand it, as well as
-possible correlations to other requirements (i.e., dependencies). You should also add acceptance criteria.*
-
-*Example*
-
-**US G007** As {Ator} I Want...
+**US 1017:** As Customer Manager, I want to upload a text file with the candidates responses for an interview.
 
 **Acceptance Criteria:**
 
-- G002.1. The system should...Blá Blá Blá ...
+- **1017.1.** The system should allow the user to provide the file path to the text file.
 
-- G002.2. Blá Blá Blá ...
+- **1017.2.** The system should ask the which interview is related to the responses.
+
+- **1017.3.** It is necessary the use of ANTLR.
+
+- **1017.4.** The system must have at least one interview.
+
+- **1017.5.** The exported file should be in .txt format.
+
 
 **Dependencies/References:**
 
-*Regarding this requirement we understand that it relates to...*
+- **US G007** - This functionality has a dependency on _US G007_ that pertains to the authentication and authorization 
+for all users and functionalities.
+
+- **US G003** - This functionality has a dependency on _US G003_ that consists in initial configuration of the project 
+structure, where was made the setup for the ANTLR.
+
+- **US 1012** - this functionality has a dependency on _US 1012_ which generate the template file to collect the answers
+of the candidates during the interviews.
+
+
+_Reference 1017.1:_  **NFR09(LPROG) - Requirement Specifications and Interview Models** The support for this functionality
+must follow specific technical requirements, specified in LPROG. The ANTLR tool should be used (https://www.antlr.org/).
+
 
 ## 3. Analysis
 
-*In this section, the team should report the study/analysis/comparison that was done in order to take the best design
-decisions for the requirement. This section should also include supporting diagrams/artifacts (such as domain model; use
-case diagrams, etc.)*
+The main goal of this user story is to import the file with the candidate answers for the interview. 
+
+To achieve this, it's necessary to ask the user:
+
+* filepath for the text file with the answers
+* select the interview
+
+
+### 3.1 System Sequence Diagram
+
+![system sequence diagram](SSD/US1017_SSD.svg)
+
+### 3.2 Domain Model Related
+
+![domain model related](DM/US1017_DM.svg)
 
 ## 4. Design
 
