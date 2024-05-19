@@ -38,8 +38,29 @@ package "<<aggregate>> Job Opening" {
     class NumberVacancy <<(V,#FF8B40) value object>> {}
        class Description <<(V,#FF8B40) value object>> {}
      class JobReference <<(V,#FF8B40) value object>> <<identifier>> {}
-      class Rank <<(V,#FF8B40) value object>>{}
+
 }
+
+package "<<aggregate>> Notification" {
+    entity Notification <<entity>> <<root>> {}
+    class NotificationBody <<(V,#FF8B40) value object>>{}
+    class NotificationType <<(V,#FF8B40) value object>>{}
+    class NotificationRecipient <<(V,#FF8B40) value object>>{}
+    class NotificationStatus <<(V,#FF8B40) value object>>{}
+    class NotificationDate <<(V,#FF8B40) value object>>{}
+}
+
+
+package "<<aggregate>> Rank" {
+    entity Rank <<entity>> <<root>> {}
+    class RankEntry <<(V,#FF8B40) value object>>{}
+}
+
+note "<size:28>These entities aren't yet confirmed</size>" as N2
+Notification .. N2
+N2 .. Rank
+
+
 package "<<aggregate>> Administrator" {
     entity Administrator <<entity>> <<root>>  {}
 }
@@ -120,7 +141,7 @@ Candidate ---> "1" Email: identified by
 Candidate --> "1" CandidateName: has
 Candidate ---> "1" PhoneNumber: has
 '--
-Customer --> "1" Customer :  represents
+CustomerRepresentative --> "1" Customer :  represents
 '--
 JobOpening ---> "1"  JobReference : includes
 JobOpening --> "1"  Mode : includes
@@ -133,8 +154,11 @@ JobOpening --> "1" JobOpeningStatus : classified by
 JobOpening ---> "1"  RequirementSpecification : includes
 JobOpening -> "1"  InterviewModel : includes
 JobOpening --> "1"  RecruitmentProcess : includes
-JobOpening ---> "*"  Rank : includes
 JobOpening --> "1"  Application : associated to <
+'__
+JobOpening ---> "1"  Rank : includes
+Rank --> "*" RankEntry : encompasses
+Rank --> "*" Application : rates
 '--
 RecruitmentProcess --> "1" RecruitmentPeriod : goes on for
 RecruitmentProcess ---> "5..6" Phase : encompasses
@@ -170,4 +194,13 @@ InterviewModel --> "1" FullClassName: configures <
 RequirementSpecification --> "1" RequirementName: identifies <
 RequirementSpecification --> "1" RequirementDescription: describes <
 RequirementSpecification --> "1" FullClassName: configures <
+'__
+Notification ---> NotificationBody : has
+Notification --> NotificationRecipient : has
+Notification --> NotificationStatus : has
+Notification ---> NotificationDate : has
+Notification -> NotificationType : has
+'__
+Notification --> "1" Candidate : notifies
+Notification --> "1" Customer : notifies
 @enduml

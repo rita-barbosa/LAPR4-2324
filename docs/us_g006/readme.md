@@ -129,6 +129,10 @@ It is the first time this task was assigned, seeing as this is the first sprint.
 * Operator
 * Application
 
+ENTITIES ON STANDBY
+* Rank
+* Notification
+
 **Identified services:**
 
 * RequirementEvaluator: the process of evaluating the requirements of applications for a job opening.
