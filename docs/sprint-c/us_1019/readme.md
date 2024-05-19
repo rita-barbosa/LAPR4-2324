@@ -2,33 +2,79 @@
 
 ## 1. Context
 
-*Explain the context for this task. It is the first time the task is assigned to be developed or this tasks was
-incomplete in a previous sprint and is to be completed in this sprint? Are we fixing some bug?*
+It is the first time this task is assigned.
 
 ## 2. Requirements
 
-*In this section you should present the functionality that is being developed, how do you understand it, as well as
-possible correlations to other requirements (i.e., dependencies). You should also add acceptance criteria.*
-
-*Example*
-
-**US G007** As {Ator} I Want...
+**US 1019** As Customer Manager, I want to get an ordered list of candidates, using the job interview points (grades),
+to help me analyze the candidates.
 
 **Acceptance Criteria:**
 
-- G002.1. The system should...Blá Blá Blá ...
+- **1019.1.** The system should display the candidates based in the interview points.
 
-- G002.2. Blá Blá Blá ...
+- **1019.2.** The list should be in descending order, from the highest score to the lowest score.
+
 
 **Dependencies/References:**
 
-*Regarding this requirement we understand that it relates to...*
+- **US G007** - This functionality has a dependency on _US G007_ that pertains to the authentication and authorization
+  for all users and functionalities.
+
+- **US 2002** - This functionality has a dependency on _US 2002_ that consists in the creation of applications, since
+  needs to exist an application in order to display its information.
+
+- **US 1017** - This functionality has a dependency on _US 1017_ that consists in the upload of the text files with the
+  candidate responses for an interview.
+
+
+**Client Clarifications:**
+
+> **Question:** US1019 - Regarding the user story, "US1019 - As Customer Manager, I want to get and ordered list of
+> candidates, using the job interview points (grades), to help me analyze the candidates", the list you want is related
+> to a job opening, correct? Should the sorting be ascending, or do you want an option to include both ascending and
+> descending?
+>
+>
+> **Answer:** Yes, the sorting is related to applications for a job opening. The sorting should be descending, from the
+> highest score to the lowest score.
+
+
+> **Question:** US1019 Clarification - In US1019: As a Customer Manager, I want to get an ordered list of candidates,
+> using the job interview points (grades), to help me analyze the candidates. You want me to return an ordered list of
+> candidates and their interview grades for a specific job opening of one of my clients. I plan to implement this
+> functionality as follows:
+> 
+> Job Opening: XXX
+> 
+> Nome | Email | Grade
+> 
+> Jane Doe| jane@doe.pt | 85
+> 
+> John Doe| john@doe.pt | 70
+> 
+> In other words, with descending order.
+> As mentioned in Q153, you can see this list in one instance, and in another instance, you can create the ranking you
+> find pertinent.
+> Does this sound good?
+>
+> **Answer:** I think you want to refer to Q163. Regarding the example you provided, it seems to meet my requirements.
+
 
 ## 3. Analysis
 
-*In this section, the team should report the study/analysis/comparison that was done in order to take the best design
-decisions for the requirement. This section should also include supporting diagrams/artifacts (such as domain model; use
-case diagrams, etc.)*
+In this functionality, the customer manager needs to select a job opening and then the order list of the candidates will
+be displayed. The list should be in descending order, from the candidate with the better interview grade to the worst.
+
+
+### 3.1 System Sequence Diagram
+
+![system sequence diagram](SSD/US1019_SSD.svg)
+
+### 3.2 Domain Model Related
+
+![domain model related](DM/US1019_DM.svg)
+
 
 ## 4. Design
 
