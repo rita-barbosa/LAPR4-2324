@@ -1,0 +1,31 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+skinparam sequenceMessageAlign center
+
+'Actors and Participants
+Participant Customer as C
+Participant CustomerApplication as CA
+
+Activate CA
+
+    alt If application just started running
+
+        CA -> CA : Checks for all changes that happened
+
+        CA --> C : Finds and sends notification to Customer
+
+    else If application is running
+
+        CA -> CA : Checks that a change happened
+
+        CA --> C : Sends a notification to the Customer
+
+    end
+
+Deactivate CA
+
+
+@enduml
