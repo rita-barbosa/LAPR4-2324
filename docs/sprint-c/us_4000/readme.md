@@ -2,33 +2,62 @@
 
 ## 1. Context
 
-*Explain the context for this task. It is the first time the task is assigned to be developed or this tasks was
-incomplete in a previous sprint and is to be completed in this sprint? Are we fixing some bug?*
+This is the first time this user story is being requested.
 
 ## 2. Requirements
 
-*In this section you should present the functionality that is being developed, how do you understand it, as well as
-possible correlations to other requirements (i.e., dependencies). You should also add acceptance criteria.*
-
-*Example*
-
-**US G007** As {Ator} I Want...
+**US 4000** As a {Customer Manager}, when displaying the candidate data, I expect the system to present a top 20 list of
+the most frequently referenced words from files uploaded by a candidate. Additionally, I require a comprehensive list of
+the files in which these words appear.
 
 **Acceptance Criteria:**
 
-- G002.1. The system should...Blá Blá Blá ...
-
-- G002.2. Blá Blá Blá ...
+- **4000.1** The Customer Manager must have access to the candidates' application files data.
+- **4000.2** The implementation of the functionality is to be done in JAVA.
+- **4000.3** The implementation of the functionality must have threads.
+- **4000.4** The implementation of the functionality must have synchronization mechanisms.
 
 **Dependencies/References:**
 
-*Regarding this requirement we understand that it relates to...*
+**US1002 and US1007** | A job opening associated with a recruitment process is required so that the candidates can apply.
+
+**US2000a and US2002** | A candidate must be registered within the system and must have at least one application (with files).
+
+_Reference **4000.1**:_ **NFR14(SCOMP)** - The process to count words of very large files should follow specific technical
+requirements such as implementing parallelism and concurrency using Java and threads. Specific requirements will be provided
+in SCOMP.
+
+
+**Client Clarifications:**
+
+> **Question:**  I would like to know if in US4000, regarding the creation of the list of the most common words present 
+> in the files uploaded by the candidate, do you intend to choose one application from that candidate and create the respective
+> list, or do you intend for this list to be created considering all applications associated with that candidate?
+>
+> **Answer:** The list of words is related to a particular application.
+
 
 ## 3. Analysis
 
-*In this section, the team should report the study/analysis/comparison that was done in order to take the best design
-decisions for the requirement. This section should also include supporting diagrams/artifacts (such as domain model; use
-case diagrams, etc.)*
+This functionality shows the candidate data and their 20 most used words. This is done by having the system analysing the
+application files submitted by the candidate.
+
+According to the functionality specific documentation, two possible solutions are presented:
+* A file is the subject of a thread
+* A file is the subject of multiple threads
+
+All thread must have the same behaviour for all files.
+
+Below there's a System Sequence Diagram (SSD) illustrating the expected behaviour of this functionality. After this diagram
+is a partial domain model, with emphasis on US4000's concepts.
+
+**US4000 System Sequence Diagram**
+
+![system sequence diagram](./US4000_SSD/US4000_SSD.svg)
+
+**US4000 Partial Domain Model**
+
+![Partial Domain Model](./US4000_Domain_Model/domain-model-us-4000.svg)
 
 ## 4. Design
 

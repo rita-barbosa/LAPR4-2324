@@ -6,23 +6,14 @@ hide empty attributes
 skinparam classBackgroundColor beige
 skinparam ArrowColor #222222
 
-
-
 'SHARED VALUE OBJETS
 
-    class Address <<(V,#FF8B40) value object>> {}
+ class Address <<(V,#FF8B40) value object>> {}
 
  class FullClassName <<(V,#FF8B40) value object>> {}
 'SERVICES
     class RequirementEvaluator <<(S,#4d91f7) service>> {}
-    class InterviewEvaluator <<(S,#4d91f7) service>> {}
 
-package "<<aggregate>> Interview Model" {
-    entity InterviewModel <<entity>> <<root>>  {}
-    class InterviewModelName <<(V,#FF8B40) value object>> <<identifier>> {}
-    class InterviewModelDescription <<(V,#FF8B40) value object>> {}
-
-}
 package "<<aggregate>> Requirement Specification" {
     entity RequirementSpecification <<entity>> <<root>>  {}
     class RequirementName <<(V,#FF8B40) value object>> <<identifier>> {}
@@ -41,40 +32,13 @@ package "<<aggregate>> Job Opening" {
 
 }
 
-package "<<aggregate>> Notification" {
-    entity Notification <<entity>> <<root>> {}
-    class NotificationBody <<(V,#FF8B40) value object>>{}
-    class NotificationType <<(V,#FF8B40) value object>>{}
-    class NotificationRecipient <<(V,#FF8B40) value object>>{}
-    class NotificationStatus <<(V,#FF8B40) value object>>{}
-    class NotificationDate <<(V,#FF8B40) value object>>{}
+package "<<aggregate>> Interview Model" {
+    entity InterviewModel <<entity>> <<root>>  {}
+    class InterviewModelName <<(V,#FF8B40) value object>> <<identifier>> {}
+    class InterviewModelDescription <<(V,#FF8B40) value object>> {}
+
 }
 
-
-package "<<aggregate>> Rank" {
-    entity Rank <<entity>> <<root>> {}
-    class RankEntry <<(V,#FF8B40) value object>>{}
-}
-
-note "<size:28>These entities aren't yet confirmed</size>" as N2
-Notification .. N2
-N2 .. Rank
-
-
-package "<<aggregate>> Administrator" {
-    entity Administrator <<entity>> <<root>>  {}
-}
-package "<<aggregate>> Customer Manager" {
-    entity CustomerManager <<entity>> <<root>>  {}
-}
-package "<<aggregate>> Customer" {
-    entity Customer <<entity>> <<root>>  {}
-    class CustomerCode <<(V,#FF8B40) value object>> <<identifier>> {}
-    class CompanyName <<(V,#FF8B40) value object>> {}
-}
-package "<<aggregate>> Customer Representative" {
-    entity CustomerRepresentative <<entity>> <<root>> {}
-    }
 package "<<aggregate>> Operator" {
     entity Operator <<entity>> <<root>> {}
 }
@@ -114,23 +78,6 @@ package "<<aggregate>> Recruitment Process" {
 
 
 'ASSOCIATIONS
-Administrator -> "1..*" Customer: manages
-Administrator --> "1..*" CustomerManager : manages
-Administrator -> "1..*" Operator : manages
-Administrator -> "1..*" Customer : registers
-'--
-Customer --> "1..*" JobOpening : sends
-Customer --> "1" CompanyName : is described by
-Customer --> "1" Address : is located at
-Customer --> "1" CustomerCode : is identified by
-'--
-CustomerManager "1" <--  Customer: manages >
-CustomerManager --> "1..*" JobOpening: registers
-CustomerManager ---> "0..*" Application : overseas
-CustomerManager --> "1..*" RecruitmentProcess : sets up
-CustomerManager --> "1..*" Candidate : manages
-CustomerManager --> "1..*" InterviewModel : selects
-CustomerManager ---> "1..*" RequirementSpecification : selects
 '--
 Operator --> "0..*" Candidate : registers
 Operator --> "0..*" Application : registers
@@ -140,8 +87,6 @@ Candidate --> "1..*" JobOpening : applies for
 Candidate ---> "1" Email: identified by
 Candidate --> "1" CandidateName: has
 Candidate ---> "1" PhoneNumber: has
-'--
-CustomerRepresentative --> "1" Customer :  represents
 '--
 JobOpening ---> "1"  JobReference : includes
 JobOpening --> "1"  Mode : includes
@@ -155,10 +100,6 @@ JobOpening ---> "1"  RequirementSpecification : includes
 JobOpening -> "1"  InterviewModel : includes
 JobOpening --> "1"  RecruitmentProcess : includes
 JobOpening --> "1"  Application : associated to <
-'__
-JobOpening ---> "1"  Rank : includes
-Rank --> "*" RankEntry : encompasses
-Rank --> "*" Application : rates
 '--
 RecruitmentProcess --> "1" RecruitmentPeriod : goes on for
 RecruitmentProcess ---> "5..6" Phase : encompasses
@@ -178,29 +119,13 @@ Application --> "1" ApplicationStatus : categorizes <
 RequirementEvaluator .--> Application
 RequirementEvaluator .-> RequirementSpecification
 '--
-InterviewEvaluator .-> Application
-InterviewEvaluator .--> InterviewModel
-'--
 Interview ---> "1" InterviewAnswer: described in
 Interview ---> "1" InterviewResult: classifies <
 InterviewResult -> "1" InterviewGrade: grades <
 InterviewResult --> "1" Justification: justifies <
 Interview --> "1" Schedule : follows a
 '--
-InterviewModel --> "1" InterviewModelName: identifies <
-InterviewModel --> "1" InterviewModelDescription: describes <
-InterviewModel --> "1" FullClassName: configures <
-'--
 RequirementSpecification --> "1" RequirementName: identifies <
 RequirementSpecification --> "1" RequirementDescription: describes <
 RequirementSpecification --> "1" FullClassName: configures <
-'__
-Notification ---> NotificationBody : has
-Notification --> NotificationRecipient : has
-Notification --> NotificationStatus : has
-Notification ---> NotificationDate : has
-Notification -> NotificationType : has
-'__
-Notification --> "1" Candidate : notifies
-Notification --> "1" Customer : notifies
 @enduml

@@ -2,33 +2,75 @@
 
 ## 1. Context
 
-*Explain the context for this task. It is the first time the task is assigned to be developed or this tasks was
-incomplete in a previous sprint and is to be completed in this sprint? Are we fixing some bug?*
+This is the first time this user story is being requested.
 
 ## 2. Requirements
 
-*In this section you should present the functionality that is being developed, how do you understand it, as well as
-possible correlations to other requirements (i.e., dependencies). You should also add acceptance criteria.*
-
-*Example*
-
-**US G007** As {Ator} I Want...
+**US 3001** As {Candidate} I want to be notified in my application when the state of one of my applications changes.
 
 **Acceptance Criteria:**
 
-- G002.1. The system should...Blá Blá Blá ...
-
-- G002.2. Blá Blá Blá ...
+- **3001.1** The implementation of this functionality must follow a client-server architecture.
+- **3001.2** Direct interaction between the client applications (Candidate App and Costumer App) and the database server 
+is not allowed.
+- **3001.3** The protocol to be used is a TCP (Transmission Control Protocol) based client-server protocol.
+- **3001.4** Exchange between applications must follow a very restrict client-server pattern: the client application sends
+one request message, and the server application sends back one response message.
+- **3001.5** The client application is required to know (IP address or DNS name) the node where the server application is
+running and the TCP port number where the server application is accepting TCP connections.
+- **3001.6** Connected applications exchange messages with the format described in RCOMP's ("Application Protocol").
+- **3001.7** Connected applications exchange messages with adequate codes described in RCOMP's ("Application Protocol").
+- **3001.8** After establishing connection with the server, the client application must undertake a user authentication
+procedure by sending an AUTH request carrying a username and a password.
 
 **Dependencies/References:**
 
-*Regarding this requirement we understand that it relates to...*
+**US1002 and US1007** | A job opening associated with a recruitment process is required so that the candidates can apply.
+
+**US2002** | The candidates must be registered in the system and their application files must be imported, so that their
+application is registered in the system.
+
+_Reference **3001.1**:_ **NFR10(RCOMP)** - Functionalities related to the Candidate and Customer Apps and to the Follow Up
+Server part of the system have very specific technical requirements. It must follow a client-server architecture, where a
+client application is used to access a server. Communications between these two components must follow specific protocol
+described in a document from RCOMP ("Application Protocol"). Also, the client applications can not access the relational
+database, they can only access the server application.
+
+_Reference **3001.2**:_ **NFR11(RCOMP)** - The solution should be deployed using several network nodes. It is expected that,
+at least, the relational database server and the Follow Up Server be deployed in nodes different from localhost, preferably
+in the cloud. The e-mail notification tasks must be executed in background by the Follow Up Server.
+
+> **Question:** Do you intend for the candidate to be notified in their application when the status of an application 
+> changes? How do you intend for the candidate to be notified? And if the candidate is not running the application, is 
+> that notification lost?
+>
+> **Answer:** The candidate should be notified when their app is running. For notifications that occur when the app is not
+> running, it would be ideal for the candidate to receive them the next time they run the application.
+
 
 ## 3. Analysis
 
-*In this section, the team should report the study/analysis/comparison that was done in order to take the best design
-decisions for the requirement. This section should also include supporting diagrams/artifacts (such as domain model; use
-case diagrams, etc.)*
+The Follow Up Server has access to the database, and when an application changes states, it sends e-mail notifications to
+the Candidates App.
+
+When the candidate opens its app, then it will be able to access the notification and be informed of which application
+has changed states. To accomplish this, the Candidate App must establish a TCP connection with the server, go through an
+authentication procedure, and request the server to get the candidate's notifications. The request is processed and an 
+answer with the requested data is sent to the Candidate App.
+
+All the messages/requests must follow a specified format, defined by the documentation (requirements 3001.6 and 3001.7).
+
+Below there's a System Sequence Diagram (SSD) illustrating the expected behaviour of this functionality. After this diagram
+is a partial domain model, with emphasis on US3001's concepts.
+
+**US3001 System Sequence Diagram**
+
+![system sequence diagram](./US3001_SSD/US3001_SSD.svg)
+
+**US3001 Partial Domain Model**
+
+![Partial Domain Model](./US3001_Domain_Model/domain-model-us-3001.svg)
+
 
 ## 4. Design
 

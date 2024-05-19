@@ -10,12 +10,9 @@ skinparam ArrowColor #222222
 
 'SHARED VALUE OBJETS
 
-    class Address <<(V,#FF8B40) value object>> {}
+class Address <<(V,#FF8B40) value object>> {}
 
- class FullClassName <<(V,#FF8B40) value object>> {}
-'SERVICES
-    class RequirementEvaluator <<(S,#4d91f7) service>> {}
-    class InterviewEvaluator <<(S,#4d91f7) service>> {}
+class FullClassName <<(V,#FF8B40) value object>> {}
 
 package "<<aggregate>> Interview Model" {
     entity InterviewModel <<entity>> <<root>>  {}
@@ -51,22 +48,10 @@ package "<<aggregate>> Notification" {
 }
 
 
-package "<<aggregate>> Rank" {
-    entity Rank <<entity>> <<root>> {}
-    class RankEntry <<(V,#FF8B40) value object>>{}
-}
-
-note "<size:28>These entities aren't yet confirmed</size>" as N2
+note "<size:28>This entity isn't yet confirmed</size>" as N2
 Notification .. N2
-N2 .. Rank
 
 
-package "<<aggregate>> Administrator" {
-    entity Administrator <<entity>> <<root>>  {}
-}
-package "<<aggregate>> Customer Manager" {
-    entity CustomerManager <<entity>> <<root>>  {}
-}
 package "<<aggregate>> Customer" {
     entity Customer <<entity>> <<root>>  {}
     class CustomerCode <<(V,#FF8B40) value object>> <<identifier>> {}
@@ -75,16 +60,6 @@ package "<<aggregate>> Customer" {
 package "<<aggregate>> Customer Representative" {
     entity CustomerRepresentative <<entity>> <<root>> {}
     }
-package "<<aggregate>> Operator" {
-    entity Operator <<entity>> <<root>> {}
-}
-    package "<<aggregate>> Candidate" {
-    entity Candidate <<entity>>  <<root>>{}
-    class CandidateName <<(V,#FF8B40) value object>> {}
-    class PhoneNumber <<(V,#FF8B40) value object>> {}
-    class Email <<(V,#FF8B40) value object>> {}
-
-}
 
 package "<<aggregate>> Application" {
     entity Application <<entity>><<root>>  {}
@@ -114,32 +89,10 @@ package "<<aggregate>> Recruitment Process" {
 
 
 'ASSOCIATIONS
-Administrator -> "1..*" Customer: manages
-Administrator --> "1..*" CustomerManager : manages
-Administrator -> "1..*" Operator : manages
-Administrator -> "1..*" Customer : registers
-'--
-Customer --> "1..*" JobOpening : sends
+Customer -> "1..*" JobOpening : sends
 Customer --> "1" CompanyName : is described by
 Customer --> "1" Address : is located at
 Customer --> "1" CustomerCode : is identified by
-'--
-CustomerManager "1" <--  Customer: manages >
-CustomerManager --> "1..*" JobOpening: registers
-CustomerManager ---> "0..*" Application : overseas
-CustomerManager --> "1..*" RecruitmentProcess : sets up
-CustomerManager --> "1..*" Candidate : manages
-CustomerManager --> "1..*" InterviewModel : selects
-CustomerManager ---> "1..*" RequirementSpecification : selects
-'--
-Operator --> "0..*" Candidate : registers
-Operator --> "0..*" Application : registers
-'--
-Candidate --> "1..*" Application : submits
-Candidate --> "1..*" JobOpening : applies for
-Candidate ---> "1" Email: identified by
-Candidate --> "1" CandidateName: has
-Candidate ---> "1" PhoneNumber: has
 '--
 CustomerRepresentative --> "1" Customer :  represents
 '--
@@ -155,10 +108,6 @@ JobOpening ---> "1"  RequirementSpecification : includes
 JobOpening -> "1"  InterviewModel : includes
 JobOpening --> "1"  RecruitmentProcess : includes
 JobOpening --> "1"  Application : associated to <
-'__
-JobOpening ---> "1"  Rank : includes
-Rank --> "*" RankEntry : encompasses
-Rank --> "*" Application : rates
 '--
 RecruitmentProcess --> "1" RecruitmentPeriod : goes on for
 RecruitmentProcess ---> "5..6" Phase : encompasses
@@ -174,12 +123,6 @@ Application ---> "1" RequirementResult : includes
 Application ---> "1..*" File : describes <
 Application ---> "1" ApplicationDate : registered by
 Application --> "1" ApplicationStatus : categorizes <
-'--
-RequirementEvaluator .--> Application
-RequirementEvaluator .-> RequirementSpecification
-'--
-InterviewEvaluator .-> Application
-InterviewEvaluator .--> InterviewModel
 '--
 Interview ---> "1" InterviewAnswer: described in
 Interview ---> "1" InterviewResult: classifies <
@@ -201,6 +144,5 @@ Notification --> NotificationStatus : has
 Notification ---> NotificationDate : has
 Notification -> NotificationType : has
 '__
-Notification --> "1" Candidate : notifies
 Notification --> "1" Customer : notifies
 @enduml
