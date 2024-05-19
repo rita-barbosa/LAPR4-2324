@@ -1,0 +1,35 @@
+@startuml US3001_SSD
+
+title US3001 System Sequence Diagram
+
+autonumber
+
+actor "Candidate" as CAND
+participant "System\n(Candidate App)" as SYS
+participant "Follow Up Server" as SERVER
+
+SERVER --> SYS : sends notification
+activate SERVER
+note right
+every time an application
+changes state
+end note
+
+activate SYS
+deactivate SERVER
+
+activate CAND
+CAND -> SYS : asks to see notifications
+
+SYS -> SERVER : establishes TCP connection
+activate SERVER
+SYS -> SERVER : requests candidate's notifications
+
+SERVER --> SYS : candidate's notifications
+deactivate SERVER
+
+SYS --> CAND : shows notifications
+deactivate SYS
+deactivate CAND
+
+@enduml
