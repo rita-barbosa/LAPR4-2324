@@ -6,6 +6,10 @@ skinparam classBackgroundColor beige
 skinparam ArrowColor #222222
 
 
+ class FullClassName <<(V,#FF8B40) value object>> {}
+
+    class InterviewEvaluator <<(S,#4d91f7) service>> {}
+
 package "<<aggregate>> Interview Model" {
     entity InterviewModel <<entity>> <<root>>  {}
     class InterviewModelName <<(V,#FF8B40) value object>> <<identifier>> {}
@@ -18,14 +22,15 @@ package "<<aggregate>> Customer Manager" {
 
 package "<<aggregate>> Candidate" {
     entity Candidate <<entity>>  <<root>>{}
+    class CandidateName <<(V,#FF8B40) value object>> {}
+    class PhoneNumber <<(V,#FF8B40) value object>> {}
+    class Email <<(V,#FF8B40) value object>> {}
 }
 
 package "<<aggregate>> Application" {
     entity Application <<entity>><<root>>  {}
-    class Email <<(V,#FF8B40) value object>> {}
+    class ApplicationDate <<(V,#FF8B40) value object>> {}
     class ApplicationStatus <<(V,#FF8B40) value object>> {}
-    class CandidateName <<(V,#FF8B40) value object>> {}
-    class PhoneNumber <<(V,#FF8B40) value object>> {}
     class Interview <<(V,#FF8B40) value object>>   {}
     class InterviewAnswer <<(V,#FF8B40) value object>>   {}
     class InterviewResult <<(V,#FF8B40) value object>>   {}
@@ -35,23 +40,27 @@ package "<<aggregate>> Application" {
     class RequirementResult <<(V,#FF8B40) value object>>   {}
     class InterviewAnswer <<(V,#FF8B40) value object>>   {}
     class Schedule <<(V,#FF8B40) value object>> {}
-    class File <<(V,#FF8B40) value object>> {}
+     class File <<(V,#FF8B40) value object>> {}
 }
 
+CustomerManager ---> "0..*" Application : overseas
 CustomerManager --> "1..*" Candidate : manages
 CustomerManager --> "1..*" InterviewModel : selects
 
 Candidate --> "1..*" Application : submits
+Candidate ---> "1" Email: identified by
+Candidate --> "1" CandidateName: has
+Candidate ---> "1" PhoneNumber: has
 
 Application ---> "0..1" Interview : includes
 Application --> "1" RequirementAnswer : includes
 Application ---> "1" RequirementResult : includes
-Application ---> "1" Email: includes
-Application --> "1" CandidateName: includes
-Application ---> "1" PhoneNumber: includes
 Application ---> "1..*" File : describes <
+Application ---> "1" ApplicationDate : registered by
 Application --> "1" ApplicationStatus : categorizes <
 
+InterviewEvaluator .-> Application
+InterviewEvaluator .--> InterviewModel
 
 Interview ---> "1" InterviewAnswer: described in
 Interview ---> "1" InterviewResult: classifies <
@@ -61,5 +70,6 @@ Interview --> "1" Schedule : follows a
 
 InterviewModel --> "1" InterviewModelName: identifies <
 InterviewModel --> "1" InterviewModelDescription: describes <
+InterviewModel --> "1" FullClassName: configures <
 
 @enduml
