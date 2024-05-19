@@ -47,11 +47,28 @@ e-mail notification tasks in the background.
 >
 > **Answer:** It can be in Portuguese or English.
 
+> **Question:** Should we assume that the first N candidates in the ranking (where N is the number of job vacancies) are
+> chosen, or should we allow the customer manager to select the N candidates?
+>
+>
+> **Answer:** _N/A_
+
 ## 3. Analysis
 
-It is understood that for this functionality, the customer manager must select candidates to fill the number of
-vacancies for a specific job opening. Consequently, the number of selected candidates cannot exceed the number of
-available vacancies. Furthermore, candidates can only be selected for job openings whose recruitment process is in the
+> **Waiting for clarification regarding:**
+>
+> It is understood that for this functionality, the customer manager must select candidates to fill the number of
+> vacancies for a specific job opening. Consequently, the number of selected candidates cannot exceed the number of
+> available vacancies.
+>
+> **OR**
+>
+> It is understood that for this functionality, the customer manager must select a job opening to publish the results.
+> Additionally, the first N candidates, where N is the number of job vacancies, are chosen to fill the positions for
+> that
+> job opening.
+
+Furthermore, candidates can only be selected for job openings whose recruitment process is in the
 Result phase.
 
 System-wise, after selection, emails will be sent to both the chosen candidates and the customer. The email to the
@@ -61,9 +78,6 @@ company/customer, the email must contain the list of selected candidates, includ
 ### Domain Model
 
 ![Domain Model - US 1020](domain-model.svg)
-
-
-
 
 ## 4. Design
 
