@@ -2,33 +2,82 @@
 
 ## 1. Context
 
-*Explain the context for this task. It is the first time the task is assigned to be developed or this tasks was
-incomplete in a previous sprint and is to be completed in this sprint? Are we fixing some bug?*
+It is the first time the task is assigned.
 
 ## 2. Requirements
 
-*In this section you should present the functionality that is being developed, how do you understand it, as well as
-possible correlations to other requirements (i.e., dependencies). You should also add acceptance criteria.*
-
-*Example*
-
-**US G007** As {Ator} I Want...
+**US 3000** As Candidate, I want to list all my applications and their state (including the number of applicants).
 
 **Acceptance Criteria:**
 
-- G002.1. The system should...Blá Blá Blá ...
+- **3000.1.** The system should display all the applications.
 
-- G002.2. Blá Blá Blá ...
+- **3000.2.** The applications should have displayed their status.
+
+- **3000.3.** The number of applications for the job opening should be displayed.
+
+- **3000.4** The implementation of this functionality must follow a client-server architecture.
+
+- **3000.5** The system should not allow direct interaction between the client applications (Candidate App and Costumer 
+  App) and the database server.
+
+- **3000.6** The protocol to be used is a TCP (Transmission Control Protocol) based client-server protocol.
+
+- **3000.7** The client application is required to know (IP address or DNS name) the node where the server application is
+  running and the TCP port number where the server application is accepting TCP connections.
+
+- **3000.8** The messages exchange between applications must follow a very restrict client-server pattern: the client application
+  sends one request message, and the server application sends back one response message.
+
 
 **Dependencies/References:**
 
-*Regarding this requirement we understand that it relates to...*
+- **US G007** - This functionality has a dependency on _US G007_ that pertains to the authentication and authorization
+  for all users and functionalities.
+
+- **US 2002** - This functionality has a dependency on _US 2002_ that consists in the creation of applications, since
+  needs to exist an application in order to display its information.
+
+_Reference 3000.1:_ **NFR10(RCOMP)** - Functionalities related to the Candidate and Customer Apps and to the Follow Up Server
+part of the system have very specific technical requirements. It must follow a client-server architecture, where a client 
+application is used to access a server. Communications between these two components must follow specific protocol 
+described in a document from RCOMP ("Application Protocol"). Also, the client applications can not access the relational
+database, they can only access the server application.
+
+_Reference 3000.2:_ **NFR11(RCOMP)** - The solution should be deployed using several network nodes. It is expected that, at
+least, the relational database server and the Follow Up Server be deployed in nodes different from localhost, preferably
+in the cloud. The e-mail notification tasks must be executed in background by the Follow Up Server. 
+
+
+**Client Clarifications:**
+
+> **Question:** US3000 - In US3000 asks to list the applications and their status for a candidate, as well as the number
+> of candidates. Is this number of candidates a sum of the quantity of candidates who applied for the same job openings
+> as this first candidate (who is executing the use case)?
+>
+>
+> **Answer:** All the applications of the candidate should be listed, along with their status, as well as the number of 
+> applications each job opening received (so the candidate has an idea of the "competition" for each of their
+> applications).
+
 
 ## 3. Analysis
 
-*In this section, the team should report the study/analysis/comparison that was done in order to take the best design
-decisions for the requirement. This section should also include supporting diagrams/artifacts (such as domain model; use
-case diagrams, etc.)*
+For the candidate to list all his applications and their state, including the number of applicants, a TCP connection must 
+be established for the Candidate App to the Follow Up Server.
+
+Then the Candidate App will send the request to obtain the candidate applications and their state to the server and
+receive the answer. The answers will have a specified format.
+
+
+### 3.1 System Sequence Diagram
+
+![system sequence diagram](SSD/US3000_SSD.svg)
+
+### 3.2 Domain Model Related
+
+![domain model related](DM/US3000_DM.svg)
+
 
 ## 4. Design
 
