@@ -2,33 +2,64 @@
 
 ## 1. Context
 
-*Explain the context for this task. It is the first time the task is assigned to be developed or this tasks was
-incomplete in a previous sprint and is to be completed in this sprint? Are we fixing some bug?*
+This is the first time this task is assigned.
 
 ## 2. Requirements
 
-*In this section you should present the functionality that is being developed, how do you understand it, as well as
-possible correlations to other requirements (i.e., dependencies). You should also add acceptance criteria.*
-
-*Example*
-
-**US G007** As {Ator} I Want...
+**US 1021** As Customer Manager, I want to display all the data of an application.
 
 **Acceptance Criteria:**
 
-- G002.1. The system should...Blá Blá Blá ...
+- **1021.1.** The system should display the application files.
 
-- G002.2. Blá Blá Blá ...
+- **1021.2.** The system should display the data collected or generated during the process, such as interviews and
+requirement process.
+
 
 **Dependencies/References:**
 
-*Regarding this requirement we understand that it relates to...*
+- **US G007** - This functionality has a dependency on _US G007_ that pertains to the authentication and authorization
+  for all users and functionalities.
+
+- **US 2002** - This functionality has a dependency on _US 2002_ that consists in the creation of applications, since
+  needs to exist an application in order to display its information.
+
+
+**Client Clarifications:**
+
+> **Question:** US1021 - What is 'all data of an application'? What is a job application?
+>
+>
+> **Answer:** A job application is a candidate's application for a job opening. As for "all data of an application",
+> it refers to all the data associated with an application, including the files submitted by the candidate as well as
+> the data collected or generated during the process (such as interviews and requirement processing).
+
+> **Question:** US1021 - Regarding US1021, how is chosen the Application to be displayed? Can the user start by choosing
+> the Job Reference and then the email of one candidate? Or do you recommend another approach?
+>
+>
+> **Answer:** They should apply the best UX/UI practices. There have been previous questions on similar topics (e.g. Q150).
+> Note that there is a user story (US) for listing all applications to a job opening, for example.
+
+
 
 ## 3. Analysis
 
-*In this section, the team should report the study/analysis/comparison that was done in order to take the best design
-decisions for the requirement. This section should also include supporting diagrams/artifacts (such as domain model; use
-case diagrams, etc.)*
+In this functionality, the customer manager should be able to select an application and display all the information
+related to it. Initially, all applications will be displayed, and the customer manager can choose one to view.
+Once an application is selected, all information associated with it will be shown, including files submitted by the
+candidate and the data collected or generated during the application process, such as interviews and requirements.
+
+This process should be repeated as many times as the user wishes to continue.
+
+
+### 3.1 System Sequence Diagram
+
+![system sequence diagram](SSD/US1021_SSD.svg)
+
+### 3.2 Domain Model Related
+
+![domain model related](DM/US1021_DM.svg)
 
 ## 4. Design
 
