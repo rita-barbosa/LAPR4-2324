@@ -1,0 +1,29 @@
+@startuml US1017_SSD
+autonumber
+
+actor "Customer Manager" as USER
+participant "System" as SYS
+
+activate USER
+
+USER -> SYS : asks to upload a text file with the candidates\n responses for an interview
+activate SYS
+SYS --> USER : shows the interview templates and asks\n to select one
+deactivate SYS
+
+loop until the user wants
+USER -> SYS : selects the interview
+activate SYS
+SYS --> USER : asks to provide the filepath
+deactivate SYS
+
+USER -> SYS : gives the filepath
+activate SYS
+SYS --> USER : shows operation success
+deactivate SYS
+
+end loop
+
+deactivate USER
+
+@enduml
