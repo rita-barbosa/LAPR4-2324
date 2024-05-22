@@ -51,22 +51,14 @@ e-mail notification tasks in the background.
 > chosen, or should we allow the customer manager to select the N candidates?
 >
 >
-> **Answer:** _N/A_
+> **Answer:** The first option (using the results from US1013).
 
 ## 3. Analysis
 
-> **Waiting for clarification regarding:**
->
-> It is understood that for this functionality, the customer manager must select candidates to fill the number of
-> vacancies for a specific job opening. Consequently, the number of selected candidates cannot exceed the number of
-> available vacancies.
->
-> **OR**
->
-> It is understood that for this functionality, the customer manager must select a job opening to publish the results.
-> Additionally, the first N candidates, where N is the number of job vacancies, are chosen to fill the positions for
-> that
-> job opening.
+It is understood that for this functionality, the customer manager must select a job opening to publish the results.
+Additionally, the first N candidates, where N is the number of job vacancies, are chosen to fill the positions for
+that
+job opening.
 
 Furthermore, candidates can only be selected for job openings whose recruitment process is in the
 Result phase.
