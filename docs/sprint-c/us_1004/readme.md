@@ -12,7 +12,9 @@ This is the first time this user story is being requested.
 
 - 1004.1. The system should maintain a consistent state
 
-- 1004.2. It is possible to edit every information if they are compatible with the moment.
+- 1004.2. It is possible to edit information if they are compatible with the moment.
+
+- 1004.3 The Customer code and Company name cannot be edited.
 
 **Dependencies/References:**
 
@@ -70,9 +72,7 @@ The following diagram illustrates the clarification made above:
 
 ![Diagram](analysis-diagram.svg)
 
-
 ### Domain Model
-
 
 ![Domain Model - US 1004](domain-model.svg)
 
