@@ -1,4 +1,4 @@
-# US 1014
+# US 1016
 
 ## 1. Context
 
@@ -6,44 +6,35 @@
 
 ## 2. Requirements
 
-**US 1014:** As Customer Manager, I want to record the time and date for an interview with a
-candidate.
+**US 1016:** As Customer Manager, I want the system to notify candidates, by email, of the result of the verification process.
 
 **Acceptance Criteria:**
 
-- 1014.1. The user should be registered as a customer manager;
-- 1014.2. The system should confirm the operation
-- 1014.3. The system should show to the customer manager the job opening list and job application list
+- 1016.1. The user must be logged with customer manager role;
+
+- 1016.2. If an error happens in the notification, doesn't invalidate the result of the verification process 
 
 **Client Clarifications**
 
-> **Question:** When should it be possible to set this date? Will it be possible to schedule the interview only when the recruitment phase is at the intervenist stage? Or is it possible to score in other previous phases?
+> **Question:** I would like to know the format of the following Message to Send to the client, could be Algo do Genero: "Dear [Candidate’s Name], hope this email finds you well. As a Customer Manager, I wanted to inform you about the outcome of the verification process for the position you applied for. After careful consideration of your application and qualifications, I am pleased to inform you that you have successfully passed the verification process. Congratulations! Your application met our initial criteria and we are impressed with your qualifications and experience. We will proceed to the next phase of the selection process, which may include additional interviews or evaluations. We will contact you shortly with more details about the next steps. Thank you for your interest in our company and for taking the time to apply for the position. We appreciate your patience throughout the process. If you have any questions or need further assistance, please feel free to contact us. [Your Name] Customer Manager [Your Company Name]" I would like to know the most important information when Notify the candidate, should appear the name of the Customer manager, the job Reference, the name of the candidate. And whether the email should be in English or Portuguese.
 >
->  **Answer:** For me it may be possible to schedule interviews before but one should pay attention to whether the candidate "passed" the screening. It makes no sense to schedule an interview for a candidate who has not been accepted. Keep this type of aspect in mind.
+> **Answer:** It can be as it presents. It can be in Portuguese or English.
 
-> **Question:** Is it possible to schedule interviews for any day and time or we must take into account weekends, working hours and holidays, for example?
+> **Question:** I want to know when the client says "verification process" is the same about the screening phase.
 >
->  **Answer:** The system should display the day of the week for the selected date. But the system should accept any valid date.
+> **Answer:** Yes.
 
-> **Question:** When scheduling an interview with a candidate, should it be possible to schedule more than one interview per application?
+> **Question:** This user story has a functional dependency with 1015. I would like to know if an error occurs, do I need to delete what happened in US 1015, as if it were a transaction?
 >
-> **Answer:** The system at this stage is thought to only support one interview per job Opening so it doesn’t make much sense to schedule more than one interview for a candidate other than to reschedule the same interview (for example, the applicant was justifiably absent from a previous interview). In this context, I would say that it makes more sense to be able to change the appointment of an interview than to schedule more than one interview for the same candidate.
-
-> **Question:** You enter a date and the system should guess the day of the week of this date and show it in the screen? I couldn't understand well.
->
-> **Answer:** For the data entered by the user the system should display the day of the week: Monday, Tuesday, Wednesday, etc. It should not be a guess, but the true/real day of the week.
-
-
-
-
-
+> **Answer:** The process of notification (US1016) must be done after the verification (US1015) but an error in the notification does not invalidate the “results” of the verification process.
 ## 3. Analysis
 
-*This main functionality is for the Customer Manager, so the user needs to be authenticated first to be able to record the time and date for an interview with a candidate.*
+*This functionality is for the Customer Manager, so the user needs to be authenticated first to be able to send an email to the candidate.*
+The system should send the email, once the verification is completed.
 
 **System Sequence Diagram:**
 
-![SSD-US-1014](ssd/ssd-us-1014.svg)
+![SSD-US-1016](ssd/ssd-us-1016.svg)
 
 
 ## 4. Design
