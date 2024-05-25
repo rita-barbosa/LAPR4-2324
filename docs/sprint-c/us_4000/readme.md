@@ -37,10 +37,36 @@ in SCOMP.
 > **Answer:** The list of words is related to a particular application.
 
 
+> **Question:** Is the order of the list important? Does it need to be ordered by the number of occurrences of the words?
+>
+> **Answer:** Yes, the order is important. The system must present a top 20 list, from the most referenced words to the
+> less referenced words.
+
+
+> **Question:** For the word count, should all types of words be counted, or are there words that don't make sense to
+> count, such as conjunctions?
+>
+> **Answer:** For the moment, there are no restrictions like the one you mention since they depend on the language used 
+> in the text (the solution could/would be complex).
+
+
+> **Question:** When displaying the candidate info, is it expected to show the list of words for each application of the
+> candidate, or does the customer manager need to select a specific application to see the list of words?
+>
+> **Answer:** This regards all the possible applications of a candidate that the customer manager is managing.
+
+
+> **Question:** Word Count – I think it makes sense to ignore words with less than 3 letters, or something like this,
+> because it makes no sense to have words like as, I, am... Can we make this assumption or should we count any word?
+>
+> **Answer:** If you want, you may use a configuration file to configure the minimum number of sequence of characters to
+> be counted as a word in the process. However, this is a temporary exception, accepted, but not considered as a good 
+> solution (a good solution should be one that takes into account the used language).
+
 ## 3. Analysis
 
 This functionality shows the candidate data and their 20 most used words. This is done by having the system analysing the
-application files submitted by the candidate.
+application files of the candidate.
 
 According to the functionality specific documentation, two possible solutions are presented:
 * A file is the subject of a thread
