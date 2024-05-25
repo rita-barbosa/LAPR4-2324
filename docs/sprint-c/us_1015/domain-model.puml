@@ -20,7 +20,7 @@ package "<<aggregate>> Requirement Specification" {
     entity RequirementSpecification <<entity>> <<root>>  {}
     class RequirementName <<(V,#FF8B40) value object>> <<identifier>> {}
     class RequirementDescription <<(V,#FF8B40) value object>> {}
-     class FullClassName <<(V,#FF8B40) value object>> {}
+     class ConfigFileName <<(V,#FF8B40) value object>> {}
 }
 'AGGREGATES
 package "<<aggregate>> Job Opening" {
@@ -32,7 +32,6 @@ package "<<aggregate>> Job Opening" {
     class NumberVacancy <<(V,#FF8B40) value object>> {}
        class Description <<(V,#FF8B40) value object>> {}
      class JobReference <<(V,#FF8B40) value object>> <<identifier>> {}
-      class Rank <<(V,#FF8B40) value object>>{}
           class Address <<(V,#FF8B40) value object>> {}
 }
 package "<<aggregate>> Customer Manager" {
@@ -72,7 +71,6 @@ JobOpening --> "1"  Description : includes
 JobOpening --> "1"  ContractType : includes
 JobOpening --> "1" JobOpeningStatus : classified by
 JobOpening --up-> "1"  RequirementSpecification : includes
-JobOpening --> "*"  Rank : includes
 JobOpening --up-> "1"  Application : associated to <
 
 '--
@@ -94,5 +92,5 @@ Interview --> "1" Schedule : follows a
 '--
 RequirementSpecification --> "1" RequirementName: identifies <
 RequirementSpecification --> "1" RequirementDescription: describes <
-RequirementSpecification --> "1" FullClassName: configures <
+RequirementSpecification --> "1" ConfigFileName: configures <
 @enduml
