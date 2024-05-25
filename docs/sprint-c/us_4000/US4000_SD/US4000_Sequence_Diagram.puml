@@ -2,8 +2,8 @@
 'https://plantuml.com/sequence-diagram
 
 autonumber
-Participant "<<Presentation>>\nAnalyzeCandidateFilesUI" as UI
-Participant "<<Application>>\nAnalyzeCandidateFilesController" as CTRL
+Participant "<<Presentation>>\nAnalyzeApplicationFilesUI" as UI
+Participant "<<Application>>\nAnalyzeApplicationFilesController" as CTRL
 Participant "<<Service>>\nJobOpeningManagementService" as JOS
 Participant "<<Service>>\nJobOpeningDTOService" as JODTOS
 Database "<<Repository>>\nJobOpeningRepository" as JOREPO
