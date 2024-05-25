@@ -22,6 +22,7 @@ running and the TCP port number where the server application is accepting TCP co
 - **3001.7** Connected applications exchange messages with adequate codes described in RCOMP's ("Application Protocol").
 - **3001.8** After establishing connection with the server, the client application must undertake a user authentication
 procedure by sending an AUTH request carrying a username and a password.
+- **3001.9** The state referred to is the application state, not the recruitment process one.
 
 **Dependencies/References:**
 
@@ -46,6 +47,15 @@ in the cloud. The e-mail notification tasks must be executed in background by th
 >
 > **Answer:** The candidate should be notified when their app is running. For notifications that occur when the app is not
 > running, it would be ideal for the candidate to receive them the next time they run the application.
+
+
+> **Question:** I'd like some clarifications regarding the state that US3001 mentions. Is it the "accepted/not accepted"
+> state, or a state regarding the phases of the recruitment process of which the application is associated to?
+>
+> **Answer:** This US is focused on the Candidate perspective. He/she may not be aware of the internal phases of the recruitment
+> process. But he/she is interested in knowing the “external” state of his/her applications. For instance, as a candidate
+> I would like to know if my application was received. Then I would like to know if my application was accepted or not and,
+> finally, if I was selected or not.
 
 
 ## 3. Analysis
