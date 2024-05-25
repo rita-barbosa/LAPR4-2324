@@ -10,7 +10,7 @@ participant ":XxxController" as CTRL <<application>>
 participant ":AuthorizationService" as AUTHZ <<service>>
 participant ":JobOpeningManagementService" as JOMS <<service>>
 participant ":CustomerManagementService" as CMS <<service>>
-participant ":JobOpeningListDTOService" as JOS_DTO <<service>>
+participant ":JobOpeningDTOService" as JOS_DTO <<service>>
 database ":CustomerRepository" as CM_REPO <<repository>>
 database ":JobOpeningRepository" as JO_REPO <<repository>>
 participant ":Customer" as CM <<domain>>
