@@ -26,7 +26,8 @@ Given the necessity of implementing test-driven development within our project, 
 professor, we collectively decided to formulate a plan for the tests to be conducted. This choice primarily stems from
 the product owner's insistence that the project on GitHub must consistently compile error-free, alongside the
 requirement for a workflow that incorporates test execution. It's clear that without a thoroughly completed
-implementation, the development of tests becomes impractical. Thus, this realization guided us to the previously mentioned
+implementation, the development of tests becomes impractical. Thus, this realization guided us to the previously
+mentioned
 decision.
 
 Despite adhering to this methodology, all team members are responsible for delineating the required tests. This involves
@@ -62,3 +63,15 @@ The subsequent design is consistently employed whenever a repository is required
 repository is utilized in the user stories diagram, the following instructions will also be executed.
 
 ![Repository](shared-sequence-diagram/sequence-diagram-repositories.svg)
+
+### Plugin
+
+After discussing with our LPROG and EAPLI teacher, the team decided that the system will actually only have one plugin.
+This plugin will be designed to support both requirement specifications and interview models, and it will be capable of
+providing a template file as well as evaluating the models. To achieve this, several configuration files will be
+required, each specific to a type of model and its necessary information. These files will be essential for loading data
+into our symbol table, which will then be used to evaluate the models or generate the template text file.
+
+This decision was made after extensive discussions with our LPROG teacher about the plugin's development. Despite
+considering the client's input, the teacher emphasized that this was the best approach. Furthermore, after confirming
+with our EAPLI teacher that this approach was acceptable, the team decided to adopt it.
