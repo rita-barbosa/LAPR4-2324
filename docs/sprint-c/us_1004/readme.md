@@ -72,11 +72,10 @@ The following diagram illustrates the clarification made above:
 
 ![Diagram](analysis-diagram.svg)
 
-In order to provide a better understanding of the User-System interation the following system sequence diagram was created:
+To provide a better understanding of the User-System interation, the following system sequence diagram was
+created:
 
-![System Sequence Diagram](system-sequence-diagram.svg)     
-
-
+![System Sequence Diagram](system-sequence-diagram.svg)
 
 ### Domain Model
 
@@ -84,18 +83,71 @@ In order to provide a better understanding of the User-System interation the fol
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
-
 ### 4.1. Realization
+
+![Sequence Diagram](sequence-diagram.svg)
+
+**Ref1:** Check the partial sequence diagram
+in [team-decisions](../../team-decisions/team-decisions.md#shared-sequence-diagrams) to see the adopted behaviour.
 
 ### 4.2. Class Diagram
 
 ![a class diagram]()
 
 ### 4.3. Applied Patterns
+
+* **DTO**
+* **Repository**
+* **Service**
+* **Information Expert**
+* **MVC**
+
+> **MVC**
+>
+> **Justification:**
+> 
+> The MVC pattern was employed to divide the system into three distinct parts: model, view, and controller, each
+> responsible for a specific aspect of the system’s functionality. This separation of concerns enhances maintainability
+> and extensibility, as changes to one part do not require changes to the others.
+
+> **Information Expert**
+>
+> **Justification:**
+> 
+> This pattern was applied to determine which class should be responsible for editing the job opening and understanding
+> which information can be edited. In this case, the JobOpening class carries both responsibilities.
+
+> **Repository Pattern**
+> * JobOpeningRepository
+>
+> **Justification:**
+>
+> The repositories were used to retrieve the persisted job openings and to save the job opening instance after the
+> changes were made.
+
+> **DTO**
+> * JobOpeningDto
+>
+> **Justification:**
+> 
+> We opted for DTOs due to the significant amount of domain information required for this functionality. Recognizing the
+> benefits of encapsulation and layer decoupling offered by DTOs, we concluded that applying this pattern was
+> helpful
+> in this context.
+
+> **Service Pattern**
+> * JobOpeningManagementService
+> * JobOpeningDtoService
+> * AuthorizationService
+>
+> **Justification:**
+>
+> The services were used to gather job openings to display them to the user, essentially
+> listing them. Recognizing the potential for this functionality to be used in various use cases, we opted to
+> develop a service with the primary responsibility of: obtaining the persisted instances using their repository and
+> using
+> the DtoService to transform these instances into DTOs.
+> The authorization service was used to verify the roles of the logged-in user.
 
 ### 4.4. Tests
 
