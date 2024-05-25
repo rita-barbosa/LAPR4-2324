@@ -52,6 +52,18 @@ preferable to undertake additional steps to identify the entity associated with 
 To ensure consistency in decision-making, we opted for the entity/customer to include the corresponding user as an
 instance.
 
+### Plugin
+
+After discussing with our LPROG and EAPLI teacher, the team decided that the system will actually only have one plugin.
+This plugin will be designed to support both requirement specifications and interview models, and it will be capable of
+providing a template file as well as evaluating the models. To achieve this, several configuration files will be
+required, each specific to a type of model and its necessary information. These files will be essential for loading data
+into our symbol table, which will then be used to evaluate the models or generate the template text file.
+
+This decision was made after extensive discussions with our LPROG teacher about the plugin's development. Despite
+considering the client's input, the teacher emphasized that this was the best approach. Furthermore, after confirming
+with our EAPLI teacher that this approach was acceptable, the team decided to adopt it.
+
 ### Shared sequence diagrams
 
 To avoid redundant design implementations and decisions, the team resolved to create diagrams that outline the program
@@ -64,14 +76,9 @@ repository is utilized in the user stories diagram, the following instructions w
 
 ![Repository](shared-sequence-diagram/sequence-diagram-repositories.svg)
 
-### Plugin
+#### Getting Job Opening
 
-After discussing with our LPROG and EAPLI teacher, the team decided that the system will actually only have one plugin.
-This plugin will be designed to support both requirement specifications and interview models, and it will be capable of
-providing a template file as well as evaluating the models. To achieve this, several configuration files will be
-required, each specific to a type of model and its necessary information. These files will be essential for loading data
-into our symbol table, which will then be used to evaluate the models or generate the template text file.
+The following diagram pertains to the design adopted by the team for obtaining the registered job openings when a user
+story requires retrieving job openings related to the logged-in Customer Manager.
 
-This decision was made after extensive discussions with our LPROG teacher about the plugin's development. Despite
-considering the client's input, the teacher emphasized that this was the best approach. Furthermore, after confirming
-with our EAPLI teacher that this approach was acceptable, the team decided to adopt it.
+![Getting Job Openings](shared-sequence-diagram/sequence-diagram-get-job-openings.svg)
