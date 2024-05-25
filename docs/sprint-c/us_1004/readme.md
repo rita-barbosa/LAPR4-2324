@@ -72,6 +72,12 @@ The following diagram illustrates the clarification made above:
 
 ![Diagram](analysis-diagram.svg)
 
+In order to provide a better understanding of the User-System interation the following system sequence diagram was created:
+
+![System Sequence Diagram](system-sequence-diagram.svg)     
+
+
+
 ### Domain Model
 
 ![Domain Model - US 1004](domain-model.svg)
