@@ -1,4 +1,4 @@
-# US 1004
+# US 1015
 
 ## 1. Context
 
@@ -6,12 +6,12 @@ This is the first time this user story is being requested.
 
 ## 2. Requirements
 
-**US 1004** As {Customer Manager}, I want to execute the process of verification of requirements of applications for a
+**US 1015** As {Customer Manager}, I want to execute the process of verification of requirements of applications for a
 job opening.
 
 **Acceptance Criteria:**
 
-- 1004.1. The verification must only be done to candidates which requirements file has already been submitted.
+- 1015.1. The verification must only be done to candidates which requirements file has already been submitted.
 
 **Dependencies/References:**
 
@@ -70,7 +70,7 @@ patterns and the specification of the main tests used to validade the functional
 
 **Test 1:** Verifies that it is not possible to ...
 
-**Refers to Acceptance Criteria:** 1004.1
+**Refers to Acceptance Criteria:** 1015.1
 
 ````
 @Test(expected = IllegalArgumentException.class)
