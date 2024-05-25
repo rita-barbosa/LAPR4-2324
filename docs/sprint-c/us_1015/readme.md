@@ -51,12 +51,12 @@ results in the rejection of a candidate, a justification must be provided, expla
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
-
 ### 4.1. Realization
+
+![Sequence Diagram](sequence-diagram.svg)
+
+**Ref1:** Check the partial sequence diagram
+in [team-decisions](../../team-decisions/team-decisions.md#shared-sequence-diagrams) to see the adopted behaviour.
 
 ### 4.2. Class Diagram
 
