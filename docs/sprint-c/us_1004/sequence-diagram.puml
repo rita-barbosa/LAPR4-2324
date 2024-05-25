@@ -38,7 +38,7 @@ deactivate UI
 USER -> UI : selects job opening
 activate UI
 
-    UI -> CTRL: editableJobOpeningInformation(jobOpening)
+    UI -> CTRL: editableJobOpeningInformation(jobOpeningDto)
     activate CTRL
 
     CTRL -> AUTHZ:  ensureAuthenticatedUserHasAnyOf(roles)
