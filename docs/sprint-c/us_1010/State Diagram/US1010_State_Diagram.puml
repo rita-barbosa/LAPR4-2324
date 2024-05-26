@@ -1,0 +1,21 @@
+@startuml US1010_Phase_State_Diagram
+'https://plantuml.com/state-diagram
+
+title US1010 Phase State Diagram
+
+scale 350 width
+
+state CREATED {
+}
+
+state OPEN {
+}
+
+state CLOSE {
+}
+
+[*] --> CREATED : Phase was just created \nand is neither open or closed
+CREATED --> OPEN : Activity important to that \ncertain phase is happening
+OPEN --> CLOSE : All activity important to that \ncertain phase has concluded
+
+@enduml
