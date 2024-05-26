@@ -52,6 +52,34 @@ This is the first time this US is being worked on. It is related to an action of
 >
 >**Answer:** Without wanting to condition the UI/UX, I think that one possibility would be for the system to present the current phase of the process and indicate what is possible to do. If it is possible to move forward or backward, it must indicate that it is possible and the resulting phase. If it is not (yet) possible to move forward/backward, you must indicate the justification for this fact.
 
+>**Question:** We consider that an "open" phase is not the same as an "active" phase. The "open" phase is a phase that is available to be executed, while the "active" phase is a phase that is being executed. Do you agree with this distinction? Because if the system automatically considers the next phase as "open" when closing a phase and if "open" is the same as "active/in progress" then it will never be possible to "go back" to the phase.
+> 
+>**Answer:** Yes, I think what you say is in line with what I tried to explain in the previous questions about this US. I used the terms “open” and “close” to indicate the opening and closing of the phases. I used the term “active” to indicate that some specific operation of the phase had already been executed (or was being executed) and I then considered that phase as “active”, which meant that I could not change the phase until these “operations” were finished. 
+
+>**Question:** Open or close phases of the process for a job opening – For this User Story, considering that the "Application" phase was closed on 19/05 and we are currently in the "Screening" phase. If it is necessary to go back to the previous phase, should the dates be adjusted? As it may affect the dates of subsequent phases that have not yet started.
+>
+>**Answer:** The previously indicated possibility that allows “going back” in the phases must be considered exceptional, but possible if the consistency of the system is guaranteed. When that happens I don't see the need to adjust dates.
+
+>**Question:** You have already talked about the possibility of reopening a phase when a phase is in the "open" state. My question is whether, for example, the resume_screen phase, if completed but not closed, can be put into progress. In short, when a phase is completed, should we give the possibility to close the phase and open the next one and also the possibility of returning to the "in progress" state?
+>
+>**Answer:** I can't give a clear answer because there are some concepts that require clarification: “resume_screen”, “in progress”, etc. What I can reinforce is that they must always ensure that the consistency of the system is maintained.
+
+>**Question:** If I am in the first phase and if it is in the "open" state, can I move the phase back and set the recruitment process as not started?
+>
+>**Answer:** It seems to me a particular case of the previous answers on this topic.
+
+>**Question:** In terms of phase states, are the completed and closed states synonymous or do they represent different concepts? He gave an example for the "screening" phase, which is completed when all candidates have been verified and notified. Can you give an explanation for the other existing phases, when can we consider them closed?
+>
+>**Answer:** When, in previous questions on this topic, I used the term completed, it was in the sense of indicating that the activities related to the “purpose” of the phase had been completed, concluded, therefore the conditions would be met to be able to move on to the next phase (i.e., close the current). When it comes to the conditions for each phase, I think you should think about the problem and try to identify them. As the question is posed, it seems very broad to me and I think you should be able to reach them through a detailed analysis of the problem. But if you have more specific questions I can try to answer them.
+
+>**Question:** About phases of the recruitment process and the concept of active/deactivated and open/closed – For example, if we are in the application phase, how do I know if it will be “deactivated” and that we can move on to the next one?
+>
+>**Answer:** The expressions “active” and “deactivate” are ways for me to indicate that the “activity” or “objective” of a phase is taking place. In the specific case of the application phase, the system will be receiving applications. Applications will be received by email and must be processed by the deadline that was “publicized” to potential candidates as the limit for receiving applications. Let's admit that the application deadline coincides with the date defined for the end of the application phase. This meant that, in this case, we could only advance to the next phase after reaching the end date of the application phase. However, I admit that it can be done sooner, as long as the user is alerted by the system that the deadline for submitting applications has not yet been reached.
+
+>**Question:** When can you step back?
+>
+>**Answer:** The general principle is, if you are not doing anything specific to the current phase, you can back off. For example, if you are in the interview phase and have not yet started evaluating any interviews, then you can go back to the screening phase. Although there is no point re-evaluating candidates' requirements if they have already been notified of the result. In a real situation, where an error occurs that invalidates a result that has already been notified to third parties (candidates or companies) we can assume that this will be resolved within the scope of an exceptional process that is outside the scope of our current system (the system does not have currently support these cases).
+
 ### Dependencies/References:
 
 #### Dependency with US 1002:
