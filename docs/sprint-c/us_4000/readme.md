@@ -87,18 +87,65 @@ is a partial domain model, with emphasis on US4000's concepts.
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+For the envisioned implementation of this user story we assumed the following work flow:
 
 ### 4.1. Realization
 
+![Sequence Diagram](US4000_SD/US4000_Sequence_Diagram.svg)
+
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![a class diagram](US4000_CD/US4000_class_diagram-US4000_Class_Diagram.svg)
 
 ### 4.3. Applied Patterns
+
+This topic presents the classes with the patterns applied to them along with justifications.
+>**DTO Pattern**
+> * JobOpeningDTO
+>
+> **Justifications**
+>
+> * The usage of the JobOpeningDTO comes from the fact that we wanted this class to server as one more layer of encapsulation between the UI and the domain classes,
+    > and for security reasons, as to avoid someone using the UI to be able to change domain objects that should only be reached using the controller. 
+> 
+>**Repository Pattern**
+> * CustomerRepository
+> * JobOpeningRepository
+>
+> **Justifications**
+>
+> * As per requested, the job reference that identifies the job opening should have the customer code as a base, and be
+    sequential. If the previous job opening from the same customer was made in a different session, then the current session
+    does not have access to its job reference, so it must be retrieved from the job openings' repository database.
+    The newly created jobOpening instance will be saved/preserved in its repository.
+>
+> * The customers assigned to the Customer Manager are stored within the CustomerRepository, persisting and rebuilding them
+    between sessions.
+
+>**Service Pattern**
+> * JobOpeningListDTOService
+> * CustomerManagementService
+> * JobOpeningManagementService
+> * AuthorizationService
+> * ThreadService
+>
+> **Justifications**
+>
+> * CustomerManagementService is used in more than one functionality, and its in charge of managing request regarding customers,
+    >   serving as encapsulation between the controller and the CustomerRepository along with the domain classes.
+>
+> * JobOpeningManagementService is used in more than one functionality, and its in charge of managing request regarding
+    >   jobOpenings, serving as encapsulation between the controller and the JobOpeningRepository along with the domain classes.
+>
+> * In order to enforce encapsulation amongst layers and adequate responsibility assigment, the JobOpeningListDTOService was
+    >   created, besides being a set of instructions that is used in other functionalities.
+>
+> * To get the customers that are assigned to the current Customer Manager in-session, we must get something to identify them.
+    >   The AuthorizationService allows to get the username (user's email), which is essential to then filter the CustomerRepository
+    >   to the desired customers. This set of instructions is used in other functionalities too.
+> 
+> * ThreadService is used in this functionality several times due to the already described design that was chosen for this user story, 
+    > not only that but serving as encapsulation between the controller and the threads needed for this functionality.
 
 ### 4.4. Tests
 
