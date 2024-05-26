@@ -110,6 +110,25 @@ Customer Manager can evaluate them and rank the candidates.
 > The term “not ranked” maybe is not the best. Maybe “rank not recorded” or something similar could be more appropriated.
 
 
+> **Question:** I'm struggling to understand the global configurations defined for US1013. All candidates must be ranked,
+> so that all of them can be notified. Are the global configurations only for persistence purposes? Example: all candidates
+> are ranked and notified, so if 0.5 is in the global definition, then only half of the number of vacancies must be persisted
+> in the system. Is this the scenario that Mr. Client has in mind?
+>
+> **Answer:** I am assuming you refer to Q155. Suppose you have 2 vacancies. You have 80 candidates. If you configure the
+> property as 1 you need to rank (record in the system) the 2 first candidates plus 2 other candidates. If the property
+> is 0,5 you should rank the 2 first candidates plus 1 third candidate. If the property is 2, you should rank the 2 first
+> candidates plus 4 extra candidates. This is a way to assure that you do not have to record in the system the rank of 
+> all the possible candidates, but only a number that includes the ones required to fulfill the vacancies plus some extra
+> (according to the property) for possible exceptions (such as someone leaving the application). But my suggestion was only
+> to help in the UI/UX. You may use any other option.
+
+
+> **Question:** About the Us1013 which states: "As Customer Manager, I want to rank the candidates for a job opening.".
+> I want to know if two candidates can be tied, which would mean having the same rank for the same job opening. 
+>
+> **Answer:** No, ties should not be allowed. It must be clear what candidates are selected to the vacancies.
+
 ## 3. Analysis
 
 As clarified by the client, there is no criteria to rank the candidates. The ranking is done manually by the Customer

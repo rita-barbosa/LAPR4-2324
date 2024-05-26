@@ -21,7 +21,7 @@ applicants.
   running and the TCP port number where the server application is accepting TCP connections.
 - **3002.6** Connected applications exchange messages with the format described in RCOMP's ("Application Protocol").
 - **3002.7** Connected applications exchange messages with adequate codes described in RCOMP's ("Application Protocol").
-- **3001.8** After establishing connection with the server, the client application must undertake a user authentication
+- **3002.8** After establishing connection with the server, the client application must undertake a user authentication
 procedure by sending an AUTH request carrying a username and a password.
 
 **Dependencies/References:**
@@ -50,7 +50,6 @@ in the cloud. The e-mail notification tasks must be executed in background by th
 >
 > **Answer:** In the context of this US, “active since” means the date from the start of the process, the “application” 
 > phase (since that date, candidates can apply). This functionality should include all the “active” job openings.
-
 
 ## 3. Analysis
 

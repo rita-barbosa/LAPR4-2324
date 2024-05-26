@@ -15,6 +15,8 @@ to help me analyze the candidates.
 
 - **1019.2.** The list should be in descending order, from the highest score to the lowest score.
 
+- **1019.3.** The system should only display the candidates for job openings if they have interviews.
+
 
 **Dependencies/References:**
 
@@ -23,6 +25,9 @@ to help me analyze the candidates.
 
 - **US 2002** - This functionality has a dependency on _US 2002_ that consists in the creation of applications, since
   needs to exist an application in order to display its information.
+
+- **US 1018** - This functionality has a dependency on _US 1018_ since in this user story the interviews will be evaluated,
+  to obtain the grades that will be used.
 
 - **US 1017** - This functionality has a dependency on _US 1017_ that consists in the upload of the text files with the
   candidate responses for an interview.
@@ -60,6 +65,22 @@ to help me analyze the candidates.
 >
 > **Answer:** I think you want to refer to Q163. Regarding the example you provided, it seems to meet my requirements.
 
+
+> **Question:** US1019 - In question Q169 is mentioned that the list should be ordered descending by the interview score
+> (as also mentioned in the US itself), however, the question is, how do you envision the ordering if the job opening
+> does not include an interview?
+> 
+> 
+> **Answer:** This User Story does not make sense for processes that do not have an interview.
+
+
+> **Question:** US1019 - According to the response A197, should we then only allow the listing of job openings that
+> have an interview?
+>
+>
+> **Answer:** I think I didn't quite understand the reference to the listing of job openings. This US doesn't make sense
+> for job openings that don't have an interview, as it is based on listing the candidates and their interview scores.
+ 
 
 ## 3. Analysis
 

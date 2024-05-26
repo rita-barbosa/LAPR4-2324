@@ -42,6 +42,35 @@ requirement process.
 > Note that there is a user story (US) for listing all applications to a job opening, for example.
 
 
+> **Question:** US1021 - Regarding the listing data for particular job application, will a customer manager have access
+> to all job application in the system, or only to the job applications made for a job opening of a client managed by
+> that customer manager?
+>
+>
+> **Answer:** Only to those they are managing.
+
+
+> **Question:** US1021 - Application Listing - I would like to address a specific point related to UI/UX User Story 1021.
+> I know the client has been emphasizing that we should apply the best UX/UI practices and would prefer not to constrain
+> the way we design the UI/UX. However, our concern is that in this User Story, if there is a larger number of
+> applications, displaying all this information at once could become confusing for the user. Therefore, I just wanted to
+> ask if we could adopt a more practical solution, such as asking the user to select a job opening first and then listing
+> the applications associated with that job opening and their details, or if, in your view, this approach might excessively
+> restrict the options offered by this functionality.
+>
+>
+> **Answer:** See Q36. This US is to display the data of a single application. There should be a way for the Customer
+> Manager to indicate (including, potentially, a way to select/know/search) which application they are referring to, and
+> the system will display the data for that application.
+
+
+> **Question:** US1021 - When it says to display all the data of an application, does this include, for example, all the
+> data of the candidate, all the data of the job opening related to that application, etc? Or just the job opening ID,
+> the candidate's email, etc.? In addition to the resume, of course.
+>
+>
+> **Answer:** See Q36.
+
 
 ## 3. Analysis
 
