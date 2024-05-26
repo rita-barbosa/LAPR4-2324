@@ -11,8 +11,20 @@ activate SYS
 SYS --> USER : shows the interview templates and asks\n to select one
 deactivate SYS
 
-loop until the user wants
 USER -> SYS : selects the interview
+activate SYS
+
+loop until the user wants
+
+SYS --> USER : asks to select a job opening
+deactivate SYS
+
+USER -> SYS : selects a job opening
+activate SYS
+SYS --> USER : asks to select a candidate's application
+deactivate SYS
+
+USER -> SYS : selects a candidate's application
 activate SYS
 SYS --> USER : asks to provide the filepath
 deactivate SYS
