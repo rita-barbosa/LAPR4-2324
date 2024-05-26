@@ -17,7 +17,7 @@ Participant "<<Thread>>\nFileWordCountThread" as FWCT
 
         UI -> CTRL** : create
 
-        UI -> CTRL : showAllJobOpenings()
+        UI -> CTRL : getAllJobOpenings()
 
         Activate CTRL
 
