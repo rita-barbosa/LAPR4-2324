@@ -5,17 +5,17 @@ title US1010 Phase State Diagram
 
 scale 350 width
 
-state CREATED {
+state PLANNED {
 }
 
-state OPEN {
+state ON_GOING {
 }
 
-state CLOSE {
+state CONCLUDED {
 }
 
-[*] --> CREATED : Phase was just created \nand is neither open or closed
-CREATED --> OPEN : Activity important to that \ncertain phase is happening
-OPEN --> CLOSE : All activity important to that \ncertain phase has concluded
+[*] --> PLANNED : Phase was just created \nand is neither open or closed
+PLANNED --> ON_GOING : Activity important to that \ncertain phase is happening
+ON_GOING --> CONCLUDED : All activity important to that \ncertain phase has concluded
 
 @enduml
