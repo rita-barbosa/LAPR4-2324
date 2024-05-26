@@ -37,6 +37,20 @@ _Reference 1017.1:_  **NFR09(LPROG) - Requirement Specifications and Interview M
 must follow specific technical requirements, specified in LPROG. The ANTLR tool should be used (https://www.antlr.org/).
 
 
+**Client Clarifications:**
+
+> **Question:** US1017/1018 - Our group has a question regarding the processing of the candidates' response files for
+> the interview. In the case of uploading a file, if a question that requires a numerical answer is filled with an
+> invalid format, for example, a letter, should we consider this as an invalid format in US1017 (and ask the user to
+> upload a valid file again) or should we, in US1018, consider it incorrect and automatically assign 0 points fot that
+> invalid response? That is, in US1017, should we only check the file format or should we also check if the responses 
+> are filled with the correct data type?
+>
+>
+> **Answer:** The mentioned case should be considered a file validation error (the submitted file does not comply with
+> the defined grammar).
+
+
 ## 3. Analysis
 
 The main goal of this user story is to import the file with the candidate answers for the interview. 
