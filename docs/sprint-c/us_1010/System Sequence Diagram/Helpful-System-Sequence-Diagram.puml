@@ -5,39 +5,25 @@ autonumber
 
 skinparam sequenceMessageAlign center
 
-    CustomerManager -> System: Asks to start or close a phase of a job opening
+    CustomerManager -> System : Asks to change the state of a Phase
 
-    Activate CustomerManager
+    System --> CustomerManager : Shows job openings and asks for one
 
-    Activate System
+    CustomerManager -> System : Job Reference
 
-    System --> CustomerManager: Shows all Job Openings that have started but haven't closed.
+    System --> CustomerManager : Shows all the Phases of the Recruitment Process and their states
 
-    Deactivate System
+    System --> CustomerManager : Asks if it wants to start a phase or go back
 
-    CustomerManager -> System: Chooses one
+    alt Go back
 
-    Activate System
+        ref over CustomerManager, System : Go_Back_Scenario
 
-    System --> CustomerManager: Shows all the phases and their status
+    else Next Phase
 
-    System --> CustomerManager: Shows the phase that will be closed and/or started ( Depends which phase is currently open )
+        ref over CustomerManager, System : Start_Phase_Scenario
 
-    System --> CustomerManager: Asks for the CustomerManager's confirmation of that action
-
-    alt Confirmation is given
-
-        CustomerManager -> System: Yes
-
-        System --> CustomerManager: Shows confirmation message
-
-    else Confirmation is not given
-
-            CustomerManager -> System: No
-
-            System --> CustomerManager: Goes back to the main menu
 
     end
-
 
 @enduml
