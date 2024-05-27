@@ -46,20 +46,20 @@ results in the rejection of a candidate, a justification must be provided, expla
 
 ### Domain Model
 
-![Domain Model](domain-model.svg)
+![Domain Model](analysis-diagrams/domain-model.svg)
 
 ## 4. Design
 
 ### 4.1. Realization
 
-![Sequence Diagram](sequence-diagram.svg)
+![Sequence Diagram](design-diagrams/sequence-diagram.svg)
 
 **Ref1:** Check the partial sequence diagram
 in [team-decisions](../../team-decisions/team-decisions.md#shared-sequence-diagrams) to see the adopted behaviour.
 
 ### 4.2. Class Diagram
 
-![Class Diagram](class-diagram.svg)
+![Class Diagram](design-diagrams/class-diagram.svg)
 
 ### 4.3. Applied Patterns
 
