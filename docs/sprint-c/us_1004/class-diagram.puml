@@ -12,11 +12,11 @@ abstract class AbstractUI {
 }
 
 
-class EditJobOpeningUI <<Presentation>> {
+class EditJobOpeningUI {
 + doShow()
 }
 
-class EditJobOpeningController <<Application>> {
+class EditJobOpeningController  {
 + getJobOpeningList() : jobOpeningListDto
 + editableJobOpeningInformation(jobOpeningDto) : editableInformationValues
 + changeJobOpeningInformation(jobOpening, newInformation)
@@ -90,21 +90,21 @@ class ContractType <<(V,#FF8B40) value object>> {
 + valueOf(String contractTypeDenomination)
 }
 
-interface JobOpeningRepository <<Persistence>> <<Repository>> {
+interface JobOpeningRepository {
 + ofIdentity(jobReference)
 + save(jobOpening)
 }
 
-interface WorkModeRepository <<Persistence>> <<Repository>> {
+interface WorkModeRepository {
 }
 
-interface ContractTypeRepository <<Persistence>> <<Repository>> {
+interface ContractTypeRepository {
 }
 
-interface InterviewModelRepository <<Persistence>> <<Repository>> {
+interface InterviewModelRepository {
 }
 
-interface RequirementSpecificationRepository <<Persistence>> <<Repository>> {
+interface RequirementSpecificationRepository {
 }
 
 interface DomainRepository {
