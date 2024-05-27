@@ -48,7 +48,6 @@ results in the rejection of a candidate, a justification must be provided, expla
 
 ![Domain Model](domain-model.svg)
 
-
 ## 4. Design
 
 ### 4.1. Realization
@@ -63,6 +62,45 @@ in [team-decisions](../../team-decisions/team-decisions.md#shared-sequence-diagr
 ![a class diagram]()
 
 ### 4.3. Applied Patterns
+
+* **DTO**
+* **Repository**
+* **Service**
+* **MVC**
+
+> **MVC**
+>
+> **Justification:**
+>
+> The MVC pattern was employed to divide the system into three distinct parts: model, view, and controller, each
+> responsible for a specific aspect of the system’s functionality. This separation of concerns enhances maintainability
+> and extensibility, as changes to one part do not require changes to the others.
+
+> **Repository Pattern**
+> * JobOpeningRepository
+> * ApplicationRepository
+>
+> **Justification:**
+>
+> The repositories were used to retrieve the persisted job openings and to save the job opening instance after the
+> changes were made.
+
+> **DTO**
+>
+> **Justification:**
+>
+> We opted for DTOs due to the significant amount of domain information required for this functionality. Recognizing the
+> benefits of encapsulation and layer decoupling offered by DTOs, we concluded that applying this pattern was
+> helpful in this context.
+
+> **Service Pattern**
+> * AuthorizationService
+>
+> **Justification:**
+>
+> The authorization service was employed to verify the roles of the logged-in user. Different services were used to
+> get job openings. As for verifying the requirements, no services were used since this is a unique function not
+> intended for other use cases.
 
 ### 4.4. Tests
 
