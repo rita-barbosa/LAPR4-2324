@@ -11,10 +11,10 @@ activate SYS
 SYS --> USER : shows the interview templates and asks\n to select one
 deactivate SYS
 
-USER -> SYS : selects the interview
+USER -> SYS : selects the interview model
 activate SYS
 
-loop until the user wants
+'loop until the user wants
 
 SYS --> USER : asks to select a job opening
 deactivate SYS
@@ -34,7 +34,7 @@ activate SYS
 SYS --> USER : shows operation success
 deactivate SYS
 
-end loop
+'end loop
 
 deactivate USER
 
