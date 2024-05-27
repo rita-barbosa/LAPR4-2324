@@ -1,0 +1,148 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+title US1004 Class Diagram
+
+
+
+abstract class AbstractUI {
+    # doShow()
+    # show()
+    # mainLoop()
+}
+
+
+class EditJobOpeningUI <<Presentation>> {
++ doShow()
+}
+
+class EditJobOpeningController <<Application>> {
++ getJobOpeningList() : jobOpeningListDto
++ editableJobOpeningInformation(jobOpeningDto) : editableInformationValues
++ changeJobOpeningInformation(jobOpening, newInformation)
+}
+
+'Requirements
+class RequirementSpecification {
+- requirementName : RequirementName
+- description : RequirementDescription
+- plugin : ConfigFileName
+}
+
+'Interview
+class InterviewModel {
+- interviewModelName : InterviewModelName
+- description : InterviewModelDescription
+- plugin : ConfigFileName
+}
+
+class InterviewModelRepository {
+
+}
+
+
+
+
+note left
+VERIFY THIS ATTRIBUTES
+end note
+
+class AuthorizationService {
++ ensureAuthenticatedUserHasAnyOf(roles)
+}
+
+''Address
+'class Address <<(V,#FF8B40) value object>> {
+'-  streetName : String
+'-  city : String
+'-  district : String
+'-  state : String
+'-  zipcode :String
+'+ valueOf()
+'}
+
+'Job Opening
+class JobOpening  {
+- function : JobFunction
+- jobOpeningAddress : Address
+- jobReference : JobReference
+- numVacancies : NumberVacancy
+- description : JobDescription
+- rank : Rank
++ changeInformation(newInformation) : Boolean
+}
+
+note left
+The number of paramenters
+of the method varies
+depending on the amount of
+information the user changes.
+end note
+
+
+class WorkMode<<(V,#FF8B40) value object>> {
+-  workModeDenomination : String
++ valueOf(String workModeDenomination)
+}
+
+class ContractType <<(V,#FF8B40) value object>> {
+- contractTypeDenomination : String
++ valueOf(String contractTypeDenomination)
+}
+
+interface JobOpeningRepository <<Persistence>> <<Repository>> {
++ ofIdentity(jobReference)
++ save(jobOpening)
+}
+
+interface WorkModeRepository <<Persistence>> <<Repository>> {
+}
+
+interface ContractTypeRepository <<Persistence>> <<Repository>> {
+}
+
+interface InterviewModelRepository <<Persistence>> <<Repository>> {
+}
+
+interface RequirementSpecificationRepository <<Persistence>> <<Repository>> {
+}
+
+interface DomainRepository {
++ findAll()
++ save()
+}
+
+AbstractUI <|-- EditJobOpeningUI
+EditJobOpeningUI .-> EditJobOpeningController
+EditJobOpeningController --> AuthorizationService
+EditJobOpeningController .--> JobOpeningRepository
+EditJobOpeningController .--> WorkModeRepository
+EditJobOpeningController .--> ContractTypeRepository
+EditJobOpeningController .--> RequirementSpecificationRepository
+EditJobOpeningController .--> InterviewModelRepository
+
+EditJobOpeningController --> JobOpening
+JobOpening "*" <-- JobOpeningRepository
+
+JobOpening --> "1" WorkMode
+JobOpening --> "1" ContractType
+
+
+
+
+RequirementSpecification "1" <-up- JobOpening : specifies >
+InterviewModel "1" <-up- JobOpening : specifies >
+
+WorkModeRepository -->  "*" WorkMode
+RequirementSpecificationRepository -->  "*" RequirementSpecification
+InterviewModelRepository -->  "*" InterviewModel
+ContractTypeRepository -->  "*" ContractType
+
+
+JobOpeningRepository .-> DomainRepository
+ContractTypeRepository .-> DomainRepository
+InterviewModelRepository .-> DomainRepository
+RequirementSpecificationRepository .-> DomainRepository
+WorkModeRepository .--> DomainRepository
+
+@enduml
