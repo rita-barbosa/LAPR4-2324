@@ -1,4 +1,4 @@
-# US 1004
+# US 1015
 
 ## 1. Context
 
@@ -6,12 +6,12 @@ This is the first time this user story is being requested.
 
 ## 2. Requirements
 
-**US 1004** As {Customer Manager}, I want to execute the process of verification of requirements of applications for a
+**US 1015** As {Customer Manager}, I want to execute the process of verification of requirements of applications for a
 job opening.
 
 **Acceptance Criteria:**
 
-- 1004.1. The verification must only be done to candidates which requirements file has already been submitted.
+- 1015.1. The verification must only be done to candidates which requirements file has already been submitted.
 
 **Dependencies/References:**
 
@@ -48,15 +48,14 @@ results in the rejection of a candidate, a justification must be provided, expla
 
 ![Domain Model](domain-model.svg)
 
-
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
-
 ### 4.1. Realization
+
+![Sequence Diagram](sequence-diagram.svg)
+
+**Ref1:** Check the partial sequence diagram
+in [team-decisions](../../team-decisions/team-decisions.md#shared-sequence-diagrams) to see the adopted behaviour.
 
 ### 4.2. Class Diagram
 
@@ -64,13 +63,52 @@ patterns and the specification of the main tests used to validade the functional
 
 ### 4.3. Applied Patterns
 
+* **DTO**
+* **Repository**
+* **Service**
+* **MVC**
+
+> **MVC**
+>
+> **Justification:**
+>
+> The MVC pattern was employed to divide the system into three distinct parts: model, view, and controller, each
+> responsible for a specific aspect of the system’s functionality. This separation of concerns enhances maintainability
+> and extensibility, as changes to one part do not require changes to the others.
+
+> **Repository Pattern**
+> * JobOpeningRepository
+> * ApplicationRepository
+>
+> **Justification:**
+>
+> The repositories were used to retrieve the persisted job openings and to save the job opening instance after the
+> changes were made.
+
+> **DTO**
+>
+> **Justification:**
+>
+> We opted for DTOs due to the significant amount of domain information required for this functionality. Recognizing the
+> benefits of encapsulation and layer decoupling offered by DTOs, we concluded that applying this pattern was
+> helpful in this context.
+
+> **Service Pattern**
+> * AuthorizationService
+>
+> **Justification:**
+>
+> The authorization service was employed to verify the roles of the logged-in user. Different services were used to
+> get job openings. As for verifying the requirements, no services were used since this is a unique function not
+> intended for other use cases.
+
 ### 4.4. Tests
 
 *Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
 
 **Test 1:** Verifies that it is not possible to ...
 
-**Refers to Acceptance Criteria:** 1004.1
+**Refers to Acceptance Criteria:** 1015.1
 
 ````
 @Test(expected = IllegalArgumentException.class)

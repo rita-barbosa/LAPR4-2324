@@ -42,6 +42,35 @@ requirement process.
 > Note that there is a user story (US) for listing all applications to a job opening, for example.
 
 
+> **Question:** US1021 - Regarding the listing data for particular job application, will a customer manager have access
+> to all job application in the system, or only to the job applications made for a job opening of a client managed by
+> that customer manager?
+>
+>
+> **Answer:** Only to those they are managing.
+
+
+> **Question:** US1021 - Application Listing - I would like to address a specific point related to UI/UX User Story 1021.
+> I know the client has been emphasizing that we should apply the best UX/UI practices and would prefer not to constrain
+> the way we design the UI/UX. However, our concern is that in this User Story, if there is a larger number of
+> applications, displaying all this information at once could become confusing for the user. Therefore, I just wanted to
+> ask if we could adopt a more practical solution, such as asking the user to select a job opening first and then listing
+> the applications associated with that job opening and their details, or if, in your view, this approach might excessively
+> restrict the options offered by this functionality.
+>
+>
+> **Answer:** See Q36. This US is to display the data of a single application. There should be a way for the Customer
+> Manager to indicate (including, potentially, a way to select/know/search) which application they are referring to, and
+> the system will display the data for that application.
+
+
+> **Question:** US1021 - When it says to display all the data of an application, does this include, for example, all the
+> data of the candidate, all the data of the job opening related to that application, etc? Or just the job opening ID,
+> the candidate's email, etc.? In addition to the resume, of course.
+>
+>
+> **Answer:** See Q36.
+
 
 ## 3. Analysis
 
@@ -63,18 +92,80 @@ This process should be repeated as many times as the user wishes to continue.
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+To address this functionality, we are going to adopt a four-layered approach based on DDD (Domain-Driven Design)
+architecture: Presentation, Application, Domain and Persistence.
+
+To display all the data of an application, the customer manager will have access to all the applications related to him.
+Then, one should be selected and all the data related to that application will be shown.
+
+To be able to promote encapsulation between layers, it will be used DTOs.
+
+**_Classes Used_**
+
+**Domain Layer Classes**
+
+* JobOpening
+* Application
+* JobOpeningManagementService
+* JobOpeningDTODTOService
+* ApplicationManagementService
+* ApplicationDTOService
+
+
+**Application Layer Classes**
+
+* DisplayAllApplicationDataController
+
+
+**Presentation Layer Classes**
+
+* DisplayAllApplicationDataUI
+
 
 ### 4.1. Realization
 
+* **US1021 Sequence Diagram**
+
+![US1021 Sequence Diagram](SD/US1021_SD.svg)
+
+**Ref1:** Check the partial sequence diagram in [team-decisions](../../team-decisions/team-decisions.md#shared-sequence-diagrams) to see the adopted behaviour.
+
+
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![a class diagram](CD/US1021_CD.svg)
 
 ### 4.3. Applied Patterns
+
+To make the design of this user story, were used the following patterns:
+
+>**_Repository Pattern_**
+>* Classes
+   >  * JobOpeningRepository
+>  * ApplicationRepository
+>
+>* Justification
+   >
+   >  The JobOpening and Application repository have the purpose of keeping the persistence of the job opening and
+   >application existing instances.
+
+
+>**_Service Pattern_**
+>* Classes
+   >   * JobOpeningManagementService
+>  * JobOpeningDTOService
+>  * ApplicationManagementService
+>  * ApplicationDTOService
+>  * AuthorizationService
+>
+>* Justification
+   >
+   >  The services are in charge of managing request regarding jobOpenings and applications,
+   >serving as encapsulation between the controller and the JobOpeningRepository and ApplicationRepository
+   >along with the domain classes.
+   >  The DtoServices to transform these instances into DTOs.
+   >  The authorization service is used to verify the roles of the user.
+
 
 ### 4.4. Tests
 

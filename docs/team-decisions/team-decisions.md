@@ -26,7 +26,8 @@ Given the necessity of implementing test-driven development within our project, 
 professor, we collectively decided to formulate a plan for the tests to be conducted. This choice primarily stems from
 the product owner's insistence that the project on GitHub must consistently compile error-free, alongside the
 requirement for a workflow that incorporates test execution. It's clear that without a thoroughly completed
-implementation, the development of tests becomes impractical. Thus, this realization guided us to the previously mentioned
+implementation, the development of tests becomes impractical. Thus, this realization guided us to the previously
+mentioned
 decision.
 
 Despite adhering to this methodology, all team members are responsible for delineating the required tests. This involves
@@ -51,6 +52,18 @@ preferable to undertake additional steps to identify the entity associated with 
 To ensure consistency in decision-making, we opted for the entity/customer to include the corresponding user as an
 instance.
 
+### Plugin
+
+After discussing with our LPROG and EAPLI teacher, the team decided that the system will actually only have one plugin.
+This plugin will be designed to support both requirement specifications and interview models, and it will be capable of
+providing a template file as well as evaluating the models. To achieve this, several configuration files will be
+required, each specific to a type of model and its necessary information. These files will be essential for loading data
+into our symbol table, which will then be used to evaluate the models or generate the template text file.
+
+This decision was made after extensive discussions with our LPROG teacher about the plugin's development. Despite
+considering the client's input, the teacher emphasized that this was the best approach. Furthermore, after confirming
+with our EAPLI teacher that this approach was acceptable, the team decided to adopt it.
+
 ### Shared sequence diagrams
 
 To avoid redundant design implementations and decisions, the team resolved to create diagrams that outline the program
@@ -62,3 +75,10 @@ The subsequent design is consistently employed whenever a repository is required
 repository is utilized in the user stories diagram, the following instructions will also be executed.
 
 ![Repository](shared-sequence-diagram/sequence-diagram-repositories.svg)
+
+#### Getting Job Opening
+
+The following diagram pertains to the design adopted by the team for obtaining the registered job openings when a user
+story requires retrieving job openings related to the logged-in Customer Manager.
+
+![Getting Job Openings](shared-sequence-diagram/sequence-diagram-get-job-openings.svg)

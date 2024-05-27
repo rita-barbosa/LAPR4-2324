@@ -112,18 +112,11 @@ These configurations can be adjusted either during application runtime or by rea
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
-
 ### 4.1. Realization
 
-### 4.2. Class Diagram
+Below there is a simple diagram illustrating the flow of the functionality.
 
-![a class diagram]()
-
-### 4.3. Applied Patterns
+![Diagram](explanatory-diagram.svg)
 
 ### 4.4. Tests
 
