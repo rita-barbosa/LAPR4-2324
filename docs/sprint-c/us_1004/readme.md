@@ -91,7 +91,6 @@ created:
 
 ![Sequence Diagram - Get Information](sequence-diagram-get-information.svg)
 
-
 **Ref1:** Check the partial sequence diagram
 in [team-decisions](../../team-decisions/team-decisions.md#shared-sequence-diagrams) to see the adopted behaviour.
 
@@ -110,7 +109,7 @@ in [team-decisions](../../team-decisions/team-decisions.md#shared-sequence-diagr
 > **MVC**
 >
 > **Justification:**
-> 
+>
 > The MVC pattern was employed to divide the system into three distinct parts: model, view, and controller, each
 > responsible for a specific aspect of the system’s functionality. This separation of concerns enhances maintainability
 > and extensibility, as changes to one part do not require changes to the others.
@@ -118,7 +117,7 @@ in [team-decisions](../../team-decisions/team-decisions.md#shared-sequence-diagr
 > **Information Expert**
 >
 > **Justification:**
-> 
+>
 > This pattern was applied to determine which class should be responsible for editing the job opening and understanding
 > which information can be edited. In this case, the JobOpening class carries both responsibilities.
 
@@ -134,7 +133,7 @@ in [team-decisions](../../team-decisions/team-decisions.md#shared-sequence-diagr
 > * JobOpeningDto
 >
 > **Justification:**
-> 
+>
 > We opted for DTOs due to the significant amount of domain information required for this functionality. Recognizing the
 > benefits of encapsulation and layer decoupling offered by DTOs, we concluded that applying this pattern was
 > helpful
@@ -156,15 +155,60 @@ in [team-decisions](../../team-decisions/team-decisions.md#shared-sequence-diagr
 
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
+#### JobOpeningTests
 
-**Test 1:** Verifies that it is not possible to ...
+**Test 1:** Verifies that it is not possible to edit the job reference.
 
-**Refers to Acceptance Criteria:** XXX.1
+**Refers to Acceptance Criteria:** 1004.1 and 1004.3
 
 ````
 @Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
+public void ensureCantChangeJobReference() {
+...
+}
+````
+
+**Test 2:** Verifies that it is not possible to edit the company name.
+
+**Refers to Acceptance Criteria:** 1004.1 and 1004.3
+
+````
+@Test(expected = IllegalArgumentException.class)
+public void ensureCantChangeCompanyName() {
+...
+}
+````
+
+**Test 3:** Verifies that it is not possible to edit public information where the current job opening status isn't
+compatible.
+
+**Refers to Acceptance Criteria:** 1004.2
+
+````
+@Test(expected = IllegalArgumentException.class)
+public void ensureCanEditPublicInformationOnlyIfStatusIsValid() {
+...
+}
+````
+
+**Test 4:** Verifies that the requirement specification cannot be edited if the recruitment process phase is not compatible.
+
+**Refers to Acceptance Criteria:** 1004.1 and 1004.2
+
+````
+@Test(expected = IllegalArgumentException.class)
+public void ensureCanEditReqSpecificationOnlyIfPhaseIsValid() {
+...
+}
+````
+
+**Test 5:** Verifies that the interview model cannot be edited if the recruitment process phase is not compatible.
+
+**Refers to Acceptance Criteria:** 1004.1 and 1004.2
+
+````
+@Test(expected = IllegalArgumentException.class)
+public void ensureCanEditInterviewModelOnlyIfPhaseIsValid() {
 ...
 }
 ````
