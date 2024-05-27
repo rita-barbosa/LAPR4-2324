@@ -36,15 +36,9 @@ Activate UI
 
             Activate CTRL
 
-                CTRL -> RPS : goBackAPhase(phaseIdOfCurrentPhase, phaseIdOfPreviousPhase)
+                CTRL -> RPS : goBackAPhase(recruitmentProcess)
 
                 Activate RPS
-
-                    RPS -> PREPO : getPhaseWithPhaseID(phaseIdOfCurrentPhase)
-
-                    Activate PREPO
-
-                    Deactivate PREPO
 
                     RPS -> P : currentPhase.setStatusDescriptionAsCONCLUDED()
 
@@ -53,12 +47,6 @@ Activate UI
                     Deactivate P
 
                     RPS -> PREPO : save(currentPhase)
-
-                    Activate PREPO
-
-                    Deactivate PREPO
-
-                    RPS -> PREPO : getPhaseWithPhaseID(phaseIdOfPreviousPhase)
 
                     Activate PREPO
 
