@@ -33,8 +33,6 @@ package "<<aggregate>> Job Opening" {
     entity JobOpening <<entity>> <<root>> {}
     class JobFunction <<(V,#FF8B40) value object>> {}
     class JobOpeningStatus <<(V,#FF8B40) value object>> {}
-    class ContractType <<(V,#FF8B40) value object>> {}
-    class Mode <<(V,#FF8B40) value object>> {}
     class NumberVacancy <<(V,#FF8B40) value object>> {}
        class Description <<(V,#FF8B40) value object>> {}
      class JobReference <<(V,#FF8B40) value object>> <<identifier>> {}
@@ -63,6 +61,12 @@ N2 .. Rank
 
 package "<<aggregate>> Administrator" {
     entity Administrator <<entity>> <<root>>  {}
+}
+package "<<aggregate>> Workmode" {
+    entity Mode <<entity>> <<root>> {}
+}
+package "<<aggregate>> Contract Type" {
+    entity ContractType <<entity>> <<root>> {}
 }
 package "<<aggregate>> Customer Manager" {
     entity CustomerManager <<entity>> <<root>>  {}
