@@ -92,18 +92,80 @@ This process should be repeated as many times as the user wishes to continue.
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+To address this functionality, we are going to adopt a four-layered approach based on DDD (Domain-Driven Design)
+architecture: Presentation, Application, Domain and Persistence.
+
+To display all the data of an application, the customer manager will have access to all the applications related to him.
+Then, one should be selected and all the data related to that application will be shown.
+
+To be able to promote encapsulation between layers, it will be used DTOs.
+
+**_Classes Used_**
+
+**Domain Layer Classes**
+
+* JobOpening
+* Application
+* JobOpeningManagementService
+* JobOpeningDTODTOService
+* ApplicationManagementService
+* ApplicationDTOService
+
+
+**Application Layer Classes**
+
+* DisplayAllApplicationDataController
+
+
+**Presentation Layer Classes**
+
+* DisplayAllApplicationDataUI
+
 
 ### 4.1. Realization
 
+* **US1021 Sequence Diagram**
+
+![US1021 Sequence Diagram](SD/US1021_SD.svg)
+
+**Ref1:** Check the partial sequence diagram in [team-decisions](../../team-decisions/team-decisions.md#shared-sequence-diagrams) to see the adopted behaviour.
+
+
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![a class diagram](CD/US1021_CD.svg)
 
 ### 4.3. Applied Patterns
+
+To make the design of this user story, were used the following patterns:
+
+>**_Repository Pattern_**
+>* Classes
+   >  * JobOpeningRepository
+>  * ApplicationRepository
+>
+>* Justification
+   >
+   >  The JobOpening and Application repository have the purpose of keeping the persistence of the job opening and
+   >application existing instances.
+
+
+>**_Service Pattern_**
+>* Classes
+   >   * JobOpeningManagementService
+>  * JobOpeningDTOService
+>  * ApplicationManagementService
+>  * ApplicationDTOService
+>  * AuthorizationService
+>
+>* Justification
+   >
+   >  The services are in charge of managing request regarding jobOpenings and applications,
+   >serving as encapsulation between the controller and the JobOpeningRepository and ApplicationRepository
+   >along with the domain classes.
+   >  The DtoServices to transform these instances into DTOs.
+   >  The authorization service is used to verify the roles of the user.
+
 
 ### 4.4. Tests
 
