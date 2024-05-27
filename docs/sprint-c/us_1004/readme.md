@@ -70,33 +70,33 @@ and the interview model can be modified up until the end of the screening phase 
 
 The following diagram illustrates the clarification made above:
 
-![Diagram](analysis-diagram.svg)
+![Diagram](analysis-diagrams/analysis-diagram.svg)
 
 To provide a better understanding of the User-System interation, the following system sequence diagram was
 created:
 
-![System Sequence Diagram](system-sequence-diagram.svg)
+![System Sequence Diagram](analysis-diagrams/system-sequence-diagram.svg)
 
 ### Domain Model
 
-![Domain Model - US 1004](domain-model.svg)
+![Domain Model - US 1004](analysis-diagrams/domain-model.svg)
 
 ## 4. Design
 
 ### 4.1. Realization
 
-![Sequence Diagram](sequence-diagram.svg)
+![Sequence Diagram](design-diagrams/sequence-diagram.svg)
 
 #### Sequence Diagram - Get Information
 
-![Sequence Diagram - Get Information](sequence-diagram-get-information.svg)
+![Sequence Diagram - Get Information](design-diagrams/sequence-diagram-get-information.svg)
 
 **Ref1:** Check the partial sequence diagram
 in [team-decisions](../../team-decisions/team-decisions.md#shared-sequence-diagrams) to see the adopted behaviour.
 
 ### 4.2. Class Diagram
 
-![Class Diagram](class-diagram.svg)
+![Class Diagram](design-diagrams/class-diagram.svg)
 
 ### 4.3. Applied Patterns
 
