@@ -87,12 +87,17 @@ created:
 
 ![Sequence Diagram](sequence-diagram.svg)
 
+#### Sequence Diagram - Get Information
+
+![Sequence Diagram - Get Information](sequence-diagram-get-information.svg)
+
+
 **Ref1:** Check the partial sequence diagram
 in [team-decisions](../../team-decisions/team-decisions.md#shared-sequence-diagrams) to see the adopted behaviour.
 
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![Class Diagram](class-diagram.svg)
 
 ### 4.3. Applied Patterns
 
