@@ -59,7 +59,7 @@ in [team-decisions](../../team-decisions/team-decisions.md#shared-sequence-diagr
 
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![Class Diagram](class-diagram.svg)
 
 ### 4.3. Applied Patterns
 
