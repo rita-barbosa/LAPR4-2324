@@ -9,7 +9,6 @@ actor "Customer Manager" as USER
 participant ":EditJobOpeningUI" as UI <<presentation>>
 participant ":EditJobOpeningController" as CTRL <<application>>
 participant ":AuthorizationService" as AUTHZ <<service>>
-participant ":JobOpeningManagementService" as JOMS <<service>>
 database ":JobOpeningRepository" as JO_REPO <<repository>>
 participant ":JobOpening" as JO <<domain>>
 
@@ -65,14 +64,21 @@ UI --> USER : shows all the information that can be edited and asks to select on
 deactivate UI
 
 loop while user wants to edit
-USER -> UI : selects information that wants to edit
-activate UI
+    USER -> UI : selects information that wants to edit
+    activate UI
 
-UI --> USER : asks for the new information
-deactivate UI
+    alt information == (requirements | interviewModel | ContractType | WorkMode)
 
-USER -> UI: provides the new information
-activate UI
+        ref over UI
+            Check **sequence-diagram-get-information**
+        end ref
+    end alt
+
+    UI --> USER : asks for the new information
+    deactivate UI
+
+    USER -> UI: provides the new information
+    activate UI
 end loop
 
     UI -> CTRL: changeJobOpeningInformation(jobOpening, newInformation)
@@ -107,6 +113,10 @@ end loop
 
     JO --> CTRL: success
     deactivate JO
+
+    CTRL -> JO_REPO: save(jobReference)
+    activate JO_REPO
+    deactivate JO_REPO
 
 CTRL --> UI:
 deactivate CTRL
