@@ -40,9 +40,10 @@ modifications will
 need to be done, such as:
 
 * Enabling candidate users, we will need to develop a way to enable users that were disabled
+### 4.1.1. Domain Model
+![Domain Model](dm/domain-model-us-2000b.svg)
 
 ### 4.1. Realization
-
 
 ![Sequence diagram](sd/sd-us-2000b.svg)
 
