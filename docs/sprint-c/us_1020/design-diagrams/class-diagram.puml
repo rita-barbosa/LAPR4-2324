@@ -1,0 +1,179 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+title US1020 - Class Diagram
+
+
+
+abstract class AbstractUI {
+    # doShow()
+    # show()
+    # mainLoop()
+}
+
+class PublishingResultJobOpeningUI {
++ doShow()
+}
+
+class PublishingResultJobOpeningController  {
++ getJobOpeningList() : jobOpeningListDto
++ publishResultForJobOpening(jobOpeningDto)
+- publishResults(jobOpeningDto, customerManagerEmail)
+}
+
+
+interface ApplicationRepository {
++ save(application)
+}
+
+class Application {
++ acceptApplication()
++ rejectApplication()
+}
+
+interface  RankRepository {
++ rankOfJobOpening(jobReference) : Rank
+}
+
+class Rank {
++ publishResults(numVacancies,customerManagerEmail)
+}
+
+class AuthorizationService {
++ ensureAuthenticatedUserHasAnyOf(roles)
+}
+
+
+interface DomainRepository {
++ ofIdentity()
++ save()
+}
+
+interface JobOpeningRepository {
++ jobOpeningsInResultListOfCustomerManager(customerManagerUsername) : Iterable<JobOpening>
+}
+class JobOpeningManagementService{
++ jobOpeningsInResultListOfCustomerManager(customerManagerUsername) : List<JobOpeningDto>
+}
+class JobOpeningDTOService{
++ convertToDTO(jobOpeningList) : List<JobOpeningDto>
+}
+class JobOpening {
++ toDto()
+}
+
+
+interface EventPublisher{
++publish()
+}
+interface EventHandler{
++onEvent()
+}
+interface DomainEvent{
+}
+
+'Job Opening Results Published
+class JobOpeningResultsPublishedWatchDog{
+}
+
+class JobOpeningResultsPublishedEvent{
+}
+class SendEmailOnJobOpeningResultsPublishedController{
++ sendEmail(jobOpeningResultsPublishedEvent)
+- connectToServer()
+}
+class CustomerRepository{
++ customerEmailOfCustomer(companyCode)
+}
+
+'Application Status Changed Event
+class ApplicationStatusChangedWatchDog{
+}
+
+class ApplicationStatusChangedEvent{
+}
+class NotifyCandidateOnApplicationStatusChangedController{
++ notifyCandidateOfChangedStatus(applicationStatusChangedEvent)
+}
+class NotificationRepository{
+}
+class NotificationManagementService{
++ registerNotification(applicationStatusChangedEvent)
+}
+class Notification {
++ Notification(applicationStatusChangedEvent)
+}
+
+'Application Accepted Event
+class ApplicationAcceptedWatchDog{
+}
+
+class ApplicationAcceptedEvent{
+}
+class SendEmailOnApplicationAcceptedController{
++ sendEmail(applicationAcceptedEvent)
+- connectToServer()
+}
+class FollowUpConnectionService{
++ sendEmail(customerManagerEmail, receiverEmail,topic,emailBody)
+}
+class RankOrder <<(V,#FF8B40) value object>> {
+- orderValue
+}
+
+AbstractUI <|-- PublishingResultJobOpeningUI
+
+PublishingResultJobOpeningUI .--> PublishingResultJobOpeningController
+
+PublishingResultJobOpeningController --> AuthorizationService
+
+PublishingResultJobOpeningController --> ApplicationRepository
+JobOpeningManagementService --> JobOpeningRepository
+JobOpeningManagementService --> JobOpeningDTOService
+JobOpeningManagementService .-> JobOpening
+JobOpeningDTOService .-> JobOpening
+ApplicationRepository .--> Application
+ApplicationRepository .--|> DomainRepository
+RankRepository .-|> DomainRepository
+
+ApplicationAcceptedEvent .-|> DomainEvent
+JobOpeningResultsPublishedEvent .--|> DomainEvent
+ApplicationStatusChangedEvent .--|> DomainEvent
+
+Rank ---|> EventPublisher
+ApplicationAcceptedWatchDog .--|> EventHandler
+JobOpeningResultsPublishedWatchDog .--|> EventHandler
+ApplicationStatusChangedWatchDog .---|> EventHandler
+ApplicationAcceptedWatchDog .--> SendEmailOnApplicationAcceptedController
+JobOpeningResultsPublishedWatchDog .--> SendEmailOnJobOpeningResultsPublishedController
+ApplicationStatusChangedWatchDog .--> NotifyCandidateOnApplicationStatusChangedController
+ApplicationAcceptedWatchDog .--> ApplicationAcceptedEvent
+JobOpeningResultsPublishedWatchDog .--> JobOpeningResultsPublishedEvent
+ApplicationStatusChangedWatchDog .--> ApplicationStatusChangedEvent
+
+SendEmailOnApplicationAcceptedController ---> FollowUpConnectionService
+SendEmailOnJobOpeningResultsPublishedController ---> FollowUpConnectionService
+SendEmailOnJobOpeningResultsPublishedController --> CustomerRepository
+NotifyCandidateOnApplicationStatusChangedController ---> NotificationManagementService
+NotificationManagementService .--> Notification
+NotificationManagementService --> NotificationRepository
+NotificationRepository --> Notification
+
+SendEmailOnApplicationAcceptedController --> ApplicationAcceptedEvent
+SendEmailOnJobOpeningResultsPublishedController ----> JobOpeningResultsPublishedEvent
+NotifyCandidateOnApplicationStatusChangedController --> ApplicationStatusChangedEvent
+PublishingResultJobOpeningController --> RankRepository
+PublishingResultJobOpeningController .--> Rank
+Rank --> "1..*" RankOrder
+RankOrder --> "1" Application
+Rank --> ApplicationRepository
+Rank .----> ApplicationStatusChangedEvent
+Rank .---> ApplicationAcceptedEvent
+
+PublishingResultJobOpeningController .-----> JobOpeningResultsPublishedEvent
+PublishingResultJobOpeningController  --|> EventPublisher
+PublishingResultJobOpeningController -up-> JobOpeningManagementService
+JobOpeningRepository .-|> DomainRepository
+JobOpeningRepository .--> JobOpening
+
+@enduml

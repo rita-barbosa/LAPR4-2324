@@ -16,6 +16,10 @@ that candidates and customer are notified by email of the result.
 - 1020.2. The system is required to notify both the customer linked to the job opening and the candidate about the
   selected application.
 
+- 1020.3. The first N applications, where N is the number of vacancies, are the one to be selected.
+
+- 1020.4. The application status of all the job openings in the rank must be updated.
+
 **Dependencies/References:**
 
 We understand that this requirement pertains to reference NFR11, which specifies that the solution should be deployed
@@ -81,27 +85,130 @@ patterns and the specification of the main tests used to validade the functional
 ### 4.1. Realization
 
 ![Sequence Diagram](design-diagrams/sequence-diagram.svg)
+
+#### 4.1.1. Getting job opening in the result phase
+
 ![Sequence Diagram](design-diagrams/sequence-diagram-job-opening-in-result.svg)
+
+#### 4.1.2. Sending email to candidate upon application acceptance
+
 ![Sequence Diagram](design-diagrams/sequence-diagram-application-accepted.svg)
+
+#### 4.1.3. Notifying candidates of the application status change
+
+![Sequence Diagram](design-diagrams/sequence-diagram-application-status-changed.svg)
+
+#### 4.1.4. Sending an email to the customer upon the publication of results
+
 ![Sequence Diagram](design-diagrams/sequence-diagram-job-opening-results-published.svg)
 
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![Class Diagram](design-diagrams/class-diagram.svg)
 
 ### 4.3. Applied Patterns
 
+* **DTO**
+* **Repository**
+* **Service**
+* **MVC**
+* **Observer**
+
+> **MVC**
+>
+> **Justification:**
+>
+> The MVC pattern was employed to divide the system into three distinct parts: model, view, and controller, each
+> responsible for a specific aspect of the system’s functionality. This separation of concerns enhances maintainability
+> and extensibility, as changes to one part do not require changes to the others.
+
+> **Repository Pattern**
+> * JobOpeningRepository
+> * ApplicationRepository
+> * CustomerRepository
+> * NotificationRepository
+>
+> **Justification:**
+>
+> The repositories were utilized to retrieve persisted instances based on specific criteria and to save new instances
+> after modifications were made.
+
+> **DTO**
+> * JobOpeningDto
+>
+> **Justification:**
+>
+> We opted for DTOs due to the significant amount of domain information required for this functionality. Recognizing the
+> benefits of encapsulation and layer decoupling offered by DTOs, we concluded that applying this pattern was
+> helpful
+> in this context.
+
+> **Service Pattern**
+> * JobOpeningManagementService
+> * JobOpeningDtoService
+> * AuthorizationService
+> * NotificationManagementService
+>
+> **Justification:**
+>
+> The services were used to gather job openings to display them to the user, essentially
+> listing them. Recognizing the potential for this functionality to be used in various use cases, we opted to
+> develop a service with the primary responsibility of: obtaining the persisted instances using their repository and
+> using
+> the DtoService to transform these instances into DTOs.
+> The authorization service was used to verify the roles of the logged-in user.
+
+> **Observer**
+> * ApplicationAcceptedEvent
+> * ApplicationAcceptedWatchDog
+> * SendEmailOnApplicationAcceptedController
+> * JobOpeningResultsPublishedEvent
+> * JobOpeningResultsPublishedWatchDog
+> * SendEmailOnJobOpeningResultsPublishedController
+> * ApplicationStatusChangedEvent
+> * ApplicationStatusChangedWatchDog
+> * NotifyCandidateOnApplicationStatusChangedController
+>
+> **Justification:**
+>
+>
+> All the mentioned objects are components of the implemented observer pattern. This pattern was employed to ensure that
+> when results are published, emails are sent to candidates and customers, and notifications are created for changes in
+> application status, allowing candidates to stay informed about new updates.
+
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
+#### RankTests
 
-**Test 1:** Verifies that it is not possible to ...
+**Test 1:** Verifies that it is not possible to select more applications/candidates than the number of vacancies.
 
-**Refers to Acceptance Criteria:** XXX.1
+**Refers to Acceptance Criteria:** 1020.1
 
 ````
 @Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
+public void ensureCantSelectApplicationMoreThanNumberOfVacancies() {
+...
+}
+````
+
+**Test 2:** Verifies that it selects the first N applications/candidates, where N is the number of vacancies.
+
+**Refers to Acceptance Criteria:** 1020.3
+
+````
+@Test(expected = IllegalArgumentException.class)
+public void ensureMustSelectFirstNApplicationInTheRank() {
+...
+}
+````
+
+**Test 3:** Verifies that it updates the status of all ranked applications/candidates.
+
+**Refers to Acceptance Criteria:** 1020.4
+
+````
+@Test(expected = IllegalArgumentException.class)
+public void ensureMustUpdateStatusOfAllRankedApplications() {
 ...
 }
 ````

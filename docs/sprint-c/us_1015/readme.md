@@ -105,15 +105,15 @@ in [team-decisions](../../team-decisions/team-decisions.md#shared-sequence-diagr
 
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
+#### ApplicationTests
 
-**Test 1:** Verifies that it is not possible to ...
+**Test 1:** Verifies that it is not possible to do verification for applications without a requirement file.
 
 **Refers to Acceptance Criteria:** 1015.1
 
 ````
 @Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
+public void ensureMustHaveRequirementsToVerify() {
 ...
 }
 ````

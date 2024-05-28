@@ -14,6 +14,7 @@ participant ":Rank" as R <<domain>>
 participant ":Application" as A <<domain>>
 database ":ApplicationRepository" as A_REPO <<repository>>
 participant ":ApplicationAcceptedEvent" as NAAE <<domain event>>
+participant ":ApplicationStatusChangedEvent" as ASCE <<domain event>>
 participant ":JobOpeningResults\nPublishedEvent" as JORPE <<domain event>>
 participant ":EventPublisher" as EP <<interface>>
 
@@ -30,7 +31,7 @@ activate CTRL
 
 ref over CTRL
 
-Check **sequence-diagram-job-opening-in-screening**
+Check **sequence-diagram-job-opening-in-result**
 
 end ref
 
@@ -47,18 +48,18 @@ activate UI
     UI -> CTRL: publishResultForJobOpening(jobOpeningDto)
     activate CTRL
 
-    CTRL -> AUTHZ:  ensureAuthenticatedUserHasAnyOf(roles)
+    CTRL -> AUTHZ:  loggedinUserWithPermissions(roles)
     activate AUTHZ
     deactivate AUTHZ
 
-    CTRL -> CTRL : publishResults(jobOpeningDto)
+    CTRL -> CTRL : publishResults(jobOpeningDto,customerManagerEmail)
     activate CTRL
 
         CTRL -> R_REPO: rankOfJobOpening(jobReference)
         activate R_REPO
         deactivate R_REPO
 
-        CTRL -> R: publishResults(numVacancies)
+        CTRL -> R: publishResults(numVacancies,customerManagerEmail)
         activate R
 
             loop for each RankOrder
@@ -66,17 +67,10 @@ activate UI
                 alt if orderValue <= numVacancies
                     R -> A : acceptApplication()
                     activate A
-
-
-                    A -> NAAE**: create(candidateEmail, jobReference)
-                    A -> EP: publish(applicationAcceptedEvent)
-                    activate EP
-                    deactivate EP
-
                     deactivate A
 
                 else
-                    R-> A: rejectApplication()<
+                    R-> A: rejectApplication()
                     activate A
                     deactivate A
                 end alt
@@ -85,11 +79,24 @@ activate UI
                 activate A_REPO
                 deactivate A_REPO
 
+                R -> ASCE** : create(candidateEmail, jobReference, newStatus)
+                R-> EP: publish(applicationStatusChangedEvent)
+                activate EP
+                deactivate EP
+
+                alt if orderValue <= numVacancies
+                    R -> NAAE**: create(customerManagerEmail, candidateEmail, jobReference)
+                    R -> EP: publish(applicationAcceptedEvent)
+                    activate EP
+                    deactivate EP
+                end alt
+
+
             end loop
         R --> CTRL: acceptedCandidateList
         deactivate R
 
-    CTRL-> JORPE**: create(acceptedCandidateList, companyCode, jobReference)
+    CTRL-> JORPE**: create(customerManagerEmail, acceptedCandidateList, companyCode, jobReference)
     CTRL -> EP: publish(jobOpeningResultsPublishedEvent)
     activate EP
     deactivate EP
