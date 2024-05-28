@@ -112,19 +112,74 @@ Start Phase Scenario:
 
 #### State Diagram
 
-![State Diagram](State Diagram/US1010_Phase_State_Diagram-US1010_Phase_State_Diagram.svg)
+![State Diagram](State Diagram/US1010_Phase_State_Diagram.svg)
 
 #### Sequence Diagram Related
 
+![Base Sequence Diagram](Sequence Diagram/US1010_Sequence_Diagram.svg)
 
+Go Back Scenario:
+![Go Back Scenario Sequence Diagram](Sequence Diagram/US1010_Go_Back_Scenario_Sequence_Diagram.svg)
+
+Start Phase Scenario:
+![Start Phase Scenario Sequence Diagram](Sequence Diagram/US1010_Start_Phase_Scenario_Sequence_Diagram.svg)
 
 ### 4.2. Class Diagram
 
-
+![Class Diagram](Class Diagram/US1010_class_diagram.svg)
 
 ### 4.3. Applied Patterns
 
+This topic presents the classes with the patterns applied to them along with justifications.
+>**DTO Pattern**
+> * JobOpeningDTO
+> * RecruitmentProcessDTO
+> * PhaseDTO
+> 
+> **Justifications**
+>
+> * The usage of the JobOpeningDTO, RecruitmentProcessDTO and PhaseDTO comes from the fact that we wanted this class to server as one more layer of encapsulation between the UI and the domain classes,
+    > and for security reasons, as to avoid someone using the UI to be able to change domain objects that should only be reached using the controller.
+>
+>**Repository Pattern**
+> * CustomerRepository
+> * JobOpeningRepository
+> * RecruitmentProcessRepository
+> * PhaseRepository
+>
+> **Justifications**
+>
+> * As per requested, the job reference that identifies the job opening should have the customer code as a base, and be
+    sequential. If the previous job opening from the same customer was made in a different session, then the current session
+    does not have access to its job reference, so it must be retrieved from the job openings' repository database.
+    The newly created jobOpening instance will be saved/preserved in its repository.
+>
+> * The customers assigned to the Customer Manager are stored within the CustomerRepository, persisting and rebuilding them
+    between sessions, same for the Recruitment Processes and Phases.
 
+>**Service Pattern**
+> * JobOpeningListDTOService
+> * CustomerManagementService
+> * RecruitmentProcessManagementService
+> * RecruitmentProcessDTOService
+> * PhaseManagementService
+> * JobOpeningManagementService
+> * AuthorizationService
+>
+> **Justifications**
+>
+> * CustomerManagementService is used in more than one functionality, and its in charge of managing request regarding customers,
+    >   serving as encapsulation between the controller and the CustomerRepository along with the domain classes.
+>
+> * JobOpeningManagementService is used in more than one functionality, and its in charge of managing request regarding
+    >   jobOpenings, serving as encapsulation between the controller and the JobOpeningRepository along with the domain classes.
+>
+> * In order to enforce encapsulation amongst layers and adequate responsibility assigment, the JobOpeningListDTOService and others were
+    >   created, besides being a set of instructions that is used in other functionalities.
+>
+> * To get the customers that are assigned to the current Customer Manager in-session, we must get something to identify them.
+    >   The AuthorizationService allows to get the username (user's email), which is essential to then filter the CustomerRepository
+    >   to the desired customers. This set of instructions is used in other functionalities too.
 
 ### 4.4. Tests
 

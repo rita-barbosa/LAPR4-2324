@@ -48,7 +48,7 @@ deactivate UI
 CM -> UI : selects the job opening
 activate UI
 
-UI -> CTRL: getApplicationsList(jobOpeningDTO)
+UI -> CTRL: getCandidateList(jobOpeningDTO)
 activate CTRL
 
     CTRL -> JobManagement : getJobOpening(jobOpeningDTO)
@@ -88,10 +88,10 @@ activate CTRL
 
     'CHECK THIS PART
 
-    CTRL -> CandidateManagement : getCandidatesList(applicationsListDTO)
+    CTRL -> CandidateManagement : getCandidateList(applicationsListDTO)
     activate CandidateManagement
 
-    CandidateManagement -> CandidateRepository : getCandidatesList(applicationsListDTO)
+    CandidateManagement -> CandidateRepository : getCandidateList(applicationsListDTO)
     activate CandidateRepository
     deactivate CandidateRepository
 
@@ -106,11 +106,11 @@ activate CTRL
 
         deactivate CanDTOServ
 
-        CandidateManagement --> CTRL : candidatesListDTO
+        CandidateManagement --> CTRL : candidateListDTO
         deactivate CandidateManagement
 
 
-    CTRL --> UI : candidatesListDTO
+    CTRL --> UI : candidateListDTO
     deactivate CTRL
 
 

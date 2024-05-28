@@ -33,8 +33,6 @@ package "<<aggregate>> Job Opening" {
     entity JobOpening <<entity>> <<root>> {}
     class JobFunction <<(V,#FF8B40) value object>> {}
     class JobOpeningStatus <<(V,#FF8B40) value object>> {}
-    class ContractType <<(V,#FF8B40) value object>> {}
-    class Mode <<(V,#FF8B40) value object>> {}
     class NumberVacancy <<(V,#FF8B40) value object>> {}
        class Description <<(V,#FF8B40) value object>> {}
      class JobReference <<(V,#FF8B40) value object>> <<identifier>> {}
@@ -63,6 +61,14 @@ N2 .. Rank
 
 package "<<aggregate>> Administrator" {
     entity Administrator <<entity>> <<root>>  {}
+}
+package "<<aggregate>> Workmode" {
+    entity Mode <<entity>> <<root>> {}
+    class WorkModeDenomination <<(V,#FF8B40) value object>> {}
+}
+package "<<aggregate>> Contract Type" {
+    entity ContractType <<entity>> <<root>> {}
+    class ContractTypeDenomination <<(V,#FF8B40) value object>> {}
 }
 package "<<aggregate>> Customer Manager" {
     entity CustomerManager <<entity>> <<root>>  {}
@@ -155,6 +161,10 @@ JobOpening ---> "1"  RequirementSpecification : includes
 JobOpening -> "1"  InterviewModel : includes
 JobOpening --> "1"  RecruitmentProcess : includes
 JobOpening --> "1"  Application : associated to <
+'--
+ContractType ---> "1"  ContractTypeDenomination : includes
+'--
+Mode ---> "1"  WorkModeDenomination : includes
 '__
 JobOpening ---> "1"  Rank : includes
 Rank --> "*" RankEntry : encompasses
