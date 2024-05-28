@@ -9,7 +9,10 @@ actor "Customer Manager" as USER
 participant ":VerifyRequirementUI" as UI <<presentation>>
 participant ":VerifyRequirementController" as CTRL <<application>>
 participant ":AuthorizationService" as AUTHZ <<service>>
+participant ":JobOpeningManagementService" as JOMS <<service>>
+participant ":JobOpeningDTOService" as JOS_DTO <<service>>
 database ":JobOpeningRepository" as JO_REPO <<repository>>
+participant ":JobOpening" as JO <<domain>>
 database ":ApplicationRepository" as A_REPO <<repository>>
 participant ":RequirementSpecificationPlugin" as RSP <<interface>>
 participant ":Application" as A <<domain>>
@@ -25,10 +28,29 @@ UI -> CTRL**: create
 UI -> CTRL : getJobOpeningList()
 activate CTRL
 
-ref over CTRL
-**[ref1]:** Check **sequence-diagram-get-job-openings**
-in the folder **team-decisions**
-end ref
+  CTRL -> AUTHZ : loggedinUserWithPermissions(role)
+    activate AUTHZ
+    deactivate AUTHZ
+
+CTRL -> JOMS : jobOpeningsInScreeingListOfCustomerManager(customerManagerUsername)
+activate JOMS
+
+ JOMS -> JO_REPO : jobOpeningsInScreeingListOfCustomerManager(customerManagerUsername)
+    activate JO_REPO
+    deactivate JO_REPO
+
+JOMS -> JOS_DTO : convertToDTO(jobOpeningList)
+activate JOS_DTO
+
+    loop for each JobOpening
+        JOS_DTO -> JO : toDTO()
+        activate JO
+        deactivate JO
+    end loop
+deactivate JOS_DTO
+
+JOMS --> CTRL : jobOpeningListDTO
+deactivate JOMS
 
 CTRL --> UI: jobOpeningListDTO
 deactivate CTRL
@@ -46,12 +68,6 @@ activate UI
     CTRL -> AUTHZ:  ensureAuthenticatedUserHasAnyOf(roles)
     activate AUTHZ
     deactivate AUTHZ
-
-    CTRL -> JO_REPO: ofIdentity(jobReference)
-    activate JO_REPO
-
-    JO_REPO --> CTRL: jobOpening
-    deactivate JO_REPO
 
     CTRL -> CTRL : verifyRequirementsOfApplications(jobReference)
     activate CTRL
