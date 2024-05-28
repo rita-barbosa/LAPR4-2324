@@ -1,0 +1,221 @@
+@startuml US1017_CD
+title US1017 Class Diagram
+
+'package "Presentation" {
+    class UploadInterviewResponsesUI <<Presentation>> {
+    }
+'}
+
+'package "Application" {
+    class UploadInterviewResponsesController <<Application>> {
+        + getInterviewModelTemplates()
+        + getApplicationList()
+        + getJobOpeningList()
+        + getAllApplicationInformation(applicationDTO)
+    }
+'}
+
+class JobOpeningManagementService <<Service>> {
+    + getJobOpeningsOfCustomerManager(username)
+    + getJobOpeningsFromCustomerCodes(assignedCustomerCodesList)
+    + getJobOpening(jobOpeningDTO)
+    + getApplicationList(jobOpeningDTOList)
+}
+
+class InterviewModelManagementService <<Service>> {
+    + getInterviewModelTemplates()
+    + getInterviewModel(interviewModelDTO)
+}
+
+class InterviewModelDTOService <<Service>> {
+    + convertToDTO(interviewModelList)
+}
+
+class CustomerManagementService <<Service>> {
+    + getAssignedCustomerCodesList(username)
+}
+
+class JobOpeningDTOService <<Service>> {
+    + convertToDTO(jobOpeningList)
+}
+
+class ApplicationManagementService <<Service>> {
+    + getApplicationsList(jobOpening)
+    + getAllApplicationInformation(applicationDTO)
+}
+
+class ApplicationDTOService <<Service>> {
+    + convertToDTO(applicationList)
+}
+
+class InterviewTemplateManagerService <<Service>> {
+    + checkFileFormat(filepath)
+}
+
+class InterviewModelPlugin <<Plugin>> {
+    + checkFileFormat(filepath)
+}
+
+class InterviewModelParser <<Parser>> <<Interpreter>> {
+    + checkFileSyntax(filepath)
+}
+
+
+'package "Domain" {
+    package "Authentication and Users" {
+        class AuthenticationService <<Application>> <<Service>> {
+        }
+        class Session <<Domain>> <<Value Object>> {
+        }
+        class SystemUser <<Domain>> <<Aggregate Root>> {
+        }
+        class Username <<Domain>> <<Value Object>> <<ID>> {
+            - value : String
+        }
+    }
+
+    class CustomerManager <<Domain>> <<Aggregate Root>> {
+        + customerCode()
+    }
+
+    class JobOpening <<Domain>> <<Aggregate Root>> {
+        - function : String
+        - contractType : ContractType
+        - workMode : WorkMode
+        - companyAddress : Address
+        - costumerCode : String
+        - companyName : String
+        - numVacancies : Integer
+        - description : String
+        - requirementsSpecificationsFile : File
+        + toDTO()
+    }
+
+    class WorkMode <<Domain>> <<Value Object>> {
+        - workModeDenomination: String
+        + valueOf()
+        + mode()
+    }
+
+    class ContractType <<Domain>> <<Value Object>> {
+        - contractTypeDenomination : String
+        + valueOf()
+        + type()
+    }
+
+    class Application <<Domain>> <<Aggregate Root>> {
+        - requirementAnswer : String
+        - requirementResult : Integer
+        - file : File
+        - email : String
+        - applicationDate : Date
+        - applicationStatus : Boolean
+        - candidateName : String
+        - phoneNumber : Integer
+        - interview : Interview
+        + toDTO()
+    }
+
+    class Interview <<Domain>> <<Value Object>> {
+        - interviewTypeDenomination : String
+        - schedule : Date
+        - interviewResult : String
+        - interviewGrade : Integer
+        - justification : String
+        - interviewAnswer :  String
+        + valueOf()
+    }
+
+    class InterviewModel <<Domain>> <<Value Object>> {
+        - interviewModelName : String
+        - interviewModelDescription : String
+
+        + toDTO()
+    }
+'}
+
+'package "Persistence" {
+    class InterviewModelRepository <<Persistence>> <<Repository>> {
+        + getInterviewModelTemplates()
+        + getInterviewModel(interviewModelDTO)
+    }
+
+    class JobOpeningRepository <<Persistence>> <<Repository>> {
+        + getJobOpeningListMatchingCustomerCode(customerCode)
+        + getJobOpening(JobOpeningDTO)
+    }
+
+    class CustomerRepository <<Persistence>> <<Repository>> {
+        + getCustomersByUsername(username)
+    }
+
+    class ApplicationRepository <<Persistence>> <<Repository>> {
+        + getApplicationsListWithInterviewResult()
+    }
+
+    interface RepositoryDatabase <<Persistence>> {
+    }
+'}
+
+' Associations
+CustomerManager ..> UploadInterviewResponsesController
+UploadInterviewResponsesUI ..> UploadInterviewResponsesController
+UploadInterviewResponsesController ..> JobOpeningRepository
+UploadInterviewResponsesController ..> ApplicationRepository
+UploadInterviewResponsesController ..> CustomerRepository
+UploadInterviewResponsesController ..> ApplicationManagementService
+UploadInterviewResponsesController ..> JobOpeningManagementService
+UploadInterviewResponsesController ...> JobOpeningDTOService
+UploadInterviewResponsesController ..> ApplicationDTOService
+UploadInterviewResponsesController ..> InterviewModelManagementService
+UploadInterviewResponsesController ..> InterviewModelDTOService
+UploadInterviewResponsesController ..> InterviewTemplateManagerService
+
+
+' Domain Layer
+WorkMode "1" --> "*" JobOpening : characterizes
+ContractType "1" --> "*" JobOpening  : characterizes
+Interview "0..1" --> "*" Application : characterizes
+JobOpeningManagementService --> JobOpeningRepository
+JobOpeningManagementService --> JobOpening
+ApplicationManagementService --> Application
+ApplicationManagementService --> ApplicationRepository
+ApplicationDTOService --> Application
+JobOpeningDTOService --> JobOpening
+CustomerManagementService --> CustomerRepository
+CustomerManagementService --> CustomerManager
+InterviewModelManagementService --> InterviewModel
+InterviewModelManagementService --> InterviewModelRepository
+InterviewModelDTOService --> InterviewModel
+InterviewTemplateManagerService --> InterviewModelPlugin
+InterviewModelPlugin --> InterviewModelParser
+
+
+' Persistence Layer
+JobOpeningRepository "1" --> "*" ContractType : rebuilds
+JobOpeningRepository "1" --> "*" WorkMode : rebuilds
+JobOpeningRepository "1" --> "1" InterviewModel : rebuilds
+JobOpeningRepository <.. JobOpening : persisted by
+
+ApplicationRepository <.. Application : persisted by
+ApplicationRepository "1" --> "*" Interview : rebuilds
+
+InterviewModelRepository <.. InterviewModel : persisted by
+
+CustomerRepository <.. CustomerManager : persisted by
+
+' Interface implementation
+RepositoryDatabase <|.. JobOpeningRepository : implements
+RepositoryDatabase <|.. ApplicationRepository : implements
+RepositoryDatabase <|.. CustomerRepository : implements
+RepositoryDatabase <|.. InterviewModelRepository : implements
+
+' Authentication
+Session --> SystemUser
+SystemUser -> Username
+AuthenticationService .> Username
+AuthenticationService .> Session
+AuthenticationService ..> UploadInterviewResponsesController
+CustomerManager --|> SystemUser
+
+@enduml
