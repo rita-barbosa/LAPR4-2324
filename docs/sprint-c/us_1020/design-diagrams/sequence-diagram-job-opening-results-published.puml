@@ -8,7 +8,7 @@ participant ":EventPublisher" as EP <<application>>
 participant ":JobOpeningResultsPublished\nWatchDog" as WD <<application>>
 participant ":SendEmailOnJobOpening\nResultsPublishedController" as CTRL_EVENT <<application>>
 database ":CustomerRepository" as C_REPO
-participant ":BlaBlaBla" as ENTITY
+participant ":FollowUpConnectionService" as ENTITY
 
 
  -> EP : publish()
@@ -16,6 +16,22 @@ activate EP
 
 EP -> WD: onEvent()
 activate WD
+
+WD -> CTRL_EVENT**: create()
+activate CTRL_EVENT
+
+note right
+Upon creation of controller
+a connection will be established
+with the FollowUp server
+end note
+
+CTRL_EVENT -> ENTITY: connectToServer()
+activate ENTITY
+
+ENTITY --> CTRL_EVENT : success
+deactivate ENTITY
+deactivate CTRL_EVENT
 
 WD -> CTRL_EVENT: sendEmail(jobOpeningResultsPublishedEvent)
 activate CTRL_EVENT
@@ -25,9 +41,7 @@ activate C_REPO
 deactivate C_REPO
 
 
-
-
-CTRL_EVENT -> ENTITY: ...
+CTRL_EVENT -> ENTITY: sendEmail(customerManagerEmail, customerEmail,\n topic, emailBody)
 activate ENTITY
 
 
