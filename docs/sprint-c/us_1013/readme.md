@@ -14,7 +14,7 @@ This is the first time this user story is being requested.
 - **1013.2** The Customer Manager must have access to the candidates' interview score, when applicable.
 - **1013.3** The ranking is flexible, meaning that interview scores do not define automatically the candidate's rank.
 - **1013.4** The ranking is done by manual sorting.
-- **1013.5** No attributed ranking scores are duplicated.
+- **1013.5** No attributed ranking order values are duplicated.
 - **1013.6** The system must have global ranking configurations: 1 - exactly the number of vacancies; 2 - double of the
 number of vacancies; 0.5 - half the number of the vacancies.
 - **1013.7** Candidates that are not ranked must be tagged with something signaling that they do not have a ranking for a
@@ -277,6 +277,27 @@ public void ensureRankOrderOrderValueNegativeIsInvalid() {
 ...
 }
 ````
+
+**Test 4:** Verifies that a rank has minimum number of rankOrder instances
+
+**Refers to Acceptance Criteria:** 1013.6
+````
+@Test
+public void ensureRankHasMinimumRankOrderInstances() {
+...
+}
+````
+
+**Test 5:** Verifies that a rank cannot be empty
+
+**Refers to Acceptance Criteria:** 1013.6
+````
+@Test
+public void ensureRankEmptyIsInvalid() {
+...
+}
+````
+
 
 ## 5. Implementation
 
