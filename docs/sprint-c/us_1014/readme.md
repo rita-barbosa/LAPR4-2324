@@ -45,75 +45,68 @@ candidate.
 
 ![SSD-US-1014](ssd/ssd-us-1014.svg)
 
-
 ## 4. Design
-The principal function is to register a candidate, the input for the Operator consists of:
+The principal function is register a day and time for an interview, the input for the Customer Manager consists on:
 
-* Candidate Name
-* Candidate Email
-* Candidate Phone Number
+* Select a Job Opening
+* Select an application
+* Insert the day
+* Insert the time
 
-After successfully submitting this information, the system should create a candidate and the corresponding user.
+After successfully submitting this information, the system should update the application and record the day and time for the interview.
+
+### 4.1.1. Domain Model
+![Domain model](dm/domain-model-us-1014.svg)
 
 ### 4.1. Realization
-
-![Sequence diagram](US2000a_SD/sd-us-2000a.svg)
+![Sequence diagram](sd/sd-us-1014.svg)
 
 ### 4.2. Class Diagram
 
-![a class diagram](US2000a_Class_Diagram/class-diagram-us-2000a.svg)
+![a class diagram](cd/cd-us-1014.svg)
 
 ### 4.3. Applied Patterns
-* **Observer**
+* **DTO**
 * **Repository**
 * **Service**
 
 > **Repository Pattern**
-> * CandidateRepository
+> * ApplicationRepository
+> * JobOpeningRepository
 >
 > **Justifications**
 >
->The repositories were employed to persist candidates and usercandidates, as well as to reconstruct objects from the
-persistence.
+>The repositories were employed to persist applications and reconstruct objects from the
+persistence (applications and job openings).
 
 
 > **Service Pattern**
 > * AuthorizationService
-> * CandidateManagementService
-> * UserManagementService
+> * ApplicationManagementService
+> * JobOpeningManagementService
 >
 > **Justifications**
 >
-> The UserManagementService and AuthorizationService, pre-existing services within the Eapli.Framework were used here
-> to register users and retrieve the logged-in user with Operator roles.
+> The AuthorizationService, is a pre-existing service within the Eapli.Framework were used here
+> to retrieve the logged-in user with Customer Manager roles.
 >
-> The CandidateManagementService is employed to register candidates, tasked with the responsibility of
-candidate creation.
+> The JobOpeningManagementService is employed to register Job Openings, tasked with the responsibility of
+give us the list of all job openings.
 >
+> The ApplicationManagementService is employed to register Application, tasked with the responsibilities of
+give us the list of all application and update the chosen one.
+> 
 > The mentioned services were developed because the functionalities they offer will be utilized across multiple use
 > cases.
 
-> **Observer**
-> * EventPublisher
-> * NewCandidateUserRegisteredEvent
-> * NewCandidateUserRegisteredWatchDog
-> * AddCandidateOnNewCandidateUserRegisteredController
+> **DTO**
+> * ApplicationDTOService
+> * JobOpeningDTOService
 >
 > **Justifications**
 >
-> All the mentioned objects are components of the applied observer pattern. This pattern was implemented to ensure
-> that when a new candidate is registered, a user is automatically registered as well. Following this procedure, upon the
-> registration of a candidate, a NewCandidateUserRegisteredEvent instance is generated, and the EventPublisher is utilized
-> to notify the WatchDog (Observer).
->
-> Upon receiving this notification, the WatchDog triggers the registration of the
-> user through the AddCandidateOnNewCandidateUserRegisteredController. 
->
-> In this case, an instance of NewCandidateUserRegisteredEvent is used to inform the specific WatchDog,
-> which then invokes the AddCandidateOnNewCandidateUserRegisteredController for the registration of the CandidateUser.
->
-> To maintain consistency in the creation process, we used the EventPublisher within the service to
-> ensure that both the candidate and its user were created, thus preserving the system's valid state.
+> In order to enforce encapsulation amongst layers and adequate responsibility assigment, the ApplicationDTOService and JobOpeningDTOService
+> were created, besides being a set of instructions that is used in other functionalities.
 >
 ### 4.4. Tests
 
