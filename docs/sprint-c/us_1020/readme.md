@@ -69,7 +69,7 @@ company/customer, the email must contain the list of selected candidates, includ
 
 ### Domain Model
 
-![Domain Model - US 1020](domain-model.svg)
+![Domain Model - US 1020](analysis-diagram/domain-model.svg)
 
 ## 4. Design
 
@@ -79,6 +79,11 @@ presenting the classes that support the functionality), the identification and r
 patterns and the specification of the main tests used to validade the functionality.*
 
 ### 4.1. Realization
+
+![Sequence Diagram](design-diagrams/sequence-diagram.svg)
+![Sequence Diagram](design-diagrams/sequence-diagram-job-opening-in-result.svg)
+![Sequence Diagram](design-diagrams/sequence-diagram-application-accepted.svg)
+![Sequence Diagram](design-diagrams/sequence-diagram-job-opening-results-published.svg)
 
 ### 4.2. Class Diagram
 

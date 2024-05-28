@@ -1,0 +1,44 @@
+@startuml
+autonumber
+
+title US1020 - Send Email to Candidate and Customer
+
+
+participant ":EventPublisher" as EP <<application>>
+participant ":JobOpeningResultsPublished\nWatchDog" as WD <<application>>
+participant ":SendEmailOnJobOpening\nResultsPublishedController" as CTRL_EVENT <<application>>
+database ":CustomerRepository" as C_REPO
+participant ":BlaBlaBla" as ENTITY
+
+
+ -> EP : publish()
+activate EP
+
+EP -> WD: onEvent()
+activate WD
+
+WD -> CTRL_EVENT: sendEmail(jobOpeningResultsPublishedEvent)
+activate CTRL_EVENT
+
+CTRL_EVENT -> C_REPO: customerEmailOfCustomer(companyCode)
+activate C_REPO
+deactivate C_REPO
+
+
+
+
+CTRL_EVENT -> ENTITY: ...
+activate ENTITY
+
+
+deactivate ENTITY
+
+deactivate WD
+deactivate EP
+deactivate CTRL_EVENT
+'deactivate EMS
+
+
+@enduml
+
+

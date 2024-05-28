@@ -1,0 +1,36 @@
+@startuml
+autonumber
+
+title US1020 - Send Email to Candidate and Customer
+
+
+participant ":EventPublisher" as EP <<application>>
+participant ":ApplicationAccepted\nWatchDog" as WD <<application>>
+participant ":SendEmailOnApplication\nAcceptedController" as CTRL_EVENT <<application>>
+participant ":BlaBlaBla" as ENTITY
+
+
+ -> EP : publish()
+activate EP
+
+EP -> WD: onEvent()
+activate WD
+
+WD -> CTRL_EVENT: sendEmail(applicationAcceptedEvent)
+activate CTRL_EVENT
+
+CTRL_EVENT -> ENTITY: ...
+activate ENTITY
+
+
+deactivate ENTITY
+
+deactivate WD
+deactivate EP
+deactivate CTRL_EVENT
+'deactivate EMS
+
+
+@enduml
+
+
