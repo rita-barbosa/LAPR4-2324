@@ -64,6 +64,22 @@ This decision was made after extensive discussions with our LPROG teacher about 
 considering the client's input, the teacher emphasized that this was the best approach. Furthermore, after confirming
 with our EAPLI teacher that this approach was acceptable, the team decided to adopt it.
 
+### Follow Up Server
+
+####  Message Codes
+
+| CODE |   Type   | Meaning                                                                                                                                                                                                                                                                                               |
+|:----:|:--------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|  0   | Request  | **COMMTEST** – Communications test request with no other effect on the server application than the response with an ACK message. This request has no data.                                                                                                                                            |
+|  1   | Request  | **DISCONN** – End of session request. The server application is supposed to respond with an ACK message, afterwards both client and server applications are expected to close the session (TCP connection). This request has no data.                                                                 |
+|  2   | Response | **ACK** – Generic acknowledgment and success response message. Used in response to a successful request. This response contains no data.                                                                                                                                                              |
+|  3   | Response | **ERR** – Error response message. Used in response to unsuccessful requests that caused an error. This response message may carry a human readable phrase explaining the error. If used, the phrase is carried in the DATA1 field as string of ASICII codes, it’s not required to be null terminated. |
+|  4   | Request  | **AUTH** – User authentication request carrying the username in DATA1 and the user’s password in DATA2, both are strings of ASICII codes and are not required to be null terminated. If the authentication is successful, the server application response is ACK, otherwise it’s ERR.                 |
+|  5   | Request  | **EMAIL** - Email sending request carrying the sender's email in DATA1, the receiver's email in DATA2, the email's topic in DATA3 and the email's information in DATA4. If the email is successfully sent, the server application response is ACK, otherwise it’s ERR.                                |
+|  6   | Request  | **NOTIFLIST** - Notification list request for candidates and customers, carrying the username in DATA1.                                                                                                                                                                                               |
+|  7   | Request  | **JOBOPLIST** - JobOpening list request, carrying the customer's username in DATA1.                                                                                                                                                                                                                   |
+|  8   | Request  | **APPLIST** - Application list request, carrying the candidate's username in DATA1.                                                                                                                                                                                                                   |
+
 ### Shared sequence diagrams
 
 To avoid redundant design implementations and decisions, the team resolved to create diagrams that outline the program
