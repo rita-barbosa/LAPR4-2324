@@ -24,7 +24,6 @@ certain recruitment process
 - **1013.10** It should be possible to have 2 or more instances of the application running to check for the data within
 the candidates files.
 
-
 **Dependencies/References:**
 
 **US1002 and US1007** | A job opening associated with a recruitment process is required so that the candidates can apply.
@@ -134,7 +133,8 @@ Customer Manager can evaluate them and rank the candidates.
 As clarified by the client, there is no criteria to rank the candidates. The ranking is done manually by the Customer
 Manager by looking at each candidate application files and, when applicable, interview score to make a decision.
 
-> Clarify about global settings
+After all the interested parts are notified of the results, then the system will update the job opening's rank, keeping
+only the number of rank orders defined in the system configurations.
 
 Below there's a System Sequence Diagram (SSD) illustrating the expected behaviour of this functionality. After this diagram
 is a partial domain model, with emphasis on US1013's concepts.
@@ -149,30 +149,131 @@ is a partial domain model, with emphasis on US1013's concepts.
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+To order a rank, the active job openings associated with the user must be displayed. Upon selecting one, the system must
+check if the current job opening's recruitment process phase is the analysis phase. If interviews occurred, then for each
+application evaluated, a rank order instance will be associated with the evaluation's score.
+
+If not, then a rank order will be associated for each application whenever a customer manager decided to attribute an
+order or edit it.
+
+Another aspect of this functionality is the capacity of displaying the selected files of an application on a popUp window,
+with the made out of Javax.Swing components.
+
+In order to enhance encapsulation between layers, the usage of DTO's is present in this functionality.
+
+**New Domain Layer Classes**
+* RankManagementService
+* Rank
+* RankOrder
+
+**New Persistence Layer Classes**
+* RankRepository
+
+* **New Application Layer Classes**
+* ApplicationRankingController
+
+**New Presentation Layer Classes**
+* ApplicationRankingUI
+* ApplicationFilePopUpWindow
+
+The further topics illustrate and explain this functionality usage flow, and the correlation between its components.
 
 ### 4.1. Realization
 
+![US1013 sequence diagram](./US1013_SD/us1013_sd.svg)
+
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![US1013 class diagram](./US1013_CD/us1013_class_diagram.svg)
 
 ### 4.3. Applied Patterns
 
+This topic presents the classes with the patterns applied to them along with justifications.
+
+>**Repository Pattern**
+> * CustomerRepository
+> * JobOpeningRepository
+> * RecruitmentProcessRepository
+> * ApplicationRepository
+> * RankRepository
+>
+> **Justifications**
+>
+> * The JobOpeningRepository has stored all the jobOpening instances created in all sessions in its database, it's where
+>   the instances can be rebuilt.
+>
+> * Customers have their Customer Manager email as an attribute, so by using the email we can track which customers are assigned
+>  to said user and retrieve their costumer codes. This is all stored in the database represented by the repository.
+> 
+> * The recruitment processes are stored within the database, and must be rebuilt, so that the system can evaluate if the
+>   instance associated with the chosen jobOpening is in the right phase.
+> 
+> * Ranks and their entries are stored in the database. The repository allows the access of entries in specific conditions
+>   validations, etc...
+> 
+> * The repository stores applications and their respective files, which must be accessed for their content to be displayed
+>   to the current user.
+
+
+>**Service Pattern**
+> * CustomerManagementService
+> * JobOpeningManagementService
+> * AuthorizationService
+> * RecruitmentProcessManagementService
+> * RankManagementService
+> * ApplicationListDTOService
+> * ApplicationManagementService
+>
+> **Justifications**
+>
+> * CustomerManagementService is used in more than one functionality, and its in charge of managing request regarding customers,
+>   serving as encapsulation between the controller and the CustomerRepository along with the domain classes.
+>
+> * JobOpeningManagementService is used in more than one functionality, and its in charge of managing request regarding
+>   jobOpenings, serving as encapsulation between the controller and the JobOpeningRepository along with the domain classes.
+>
+> * To get the customers that are assigned to the current Customer Manager in-session, we must get something to identify them.
+>   The AuthorizationService allows to get the username (user's email), which is essential to then filter the CustomerRepository
+>   to the desired customers. This set of instructions is used in other functionalities too.
+> 
+> * RecruitmentProcessManagementService is used to check if the recruitment process associated with the chosen job opening
+>   is in the right phase.
+> 
+> * RankManagementService updates the rank whenever a rank order score is changed.
+> 
+> * ApplicationManagementService allowed the retrieval of specific applications and their files.
+> 
+> * ApplicationListDTOService promotes layer encapsulation by converting application instances in DTOs.
+
+
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
+**Test 1:** Verifies that a rankOrder cannot have its order value null
 
-**Test 1:** Verifies that it is not possible to ...
-
-**Refers to Acceptance Criteria:** G002.1
-
+**Refers to Acceptance Criteria:** ----
 ````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
+@Test
+public void ensureRankOrderOrderValueNullIsInvalid() {
+...
+}
+````
+
+**Test 2:** Verifies that a rankOrder cannot have its order value at Zero
+
+**Refers to Acceptance Criteria:** ----
+````
+@Test
+public void ensureRankOrderOrderValueZeroIsInvalid() {
+...
+}
+````
+
+**Test 3:** Verifies that a rankOrder cannot have its order value as a negative number
+
+**Refers to Acceptance Criteria:** ----
+````
+@Test
+public void ensureRankOrderOrderValueNegativeIsInvalid() {
 ...
 }
 ````
