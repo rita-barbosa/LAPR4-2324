@@ -12,6 +12,7 @@ job opening.
 **Acceptance Criteria:**
 
 - 1015.1. The verification must only be done to candidates which requirements file has already been submitted.
+- 1015.2. The Job Opening must be in the Screening Phase.
 
 **Dependencies/References:**
 
