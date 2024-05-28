@@ -9,11 +9,8 @@ participant ":XxxUI" as UI <<presentation>>
 participant ":XxxController" as CTRL <<application>>
 participant ":AuthorizationService" as AUTHZ <<service>>
 participant ":JobOpeningManagementService" as JOMS <<service>>
-participant ":CustomerManagementService" as CMS <<service>>
 participant ":JobOpeningDTOService" as JOS_DTO <<service>>
-database ":CustomerRepository" as CM_REPO <<repository>>
 database ":JobOpeningRepository" as JO_REPO <<repository>>
-participant ":Customer" as CM <<domain>>
 participant ":JobOpening" as JO <<domain>>
 
 
@@ -31,32 +28,9 @@ activate CTRL
     CTRL -> JOMS: jobOpeningsOfCustomerManager(username)
     activate JOMS
 
-
-    JOMS -> CMS : getAssignedCustomerCodesList(username)
-    activate CMS
-
-        CMS -> CM_REPO : getCustomersByUsername(username)
-        note right: Username is the Customer\n Manager's email
-        activate CM_REPO
-        deactivate CM_REPO
-
-        loop for all codes
-            CMS -> CM : customerCode()
-            activate CM
-            deactivate CM
-        end loop
-
-    deactivate CMS
-
-    JOMS -> JOMS : getJobOpeningsFromCustomerCodes(assignedCustomerCodesList)
-    activate JOMS
-        loop for each code
-        JOMS -> JO_REPO : getJobOpeningListMatchingCustomerCode(customerCode)
-        activate JO_REPO
-        deactivate JO_REPO
-        end loop
-    JOMS --> JOMS: jobOpeningList
-    deactivate JOMS
+    JOMS -> JO_REPO : getJobOpeningListMatchingCustomerManager(customerManagerUsername)
+    activate JO_REPO
+    deactivate JO_REPO
 
 JOMS -> JOS_DTO : convertToDTO(jobOpeningList)
 activate JOS_DTO
