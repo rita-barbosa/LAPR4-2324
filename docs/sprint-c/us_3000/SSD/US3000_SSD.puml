@@ -10,7 +10,7 @@ participant "Follow Up Server" as SERVER
 
 activate USER
 
-USER -> SYS : asks to list all its job openings
+USER -> SYS : asks to list all its applications and their states
 activate SYS
 
 SYS -> SERVER : establishes TCP connection

@@ -1,0 +1,137 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+title US2004 Class Diagram
+
+abstract class AbstractUI{
++ show()
+}
+
+interface DTOable {
++ toDTO()
+}
+
+class UploadRequirementAnswersUI {
++ show()
+}
+
+class UploadRequirementAnswersController {
++ getJobOpenings()
++ getApplications(String jobReference)
++ uploadFile(ApplicationDTO applicationDTO, String requirementName, String filepath)
+}
+
+class JobOpeningManagementService {
++ getOnGoingJobOpenings()
+}
+
+class RecruitmentProcessManagementService {
++ checkIfRecruitmentProcessIsInAnalysisPhase(String jobReference)
+}
+
+class RecruitmentProcessRepository {
++ getRecruitmentProcessByJobReference(String jobReference)
+}
+
+class RecruitmentProcess {
++ indicatePhaseByDate(LocalDate currentDate)
+}
+
+
+class JobOpening {
++ toDto()
+}
+
+class JobOpeningDTO {}
+
+class JobOpeningRepository {
++ getJobOpeningsWithSTARTEDStatus()
+}
+
+class ApplicationManagementService {
++ getApplicationsFromJobReference(String jobReference)
+}
+
+class Application {
++ requirementAnswer(File fileWithAnswers)
++ updateRequirementAnswer(File fileWithAnswers)
++ toDto()
+}
+
+class ApplicationDTO {}
+
+class ApplicationListDTOService {
++ convertApplicationsToDTO(List<Application> applicationsList)
+}
+
+class RequirementAnswer {
++ RequirementAnswer(File fileWithAnswers)
+}
+
+class ApplicationRepository {
++ getApplicationsFromJobReference(String jobReference)
++ getApplicationFromDTO(ApplicationDTO applicationDTO)
++ save(Application application)
+}
+
+class RequirementSpecificationManagementService {
++ checkAnswersFileIsValid(String requirementName, String filepath)
+}
+
+class RequirementSpecificationRepository {
++ getPluginFromRequirementName(String requirementName)
+}
+
+package "Plugin" {
+    class Main {
+    + checkFileSyntaxIsValid(String[] args)
+    }
+    note right of Main
+    args has "-evaluate",
+    "-requirement" and filepath
+    end note
+
+    class EvaluationService {
+    + evaluateTextFile(String filepath)
+    }
+}
+
+
+'ASSOCIATIONS
+AbstractUI <|.left. UploadRequirementAnswersUI : implements
+DTOable <|.. JobOpening : implements
+DTOable <|.. Application : implements
+
+UploadRequirementAnswersUI .left.> UploadRequirementAnswersController
+
+UploadRequirementAnswersController ..> JobOpeningManagementService
+UploadRequirementAnswersController ..> ApplicationManagementService
+UploadRequirementAnswersController ..> RequirementSpecificationManagementService
+UploadRequirementAnswersController ...> RecruitmentProcessManagementService
+
+'SERVICES AND DOMAIN
+JobOpeningManagementService ..> JobOpeningRepository
+JobOpeningManagementService --> JobOpening
+JobOpeningRepository --> JobOpening
+JobOpening --> JobOpeningDTO
+
+ApplicationManagementService ..> ApplicationRepository
+ApplicationManagementService --> Application
+ApplicationRepository --> Application
+Application --> RequirementAnswer
+ApplicationManagementService --> ApplicationListDTOService
+ApplicationListDTOService --> ApplicationDTO
+Application --> ApplicationDTO
+
+RecruitmentProcessManagementService ..> RecruitmentProcessRepository
+RecruitmentProcessRepository ..> RecruitmentProcess
+RecruitmentProcessManagementService ..> RecruitmentProcess
+
+RequirementSpecificationManagementService ..> RequirementSpecificationRepository
+RequirementSpecificationManagementService ...> Main
+
+Main --> EvaluationService
+
+
+
+@enduml

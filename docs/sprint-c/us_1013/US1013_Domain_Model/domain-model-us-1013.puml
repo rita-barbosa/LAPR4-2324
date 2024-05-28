@@ -25,12 +25,8 @@ package "<<aggregate>> Job Opening" {
 
 package "<<aggregate>> Rank" {
     entity Rank <<entity>> <<root>> {}
-    class RankEntry <<(V,#FF8B40) value object>>{}
+    class RankOrder <<(V,#FF8B40) value object>>{}
 }
-
-note "<size:28>This entity isn't yet confirmed</size>" as N2
-N2 .. Rank
-
 
 package "<<aggregate>> Customer Manager" {
     entity CustomerManager <<entity>> <<root>>  {}
@@ -96,8 +92,8 @@ JobOpening --> "1"  RecruitmentProcess : includes
 JobOpening --> "1"  Application : associated to <
 '__
 JobOpening ---> "1"  Rank : includes
-Rank --> "*" RankEntry : encompasses
-Rank --> "*" Application : rates
+Rank --> "*" RankOrder : encompasses
+RankOrder --> "*" Application : rates
 '--
 RecruitmentProcess --> "1" RecruitmentPeriod : goes on for
 RecruitmentProcess ---> "5..6" Phase : encompasses

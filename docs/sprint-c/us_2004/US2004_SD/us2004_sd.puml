@@ -1,0 +1,174 @@
+@startuml
+
+title US2004 Sequence Diagram
+
+autonumber
+
+box System #LightBlue
+    participant "<<presentation>>\n:UploadRequirementAnswersUI" as UI
+    participant "<<application>>\n:UploadRequirementAnswersController" as CTRL
+    participant "<<service>>\n:RecruitmentProcessManagementService" as RecruitSrv
+    participant "<<domain>>\n:RecruitmentProcess" as RecruitmentProcess
+    database "<<repository>>\n:RecruitmentProcessRepository" as RecruitmentProcessRepository
+    participant "<<service>>\n:JobOpeningManagementService" as JobSrv
+    participant "<<domain>>\n:JobOpening" as JobOp
+    database "<<repository>>\n:JobOpeningRepository" as JobRepo
+
+    participant "<<service>>\n:ApplicationManagementService" as AppSrv
+    participant "<<domain>>\n:Application" as App
+    database "<<repository>>\n:ApplicationRepository" as AppRepo
+    participant "<<service>>\n:ApplicationListDTOService" as AppDTOSrv
+
+    participant "<<domain>>\n:RequirementAnswer" as ReqAnswer
+
+    participant "<<service>>\n:RequirementSpecificationManagementService" as ReqSrv
+    database "<<repository>>\n:RequirementSpecificationRepository" as ReqRepo
+end box
+
+
+box Plugin #LightPink
+    participant "Main" as Plugin
+    participant "EvaluationService" as Eval
+end box
+
+
+'======== Get Job Openings ========
+UI -> CTRL : getJobOpenings()
+activate UI
+activate CTRL
+
+CTRL -> JobSrv : getOnGoingJobOpenings()
+activate JobSrv
+
+JobSrv -> JobRepo : getJobOpeningsWithSTARTEDStatus()
+activate JobRepo
+deactivate JobRepo
+
+loop for all jobOpenings in the list
+    JobSrv -> JobOp : toDto()
+    activate JobOp
+    deactivate JobOp
+end loop
+
+JobSrv --> CTRL : jobOpeningsListDTO
+deactivate JobSrv
+
+CTRL --> UI
+deactivate CTRL
+
+UI -> UI : show()
+
+
+'======== Get Applications ========
+UI -> CTRL : getApplications(jobReference)
+activate CTRL
+note right
+    JobReference is a
+    string within the
+    JobOpeningDTO
+end note
+
+
+CTRL -> RecruitSrv : checkIfRecruitmentProcessIsInAnalysisPhase(jobReference)
+activate RecruitSrv
+
+RecruitSrv -> RecruitmentProcessRepository : getRecruitmentProcessByJobReference(jobReference)
+activate RecruitmentProcessRepository
+deactivate RecruitmentProcessRepository
+
+RecruitSrv -> RecruitmentProcess : indicatePhaseByDate(currentDate)
+note right
+currentDate = LocalDate.now()
+end note
+activate RecruitmentProcess
+
+RecruitmentProcess --> RecruitSrv : phase
+deactivate RecruitmentProcess
+
+alt phase.phaseType == APPLICATION || phase.phaseType == SCREENING
+RecruitSrv --> CTRL : true
+end alt
+deactivate RecruitSrv
+
+|||
+
+CTRL -> AppSrv : getApplicationsFromJobReference(jobReference)
+activate AppSrv
+
+AppSrv -> AppRepo : getApplicationsFromJobReference(jobReference)
+activate AppRepo
+deactivate AppRepo
+
+AppSrv --> AppDTOSrv : convertApplicationsToDTO(applicationsList)
+activate AppDTOSrv
+deactivate AppDTOSrv
+
+AppSrv --> CTRL : applicationsListDTO
+deactivate AppSrv
+
+CTRL --> UI
+deactivate CTRL
+
+UI -> UI : show()
+
+'======== Check If File is Valid ========
+UI -> CTRL : uploadFile(applicationDTO, requirementName, filepath)
+activate CTRL
+note right
+    requirementName is
+    a string within the
+    JobOpeningDTO
+end note
+
+CTRL -> ReqSrv : checkAnswersFileIsValid(requirementName, filepath)
+activate ReqSrv
+
+ReqSrv -> ReqRepo : getPluginFromRequirementName(requirementName)
+activate ReqRepo
+deactivate ReqRepo
+
+ReqSrv -> Plugin : checkFileSyntaxIsValid(args)
+note left
+args has "-evaluate",
+"-requirement" and filepath
+end note
+activate Plugin
+
+Plugin -> Eval : evaluateTextFile(filepath)
+activate Eval
+deactivate Eval
+
+Plugin --> ReqSrv : true
+deactivate Plugin
+
+ReqSrv --> CTRL : true
+deactivate ReqSrv
+
+'======== Upload the File ========
+CTRL -> AppSrv : uploadAnswersFile(applicationDTO, filepath)
+activate AppSrv
+AppSrv -> AppRepo : getApplicationFromDTO(applicationDTO)
+activate AppRepo
+deactivate AppRepo
+
+AppSrv -> App : updateRequirementAnswer(fileWithAnswers)
+activate App
+note right
+    Conversion of file
+    content to a in-system
+     File already made
+end note
+
+App -> ReqAnswer** : RequirementAnswer(fileWithAnswers)
+deactivate App
+
+AppSrv -> AppRepo : save(application)
+activate AppRepo
+deactivate AppRepo
+AppSrv --> CTRL : true
+deactivate AppSrv
+
+CTRL --> UI : success importing
+deactivate CTRL
+
+@enduml
