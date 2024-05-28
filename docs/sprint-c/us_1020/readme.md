@@ -16,6 +16,10 @@ that candidates and customer are notified by email of the result.
 - 1020.2. The system is required to notify both the customer linked to the job opening and the candidate about the
   selected application.
 
+- 1020.3. The first N applications, where N is the number of vacancies, are the one to be selected.
+
+- 1020.4. The application status of all the job openings in the rank must be updated.
+
 **Dependencies/References:**
 
 We understand that this requirement pertains to reference NFR11, which specifies that the solution should be deployed
