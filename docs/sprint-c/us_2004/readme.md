@@ -83,33 +83,82 @@ is a partial domain model, with emphasis on US2004's concepts.
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+Before uploading the file into the system, the plugin ensures that its syntax is correct.
+
+* **New Application Layer Classes**
+* UploadRequirementAnswersController
+
+**New Presentation Layer Classes**
+* UploadRequirementAnswersUI
+
+No new domain or persistence classes are to be added. 
+
+The further topics illustrate and explain this functionality usage flow, and the correlation between its components.
 
 ### 4.1. Realization
 
+![US1013 sequence diagram](./US2004_SD/us2004_sd.svg)
+
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![US1013 class diagram](./US2004_CD/us2004_cd.svg)
 
 ### 4.3. Applied Patterns
 
+This topic presents the classes with the patterns applied to them along with justifications.
+
+>**Repository Pattern**
+> * JobOpeningRepository
+> * ApplicationRepository
+> * RequirementSpecificationRepository
+> * RecruitmentProcessRepository
+>
+> **Justifications**
+>
+> * The JobOpeningRepository has stored all the jobOpening instances created in all sessions in its database, it's where
+>   the instances can be rebuilt.
+>
+> * The recruitment processes are stored within the database, and must be rebuilt, so that the system can evaluate if the
+>   instance associated with the chosen jobOpening is in the right phase.
+>
+> * The repository stores applications and their respective files, including the requirements answer file.
+> 
+> * The requirement specification repository knows what plugins are associated with which requirement.
+
+
+>**Service Pattern**
+> * JobOpeningManagementService
+> * RequirementSpecificationManagementService
+> * RecruitmentProcessManagementService
+> * ApplicationListDTOService
+> * ApplicationManagementService
+>
+> **Justifications**
+>
+> * JobOpeningManagementService is used in more than one functionality, and its in charge of managing request regarding
+>   jobOpenings, serving as encapsulation between the controller and the JobOpeningRepository along with the domain classes.
+>
+> * RecruitmentProcessManagementService is used to check if the recruitment process associated with the chosen job opening
+>   is in the right phase.
+>
+> * ApplicationManagementService allows to update an application regarding its requirement answers.
+>
+> * ApplicationListDTOService promotes layer encapsulation by converting application instances in DTOs.
+> 
+> * RequirementSpecificationManagementService is used in more than one functionality, and its in charge of managing request
+>   regarding requirements, serving as encapsulation between the controller and the RequirementSpecificationRepository
+>   along with the domain classes.
+
+
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
 
-**Test 1:** Verifies that it is not possible to ...
+No new tests were made regarding the domain entities within this functionality.
 
-**Refers to Acceptance Criteria:** G002.1
+> * [US1002 - JobOpening Tests](../../sprint-b/sb_us_1002/readme.md/#45-tests)
+>
+> * [US2002 - Application Tests](../../sprint-b/sb_us_2002/readme.md/#44-tests)
 
-````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
-...
-}
-````
 
 ## 5. Implementation
 
