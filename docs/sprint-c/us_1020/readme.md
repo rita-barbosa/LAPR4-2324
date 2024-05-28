@@ -81,13 +81,22 @@ patterns and the specification of the main tests used to validade the functional
 ### 4.1. Realization
 
 ![Sequence Diagram](design-diagrams/sequence-diagram.svg)
+
+#### 4.1.1. Getting job opening in the result phase
 ![Sequence Diagram](design-diagrams/sequence-diagram-job-opening-in-result.svg)
+
+#### 4.1.2. Sending email to candidate upon application acceptance
 ![Sequence Diagram](design-diagrams/sequence-diagram-application-accepted.svg)
+
+#### 4.1.3. Notifying candidates of the application status change
+![Sequence Diagram](design-diagrams/sequence-diagram-application-status-changed.svg)
+
+#### 4.1.4. Sending an email to the customer upon the publication of results
 ![Sequence Diagram](design-diagrams/sequence-diagram-job-opening-results-published.svg)
 
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![Class Diagram](design-diagrams/class-diagram.svg)
 
 ### 4.3. Applied Patterns
 
