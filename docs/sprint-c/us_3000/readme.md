@@ -81,30 +81,110 @@ receive the answer. The answers will have a specified format.
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+To address this functionality, we are going to adopt a four-layered approach based on DDD (Domain-Driven Design)
+architecture: Presentation, Application, Domain and Persistence.
+
+To list all the applications and their state, the customer needs to have access to 
+
+To be able to promote encapsulation between layers, it will be used DTOs.
+
+**_Classes Used_**
+
+**Domain Layer Classes**
+
+* JobOpening
+* Application
+* JobOpeningManagementService
+* JobOpeningDTODTOService
+* ApplicationManagementService
+* ApplicationDTOService
+* FollowUpConnectionService
+
+
+**Application Layer Classes**
+
+* ListApplicationsAndStateController
+
+
+**Presentation Layer Classes**
+
+* ListApplicationsAndStateUI
+
+
+**Other Classes**
+
+* FollowUpServer
+* ListingRequestThread
+* ClientConnectionThread
+
 
 ### 4.1. Realization
 
+* **US3000 Sequence Diagram**
+
+![US3000 Sequence Diagram](SD/US3000_SD.svg)
+
+
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![a class diagram](CD/US3000_CD.svg)
 
 ### 4.3. Applied Patterns
 
+To make the design of this user story, were used the following patterns:
+
+>**_Repository Pattern_**
+>* Classes
+> * JobOpeningRepository
+> * ApplicationRepository
+> * InterviewModelRepository
+>
+>* Justification
+   >
+   >  The JobOpening, Application and Interview Model repository have the purpose of keeping the persistence of the
+   > job opening, application and interview model existing instances.
+
+
+>**_Service Pattern_**
+>* Classes
+   >  * JobOpeningManagementService
+>  * JobOpeningDTOService
+>  * ApplicationManagementService
+>  * ApplicationDTOService
+>  * InterviewModelManagementService
+>  * InterviewModelDTOService
+>  * InterviewTemplateManagerService
+>  * AuthorizationService
+>
+>* Justification
+   >
+   >  The services are in charge of managing request regarding jobOpenings, applications and interview model,
+   >serving as encapsulation between the controller and the JobOpeningRepository, ApplicationRepository and
+   >InterviewModelRepository along with the domain classes.
+   >  The DtoServices to transform these instances into DTOs.
+   >  The authorization service is used to verify the roles of the user.
+
+
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
+**Test 1:** Verifies that the application has status
 
-**Test 1:** Verifies that it is not possible to ...
-
-**Refers to Acceptance Criteria:** G002.1
+**Refers to Acceptance Criteria:** 3000.2
 
 ````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
+@Test
+public void ensureApplicationHasStatus() {
+...
+}
+````
+
+**Test 2:** Verifies the number of applicants exists
+
+**Refers to Acceptance Criteria:** 3000.3
+
+````
+@Test
+public void ensureNumberApplicants() {
 ...
 }
 ````
