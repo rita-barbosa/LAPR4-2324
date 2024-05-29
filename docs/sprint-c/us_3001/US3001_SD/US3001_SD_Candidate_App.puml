@@ -1,0 +1,56 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+participant "<<Presentation>>\nNotificationInboxUI" as UI
+participant "<<Application>>\nNotificationInboxController" as CTRL
+participant "<<Service>>\nFollowUpConnectionService" as SER
+
+activate UI
+
+    ref over UI
+    shared-sequence-diagram
+    sequence-diagram-tcp-connection
+    end ref
+
+    UI -> CTRL : startNotificationRetrievalProcess(username)
+
+    note bottom
+    username is obtained
+    as described in the
+    shared diagram
+    end note
+
+    activate CTRL
+
+        CTRL -> SER : startNotificationRetrievalProcess(username)
+
+        activate SER
+
+        loop for each unseen notification for that candidate
+
+            SER --> CTRL : notifList[i]
+
+        deactivate SER
+
+        CTRL --> UI : notifList[i]
+
+        opt "0 - Exit"
+
+        UI -> CTRL : closeConnection(PORT_NUMBER)
+
+        CTRL -> SER : closeConnection(PORT_NUMBER)
+
+        activate SER
+
+        deactivate SER
+
+        end
+
+        end
+
+    deactivate CTRL
+
+deactivate UI
+
+@enduml
