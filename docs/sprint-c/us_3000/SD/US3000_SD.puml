@@ -1,0 +1,183 @@
+@startuml US3000_SD
+
+title US3000 Sequence Diagram
+
+actor "Customer Manager" as USER
+|||
+
+participant "<<presentation>>\n:ListApplicationsAndStateUI" as UI
+participant "<<application>>\n:ListApplicationsAndStateController" as CTRL
+participant "<<service>>\n:FollowUpConnectionService" as ConnSrv
+participant ":ClientConnectionThread" as CLITHREAD
+participant ":ListingRequestThread" as THREAD
+participant "<<service>>\n:JobOpeningManagementService" as JobManagement
+participant ":<<service>>\n:JobOpeningDTOService" as JobDTOServ
+database "<<repository>>\n:JobOpeningRepository" as JobOpeningRepository
+participant "<<domain>>\n:JobOpening" as JobOpening
+
+participant "<<service>>\n:CustomerManagementService" as CustSrv
+database "<<repository>>\n:CustomerRepository" as CustomerRepository
+
+participant "<<service>>\n:ApplicationManagementService" as AppManagement
+database "<<repository>>\n:ApplicationRepositoryRepository" as ApplicationRepository
+participant "<<service>>\n:ApplicationDTOService" as AppDTOServ
+participant "<<domain>>\n:Application" as Application
+
+
+
+activate USER
+
+USER -> UI : asks to list all its applications and their states
+activate UI
+
+
+UI -> CTRL : create()
+activate CTRL
+deactivate CTRL
+
+ref over UI
+shared-sequence-diagram
+sequence-diagram-tcp-connection
+end ref
+
+
+UI -> CTRL: getApplicationsList(username)
+ activate CTRL
+
+CTRL -> ConnSrv : getApplicationsList(username)
+activate ConnSrv
+
+ConnSrv -> CLITHREAD : getApplicationsList(username, code)
+note left
+code = 8 (APPLIST)
+end note
+
+activate CLITHREAD
+
+CLITHREAD -> THREAD** : getApplicationsList(code, username)
+deactivate CLITHREAD
+activate THREAD
+
+THREAD -> JobManagement : getJobOpeningList(username)
+activate JobManagement
+
+JobManagement -> CustSrv : getCustomerByUsername(username)
+activate CustSrv
+
+CustSrv -> CustomerRepository : getCustomerByUsername(username)
+activate CustomerRepository
+deactivate CustomerRepository
+
+deactivate CustSrv
+
+    JobManagement -> JobOpeningRepository : getJobOpeningListMatchingCustomerManager(customerManagerUsername)
+    activate JobOpeningRepository
+    deactivate JobOpeningRepository
+
+JobManagement -> JobDTOServ : convertToDTO(jobOpeningList)
+activate JobDTOServ
+
+    loop for each JobOpening
+        JobDTOServ -> JobOpening : toDTO()
+        activate JobOpening
+        deactivate JobOpening
+    end loop
+deactivate JobDTOServ
+
+
+JobManagement --> THREAD : jobOpeningListDTO
+deactivate JobManagement
+
+
+
+
+     THREAD -> JobManagement : getApplicationsList(jobOpeningDTOList)
+     activate JobManagement
+
+     loop for each jobOpening
+
+         JobManagement -> JobOpeningRepository : getJobOpening(jobOpeningDTO)
+         activate JobOpeningRepository
+
+         JobOpeningRepository --> JobManagement : jobOpening
+         deactivate JobOpeningRepository
+
+         JobManagement -> AppManagement : getApplicationsList(jobOpening)
+         activate AppManagement
+
+         AppManagement -> ApplicationRepository : getApplicationsList(jobOpening)
+         activate ApplicationRepository
+
+         ApplicationRepository --> AppManagement : applicationList
+         deactivate ApplicationRepository
+
+         AppManagement --> AppDTOServ :  convertToDTO(applicationList)
+             activate AppDTOServ
+
+             loop for each application
+             AppDTOServ -> Application : toDTO()
+             activate Application
+             deactivate Application
+             end loop
+
+             deactivate AppDTOServ
+
+
+         deactivate AppManagement
+
+         JobManagement -> JobManagement : add(applicationListDTO)
+
+     end loop
+
+     JobManagement --> THREAD : applicationsListDTO
+     deactivate JobManagement
+
+
+
+
+loop for all DTOs
+THREAD --> ConnSrv : sOut.writeObject(applicationDTO)
+deactivate THREAD
+    note right
+    sOut an ObjectOutputStream from
+    the connection's sock OutputStream
+    end note
+
+end loop
+
+ConnSrv --> CTRL : applicationsListDTO
+deactivate ConnSrv
+
+CTRL --> UI : applicationsListDTO
+deactivate CTRL
+
+opt "0 - Exit"
+
+UI -> CTRL : closeConnection(PORT_NUMBER)
+activate CTRL
+
+CTRL -> ConnSrv : closeConnection(PORT_NUMBER)
+deactivate CTRL
+activate ConnSrv
+
+ConnSrv -> CLITHREAD : closeConnection(code)
+deactivate ConnSrv
+activate CLITHREAD
+note left
+code = 1 (DISCONN)
+end note
+
+CLITHREAD --> CLITHREAD : clientSocket.close()
+
+
+CLITHREAD -[#white]> CLITHREAD
+deactivate CLITHREAD
+
+
+UI -> UI :stock.close()
+end opt
+
+UI --> USER : shows application list
+deactivate UI
+
+@enduml
