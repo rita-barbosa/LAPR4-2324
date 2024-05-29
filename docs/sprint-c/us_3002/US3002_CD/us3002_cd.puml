@@ -1,0 +1,137 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+title US3002 Class Diagram
+
+abstract class AbstractListUI {
+# doShow()
+}
+
+
+interface DTOable {
++ toDTO()
+}
+
+class ListCustomerJobOpeningsUI {
++ doShow()
+}
+
+class ListCustomerJobOpeningsController {
++ getSessionCredentials()
++ getconnection(String username, String password, int PORT_NUMBER)
++ jobOpeningsDataList(String username)
++ closeConnection(int PORT_NUMBER)
+}
+
+
+class FollowUpConnectionService {
++ getJobOpeningsDataList(String username)
++ closeConnection(int PORT_NUMBER)
++ establishConnection(username, password, serverIP, PORT_NUMBER)
+}
+
+
+
+class ClientConnectionThread {
++ receiveJobOpeningsDataList(username, code)
++ closeConnection(code)
++ create(clientSocket)
++ authenticationProtocol(messageDTO)
+}
+
+class ListingRequestThread {
++ getJobOpeningsList(code, username)
+}
+
+
+class JobOpeningManagementService {
++ getCustomerJobOpeningData(username)
+}
+
+
+class JobOpeningListDTOService {
++ convertJobOpeningsToCustomerJobOpeningDTO(jobOpeningsList)
+}
+
+class CustomerManagementService {
++ getCustomerByUsername(username)
+}
+
+class CustomerRepository {
++ getCustomerByUsername(username)
+}
+
+class JobOpeningRepository {
++ findAllJobOpeningsWithCustomerCode(customerCode.toString())
+}
+
+class AuthorizationService {
+- theSession
+}
+
+class UserSession {
+- authenticatedUser
+}
+
+class MessageDTO {}
+
+class FollowUpServer {}
+
+class AuthenticationService {
++  authenticate(username, password,\n BaseRoles.CUSTOMER_MANAGER,\n BaseRoles.CUSTOMER,\n BaseRoles.CANDIDATE)
+}
+
+class JobOpening {
++ toDTO()
+}
+
+class Socket {
++ Socket(serverIP, PORT_NUMBER)
++ close()
+}
+
+class ServerSocket {
++ ServerSocket(PORT_NUMBER)
++ close()
+}
+
+class JobOpeningDataDTO {}
+
+' ASSOCIATIONS
+
+AbstractListUI <|-- ListCustomerJobOpeningsUI
+DTOable <|-- JobOpening
+
+ListCustomerJobOpeningsUI ..> ListCustomerJobOpeningsController
+
+ListCustomerJobOpeningsController ..> AuthorizationService
+ListCustomerJobOpeningsController ..> FollowUpConnectionService
+ListCustomerJobOpeningsController ..> JobOpeningDataDTO
+ListCustomerJobOpeningsController ..> UserSession
+
+
+FollowUpConnectionService ..> FollowUpServer
+FollowUpConnectionService ..> ClientConnectionThread
+FollowUpServer --> ClientConnectionThread
+ClientConnectionThread --> ListingRequestThread
+ClientConnectionThread --> AuthenticationService
+ClientConnectionThread --> MessageDTO
+
+FollowUpConnectionService --> Socket
+FollowUpServer --> ServerSocket
+
+JobOpeningManagementService ..> JobOpeningRepository
+JobOpeningRepository .up.> JobOpening
+JobOpening -up-> JobOpeningDataDTO
+JobOpeningListDTOService -up-> JobOpeningDataDTO
+JobOpeningRepository --> JobOpeningListDTOService
+
+JobOpeningManagementService ...> CustomerManagementService
+
+CustomerManagementService ..> CustomerRepository
+
+MessageDTO <-- FollowUpConnectionService
+
+AuthorizationService --> UserSession
+
+@enduml
