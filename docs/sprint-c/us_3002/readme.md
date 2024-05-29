@@ -75,33 +75,94 @@ is a partial domain model, with emphasis on US3002's concepts.
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+To get the job opening list, the customer App must establish connection through FollowUpConnectionService, in charge of
+establishing the connection with the FollowUpServer and managing requests and responses between the two sides.
+
+The ClientConnectionThread, created by the FollowUpServer, will analyse the code sent through the in a message and will 
+act accordingly with it, redirecting the action needed to the service that can solve the request.
+
+For this functionality, a ListingRequestThread will be created and will be the path of the request and response.
+
+After a response has been elaborated, it will be sent through the same connection through a MessageDTO.
+
+The FollowUpConnectionService will then decrypt the content of the message according to its code, and send the content to
+the controller.
+
+In order to enhance encapsulation between layers, the usage of DTO's is present in this functionality.
+
+**New Domain Layer Classes**
+* FollowUpConnectionService
+
+* **New Application Layer Classes**
+* ListCustomerJobOpeningsController
+
+**New Presentation Layer Classes**
+* ListCustomerJobOpeningsUI
+
+**Other Classes**
+* FollowUpServer
+* ListingRequestThread
+* ClientConnectionThread
+
+The further topics illustrate and explain this functionality usage flow, and the correlation between its components.
 
 ### 4.1. Realization
 
+![US3002 Sequence Diagram](./US3002_SD/us3002_sd.svg)
+
+
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![US3002 Class Diagram](./US3002_CD/us3002_cd.svg)
 
 ### 4.3. Applied Patterns
 
+This topic presents the classes with the patterns applied to them along with justifications.
+
+>**Repository Pattern**
+> * CustomerRepository
+> * JobOpeningRepository
+>
+> **Justifications**
+>
+> * The jobOpening instances are saved/preserved in its repository.
+>
+> * The customers assigned to the Customer Manager are stored within the CustomerRepository, persisting and rebuilding
+>   them between sessions.
+
+
+>**Service Pattern**
+> * CustomerManagementService
+> * JobOpeningManagementService
+> * AuthorizationService
+> * JobOpeningListDTOService
+> * AuthorizationService
+>
+> **Justifications**
+>
+> * CustomerManagementService is used in more than one functionality, and its in charge of managing request regarding customers,
+>   serving as encapsulation between the controller and the CustomerRepository along with the domain classes.
+>
+> * JobOpeningManagementService is used in more than one functionality, and its in charge of managing request regarding
+ >   jobOpenings, serving as encapsulation between the controller and the JobOpeningRepository along with the domain classes.
+>
+> * In order to enforce encapsulation amongst layers and adequate responsibility assigment, the JobOpeningListDTOService was
+>   created, besides being a set of instructions that is used in other functionalities.
+>
+> * To get the customers that are assigned to the current Customer Manager in-session, we must get something to identify them.
+>   The AuthorizationService allows to get the username (user's email), which is essential to then filter the CustomerRepository
+>   to the desired customers. This set of instructions is used in other functionalities too.
+> 
+> * The AuthorizationService allows the retrieval of the session's system user, its password and username.
+
+
+
+
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
+No new tests were made regarding the domain entities within this functionality.
 
-**Test 1:** Verifies that it is not possible to ...
-
-**Refers to Acceptance Criteria:** G002.1
-
-````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
-...
-}
-````
+> * [US1002 - JobOpening Tests](../../sprint-b/sb_us_1002/readme.md/#45-tests)
 
 ## 5. Implementation
 
