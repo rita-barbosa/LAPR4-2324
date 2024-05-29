@@ -49,9 +49,9 @@ activate SER
 
                                 NS -> N : toDTO()
 
-                                N --> NS : notificationDTO
-
                                 activate N
+
+                                    N --> NS : notificationDTO
 
                                 deactivate N
 
