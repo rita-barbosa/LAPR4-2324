@@ -1,31 +1,35 @@
-@startuml
-'https://plantuml.com/sequence-diagram
+@startuml US3001_SSD
+
+title US3001 System Sequence Diagram
 
 autonumber
 
-skinparam sequenceMessageAlign center
+actor "CustomerManager" as C
+participant "System\n(Customer App)" as SYS
+participant "Follow Up Server" as SERVER
 
-'Actors and Participants
-Participant Customer as C
-Participant CustomerApplication as CA
+SERVER --> SYS : sends notification
+activate SERVER
+note right
+every time an application
+changes state
+end note
 
-Activate CA
+activate SYS
+deactivate SERVER
 
-    alt If application just started running
+activate C
+C -> SYS : asks to see notifications
 
-        CA -> CA : Checks for all changes that happened
+SYS -> SERVER : establishes TCP connection
+activate SERVER
+SYS -> SERVER : requests candidate's notifications
 
-        CA --> C : Finds and sends notification to Customer
+SERVER --> SYS : customer's notifications
+deactivate SERVER
 
-    else If application is running
-
-        CA -> CA : Checks that a change happened
-
-        CA --> C : Sends a notification to the Customer
-
-    end
-
-Deactivate CA
-
+SYS --> C : shows notifications
+deactivate SYS
+deactivate C
 
 @enduml
