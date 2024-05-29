@@ -4,7 +4,7 @@
 autonumber
 participant "<<Presentation>>\nNotificationInboxUI" as UI
 participant "<<Application>>\nNotificationInboxController" as CTRL
-participant "<<ArrayList>>\nlistForUI" as LIST
+participant "<<ArrayList>>\nListForUI" as LIST
 participant "<<Service>>\nFollowUpConnectionService" as SER
 
 activate UI
