@@ -1,7 +1,7 @@
 package jobs4u.base.jobopeningmanagement.domain;
 
-import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
-import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
+import jobs4u.base.contracttypemanagement.dto.ContractTypeDTO;
+import jobs4u.base.workmodemanagement.dto.WorkModeDTO;
 import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 import org.junit.Test;
 
@@ -17,7 +17,7 @@ public class JobOpeningTest {
     String city = "City";
     String district = "District";
     String streetNumber = "14th";
-    String zipcode = "12345";
+    String zipcode = "1234-234";
     Address address = new Address(streetName, city, district, streetNumber, zipcode);
 
     public RequirementSpecification jobOpeningRequirement() {

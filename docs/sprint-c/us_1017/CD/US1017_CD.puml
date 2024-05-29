@@ -16,8 +16,7 @@ title US1017 Class Diagram
 '}
 
 class JobOpeningManagementService <<Service>> {
-    + getJobOpeningsOfCustomerManager(username)
-    + getJobOpeningsFromCustomerCodes(assignedCustomerCodesList)
++ jobOpeningsOfCustomerManager(username)
     + getJobOpening(jobOpeningDTO)
     + getApplicationList(jobOpeningDTOList)
 }
@@ -29,10 +28,6 @@ class InterviewModelManagementService <<Service>> {
 
 class InterviewModelDTOService <<Service>> {
     + convertToDTO(interviewModelList)
-}
-
-class CustomerManagementService <<Service>> {
-    + getAssignedCustomerCodesList(username)
 }
 
 class JobOpeningDTOService <<Service>> {
@@ -61,17 +56,8 @@ class InterviewModelParser <<Parser>> <<Interpreter>> {
 }
 
 
-'package "Domain" {
-    package "Authentication and Users" {
-        class AuthenticationService <<Application>> <<Service>> {
-        }
-        class Session <<Domain>> <<Value Object>> {
-        }
-        class SystemUser <<Domain>> <<Aggregate Root>> {
-        }
-        class Username <<Domain>> <<Value Object>> <<ID>> {
-            - value : String
-        }
+    class AuthenticationService <<Application>> <<Service>> {
+        + loggedinUserWithPermissions(BaseRole.CUSTOMER_MANAGER)
     }
 
     class CustomerManager <<Domain>> <<Aggregate Root>> {
@@ -89,18 +75,6 @@ class InterviewModelParser <<Parser>> <<Interpreter>> {
         - description : String
         - requirementsSpecificationsFile : File
         + toDTO()
-    }
-
-    class WorkMode <<Domain>> <<Value Object>> {
-        - workModeDenomination: String
-        + valueOf()
-        + mode()
-    }
-
-    class ContractType <<Domain>> <<Value Object>> {
-        - contractTypeDenomination : String
-        + valueOf()
-        + type()
     }
 
     class Application <<Domain>> <<Aggregate Root>> {
@@ -141,20 +115,14 @@ class InterviewModelParser <<Parser>> <<Interpreter>> {
     }
 
     class JobOpeningRepository <<Persistence>> <<Repository>> {
-        + getJobOpeningListMatchingCustomerCode(customerCode)
+        + getJobOpeningListMatchingCustomerManager(customerManagerUsername)
         + getJobOpening(JobOpeningDTO)
-    }
-
-    class CustomerRepository <<Persistence>> <<Repository>> {
-        + getCustomersByUsername(username)
     }
 
     class ApplicationRepository <<Persistence>> <<Repository>> {
         + getApplicationsListWithInterviewResult()
     }
 
-    interface RepositoryDatabase <<Persistence>> {
-    }
 '}
 
 ' Associations
@@ -162,10 +130,9 @@ CustomerManager ..> UploadInterviewResponsesController
 UploadInterviewResponsesUI ..> UploadInterviewResponsesController
 UploadInterviewResponsesController ..> JobOpeningRepository
 UploadInterviewResponsesController ..> ApplicationRepository
-UploadInterviewResponsesController ..> CustomerRepository
 UploadInterviewResponsesController ..> ApplicationManagementService
 UploadInterviewResponsesController ..> JobOpeningManagementService
-UploadInterviewResponsesController ...> JobOpeningDTOService
+UploadInterviewResponsesController ..> JobOpeningDTOService
 UploadInterviewResponsesController ..> ApplicationDTOService
 UploadInterviewResponsesController ..> InterviewModelManagementService
 UploadInterviewResponsesController ..> InterviewModelDTOService
@@ -173,27 +140,21 @@ UploadInterviewResponsesController ..> InterviewTemplateManagerService
 
 
 ' Domain Layer
-WorkMode "1" --> "*" JobOpening : characterizes
-ContractType "1" --> "*" JobOpening  : characterizes
-Interview "0..1" --> "*" Application : characterizes
+Interview "0..1" -> "*" Application : characterizes
 JobOpeningManagementService --> JobOpeningRepository
 JobOpeningManagementService --> JobOpening
 ApplicationManagementService --> Application
 ApplicationManagementService --> ApplicationRepository
 ApplicationDTOService --> Application
 JobOpeningDTOService --> JobOpening
-CustomerManagementService --> CustomerRepository
-CustomerManagementService --> CustomerManager
 InterviewModelManagementService --> InterviewModel
 InterviewModelManagementService --> InterviewModelRepository
 InterviewModelDTOService --> InterviewModel
-InterviewTemplateManagerService --> InterviewModelPlugin
+InterviewTemplateManagerService -> InterviewModelPlugin
 InterviewModelPlugin --> InterviewModelParser
 
 
 ' Persistence Layer
-JobOpeningRepository "1" --> "*" ContractType : rebuilds
-JobOpeningRepository "1" --> "*" WorkMode : rebuilds
 JobOpeningRepository "1" --> "1" InterviewModel : rebuilds
 JobOpeningRepository <.. JobOpening : persisted by
 
@@ -202,20 +163,7 @@ ApplicationRepository "1" --> "*" Interview : rebuilds
 
 InterviewModelRepository <.. InterviewModel : persisted by
 
-CustomerRepository <.. CustomerManager : persisted by
-
-' Interface implementation
-RepositoryDatabase <|.. JobOpeningRepository : implements
-RepositoryDatabase <|.. ApplicationRepository : implements
-RepositoryDatabase <|.. CustomerRepository : implements
-RepositoryDatabase <|.. InterviewModelRepository : implements
-
 ' Authentication
-Session --> SystemUser
-SystemUser -> Username
-AuthenticationService .> Username
-AuthenticationService .> Session
 AuthenticationService ..> UploadInterviewResponsesController
-CustomerManager --|> SystemUser
 
 @enduml

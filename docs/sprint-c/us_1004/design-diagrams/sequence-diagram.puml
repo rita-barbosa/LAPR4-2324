@@ -81,7 +81,7 @@ loop while user wants to edit
     activate UI
 end loop
 
-    UI -> CTRL: changeJobOpeningInformation(jobOpening, newInformation)
+    UI -> CTRL: changeJobOpeningInformation(jobOpeningDto, selectInformation, newInformation)
     activate CTRL
 
         note left CTRL
@@ -101,20 +101,23 @@ end loop
     JO_REPO --> CTRL: jobOpening
     deactivate JO_REPO
 
-    CTRL -> JO: changeInformation(newInformation)
-    activate JO
+    alt selectedInformation == (requirements | interviewModel | ContractType | WorkMode)
+        ref over CTRL
 
-        note left JO
-        This method will contain
-        a variable number of attributes,
-        depending on how many changes
-        the user makes.
-        end note
+            check **sequence-diagram-change-models**
+
+        end ref
+    else
+
+    CTRL -> JO: changeInformation(selectedInformation, newInformation)
+    activate JO
 
     JO --> CTRL: success
     deactivate JO
 
-    CTRL -> JO_REPO: save(jobReference)
+    end alt
+
+    CTRL -> JO_REPO: save(jobOpening)
     activate JO_REPO
     deactivate JO_REPO
 

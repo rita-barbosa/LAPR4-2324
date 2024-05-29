@@ -6,15 +6,20 @@ import eapli.framework.representations.dto.DTOable;
 import eapli.framework.validations.Preconditions;
 import jakarta.persistence.*;
 import jobs4u.base.applicationmanagement.domain.Application;
+import jobs4u.base.contracttypemanagement.domain.ContractType;
 import jobs4u.base.jobopeningmanagement.domain.rank.Rank;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
 import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
 import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
-import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
-import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
+import jobs4u.base.contracttypemanagement.dto.ContractTypeDTO;
+import jobs4u.base.workmodemanagement.dto.WorkModeDTO;
+import jobs4u.base.workmodemanagement.domain.WorkMode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -33,13 +38,17 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
     private ContractType contractType;
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    private  WorkMode workMode;
+    private WorkMode workMode;
+    @Getter
     @Column(nullable = false)
     private JobOpeningStatus status;
+    @Getter
     @EmbeddedId
     private JobReference jobReference = new JobReference();
+    @Getter
     @Column(nullable = false)
     private Address address;
+    @Getter
     @Column(nullable = false)
     private Description description;
     @Column(nullable = false)
@@ -53,9 +62,12 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
     private InterviewModel interviewModel;
 
 
+    @Setter
+    @Getter
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Application> applications = new HashSet<>();
 
+    @Getter
     @OneToOne(mappedBy = "jobOpening")
     private RecruitmentProcess recruitmentProcess;
 
@@ -152,7 +164,7 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
 
     public JobOpening(String function, ContractTypeDTO contractTypeDenomination, WorkModeDTO workModeDenomination,
                       Address address, Integer numVacancies, String description, RequirementSpecification requirementsFile,
-                       JobReference lastReference, Set<Application> applications) {
+                      JobReference lastReference, Set<Application> applications) {
 
         Preconditions.noneNull(function, description, address, lastReference, requirementsFile, contractTypeDenomination,
                 workModeDenomination, numVacancies);
@@ -225,7 +237,7 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         return new JobReference(lastReference.getcustomerCode(), lastReference.getSequentialCode() + 1);
     }
 
-    public JobReference jobReference(){
+    public JobReference jobReference() {
         return identity();
     }
 
@@ -270,57 +282,88 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         return DomainEntities.hashCode(this);
     }
 
-    public JobFunction getFunction() {
-        return function;
+    public void changeRequirementSpecification(RequirementSpecification requirementSpecification) {
+        Preconditions.noneNull(requirementSpecification);
+        Preconditions.ensure(status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED)) ||
+                status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED)));
+
+        this.requirementSpecification = requirementSpecification;
     }
 
-    public ContractType getContractType() {
-        return contractType;
+    public void changeInterviewModel(InterviewModel interviewModel) {
+        Preconditions.noneNull(interviewModel);
+        if (!status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED)) &&
+                !status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED))) {
+
+            throw new IllegalStateException("The interview model can only be changed if the status is UNFINISHED or NOT_STARTED");
+        } else {
+            this.interviewModel = interviewModel;
+        }
+
     }
 
-    public WorkMode getWorkMode() {
-        return workMode;
+    public Boolean changeInformation(List<EditableInformation> selectedInformation, List<String> newInformation) {
+        if (selectedInformation.size() != newInformation.size()) {
+            throw new IllegalArgumentException("The number of selected information must match the number of new information provided.");
+        }
+
+        for (int i = 0; i < selectedInformation.size(); i++) {
+            String selected = selectedInformation.get(i).toString();
+            String newInfo = newInformation.get(i);
+
+            EditableInformation info;
+            try {
+                info = EditableInformation.fromString(selected);
+            } catch (IllegalArgumentException e) {
+                return false;
+            }
+
+            if (info.equals(EditableInformation.ADDRESS)) {
+                changeAddress(newInfo);
+            } else if (info.equals(EditableInformation.DESCRIPTION)) {
+                changeDescription(newInfo);
+            } else if (info.equals(EditableInformation.FUNCTION)) {
+                changeFunction(newInfo);
+            } else if (info.equals(EditableInformation.NUM_VACANCIES)) {
+                changeNumVacancies(newInfo);
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 
-    public JobOpeningStatus getStatus() {
-        return status;
+    public void changeWorkMode(WorkMode newInfo) {
+        this.workMode = newInfo;
     }
 
-    public JobReference getJobReference() {
-        return jobReference;
+    private void changeNumVacancies(String newInfo) {
+        this.numVacancies = NumberVacancy.valueOf(Integer.parseInt(newInfo));
     }
 
-    public Address getAddress() {
-        return address;
+    private void changeFunction(String newInfo) {
+        this.function = JobFunction.valueOf(newInfo);
     }
 
-    public Description getDescription() {
-        return description;
+    private void changeDescription(String newInfo) {
+        this.description = Description.valueOf(newInfo);
     }
 
-    public NumberVacancy getNumVacancies() {
-        return numVacancies;
+    public void changeContractType(ContractType newInfo) {
+        this.contractType = newInfo;
     }
 
-    public RequirementSpecification getRequirementSpecification() {
-        return requirementSpecification;
-    }
-
-    public Rank getRank() {
-        return rank;
-    }
-
-    public Set<Application> getApplications() {
-        return applications;
-    }
-
-    public InterviewModel getInterviewModel() {
-        return interviewModel;
+    private void changeAddress(String newInfo) {
+        if (status.equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED)) || status.equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED))) {
+            this.address = Address.valueOf(newInfo);
+        } else {
+            throw new IllegalArgumentException("Unable to change information.");
+        }
     }
 
     @Override
     public JobOpeningDTO toDTO() {
-        if(interviewModel == null){
+        if (interviewModel == null) {
             return new JobOpeningDTO(address.toString(), function.jobFunction(), description.description(), status.getStatusDescription(),
                     contractType.getDenomination(), workMode.denomination(), numVacancies.getNumVacancies(),
                     requirementSpecification.requirementName().name(), jobReference.toString(), jobReference.getcustomerCode(), "");
@@ -330,32 +373,26 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
                 requirementSpecification.requirementName().name(), jobReference.toString(), jobReference.getcustomerCode(), interviewModel.interviewModelName().name());
     }
 
-    public void changeRequirementSpecification(RequirementSpecification requirementSpecification) {
-        Preconditions.noneNull(requirementSpecification);
-        Preconditions.ensure(status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED)) ||
-                status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED)));
+    public List<EditableInformation> editableJobOpeningInformation() {
+        String statusDescription = this.status.getStatusDescription();
 
-        this.requirementSpecification = requirementSpecification;
-    }
-
-    public RecruitmentProcess getRecruitmentProcess() {
-        return recruitmentProcess;
-    }
-
-    public void setApplications(Set<Application> applications) {
-        this.applications = applications;
-    }
-
-    public void updateJobOpening(InterviewModel interviewModel) {
-        Preconditions.noneNull(interviewModel);
-        if (!status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED)) &&
-                !status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED))) {
-
-            throw new IllegalStateException("The interview model can only be changed if the status is UNFINISHED or NOT_STARTED");
-        }else {
-            this.interviewModel = interviewModel;
+        if ("UNFINISHED".equals(statusDescription) || "NOT_STARTED".equals(statusDescription)) {
+            return EditableInformation.notStartedEditableInformation();
         }
 
+        if ("STARTED".equals(statusDescription)) {
+            String activePhase = recruitmentProcess.currentActivePhase().toLowerCase();
+            switch (activePhase) {
+                case "application":
+                case "none active":
+                    return EditableInformation.startedEditableInformation();
+                case "screening":
+                    return EditableInformation.screeningEditableInformation();
+                default:
+                    throw new IllegalStateException("It isn't possible to alter any information in the job opening");
+            }
+        }
+        throw new IllegalStateException("It isn't possible to alter any information in the job opening");
     }
 
 }

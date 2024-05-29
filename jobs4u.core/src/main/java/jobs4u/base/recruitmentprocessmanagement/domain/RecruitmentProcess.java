@@ -10,6 +10,7 @@ import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "T_RECRUITMENTPROCESS")
@@ -28,7 +29,7 @@ public class RecruitmentProcess implements AggregateRoot<Long> {
     private JobOpening jobOpening;
 
     public RecruitmentProcess(Calendar initialDate, Calendar finalDate, List<Phase> phases) {
-        Preconditions.noneNull(initialDate,finalDate, phases);
+        Preconditions.noneNull(initialDate, finalDate, phases);
         Preconditions.ensure(initialDate.before(finalDate));
         this.recruitmentPeriod = new RecruitmentPeriod(new DateInterval(initialDate, finalDate));
         this.phases = phases;
@@ -36,6 +37,15 @@ public class RecruitmentProcess implements AggregateRoot<Long> {
 
     protected RecruitmentProcess() {
         //for ORM
+    }
+
+    public String currentActivePhase() {
+        for (Phase p : phases) {
+            if (Objects.equals(p.currentStatus(), PhaseStatus.valueOf(PhaseStatusEnum.ON_GOING))){
+                return p.description();
+            }
+        }
+        return "none active";
     }
 
     @Override
@@ -48,7 +58,7 @@ public class RecruitmentProcess implements AggregateRoot<Long> {
         return this.recruitmentID;
     }
 
-    public List<Phase> allPhases(){
+    public List<Phase> allPhases() {
         return phases;
     }
 

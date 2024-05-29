@@ -19,8 +19,8 @@
         <class>jobs4u.base.candidatemanagement.domain.PhoneNumber</class>
         <class>jobs4u.base.jobopeningmanagement.domain.rank.Rank</class>
         <class>jobs4u.base.jobopeningmanagement.domain.rank.RankEntry</class>
-        <class>jobs4u.base.jobopeningmanagement.domain.ContractType</class>
-        <class>jobs4u.base.jobopeningmanagement.domain.WorkMode</class>
+        <class>jobs4u.base.contracttypemanagement.domain.ContractType</class>
+        <class>jobs4u.base.workmodemanagement.domain.WorkMode</class>
         <class>jobs4u.base.jobopeningmanagement.domain.JobOpening</class>
         <class>jobs4u.base.requirementsmanagement.domain.RequirementSpecification</class>
         <class>jobs4u.base.requirementsmanagement.domain.RequirementName</class>
