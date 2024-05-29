@@ -76,5 +76,19 @@ activate UI
 
         UI -> UI : doShow()
 
+    opt "0 - Exit"
+
+    UI -> CTRL : closeConnection(PORT_NUMBER)
+    activate CTRL
+
+    CTRL -> SER : closeConnection(PORT_NUMBER)
+    deactivate CTRL
+    activate SER
+
+    autonumber resume
+
+    UI -> UI : sock.close()
+    end opt
+
 
 @enduml
