@@ -4,6 +4,7 @@
 autonumber
 participant "<<Presentation>>\nNotificationInboxUI" as UI
 participant "<<Application>>\nNotificationInboxController" as CTRL
+participant "<<ArrayList>>\nlistForUI" as LIST
 participant "<<Service>>\nFollowUpConnectionService" as SER
 
 activate UI
@@ -27,30 +28,53 @@ activate UI
 
         activate SER
 
-        loop for each unseen notification for that candidate
+            note left
+            code = 6 (NOTIFICATION)
+            end note
 
-            SER --> CTRL : notifList[i]
+                loop Every minute
 
-        deactivate SER
+                    alt if it finds notifications (returns a list)
 
-        CTRL --> UI : notifList[i]
+                        SER --> CTRL : notificationListDTO
 
-        opt "0 - Exit"
+                        loop For every notification DTO in the list
 
-        UI -> CTRL : closeConnection(PORT_NUMBER)
+                            CTRL -> CTRL : notifsOfController.add(notificationListDTO.get(i))
 
-        CTRL -> SER : closeConnection(PORT_NUMBER)
+                        end
 
-        activate SER
+                    else if it doesn't find notifications (returns 0)
+
+                        SER --> CTRL : 0
+
+                    end
 
         deactivate SER
 
         end
 
+        UI -> CTRL : getAllUnseenNotifications()
+
+        CTRL -> CTRL : listForUI = new ArrayList()
+
+        loop For every notification in the list of the controller at that time
+
+            CTRL -> LIST : add(notifsOfController.get(i))
+
+            activate LIST
+
+            deactivate LIST
+
+            CTRL -> CTRL : notifsOfController.remove(i)
+
         end
+
+        CTRL --> UI : listForUI
 
     deactivate CTRL
 
-deactivate UI
+        UI -> UI : doShow()
+
 
 @enduml
