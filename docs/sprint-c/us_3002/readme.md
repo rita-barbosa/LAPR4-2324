@@ -93,7 +93,7 @@ In order to enhance encapsulation between layers, the usage of DTO's is present 
 **New Domain Layer Classes**
 * FollowUpConnectionService
 
-* **New Application Layer Classes**
+**New Application Layer Classes**
 * ListCustomerJobOpeningsController
 
 **New Presentation Layer Classes**
@@ -101,6 +101,7 @@ In order to enhance encapsulation between layers, the usage of DTO's is present 
 
 **Other Classes**
 * FollowUpServer
+* DataDTO
 * ListingRequestThread
 * ClientConnectionThread
 
@@ -108,7 +109,13 @@ The further topics illustrate and explain this functionality usage flow, and the
 
 ### 4.1. Realization
 
-![US3002 Sequence Diagram](./US3002_SD/us3002_sd.svg)
+**Customer App Sequence Diagram**
+
+![US3002 Customer App Sequence Diagram](./US3002_SD/us3002_sd_customer_app.svg)
+
+**FollowUp Server/Domain Sequence Diagram**
+
+![US3002 FollowUp Server Sequence Diagram](./US3002_SD/us3002_sd_system_server.svg)
 
 
 ### 4.2. Class Diagram
@@ -156,6 +163,14 @@ This topic presents the classes with the patterns applied to them along with jus
 > * The AuthorizationService allows the retrieval of the session's system user, its password and username.
 
 
+>**DTO Pattern**
+> * DataDTO
+> * class JobOpeningDataDTO
+>
+> **Justifications**
+>
+> * In order to enforce encapsulation amongst layers and adequate responsibility assigment, besides facilitating the data
+>   transfer within the TCP connection, the usage of DTO's is required.
 
 
 ### 4.4. Tests
