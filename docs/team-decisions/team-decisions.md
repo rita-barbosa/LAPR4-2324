@@ -98,3 +98,10 @@ The following diagram pertains to the design adopted by the team for obtaining t
 story requires retrieving job openings related to the logged-in Customer Manager.
 
 ![Getting Job Openings](shared-sequence-diagram/sequence-diagram-get-job-openings.svg)
+
+#### Establishing TCP connection
+
+The diagram below illustrates the team's solution for establishing a TCP connection between a client application and the
+server. This solution applies to all user stories that involve connecting a client application to the server.
+
+![Establishing TCP connection](shared-sequence-diagram/sequence-diagram-tcp-connection.svg)
