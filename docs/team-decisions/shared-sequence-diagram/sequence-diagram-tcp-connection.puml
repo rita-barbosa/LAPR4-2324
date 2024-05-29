@@ -1,0 +1,94 @@
+@startuml
+
+title TCP Connection Sequence Diagram [Shared SD]
+
+participant "<<presentation>>\n:XxxUI" as UI
+participant "<<application>>\n:XxxController" as CTRL
+participant ":AuthorizationService" as AUTHZ <<service>>
+
+participant "<<service>>\n:FollowUpConnectionService" as ConnSrv
+participant ":MessageDTO" as MessageDTO
+participant ":FollowUpServer" as SERVER
+participant ":ClientConnectionThread" as CLITHREAD
+
+participant ":AuthenticationService" as AUTH <<service>>
+
+autonumber
+
+activate UI
+
+UI -> CTRL : getSessionCredentials()
+activate CTRL
+
+CTRL -> AUTHZ : theSession.authenticatedUser
+activate AUTHZ
+deactivate AUTHZ
+
+deactivate CTRL
+
+
+UI -> CTRL : getconnection(username, password, PORT_NUMBER)
+activate CTRL
+
+    CTRL -> ConnSrv : establishConnection(username, password, serverIP, PORT_NUMBER)
+    activate ConnSrv
+
+    ConnSrv --> ConnSrv : socket(serverIP, PORT_NUMBER)
+    ConnSrv --> SERVER
+    activate SERVER
+
+        SERVER -> CLITHREAD** : create(clientSocket)
+        activate CLITHREAD
+        deactivate SERVER
+
+    ConnSrv -> MessageDTO** : create(username, password)
+
+    ConnSrv -> CLITHREAD : authenticationProtocol(messageDTO)
+    CLITHREAD -> AUTH : authenticate(username, password,\n BaseRoles.CUSTOMER_MANAGER,\n BaseRoles.CUSTOMER,\n BaseRoles.CANDIDATE)
+    activate AUTH
+
+    alt authentication successful
+            AUTH --> CLITHREAD : true
+
+        CLITHREAD --> CLITHREAD : sOut.writeByte(2)
+        note left
+        sOut an ObjectOutputStream from
+        the connection's sock OutputStream
+        end note
+
+        note right
+        2 -> ACK response
+        end note
+
+        CLITHREAD --> ConnSrv
+
+        ConnSrv --> CTRL : true
+
+        CTRL --> UI : true
+
+    else authentication failed
+
+        AUTH --> CLITHREAD : false
+        deactivate AUTH
+
+        CLITHREAD --> CLITHREAD : sOut.writeByte(3)
+        note right
+        3 -> ERR response
+        end note
+
+        CLITHREAD --> ConnSrv
+
+        CLITHREAD -> CLITHREAD : clientSocket.close()
+
+        ConnSrv --> ConnSrv : socket.close()
+        deactivate CLITHREAD
+        ConnSrv --> CTRL : false
+        deactivate ConnSrv
+
+        CTRL --> UI : false
+        deactivate CTRL
+    end alt
+
+deactivate UI
+
+@enduml
