@@ -1,0 +1,94 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+participant "<<Presentation>>\nNotificationInboxUI" as UI
+participant "<<Application>>\nNotificationInboxController" as CTRL
+participant "<<ArrayList>>\nListForUI" as LIST
+participant "<<Service>>\nFollowUpConnectionService" as SER
+
+activate UI
+
+    ref over UI
+    shared-sequence-diagram
+    sequence-diagram-tcp-connection
+    end ref
+
+    UI -> CTRL : startNotificationRetrievalProcess(username)
+
+    note bottom
+    username is obtained
+    as described in the
+    shared diagram
+    end note
+
+    activate CTRL
+
+        CTRL -> SER : startNotificationRetrievalProcess(username)
+
+        activate SER
+
+            note left
+            code = 6 (NOTIFICATION)
+            end note
+
+                loop Every minute
+
+                    alt if it finds notifications (returns a list)
+
+                        SER --> CTRL : notificationListDTO
+
+                        loop For every notification DTO in the list
+
+                            CTRL -> CTRL : notifsOfController.add(notificationListDTO.get(i))
+
+                        end
+
+                    else if it doesn't find notifications (returns 0)
+
+                        SER --> CTRL : 0
+
+                    end
+
+        deactivate SER
+
+        end
+
+        UI -> CTRL : getAllUnseenNotifications()
+
+        CTRL -> CTRL : listForUI = new ArrayList()
+
+        loop For every notification in the list of the controller at that time
+
+            CTRL -> LIST : add(notifsOfController.get(i))
+
+            activate LIST
+
+            deactivate LIST
+
+            CTRL -> CTRL : notifsOfController.remove(i)
+
+        end
+
+        CTRL --> UI : listForUI
+
+    deactivate CTRL
+
+        UI -> UI : doShow()
+
+    opt "0 - Exit"
+
+    UI -> CTRL : closeConnection(PORT_NUMBER)
+    activate CTRL
+
+    CTRL -> SER : closeConnection(PORT_NUMBER)
+    deactivate CTRL
+    activate SER
+
+    autonumber resume
+
+    UI -> UI : sock.close()
+    end opt
+
+
+@enduml
