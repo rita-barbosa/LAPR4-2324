@@ -9,7 +9,7 @@ participant ":NotificationThread" as THREAD
 participant "<<Service>>\nNotificationManagementService" as NS
 participant "<<ArrayList>>\nNotificationListDTO" as LIST
 participant "<<Domain>>\nNotification" as N
-participant "<<Service>>\nNotificationRepository" as NREPO
+participant "<<Infrastructure>>\nNotificationRepository" as NREPO
 
 activate SER
 
