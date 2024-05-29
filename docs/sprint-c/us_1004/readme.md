@@ -91,6 +91,11 @@ created:
 
 ![Sequence Diagram - Get Information](design-diagrams/sequence-diagram-get-information.svg)
 
+#### Sequence Diagram - Changes Models
+
+![Sequence Diagram - Change Models](design-diagrams/sequence-diagram-change-models.svg)
+
+
 **Ref1:** Check the partial sequence diagram
 in [team-decisions](../../team-decisions/team-decisions.md#shared-sequence-diagrams) to see the adopted behaviour.
 
