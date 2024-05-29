@@ -15,14 +15,9 @@ title US1021 Class Diagram
 '}
 
 class JobOpeningManagementService <<Service>> {
-    + getJobOpeningsOfCustomerManager(username)
-    + getJobOpeningsFromCustomerCodes(assignedCustomerCodesList)
+    + jobOpeningsOfCustomerManager(username)
     + getApplicationList(jobOpeningDTOList)
     + add(applicationListDTO)
-}
-
-class CustomerManagementService <<Service>> {
-    + getAssignedCustomerCodesList(username)
 }
 
 class JobOpeningDTOService <<Service>> {
@@ -40,17 +35,8 @@ class ApplicationDTOService <<Service>> {
 }
 
 
-'package "Domain" {
-    package "Authentication and Users" {
-        class AuthenticationService <<Application>> <<Service>> {
-        }
-        class Session <<Domain>> <<Value Object>> {
-        }
-        class SystemUser <<Domain>> <<Aggregate Root>> {
-        }
-        class Username <<Domain>> <<Value Object>> <<ID>> {
-            - value : String
-        }
+    class AuthenticationService <<Application>> <<Service>> {
+        + loggedinUserWithPermissions(BaseRole.CUSTOMER_MANAGER)
     }
 
     class CustomerManager <<Domain>> <<Aggregate Root>> {
@@ -68,18 +54,6 @@ class ApplicationDTOService <<Service>> {
         - description : String
         - requirementsSpecificationsFile : File
         + toDTO()
-    }
-
-    class WorkMode <<Domain>> <<Value Object>> {
-        - workModeDenomination: String
-        + valueOf()
-        + mode()
-    }
-
-    class ContractType <<Domain>> <<Value Object>> {
-        - contractTypeDenomination : String
-        + valueOf()
-        + type()
     }
 
     class Application <<Domain>> <<Aggregate Root>> {
@@ -108,20 +82,14 @@ class ApplicationDTOService <<Service>> {
 
 'package "Persistence" {
     class JobOpeningRepository <<Persistence>> <<Repository>> {
-        + getJobOpeningListMatchingCustomerCode(customerCode)
+        + getJobOpeningListMatchingCustomerManager(customerManagerUsername)
         + getJobOpening(JobOpeningDTO)
-    }
-
-    class CustomerRepository <<Persistence>> <<Repository>> {
-        + getCustomersByUsername(username)
     }
 
     class ApplicationRepository <<Persistence>> <<Repository>> {
         + getApplicationsListWithInterviewResult()
     }
 
-    interface RepositoryDatabase <<Persistence>> {
-    }
 '}
 
 ' Associations
@@ -129,15 +97,12 @@ CustomerManager ..> DisplayAllApplicationDataController
 DisplayAllApplicationDataUI ..> DisplayAllApplicationDataController
 DisplayAllApplicationDataController ..> JobOpeningRepository
 DisplayAllApplicationDataController ..> ApplicationRepository
-DisplayAllApplicationDataController ..> CustomerRepository
 DisplayAllApplicationDataController ..> ApplicationManagementService
 DisplayAllApplicationDataController ..> JobOpeningManagementService
 DisplayAllApplicationDataController ...> JobOpeningDTOService
 DisplayAllApplicationDataController ..> ApplicationDTOService
 
 ' Domain Layer
-WorkMode "1" --> "*" JobOpening : characterizes
-ContractType "1" --> "*" JobOpening  : characterizes
 Interview "0..1" --> "*" Application : characterizes
 JobOpeningManagementService --> JobOpeningRepository
 JobOpeningManagementService --> JobOpening
@@ -145,19 +110,13 @@ ApplicationManagementService --> Application
 ApplicationManagementService --> ApplicationRepository
 ApplicationDTOService --> Application
 JobOpeningDTOService --> JobOpening
-CustomerManagementService --> CustomerRepository
-CustomerManagementService --> CustomerManager
 
 ' Persistence Layer
-JobOpeningRepository "1" --> "*" ContractType : rebuilds
-JobOpeningRepository "1" --> "*" WorkMode : rebuilds
 JobOpeningRepository <.. JobOpening : persisted by
 
 ApplicationRepository <.. Application : persisted by
 ApplicationRepository "1" --> "*" Interview : rebuilds
 
-
-CustomerRepository <.. CustomerManager : persisted by
 
 ' Interface implementation
 RepositoryDatabase <|.. JobOpeningRepository : implements
@@ -165,11 +124,7 @@ RepositoryDatabase <|.. ApplicationRepository : implements
 RepositoryDatabase <|.. CustomerRepository : implements
 
 ' Authentication
-Session --> SystemUser
-SystemUser -> Username
-AuthenticationService .> Username
-AuthenticationService .> Session
 AuthenticationService ..> DisplayAllApplicationDataController
-CustomerManager --|> SystemUser
+
 
 @enduml
