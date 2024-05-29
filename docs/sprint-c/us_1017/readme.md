@@ -51,6 +51,15 @@ must follow specific technical requirements, specified in LPROG. The ANTLR tool 
 > the defined grammar).
 
 
+> **Question:** US1017 - In terms of "upload", it definitely goes through grammar checking, and upon success, the interview
+> response file should be placed in the folder with the "Application" files, correct?
+>
+>
+> **Answer:** Yes, the syntax should be checked, and if everything is correct, the file should be "imported" into the
+> system so that it can be used later, for example, within the scope of US1018. What solution for "importing" is part of
+> your solution. Ideally, I think it would make sense for it to be integrated into the database. If that's not possible,
+> I think it is acceptable for it to be in a folder/directory on a server.
+
 ## 3. Analysis
 
 The main goal of this user story is to import the file with the candidate answers for the interview.
