@@ -82,6 +82,17 @@ to help me analyze the candidates.
 > for job openings that don't have an interview, as it is based on listing the candidates and their interview scores.
 
 
+> **Question:** US1019 - In the user story description: "As a Customer Manager, I want to get and ordered list of
+> candidates, using the job interview points (grades), to help me analyze the candidates." Does the intention "analyze
+> the candidates" impose any change/removal of candidates in the system?
+>
+>
+> **Answer:** The reference to "analyze the candidates" is only to convey the idea that in this user story (US), the
+> system should provide a way for the Customer Manager to view the interview results to help decide the ranking of
+> candidates. Nothing more. The ranking of candidates is recorded in the system through US1013.
+
+
+
 ## 3. Analysis
 
 In this functionality, the customer manager needs to select a job opening and then the order list of the candidates will
