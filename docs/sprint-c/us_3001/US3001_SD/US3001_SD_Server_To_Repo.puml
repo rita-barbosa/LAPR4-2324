@@ -49,11 +49,13 @@ activate SER
 
                                 NS -> N : toDTO()
 
+                                N --> NS : notificationDTO
+
                                 activate N
 
                                 deactivate N
 
-                                NS -> LIST : add(notificationList.get(i))
+                                NS -> LIST : add(notificationDTO)
 
                                 activate LIST
 
