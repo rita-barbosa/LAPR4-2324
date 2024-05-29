@@ -1,0 +1,81 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+participant "<<Service>>\nFollowUpConnectionService" as SER
+participant ":ClientConnectionThread" as CLITHREAD
+participant ":NotificationThread" as THREAD
+participant "<<Service>>\nNotificationManagementService" as NS
+participant "<<Service>>\nNotificationRepository" as NREPO
+
+activate SER
+
+            SER -> CLITHREAD : getAllNotifications(username, code)
+
+            note left
+            code = 6 (NOTIFICATION)
+            end note
+
+            activate CLITHREAD
+
+                CLITHREAD -> THREAD** : getAllNotifProcess(username)
+
+            deactivate CLITHREAD
+
+            activate THREAD
+
+                THREAD -> NS : getAllNotifProcess(username)
+
+                activate NS
+
+                    NS -> NREPO : getAllUnseenNotificationWithUsername(username)
+
+                    activate NREPO
+
+                    deactivate NREPO
+
+                    loop for each notif in the list and while user doesn't leave
+
+                        NS --> THREAD : notifList[i]
+
+                        THREAD --> SER : sOut.writeObject(notifList[i]DTO)
+
+                        note right
+                        sOut an ObjectOutputStream from
+                        the connection's sock OutputStream
+                        end note
+
+                        alt only if no problem occurred while showing
+
+                            NS -> NS : notifList[i].setToSeen()
+
+                            NS -> NREPO : save(notifList[i])
+
+                        end
+
+                        activate NREPO
+
+                        deactivate NREPO
+
+                        opt "0 - Exit"
+
+                        SER -> CLITHREAD : closeConnection(code)
+
+                        activate CLITHREAD
+                        note left
+                        code = 1 (DISCONN)
+                        end note
+
+                        CLITHREAD --> CLITHREAD : clientSocket.close()
+
+                        end
+
+                        autonumber stop
+                        CLITHREAD -[#white]> CLITHREAD
+                        deactivate CLITHREAD
+
+
+                        autonumber resume
+
+@enduml
