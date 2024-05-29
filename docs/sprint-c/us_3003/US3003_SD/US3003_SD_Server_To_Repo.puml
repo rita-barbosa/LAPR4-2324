@@ -1,0 +1,108 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+participant "<<Service>>\nFollowUpConnectionService" as SER
+participant ":ClientConnectionThread" as CLITHREAD
+participant ":NotificationThread" as THREAD
+participant "<<Service>>\nNotificationManagementService" as NS
+participant "<<ArrayList>>\nNotificationListDTO" as LIST
+participant "<<Domain>>\nNotification" as N
+participant "<<Infrastructure>>\nNotificationRepository" as NREPO
+
+activate SER
+
+            SER -> CLITHREAD : getAllNotifications(username, code)
+
+            note left
+            code = 6 (NOTIFICATION)
+            end note
+
+            activate CLITHREAD
+
+                CLITHREAD -> THREAD** : createNotifThread(username)
+
+                CLITHREAD -> THREAD : start()
+
+            deactivate CLITHREAD
+
+            activate THREAD
+
+                loop Every minute
+
+                THREAD -> NS : getAllNotifProcess(username)
+
+                activate NS
+
+                    NS -> NREPO : getAllUnseenNotificationWithUsername(username)
+
+                    activate NREPO
+
+                        NREPO --> NS : notificationList
+
+                    deactivate NREPO
+
+                            NS -> LIST**: new ArrayList()
+
+                            loop for every notification in the list returned
+
+                                NS -> N : toDTO()
+
+                                activate N
+
+                                    N --> NS : notificationDTO
+
+                                deactivate N
+
+                                NS -> LIST : add(notificationDTO)
+
+                                activate LIST
+
+                                deactivate LIST
+
+                                NS -> NS : notificationList.get(i).setToSeen()
+
+                                NS -> NREPO : save(notificationList.get(i))
+
+                                activate NREPO
+
+                                deactivate NREPO
+
+                            end
+
+                        NS --> THREAD : notificationListDTO
+
+                        THREAD --> SER : sOut.writeObject(notificationListDTO)
+
+                        end
+
+                        note right
+                        sOut an ObjectOutputStream from
+                        the connection's sock OutputStream
+                        end note
+
+
+
+                       opt "0 - Exit"
+
+                       SER -> CLITHREAD : closeConnection(code)
+                       deactivate SER
+                       activate CLITHREAD
+                       note left
+                       code = 1 (DISCONN)
+                       end note
+
+                       CLITHREAD --> CLITHREAD : clientSocket.close()
+
+                       autonumber stop
+                       CLITHREAD -[#white]> CLITHREAD
+                       deactivate CLITHREAD
+
+
+                       autonumber resume
+
+                       end opt
+
+
+@enduml
