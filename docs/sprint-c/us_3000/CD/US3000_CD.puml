@@ -1,0 +1,161 @@
+@startuml US3000_CD
+title US3000 Class Diagram
+
+'package "Presentation" {
+    class ListApplicationsAndStateUI <<Presentation>> {
+    }
+'}
+
+'package "Application" {
+    class ListApplicationsAndStateController <<Application>> {
+        + getApplicationList(username)
+        + getSessionCredentials()
+        + getconnection(username, password, PORT_NUMBER)
+        + jobOpeningsDataList(username)
+        + closeConnection(PORT_NUMBER)
+    }
+'}
+
+class FollowUpConnectionService <<Service>> {
++ getApplicationsList(username)
++ closeConnection(PORT_NUMBER)
++ establishConnection(username, password, serverIP, PORT_NUMBER)
+}
+
+
+class ClientConnectionThread {
++ getApplicationsList(username, code)
++ closeConnection(code)
++ create(clientSocket)
++ authenticationProtocol(messageDTO)
+}
+
+class ListingRequestThread {
++ getApplicationsList(code, username)
+}
+
+class JobOpeningManagementService <<Service>> {
+    + jobOpeningsOfCustomerManager(username)
+    + getApplicationList(jobOpeningDTOList)
+    + add(applicationListDTO)
+}
+
+class CustomerManagementService <<Service>> {
+    + getAssignedCustomerCodesList(username)
+}
+
+class JobOpeningDTOService <<Service>> {
+    + convertToDTO(jobOpeningList)
+}
+
+class ApplicationManagementService <<Service>> {
+    + getApplicationsList(jobOpening)
+}
+
+class ApplicationDTOService <<Service>> {
+    + convertToDTO(applicationList)
+}
+
+
+    class AuthenticationService <<Application>> <<Service>> {
+        + loggedinUserWithPermissions(BaseRole.CUSTOMER_MANAGER)
+    }
+
+
+    class CustomerManager <<Domain>> <<Aggregate Root>> {
+        + customerCode()
+    }
+
+    class JobOpening <<Domain>> <<Aggregate Root>> {
+        - function : String
+        - contractType : ContractType
+        - workMode : WorkMode
+        - companyAddress : Address
+        - costumerCode : String
+        - companyName : String
+        - numVacancies : Integer
+        - description : String
+        - requirementsSpecificationsFile : File
+        + toDTO()
+    }
+
+    class Application <<Domain>> <<Aggregate Root>> {
+        - requirementAnswer : String
+        - requirementResult : Integer
+        - file : File
+        - email : String
+        - applicationDate : Date
+        - applicationStatus : Boolean
+        - candidateName : String
+        - phoneNumber : Integer
+        - interview : Interview
+        + toDTO()
+    }
+'}
+
+'package "Persistence" {
+    class JobOpeningRepository <<Persistence>> <<Repository>> {
+        + getJobOpeningListMatchingCustomerManager(customerManagerUsername)
+        + getJobOpening(JobOpeningDTO)
+    }
+
+    class ApplicationRepository <<Persistence>> <<Repository>> {
+        + getApplicationsList(jobOpening)
+    }
+
+'}
+
+class FollowUpServer {}
+
+class MessageDTO {}
+
+
+class Socket {
++ Socket(serverIP, PORT_NUMBER)
++ close()
+}
+
+class ServerSocket {
++ ServerSocket(PORT_NUMBER)
++ close()
+}
+
+
+
+' Associations
+CustomerManager ..> ListApplicationsAndStateController
+ListApplicationsAndStateUI .> ListApplicationsAndStateController
+ListApplicationsAndStateController ..> ApplicationManagementService
+ListApplicationsAndStateController ..> JobOpeningManagementService
+ListApplicationsAndStateController ..> JobOpeningDTOService
+ListApplicationsAndStateController ..> ApplicationDTOService
+
+' Domain Layer
+JobOpeningManagementService -left-> JobOpeningRepository
+JobOpeningManagementService -up-> JobOpening
+ApplicationManagementService --> Application
+ApplicationManagementService -left-> ApplicationRepository
+ApplicationDTOService -up-> Application
+JobOpeningDTOService -up-> JobOpening
+
+' Persistence Layer
+JobOpeningRepository <.. JobOpening : persisted by
+
+ApplicationRepository <.. Application : persisted by
+
+' Authentication
+AuthenticationService ..> ListApplicationsAndStateController
+FollowUpConnectionService ..> ListApplicationsAndStateController
+
+FollowUpConnectionService ..> FollowUpServer
+FollowUpConnectionService ..> ClientConnectionThread
+FollowUpServer --> ClientConnectionThread
+ClientConnectionThread -> ListingRequestThread
+ClientConnectionThread --> AuthenticationService
+ClientConnectionThread -> MessageDTO
+
+FollowUpConnectionService -up-> Socket
+MessageDTO <- FollowUpConnectionService
+FollowUpServer -up-> ServerSocket
+
+@enduml
