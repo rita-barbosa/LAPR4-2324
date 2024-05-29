@@ -7,7 +7,6 @@ abstract class AbstractListUI {
 # doShow()
 }
 
-interface Serializable {}
 
 interface DTOable {
 + toDTO()
@@ -28,42 +27,42 @@ class ListCustomerJobOpeningsController {
 class FollowUpConnectionService {
 + getJobOpeningsDataList(String username)
 + closeConnection(int PORT_NUMBER)
-+ establishConnection(String username, String password, InetAddress serverIP, int PORT_NUMBER)
++ establishConnection(username, password, serverIP, PORT_NUMBER)
 }
 
 
 
 class ClientConnectionThread {
-+ receiveJobOpeningsDataList(String username, int code)
-+ closeConnection(int code)
-+ create(Socket clientSocket)
-+ authenticationProtocol(DataDTO dataDTO)
++ receiveJobOpeningsDataList(username, code)
++ closeConnection(code)
++ create(clientSocket)
++ authenticationProtocol(messageDTO)
 }
 
 class ListingRequestThread {
-+ getJobOpeningsList(int code, String username)
++ getJobOpeningsList(code, username)
 }
 
 
 class JobOpeningManagementService {
-+ getCustomerJobOpeningData(String username)
++ getCustomerJobOpeningData(username)
 }
 
 
 class JobOpeningListDTOService {
-+ convertJobOpeningsToCustomerJobOpeningDTO(List<JobOpening> jobOpeningsList)
++ convertJobOpeningsToCustomerJobOpeningDTO(jobOpeningsList)
 }
 
 class CustomerManagementService {
-+ getCustomerByUsername(String username)
++ getCustomerByUsername(username)
 }
 
 class CustomerRepository {
-+ getCustomerByUsername(String username)
++ getCustomerByUsername(username)
 }
 
 class JobOpeningRepository {
-+ findAllJobOpeningsWithCustomerCode(String customerCode)
++ findAllJobOpeningsWithCustomerCode(customerCode.toString())
 }
 
 class AuthorizationService {
@@ -74,14 +73,12 @@ class UserSession {
 - authenticatedUser
 }
 
-class DataDTO {
-+ create(int version, int code, List<DTOable> jobOpeningCustomerDataDTOList)
-}
+class MessageDTO {}
 
 class FollowUpServer {}
 
 class AuthenticationService {
-+  authenticate(String username, String password,\n Role... BaseRoles.CUSTOMER_MANAGER,\n BaseRoles.CUSTOMER,\n BaseRoles.CANDIDATE)
++  authenticate(username, password,\n BaseRoles.CUSTOMER_MANAGER,\n BaseRoles.CUSTOMER,\n BaseRoles.CANDIDATE)
 }
 
 class JobOpening {
@@ -89,12 +86,12 @@ class JobOpening {
 }
 
 class Socket {
-+ Socket(InetAddress serverIP, int PORT_NUMBER)
++ Socket(serverIP, PORT_NUMBER)
 + close()
 }
 
 class ServerSocket {
-+ ServerSocket(int PORT_NUMBER)
++ ServerSocket(PORT_NUMBER)
 + close()
 }
 
@@ -102,11 +99,10 @@ class JobOpeningDataDTO {}
 
 ' ASSOCIATIONS
 
-AbstractListUI <|.right. ListCustomerJobOpeningsUI : implements
-DTOable <|.. JobOpening : implements
-Serializable <|.. DataDTO : implements
+AbstractListUI <|-- ListCustomerJobOpeningsUI
+DTOable <|-- JobOpening
 
-ListCustomerJobOpeningsUI .right.> ListCustomerJobOpeningsController
+ListCustomerJobOpeningsUI ..> ListCustomerJobOpeningsController
 
 ListCustomerJobOpeningsController ..> AuthorizationService
 ListCustomerJobOpeningsController ..> FollowUpConnectionService
@@ -119,7 +115,7 @@ FollowUpConnectionService ..> ClientConnectionThread
 FollowUpServer --> ClientConnectionThread
 ClientConnectionThread --> ListingRequestThread
 ClientConnectionThread --> AuthenticationService
-ClientConnectionThread --> DataDTO
+ClientConnectionThread --> MessageDTO
 
 FollowUpConnectionService --> Socket
 FollowUpServer --> ServerSocket
@@ -134,7 +130,7 @@ JobOpeningManagementService ...> CustomerManagementService
 
 CustomerManagementService ..> CustomerRepository
 
-DataDTO <-- FollowUpConnectionService
+MessageDTO <-- FollowUpConnectionService
 
 AuthorizationService --> UserSession
 

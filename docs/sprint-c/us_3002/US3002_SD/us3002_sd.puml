@@ -1,11 +1,13 @@
 @startuml
 
-title US3002 Sequence Diagram [FollowUp Server Connection / Domain]
+title US3002 Sequence Diagram
+
+participant "<<presentation>>\n:ListCustomerJobOpeningsUI" as UI
+participant "<<application>>\n:ListCustomerJobOpeningsController" as CTRL
 
 participant "<<service>>\n:FollowUpConnectionService" as ConnSrv
 participant ":ClientConnectionThread" as CLITHREAD
 participant ":ListingRequestThread" as THREAD
-participant ":DataDTO" as DataDTO
 
 participant "<<service>>\n:JobOpeningManagementService" as JobSrv
 database "<<repository>>\n:JobOpeningRepository" as JobOpeningRepository
@@ -16,7 +18,21 @@ database "<<repository>>\n:CustomerRepository" as CustomerRepository
 
 autonumber
 
- -> ConnSrv : getJobOpeningsDataList(username)
+activate UI
+ref over UI
+shared-sequence-diagram
+sequence-diagram-tcp-connection
+end ref
+
+UI -> CTRL : jobOpeningsDataList(username)
+note bottom
+username is obtained
+as described in the
+shared diagram
+end note
+
+activate CTRL
+CTRL -> ConnSrv : getJobOpeningsDataList(username)
 activate ConnSrv
 
 ConnSrv -> CLITHREAD : receiveJobOpeningsDataList(username, code)
@@ -54,22 +70,31 @@ deactivate DTO
 JobSrv --> THREAD : jobOpeningsCustomerDataListDTO
 deactivate JobSrv
 
-THREAD -> DataDTO** : create(version, code, jobOpeningCustomerDataDTOList)
-
-THREAD --> ConnSrv : sOut.writeObject(dataDTO)
+loop for all DTOs
+THREAD --> ConnSrv : sOut.writeObject(jobOpeningCustomerDataDTO)
 deactivate THREAD
     note right
     sOut an ObjectOutputStream from
     the connection's sock OutputStream
     end note
 
- <-- ConnSrv : jobOpeningCustomerDataDTO
+end loop
+
+ConnSrv --> CTRL : jobOpeningCustomerDataDTO
 deactivate ConnSrv
 
+CTRL --> UI : jobOpeningCustomerDataDTO
+deactivate CTRL
+
+UI -> UI : doShow()
 
 opt "0 - Exit"
 
- -> ConnSrv : closeConnection(PORT_NUMBER)
+UI -> CTRL : closeConnection(PORT_NUMBER)
+activate CTRL
+
+CTRL -> ConnSrv : closeConnection(PORT_NUMBER)
+deactivate CTRL
 activate ConnSrv
 
 ConnSrv -> CLITHREAD : closeConnection(code)
@@ -85,7 +110,12 @@ autonumber stop
 CLITHREAD -[#white]> CLITHREAD
 deactivate CLITHREAD
 
+
 autonumber resume
 
+UI -> UI : sock.close()
+end opt
+
+deactivate UI
 
 @enduml
