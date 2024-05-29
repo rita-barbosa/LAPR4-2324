@@ -40,21 +40,16 @@ public class Address implements ValueObject {
 
     public Address(String address) {
         String[] parts = address.split(",\\s*");
-        if (parts.length >= 5) {
-            this.streetName = parts[0];
-            this.streetNumber = parts[1];
-            this.city = parts[2];
-            this.district = parts[3];
-            this.zipcode = parts[4];
-        } else {
-            // Handle case where the address string does not contain all required parts
-            // For example, throw an IllegalArgumentException
-            throw new IllegalArgumentException("Invalid address format: " + address);
-        }
+        new Address(parts[0], parts[2], parts[3], parts[1], parts[4]);
     }
 
+    public static Address valueOf(String address) {
+        return new Address(address);
+    }
+
+
     private void validateZipcode(String zipcode) {
-        Pattern pattern = Pattern.compile("\\d{5}");
+        Pattern pattern = Pattern.compile("\\d{4}-\\d{3}");
         Matcher matcher = pattern.matcher(zipcode);
         Actions.doIf(Actions.THROW_ARGUMENT, !matcher.matches());
     }

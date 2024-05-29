@@ -1,5 +1,6 @@
-package jobs4u.base.jobopeningmanagement.domain;
+package jobs4u.base.workmodemanagement;
 
+import jobs4u.base.workmodemanagement.domain.WorkMode;
 import org.junit.Test;
 
 import static org.junit.Assert.assertThrows;

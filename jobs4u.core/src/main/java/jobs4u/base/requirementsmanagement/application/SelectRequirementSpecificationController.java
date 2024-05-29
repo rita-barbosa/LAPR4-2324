@@ -37,7 +37,7 @@ public class SelectRequirementSpecificationController {
     public Iterable<RequirementSpecificationDTO> availableRequirementSpecification() {
         authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN);
 
-        return reqSpeSvc.availableRequirementSpecification();
+        return reqSpeSvc.allRequirementSpecifications();
     }
 
     public boolean updateRequirementSpecification(JobOpeningDTO jobOpeningDTO, RequirementSpecificationDTO requirementSpecificationDTO) {

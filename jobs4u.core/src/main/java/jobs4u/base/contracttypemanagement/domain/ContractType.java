@@ -1,4 +1,4 @@
-package jobs4u.base.jobopeningmanagement.domain;
+package jobs4u.base.contracttypemanagement.domain;
 
 import eapli.framework.domain.model.AggregateRoot;
 import eapli.framework.domain.model.DomainEntities;
@@ -9,7 +9,7 @@ import eapli.framework.validations.Preconditions;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
+import jobs4u.base.contracttypemanagement.dto.ContractTypeDTO;
 
 import java.util.Objects;
 
