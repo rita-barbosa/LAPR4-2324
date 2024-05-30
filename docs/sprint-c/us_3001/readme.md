@@ -84,18 +84,58 @@ is a partial domain model, with emphasis on US3001's concepts.
 
 ## 4. Design
 
-*In this sections, the team should present the solution design that was adopted to solve the requirement. This should
-include, at least, a diagram of the realization of the functionality (e.g., sequence diagram), a class diagram (
-presenting the classes that support the functionality), the identification and rational behind the applied design
-patterns and the specification of the main tests used to validade the functionality.*
+**After careful consideration, a 4-layer architecture of Domain, Infrastructure, Presentation and Application was deemed to be the best.**
+
+**For the server and client setup, the integration of what will from here on out be called the Follow Up Server with this functionality is explained by these sequence diagrams:**
 
 ### 4.1. Realization
 
+**Perspective from the Candidate Application:**
+![Perspective from the Candidate Application](US3001_SD/US3001_SD_Candidate_App.svg)
+
+**Perspective from the server:**
+![Perspective from the server](US3001_SD/US3001_SD_Server_To_Repo.svg)
+
 ### 4.2. Class Diagram
 
-![a class diagram]()
+![a class diagram](US3001_CD/US3001_class_diagram-US3001_Class_Diagram.svg)
 
 ### 4.3. Applied Patterns
+
+This topic presents the classes with the patterns applied to them along with justifications.
+>**DTO Pattern**
+> * NotificationDTO
+> * MessageDTO
+>
+> **Justifications**
+>
+> * The usage of the NotificationDTO and MessageDTO comes from the fact that we wanted this class to server as one more layer of encapsulation between the UI and the domain classes,
+    > and for security reasons, as to avoid someone using the UI to be able to change domain objects that should only be reached using the controller.
+> * The usage of this classes also helps with the communication with the server since the packets that will be sent will mostly consist of DTOs.
+>
+>**Repository Pattern**
+> * NotificationRepository
+>
+> **Justifications**
+>
+> * The notifications that are going to shown to the user need to be persisted due to the scenario the client proposed of delivering notifications to the candidate when the candidate was not on the app to see them.
+
+>**Service Pattern**
+> * FollowUpConnectionService
+> * NotificationManagementService
+> * AuthorizationService
+>
+> **Justifications**
+>
+> * NotificationManagementService is used in more than one functionality, and its in charge of managing notifications that are to be prepared to be sent to customers or candidates, also,
+    >   serving as encapsulation between the controller and the NotificationRepository along with the domain classes.
+>
+> * AuthorizationService is used in more than one functionality, and its in charge of authorizing and authenticating users to access various functionalities,
+    >  it also serves as encapsulation between the controller and the JobOpeningRepository along with the domain classes.
+>
+> * FollowUpConnectionService is used in more than one functionality, and its in charge of managing connections to the server and functionalities related to it, also,
+    >   serving as encapsulation between the controller and the server along with the domain classes.
+
 
 ### 4.4. Tests
 

@@ -193,15 +193,24 @@ To make the design of this user story, were used the following patterns:
 
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
+**Test 1:** Verifies that the list is in descending order
 
-**Test 1:** Verifies that it is not possible to ...
-
-**Refers to Acceptance Criteria:** G002.1
+**Refers to Acceptance Criteria:** 1019.2
 
 ````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
+@Test
+public void ensureListIsInDescendingOrder() {
+...
+}
+````
+
+**Test 1:** Verifies that the job opening has interviews
+
+**Refers to Acceptance Criteria:** 1019.3
+
+````
+@Test
+public void ensureJobOpeningHasInterview() {
 ...
 }
 ````

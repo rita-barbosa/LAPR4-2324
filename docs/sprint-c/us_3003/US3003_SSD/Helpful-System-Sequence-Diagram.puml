@@ -4,8 +4,8 @@ title US3001 System Sequence Diagram
 
 autonumber
 
-actor "Candidate" as CAND
-participant "System\n(Candidate App)" as SYS
+actor "Customer" as CAND
+participant "System\n(Customer App)" as SYS
 participant "Follow Up Server" as SERVER
 
 activate SYS
@@ -22,9 +22,9 @@ activate SYS
 
             loop Every minute
 
-                SYS -> SERVER : requests all unseen candidate's notifications
+                SYS -> SERVER : requests all unseen customer's notifications
 
-                SERVER --> SYS : candidate's notifications
+                SERVER --> SYS : customer's notifications
 
             end
 

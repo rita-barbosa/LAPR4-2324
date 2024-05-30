@@ -169,18 +169,28 @@ To make the design of this user story, were used the following patterns:
 
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
+**Test 1:** Verifies that exist interview
 
-**Test 1:** Verifies that it is not possible to ...
-
-**Refers to Acceptance Criteria:** G002.1
+**Refers to Acceptance Criteria:** 1021.2
 
 ````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
+@Test
+public void ensureExistInterview() {
 ...
 }
 ````
+
+**Test 2:** Verifies that exist requirement process
+
+**Refers to Acceptance Criteria:** 1021.2
+
+````
+@Test
+public void ensureExistRequirementProcess() {
+...
+}
+````
+
 
 ## 5. Implementation
 
