@@ -33,6 +33,7 @@ import jobs4u.base.app.backoffice.console.presentation.candidate.RegisterCandida
 import jobs4u.base.app.backoffice.console.presentation.customer.RegisterCustomerAction;
 import jobs4u.base.app.backoffice.console.presentation.interviewTemplate.GenerateInterviewModelTemplateFileUI;
 import jobs4u.base.app.backoffice.console.presentation.interviewmodel.SelectInterviewModelAction;
+import jobs4u.base.app.backoffice.console.presentation.jobopening.editing.EditJobOpeningAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.listing.ListJobOpeningsAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.registration.RegisterJobOpeningAction;
 import jobs4u.base.app.backoffice.console.presentation.listApplications.ListJobOpeningApplicationsAction;
@@ -97,7 +98,7 @@ public class MainMenu extends AbstractUI {
     // MAIN MENU
     private static final int MY_USER_OPTION = 1;
     private static final int USERS_OPTION = 2;
-//    private static final int JOB_OPENING_OPTION = 3;
+    //    private static final int JOB_OPENING_OPTION = 3;
 //    private static final int CUSTOMER_OPTION = 4;
 //    private static final int CANDIDATE_OPERATOR_OPTION = 5;
 //    private static final int APPLICATION_OPTION = 6;
@@ -196,30 +197,30 @@ public class MainMenu extends AbstractUI {
 
     private Menu buildOperatorPluginMenu() {
         final Menu menu = new Menu("Plugins >");
-        menu.addItem(1,"Generate and export Requirement Specification Template", new GenerateRequirementsTemplateFileUI()::show);
+        menu.addItem(1, "Generate and export Requirement Specification Template", new GenerateRequirementsTemplateFileUI()::show);
         return menu;
     }
 
-    private Menu buildCustomerManagerPluginMenu(){
+    private Menu buildCustomerManagerPluginMenu() {
         final Menu menu = new Menu("Plugins >");
         menu.addItem(1, "Generate and export Interview Model Template", new GenerateInterviewModelTemplateFileUI()::show);
         return menu;
     }
 
-    private Menu buildLanguageEngineerSettingsMenu(){
+    private Menu buildLanguageEngineerSettingsMenu() {
         final Menu menu = new Menu("Language Engineer >");
-        menu.addItem(1,"Register a new plugin",new RegisterPluginAction());
+        menu.addItem(1, "Register a new plugin", new RegisterPluginAction());
         return menu;
     }
 
     private Menu buildOperatorCandidateMenu() {
         final Menu menu = new Menu("Candidates >");
-        menu.addItem(1,"Register a new candidate",new RegisterCandidateAction());
+        menu.addItem(1, "Register a new candidate", new RegisterCandidateAction());
         menu.addItem(2, "List All Candidates", new ListAllCandidatesAction());
         return menu;
     }
 
-    private Menu buildOperatorApplicationMenu(){
+    private Menu buildOperatorApplicationMenu() {
         final Menu menu = new Menu("Applications >");
         menu.addItem(1, "Register Job Opening Applications", new RegisterJobOpeningApplicationsAction());
         return menu;
@@ -229,11 +230,11 @@ public class MainMenu extends AbstractUI {
     private Menu buildCustomerManagerCustomerMenu() {
         final Menu menu = new Menu("Customers >");
 
-            menu.addItem(1, "Register a Customer", new RegisterCustomerAction());
-            menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
+        menu.addItem(1, "Register a Customer", new RegisterCustomerAction());
+        menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
 
-            return menu;
-        }
+        return menu;
+    }
 
     private Menu buildCustomerManagerJobOpeningMenu() {
         final Menu menu = new Menu("Job Opening >");
@@ -244,10 +245,11 @@ public class MainMenu extends AbstractUI {
         menu.addItem(4, "Select an interview model", new SelectInterviewModelAction());
         menu.addItem(5, "List job opening applications", new ListJobOpeningApplicationsAction());
         menu.addItem(6, "Setup a recruitment process", new SetupRecruitmentProcessAction());
+        menu.addItem(7, "Edit a job opening", new EditJobOpeningAction());
         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
 
-            return menu;
-        }
+        return menu;
+    }
 
 //    private Menu buildAdminSettingsMenu() {
 //        final Menu menu = new Menu("Settings >");
@@ -257,8 +259,8 @@ public class MainMenu extends AbstractUI {
 //        return menu;
 //    }
 
-        private Menu buildUsersMenu () {
-            final Menu menu = new Menu("Users >");
+    private Menu buildUsersMenu() {
+        final Menu menu = new Menu("Users >");
 
         menu.addItem(ADD_USER_OPTION, "Add User", new AddUserUI()::show);
         menu.addItem(LIST_USERS_OPTION, "List all Users", new ListUsersAction());
