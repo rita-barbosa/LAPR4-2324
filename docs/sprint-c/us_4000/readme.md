@@ -63,6 +63,22 @@ in SCOMP.
 > be counted as a word in the process. However, this is a temporary exception, accepted, but not considered as a good 
 > solution (a good solution should be one that takes into account the used language).
 
+
+> **Question:** Recently, you answered questions about the functionality concerning the top 20 number of words in the 
+> application files of candidates (Q170 and Q187). When analyzing the questions, we were unsure which interpretation to 
+> consider: whether the functionality should be applied to all of the candidate's applications (Q187), or if the Customer
+> Manager chooses one application from the candidate and then the functionality works only on that application (Q170).
+>
+> **Answer:** The candidate data refers to the data of a candidate who may have multiple applications. In this context, 
+> when presenting the data for each application, the top 20 words should appear for each individual application.
+
+
+> **Question:** In US4000, it is mentioned, "Additionally, I require a comprehensive list of the files in which these words
+> appear." Do you just want us to indicate in which files the word "x" appears, or is there any additional information 
+> required?
+>
+> **Answer:** As you indicated, for each word, specify in which files it appears.
+
 ## 3. Analysis
 
 This functionality shows the candidate data and their 20 most used words. This is done by having the system analysing the
