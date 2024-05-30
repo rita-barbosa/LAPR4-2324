@@ -173,18 +173,8 @@ public void ensureCantChangeJobReference() {
 }
 ````
 
-**Test 2:** Verifies that it is not possible to edit the company name.
 
-**Refers to Acceptance Criteria:** 1004.1 and 1004.3
-
-````
-@Test(expected = IllegalArgumentException.class)
-public void ensureCantChangeCompanyName() {
-...
-}
-````
-
-**Test 3:** Verifies that it is not possible to edit public information where the current job opening status isn't
+**Test 2:** Verifies that it is not possible to edit public information where the current job opening status isn't
 compatible.
 
 **Refers to Acceptance Criteria:** 1004.2
@@ -196,7 +186,7 @@ public void ensureCanEditPublicInformationOnlyIfStatusIsValid() {
 }
 ````
 
-**Test 4:** Verifies that the requirement specification cannot be edited if the recruitment process phase is not compatible.
+**Test 3:** Verifies that the requirement specification cannot be edited if the recruitment process phase is not compatible.
 
 **Refers to Acceptance Criteria:** 1004.1 and 1004.2
 
@@ -207,7 +197,7 @@ public void ensureCanEditReqSpecificationOnlyIfPhaseIsValid() {
 }
 ````
 
-**Test 5:** Verifies that the interview model cannot be edited if the recruitment process phase is not compatible.
+**Test 4:** Verifies that the interview model cannot be edited if the recruitment process phase is not compatible.
 
 **Refers to Acceptance Criteria:** 1004.1 and 1004.2
 
