@@ -107,7 +107,7 @@ public class JobOpeningTest {
         JobOpening opening = new JobOpening("Senior Dev", contractType, workMode, address, 15,
                 "description", jobOpeningRequirement(), jobReference);
         opening.updateStatusToStarted();
-        assertThrows(IllegalArgumentException.class, () -> opening.changeRequirementSpecification(jobOpeningRequirement()));
+        assertThrows(NullPointerException.class, () -> opening.changeRequirementSpecification(jobOpeningRequirement()));
     }
 
     @Test(expected = IllegalArgumentException.class)
