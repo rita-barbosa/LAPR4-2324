@@ -284,22 +284,20 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
 
     public void changeRequirementSpecification(RequirementSpecification requirementSpecification) {
         Preconditions.noneNull(requirementSpecification);
-        Preconditions.ensure(status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED)) ||
-                status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED)));
-
+        Preconditions.ensure(!status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.ENDED)));
+        if (status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.STARTED))) {
+            Preconditions.ensure(recruitmentProcess.currentActivePhase().equalsIgnoreCase("Application"));
+        }
         this.requirementSpecification = requirementSpecification;
     }
 
     public void changeInterviewModel(InterviewModel interviewModel) {
-        Preconditions.noneNull(interviewModel);
-        if (!status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED)) &&
-                !status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED))) {
-
-            throw new IllegalStateException("The interview model can only be changed if the status is UNFINISHED or NOT_STARTED");
-        } else {
-            this.interviewModel = interviewModel;
+        Preconditions.noneNull(requirementSpecification);
+        Preconditions.ensure(!status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.ENDED)));
+        if (status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.STARTED))) {
+            Preconditions.ensure(recruitmentProcess.currentActivePhase().equalsIgnoreCase("Interview"));
         }
-
+        this.interviewModel = interviewModel;
     }
 
     public Boolean changeInformation(List<EditableInformation> selectedInformation, List<String> newInformation) {
@@ -312,11 +310,7 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
             String newInfo = newInformation.get(i);
 
             EditableInformation info;
-            try {
-                info = EditableInformation.fromString(selected);
-            } catch (IllegalArgumentException e) {
-                return false;
-            }
+            info = EditableInformation.fromString(selected);
 
             if (info.equals(EditableInformation.ADDRESS)) {
                 changeAddress(newInfo);
@@ -334,27 +328,47 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
     }
 
     public void changeWorkMode(WorkMode newInfo) {
-        this.workMode = newInfo;
+        if (status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED)) || status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED))) {
+            this.workMode = newInfo;
+        } else {
+            throw new IllegalArgumentException("Unable to change information.");
+        }
     }
 
     private void changeNumVacancies(String newInfo) {
-        this.numVacancies = NumberVacancy.valueOf(Integer.parseInt(newInfo));
+        if (status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED)) || status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED))) {
+            this.numVacancies = NumberVacancy.valueOf(Integer.parseInt(newInfo));
+        } else {
+            throw new IllegalArgumentException("Unable to change information.");
+        }
     }
 
     private void changeFunction(String newInfo) {
-        this.function = JobFunction.valueOf(newInfo);
+        if (status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED)) || status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED))) {
+            this.function = JobFunction.valueOf(newInfo);
+        } else {
+            throw new IllegalArgumentException("Unable to change information.");
+        }
     }
 
     private void changeDescription(String newInfo) {
-        this.description = Description.valueOf(newInfo);
+        if (status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED)) || status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED))) {
+            this.description = Description.valueOf(newInfo);
+        } else {
+            throw new IllegalArgumentException("Unable to change information.");
+        }
     }
 
     public void changeContractType(ContractType newInfo) {
-        this.contractType = newInfo;
+        if (status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED)) || status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED))) {
+            this.contractType = newInfo;
+        } else {
+            throw new IllegalArgumentException("Unable to change information.");
+        }
     }
 
     private void changeAddress(String newInfo) {
-        if (status.equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED)) || status.equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED))) {
+        if (status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED)) || status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED))) {
             this.address = Address.valueOf(newInfo);
         } else {
             throw new IllegalArgumentException("Unable to change information.");

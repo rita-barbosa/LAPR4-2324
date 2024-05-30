@@ -17,7 +17,7 @@ public class EditableInformation {
 
     private final String name;
 
-    private EditableInformation(String name) {
+    public EditableInformation(String name) {
         Preconditions.nonEmpty(name);
         this.name = name;
     }
@@ -32,7 +32,7 @@ public class EditableInformation {
                 return info;
             }
         }
-        throw new IllegalArgumentException("No enum constant for text: " + text);
+        throw new IllegalArgumentException("Not possible to edit " + text);
     }
 
     public static List<EditableInformation> notStartedEditableInformation() {

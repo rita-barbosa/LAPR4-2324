@@ -45,7 +45,7 @@ public class SelectInterviewModelController {
 
         if (jo.isPresent()) {
 
-            Optional<InterviewModel> im = interviewModelRepository.ofIdentity(new InterviewModelName(interviewModelDTO.filename()));
+            Optional<InterviewModel> im = interviewModelRepository.ofIdentity(new InterviewModelName(interviewModelDTO.name()));
 
             if (im.isPresent()) {
                 jo.get().changeInterviewModel(im.get());
