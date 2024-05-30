@@ -4,7 +4,18 @@ import lombok.Getter;
 
 public class RequirementSpecificationDTO {
 
-    @Getter
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getPlugin() {
+        return plugin;
+    }
+
     private final String name;
     private final String description;
     private String plugin;

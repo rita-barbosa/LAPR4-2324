@@ -38,17 +38,13 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
     private ContractType contractType;
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    private WorkMode workMode;
-    @Getter
+    private  WorkMode workMode;
     @Column(nullable = false)
     private JobOpeningStatus status;
-    @Getter
     @EmbeddedId
     private JobReference jobReference = new JobReference();
-    @Getter
     @Column(nullable = false)
     private Address address;
-    @Getter
     @Column(nullable = false)
     private Description description;
     @Column(nullable = false)
@@ -62,12 +58,9 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
     private InterviewModel interviewModel;
 
 
-    @Setter
-    @Getter
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Application> applications = new HashSet<>();
 
-    @Getter
     @OneToOne(mappedBy = "jobOpening")
     private RecruitmentProcess recruitmentProcess;
 
@@ -226,6 +219,37 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         this.status.setStatusDescriptionAsUNFINISHED();
         this.rank = new Rank(newJobReference);
         this.recruitmentProcess = recruitmentProcess;
+    }
+
+    public JobOpeningStatus getStatus() {
+        return status;
+    }
+
+    public JobReference getJobReference() {
+        return jobReference;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public Description getDescription() {
+        return description;
+    }
+
+
+
+    public Set<Application> getApplications() {
+        return applications;
+    }
+
+
+    public RecruitmentProcess getRecruitmentProcess() {
+        return recruitmentProcess;
+    }
+
+    public void setApplications(Set<Application> applications) {
+        this.applications = applications;
     }
 
 
