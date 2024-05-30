@@ -2,8 +2,11 @@ package jobs4u.base.persistence.impl.inmemory;
 
 import eapli.framework.infrastructure.repositories.impl.inmemory.InMemoryDomainRepository;
 import eapli.framework.time.domain.model.DateInterval;
+import jakarta.persistence.TypedQuery;
 import jobs4u.base.customermanagement.domain.Customer;
 import jobs4u.base.customermanagement.domain.CustomerCode;
+import jobs4u.base.customermanagement.repository.CustomerRepository;
+import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatus;
 import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatusEnum;
@@ -25,7 +28,7 @@ public class InMemoryJobOpeningRepository
     public JobReference lastJobReference(String customerCode) {
         int repoSize = (int) size();
         JobReference lastJobReference = null;
-        if (repoSize == 0){
+        if (repoSize == 0) {
             System.out.println("First job opening being registered in the system!");
             return new JobReference(customerCode, 0);
         }
@@ -38,14 +41,16 @@ public class InMemoryJobOpeningRepository
         }
         return lastJobReference;
     }
+
     @Override
     public Iterable<JobOpening> findAllJobOpeningsWithCustomerCode(String c) {
-        return null;
+        return match(e -> Objects.equals(e.getJobReference().getcustomerCode(), c));
     }
+
     @Override
     public List<JobOpening> getJobOpeningListMatchingCustomerCodesList(Set<CustomerCode> customerCodes) {
         List<JobOpening> jobOpeningArrayList = new ArrayList<>();
-        for (CustomerCode code : customerCodes){
+        for (CustomerCode code : customerCodes) {
             Iterable<JobOpening> jobOpenings = match(e -> e.jobReference().getcustomerCode().equals(code.toString()));
             for (JobOpening element : jobOpenings) {
                 jobOpeningArrayList.add(element);
@@ -116,6 +121,11 @@ public class InMemoryJobOpeningRepository
     @Override
     public Optional<JobOpening> getJobOpeningByJobReference(JobReference id) {
         return matchOne(e -> e.identity().equals(id));
+    }
+
+    @Override
+    public Iterable<JobOpening> getJobOpeningListMatchingCustomerManager(String customerManagerUsername) {
+        return null;
     }
 
 }

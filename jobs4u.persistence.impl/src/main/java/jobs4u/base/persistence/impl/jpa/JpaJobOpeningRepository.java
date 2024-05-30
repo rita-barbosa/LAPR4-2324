@@ -142,4 +142,19 @@ public class JpaJobOpeningRepository
         return matchOne("e.jobReference=:id", params);
     }
 
+    @Override
+    public Iterable<JobOpening> getJobOpeningListMatchingCustomerManager(String customerManagerUsername) {
+        final TypedQuery<JobOpening>
+                q = createQuery("SELECT e \n" +
+                        "FROM JobOpening e \n" +
+                        "WHERE e.jobReference.companyCode IN (\n" +
+                        "    SELECT code.customerCode \n" +
+                        "    FROM Customer c \n" +
+                        "    WHERE c.customerManager.username.value = :manager\n" +
+                        ")",
+                JobOpening.class);
+        q.setParameter("manager", customerManagerUsername);
+        return q.getResultList();
+    }
+
 }
