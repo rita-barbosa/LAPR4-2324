@@ -1,6 +1,7 @@
 package jobs4u.base.persistence.impl.jpa;
 
 import eapli.framework.domain.repositories.TransactionalContext;
+import eapli.framework.infrastructure.authz.domain.model.Username;
 import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
 import eapli.framework.time.domain.model.DateInterval;
 import jakarta.persistence.TemporalType;
@@ -143,7 +144,7 @@ public class JpaJobOpeningRepository
     }
 
     @Override
-    public Iterable<JobOpening> getJobOpeningListMatchingCustomerManager(String customerManagerUsername) {
+    public Iterable<JobOpening> getJobOpeningListMatchingCustomerManager(Username customerManagerUsername) {
         final TypedQuery<JobOpening>
                 q = createQuery("SELECT e \n" +
                         "FROM JobOpening e \n" +
@@ -153,7 +154,7 @@ public class JpaJobOpeningRepository
                         "    WHERE c.customerManager.username.value = :manager\n" +
                         ")",
                 JobOpening.class);
-        q.setParameter("manager", customerManagerUsername);
+        q.setParameter("manager", customerManagerUsername.toString());
         return q.getResultList();
     }
 
