@@ -39,25 +39,10 @@ package "<<aggregate>> Job Opening" {
 
 }
 
-package "<<aggregate>> Notification" {
-    entity Notification <<entity>> <<root>> {}
-    class NotificationBody <<(V,#FF8B40) value object>>{}
-    class NotificationType <<(V,#FF8B40) value object>>{}
-    class NotificationRecipient <<(V,#FF8B40) value object>>{}
-    class NotificationStatus <<(V,#FF8B40) value object>>{}
-    class NotificationDate <<(V,#FF8B40) value object>>{}
-}
-
-
 package "<<aggregate>> Rank" {
     entity Rank <<entity>> <<root>> {}
-    class RankEntry <<(V,#FF8B40) value object>>{}
+    class RankOrder <<(V,#FF8B40) value object>>{}
 }
-
-note "<size:28>These entities aren't yet confirmed</size>" as N2
-Notification .. N2
-N2 .. Rank
-
 
 package "<<aggregate>> Administrator" {
     entity Administrator <<entity>> <<root>>  {}
@@ -167,7 +152,7 @@ ContractType ---> "1"  ContractTypeDenomination : includes
 Mode ---> "1"  WorkModeDenomination : includes
 '__
 JobOpening ---> "1"  Rank : includes
-Rank --> "*" RankEntry : encompasses
+Rank --> "*" RankOrder : encompasses
 Rank --> "*" Application : rates
 '--
 RecruitmentProcess --> "1" RecruitmentPeriod : goes on for
@@ -204,13 +189,5 @@ InterviewModel --> "1" ConfigFileName: configures <
 RequirementSpecification --> "1" RequirementName: identifies <
 RequirementSpecification --> "1" RequirementDescription: describes <
 RequirementSpecification --> "1" ConfigFileName: configures <
-'__
-Notification ---> NotificationBody : has
-Notification --> NotificationRecipient : has
-Notification --> NotificationStatus : has
-Notification ---> NotificationDate : has
-Notification -> NotificationType : has
-'__
-Notification --> "1" Candidate : notifies
-Notification --> "1" Customer : notifies
+
 @enduml
