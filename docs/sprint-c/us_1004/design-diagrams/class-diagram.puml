@@ -20,7 +20,15 @@ class EditJobOpeningController  {
 + getJobOpeningList() : jobOpeningListDto
 + editableJobOpeningInformation(jobOpeningDto) : editableInformationValues
 + changeJobOpeningInformation(jobOpening, newInformation)
++ necessaryInformation(selectInformation)
 }
+
+note left
+The method necessaryInformation()
+returns different things depending
+on th selected information.
+end note
+
 
 'Requirements
 class RequirementSpecification {

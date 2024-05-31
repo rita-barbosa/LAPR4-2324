@@ -4,22 +4,13 @@
 title US1004 - Sequence Diagram | Get Information
 
 autonumber
-
-
-participant ":EditJobOpeningUI" as UI <<presentation>>
-participant ":EditJobOpeningController" as CTRL <<application>>
 participant ":XxxService" as MS <<service>>
 participant ":XxxDtoService" as MS_DTO <<service>>
 database ":XxxRepository" as JO_REPO <<repository>>
 participant ":Xxx" as JO <<domain>>
 
--> UI : xxxs()
-activate UI
 
-UI -> CTRL: xxxs()
-activate CTRL
-
-    CTRL -> MS: allXxx()
+  -> MS: allXxx()
     activate MS
 
     MS -> JO_REPO: findAll()
@@ -44,13 +35,8 @@ activate CTRL
     MS_DTO --> MS: xxxDtoList
     deactivate MS_DTO
 
-    MS --> CTRL: xxxDtoList
+     <-- MS: xxxDtoList
     deactivate MS
 
-CTRL --> UI: xxx
-deactivate CTRL
-
-<-- UI
-deactivate UI
 
 @enduml
