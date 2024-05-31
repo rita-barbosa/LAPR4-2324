@@ -67,15 +67,16 @@ After successfully submitting this information, the system should send the notif
 
 > **Repository Pattern**
 > * ApplicationRepository
+> * JobOpeningRepository
 >
 > **Justifications**
 >
->The repositories were employed to persist applications, as well as to reconstruct objects from the
+>The repositories were employed to persist applications and job openings, as well as to reconstruct objects from the
 persistence.
 > **Service Pattern**
 > * AuthorizationService
-> * ApplicationManagementService
-> * ApplicationDTOService
+> * JobOpeningManagementService
+> * JobOpeningDTOService
 > * FollowUpConnectionService
 >
 > **Justifications**
@@ -83,7 +84,7 @@ persistence.
 > The AuthorizationService, pre-existing service within the Eapli.Framework were used here
 > to retrieve the logged-in user with Customer Manager roles.
 >
-> The ApplicationManagementService is employed to register applications and get all the applications.
+> The JobOpeningManagementService is employed to register job openings and get all the job openings.
 >
 > The FollowUpConnectionService is employed to establish the connection with the email server and send the email
 > 
@@ -91,7 +92,7 @@ persistence.
 > cases.
 
 > **DTO**
-> * ApplicationDTO
+> * JobOpeningDTO
 >
 > **Justifications**
 >
