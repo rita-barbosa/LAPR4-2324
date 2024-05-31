@@ -24,12 +24,22 @@ class FollowUpConnectionService {
     + sendEmail(customerManagerEmail, candidateEmail, topic, emailBody)
 }
 
-class ApplicationManagementService {
-    + getApplicationListWithoutNotification()
+class JobOpeningManagementService {
+    + getJobOpeningListWithoutNotification()
     + updateApplicationNotificationState()
 }
-class ApplicationDtoService {
+class JobOpeningDtoService {
     + convertToDto()
+}
+
+class JobOpeningRepository{
+    + getJobOpeningList()
+    + save()
+}
+
+class ApplicationRepository{
+    + applicationsForJobOpenings(jobReference)
+    + save()
 }
 
 class SendNotificationEmailController  {
@@ -37,18 +47,33 @@ class SendNotificationEmailController  {
 + sendEmail()
 }
 
-
+class JobOpening{
+    + toDto()
+}
+Interface DomainRepository{
+    + save()
+    + ofIdentify()
+}
 
 AbstractUI <|-- AbstractListUI
 AbstractUI <|- SendNotificationEmailUI
 
 
 SendNotificationEmailUI .--> SendNotificationEmailController
-SendNotificationEmailController .--> AuthorizationService
-SendNotificationEmailController .--> ApplicationManagementService
-SendNotificationEmailController .--> FollowUpConnectionService
+SendNotificationEmailController --> AuthorizationService
+SendNotificationEmailController --> JobOpeningManagementService
+SendNotificationEmailController --> FollowUpConnectionService
+SendNotificationEmailController --> ApplicationRepository
 
-ApplicationManagementService .--> ApplicationDtoService
+JobOpeningManagementService --> JobOpeningDtoService
+JobOpeningManagementService ..> JobOpening
+JobOpeningManagementService --> JobOpeningRepository
+
+JobOpeningDtoService ..> JobOpening
+
+JobOpeningRepository ..> DomainRepository
+
+ApplicationRepository --> DomainRepository
 
 
 @enduml
