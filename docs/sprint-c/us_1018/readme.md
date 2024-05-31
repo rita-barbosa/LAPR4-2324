@@ -31,78 +31,58 @@ interviews for a job opening.
 
 **System Sequence Diagram:**
 
-![SSD-US-2000a](US2000a_SSD/ssd-us-2000a.svg)
+![SSD-US-1018](ssd/ssd-us-1018.svg)
 
 
 ## 4. Design
-The principal function is to register a candidate, the input for the Operator consists of:
+The principal function is to evaluate interview answers, the input for the Customer Manager consists of:
 
-* Candidate Name
-* Candidate Email
-* Candidate Phone Number
+* Select the job opening
 
-After successfully submitting this information, the system should create a candidate and the corresponding user.
+After successfully submitting this information, the system should evaluate all the interviews associated at that job opening.
+
+### 4.1.1. Domain Model
+
+![Sequence diagram](dm/domain-model-us-1018.svg)
 
 ### 4.1. Realization
 
-![Sequence diagram](US2000a_SD/sd-us-2000a.svg)
+![Sequence diagram](sd/sd-us-1018.svg)
 
 ### 4.2. Class Diagram
 
-![a class diagram](US2000a_Class_Diagram/class-diagram-us-2000a.svg)
+![a class diagram](cd/cd-us-1018.svg)
 
 ### 4.3. Applied Patterns
-* **Observer**
+* **Dto**
 * **Repository**
 * **Service**
 
 > **Repository Pattern**
-> * CandidateRepository
+> * JobOpeningRepository
+> * ApplicationRepository
 >
-> **Justifications**
+> **Justification:**
 >
->The repositories were employed to persist candidates and usercandidates, as well as to reconstruct objects from the
-persistence.
+> The repositories were used to retrieve the persisted job openings and to save the job opening instance after the
+> changes were made.
 
+> **DTO**
+>
+> **Justification:**
+>
+> We opted for DTOs due to the significant amount of domain information required for this functionality. Recognizing the
+> benefits of encapsulation and layer decoupling offered by DTOs, we concluded that applying this pattern was
+> helpful in this context.
 
 > **Service Pattern**
 > * AuthorizationService
-> * CandidateManagementService
-> * UserManagementService
 >
-> **Justifications**
+> **Justification:**
 >
-> The UserManagementService and AuthorizationService, pre-existing services within the Eapli.Framework were used here
-> to register users and retrieve the logged-in user with Operator roles.
->
-> The CandidateManagementService is employed to register candidates, tasked with the responsibility of
-candidate creation.
->
-> The mentioned services were developed because the functionalities they offer will be utilized across multiple use
-> cases.
-
-> **Observer**
-> * EventPublisher
-> * NewCandidateUserRegisteredEvent
-> * NewCandidateUserRegisteredWatchDog
-> * AddCandidateOnNewCandidateUserRegisteredController
->
-> **Justifications**
->
-> All the mentioned objects are components of the applied observer pattern. This pattern was implemented to ensure
-> that when a new candidate is registered, a user is automatically registered as well. Following this procedure, upon the
-> registration of a candidate, a NewCandidateUserRegisteredEvent instance is generated, and the EventPublisher is utilized
-> to notify the WatchDog (Observer).
->
-> Upon receiving this notification, the WatchDog triggers the registration of the
-> user through the AddCandidateOnNewCandidateUserRegisteredController. 
->
-> In this case, an instance of NewCandidateUserRegisteredEvent is used to inform the specific WatchDog,
-> which then invokes the AddCandidateOnNewCandidateUserRegisteredController for the registration of the CandidateUser.
->
-> To maintain consistency in the creation process, we used the EventPublisher within the service to
-> ensure that both the candidate and its user were created, thus preserving the system's valid state.
->
+> The authorization service was employed to verify the roles of the logged-in user. Different services were used to
+> get job openings. As for verifying the requirements, no services were used since this is a unique function not
+> intended for other use cases.
 ### 4.4. Tests
 
 **Test 1:** Verifies if equal users are detected
