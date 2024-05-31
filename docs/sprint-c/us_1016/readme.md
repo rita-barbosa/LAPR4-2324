@@ -72,7 +72,6 @@ After successfully submitting this information, the system should send the notif
 >
 >The repositories were employed to persist applications, as well as to reconstruct objects from the
 persistence.
-
 > **Service Pattern**
 > * AuthorizationService
 > * ApplicationManagementService
