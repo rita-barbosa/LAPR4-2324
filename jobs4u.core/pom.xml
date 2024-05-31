@@ -25,6 +25,26 @@
             <artifactId>jobs4u.infrastructure.application</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>lapr4</groupId>
+            <artifactId>jobs4u.plugins</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>plugin</groupId>
+            <artifactId>lprog-plugin</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/plugin/lprog-plugin.jar</systemPath>
+        </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>in-project</id>
+            <name>In Project Repo</name>
+            <url>file://${project.basedir}/libs/plugin</url>
+        </repository>
+    </repositories>
 
 </project>
