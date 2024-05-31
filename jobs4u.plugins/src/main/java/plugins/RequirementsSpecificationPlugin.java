@@ -1,9 +1,10 @@
 package plugins;
 
+import com.ibm.icu.impl.Pair;
+
 public interface RequirementsSpecificationPlugin {
 
-    public boolean generateTextFile();
+    boolean generateTextFile(String filePath);
 
-    public boolean evaluateRequirementSpecificationFile(String filePath);
-
+    Pair<Boolean, String> evaluateRequirementSpecificationFile(String filePath);
 }
