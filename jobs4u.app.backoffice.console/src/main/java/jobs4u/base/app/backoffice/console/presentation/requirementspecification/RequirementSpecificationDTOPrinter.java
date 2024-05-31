@@ -7,7 +7,7 @@ import jobs4u.base.requirementsmanagement.dto.RequirementSpecificationDTO;
 public class RequirementSpecificationDTOPrinter implements Visitor<RequirementSpecificationDTO> {
 
     @Override
-    public void visit(RequirementSpecificationDTO visitee) {
-        System.out.printf("%s", visitee.toString());
+    public void visit(RequirementSpecificationDTO visit) {
+        System.out.printf("%s", visit.toString());
     }
 }
