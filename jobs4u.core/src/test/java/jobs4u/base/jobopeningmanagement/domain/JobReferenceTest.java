@@ -1,7 +1,7 @@
 package jobs4u.base.jobopeningmanagement.domain;
 
-import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
-import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
+import jobs4u.base.contracttypemanagement.dto.ContractTypeDTO;
+import jobs4u.base.workmodemanagement.dto.WorkModeDTO;
 import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 import org.junit.Test;
 
@@ -37,7 +37,7 @@ public class JobReferenceTest {
         ContractTypeDTO contractType = new ContractTypeDTO("full-time");
         JobReference jobReference = new JobReference("ISEP", 3);
         Address address = new Address("streetName", "city", "district", "14th",
-                "12345");
+                "1234-234");
 
         String name = "Senior Developer";
         String description = "Database maintenance";

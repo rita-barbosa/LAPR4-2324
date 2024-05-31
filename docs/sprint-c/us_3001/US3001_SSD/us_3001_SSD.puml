@@ -8,28 +8,34 @@ actor "Candidate" as CAND
 participant "System\n(Candidate App)" as SYS
 participant "Follow Up Server" as SERVER
 
-SERVER --> SYS : sends notification
-activate SERVER
-note right
-every time an application
-changes state
-end note
-
 activate SYS
-deactivate SERVER
 
-activate CAND
-CAND -> SYS : asks to see notifications
+    activate CAND
 
-SYS -> SERVER : establishes TCP connection
-activate SERVER
-SYS -> SERVER : requests candidate's notifications
+        CAND -> SYS : authenticates
 
-SERVER --> SYS : candidate's notifications
-deactivate SERVER
+        SYS -> SERVER : establishes TCP connection
 
-SYS --> CAND : shows notifications
-deactivate SYS
+        activate SERVER
+
+        SYS -> SERVER : authenticate user
+
+            loop Every minute
+
+                SYS -> SERVER : requests all unseen candidate's notifications
+
+                SERVER --> SYS : candidate's notifications
+
+            end
+
+        deactivate SERVER
+
+        CAND -> SYS : asks for notifications
+
+        SYS --> CAND : shows notifications
+
+    deactivate SYS
+
 deactivate CAND
 
 @enduml

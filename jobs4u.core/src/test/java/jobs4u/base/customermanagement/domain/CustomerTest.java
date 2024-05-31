@@ -18,7 +18,7 @@ public class CustomerTest {
 
     @Test
     public void ensureMustHaveName() {
-        final var address = new Address("Rua None, 222, Paços, Porto, 4000-8000");
+        final var address = new Address("Rua None, 222, Paços, Porto, 4000-800");
         final var customerCode = new CustomerCode("ISEP");
 
         assertThrows(IllegalArgumentException.class, () -> new Customer(null, address,
@@ -27,7 +27,7 @@ public class CustomerTest {
 
     @Test
     public void ensureMustHaveCode() {
-        final var address = new Address("Rua None, 222, Paços, Porto, 4000-8000");
+        final var address = new Address("Rua None, 222, Paços, Porto, 4000-800");
 
         assertThrows(IllegalArgumentException.class, () -> new Customer(new CompanyName("RCabos"), address,
                 null, dummyUser(BaseRoles.CUSTOMER_MANAGER), dummyUser(BaseRoles.CUSTOMER_USER)));

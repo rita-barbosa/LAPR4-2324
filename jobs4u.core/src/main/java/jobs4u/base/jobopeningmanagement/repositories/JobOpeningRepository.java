@@ -30,4 +30,6 @@ public interface JobOpeningRepository extends DomainRepository<JobReference, Job
     Iterable<JobOpening> getUNFINISHEDJobOpeningList();
     Iterable<JobOpening> findAllJobOpeningsWithCustomerCode(String c);
     Optional<JobOpening> getJobOpeningByJobReference(JobReference id);
+
+    Iterable<JobOpening> getJobOpeningListMatchingCustomerManager(String customerManagerUsername);
 }

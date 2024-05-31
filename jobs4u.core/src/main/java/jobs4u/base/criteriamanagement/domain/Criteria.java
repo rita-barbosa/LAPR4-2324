@@ -8,7 +8,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jobs4u.base.criteriamanagement.dto.CriteriaDTO;
-import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
 
 @Entity
 @Table(name = "T_CRITERIA")

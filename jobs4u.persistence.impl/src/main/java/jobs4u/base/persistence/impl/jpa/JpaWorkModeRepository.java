@@ -3,8 +3,8 @@ package jobs4u.base.persistence.impl.jpa;
 import eapli.framework.domain.repositories.TransactionalContext;
 import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
 import jobs4u.base.Application;
-import jobs4u.base.jobopeningmanagement.domain.WorkMode;
-import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
+import jobs4u.base.workmodemanagement.domain.WorkMode;
+import jobs4u.base.workmodemanagement.repository.WorkModeRepository;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -10,7 +10,7 @@ public class AddressTest {
     String city = "city";
     String district = "District";
     String streetNumber = "14th";
-    String zipcode = "12345";
+    String zipcode = "1234-234";
 
     @Test
     public void ensureZipcodeIsFiveDigits() {

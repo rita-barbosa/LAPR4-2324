@@ -8,8 +8,8 @@ import eapli.framework.presentation.console.SelectWidget;
 import jobs4u.base.customermanagement.dto.CustomerDTO;
 import jobs4u.base.jobopeningmanagement.application.RegisterJobOpeningController;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
-import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
-import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
+import jobs4u.base.contracttypemanagement.dto.ContractTypeDTO;
+import jobs4u.base.workmodemanagement.dto.WorkModeDTO;
 import jobs4u.base.requirementsmanagement.dto.RequirementSpecificationDTO;
 
 

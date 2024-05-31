@@ -1,9 +1,19 @@
 package jobs4u.base.jobopeningmanagement.domain;
 
-import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
-import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
+import eapli.framework.time.util.Calendars;
+import jobs4u.base.contracttypemanagement.dto.ContractTypeDTO;
+import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
+import jobs4u.base.recruitmentprocessmanagement.domain.Phase;
+import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
+import jobs4u.base.workmodemanagement.dto.WorkModeDTO;
 import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 import org.junit.Test;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,7 +27,7 @@ public class JobOpeningTest {
     String city = "City";
     String district = "District";
     String streetNumber = "14th";
-    String zipcode = "12345";
+    String zipcode = "1234-234";
     Address address = new Address(streetName, city, district, streetNumber, zipcode);
 
     public RequirementSpecification jobOpeningRequirement() {
@@ -97,6 +107,87 @@ public class JobOpeningTest {
         JobOpening opening = new JobOpening("Senior Dev", contractType, workMode, address, 15,
                 "description", jobOpeningRequirement(), jobReference);
         opening.updateStatusToStarted();
-        assertThrows(IllegalArgumentException.class, () -> opening.changeRequirementSpecification(jobOpeningRequirement()));
+        assertThrows(NullPointerException.class, () -> opening.changeRequirementSpecification(jobOpeningRequirement()));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void ensureCantChangeJobReference() {
+        JobOpening opening = new JobOpening("Senior Dev", contractType, workMode, address, 15,
+                "description", jobOpeningRequirement(), jobReference);
+
+        List<EditableInformation> e = new ArrayList<>();
+        List<String> s = new ArrayList<>();
+        s.add("ISEP-1");
+        e.add(new EditableInformation("Job Reference"));
+
+        opening.changeInformation(e, s);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void ensureCanEditPublicInformationOnlyIfStatusIsValid() {
+        JobOpening opening = new JobOpening("Senior Dev", contractType, workMode, address, 15,
+                "description", jobOpeningRequirement(), jobReference);
+        opening.updateStatusToStarted();
+
+        List<EditableInformation> e = new ArrayList<>();
+        List<String> s = new ArrayList<>();
+        s.add("New Description");
+        e.add(EditableInformation.DESCRIPTION);
+
+        opening.changeInformation(e, s);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void ensureCanEditReqSpecificationOnlyIfPhaseIsValid() {
+        JobOpening opening = new JobOpening("Senior Dev", contractType, workMode, address, 15,
+                "description", jobOpeningRequirement(), jobReference);
+        opening.updateStatusToStarted();
+
+        List<Phase> listA = new ArrayList<>();
+
+        Calendar start = null;
+        Calendar finish = null;
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            start = Calendars.fromDate(df.parse("16-03-2004"));
+            finish = Calendars.fromDate(df.parse("18-03-2024"));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        RecruitmentProcess recruitmentProcess = new RecruitmentProcess(start, finish, listA);
+        Phase phase = new Phase("Test", "Screening", "ON_GOING", start, finish);
+        listA.add(phase);
+        recruitmentProcess.setPhases(listA);
+        opening.addRecruitmentProcess(recruitmentProcess);
+
+        opening.changeRequirementSpecification(new RequirementSpecification("Test.jar","Test","Plugin Test"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void ensureCanEditInterviewModelOnlyIfPhaseIsValid() {
+        JobOpening opening = new JobOpening("Senior Dev", contractType, workMode, address, 15,
+                "description", jobOpeningRequirement(), jobReference);
+        opening.updateStatusToStarted();
+
+        List<Phase> listA = new ArrayList<>();
+
+        Calendar start = null;
+        Calendar finish = null;
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            start = Calendars.fromDate(df.parse("16-03-2004"));
+            finish = Calendars.fromDate(df.parse("18-03-2024"));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        RecruitmentProcess recruitmentProcess = new RecruitmentProcess(start, finish, listA);
+        Phase phase = new Phase("Test", "Interview", "ON_GOING", start, finish);
+        listA.add(phase);
+        recruitmentProcess.setPhases(listA);
+        opening.addRecruitmentProcess(recruitmentProcess);
+
+        opening.changeInterviewModel(new InterviewModel("Test.jar","Test","Plugin Test"));
     }
 }

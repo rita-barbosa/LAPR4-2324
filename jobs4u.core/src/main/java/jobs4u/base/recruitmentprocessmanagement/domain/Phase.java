@@ -25,11 +25,11 @@ public class Phase implements AggregateRoot<Long>, ValueObject {
 
     private PhasePeriod period;
 
-    @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn
     private RecruitmentProcess recruitmentprocess;
 
-    protected Phase(){
+    protected Phase() {
         //for ORM
     }
 
@@ -47,8 +47,16 @@ public class Phase implements AggregateRoot<Long>, ValueObject {
         this.phaseType = new PhaseType(phaseType);
         this.description = new PhaseDescription(description);
         this.status = new PhaseStatus(status);
-        this.period = new PhasePeriod(new DateInterval(initial,end));
+        this.period = new PhasePeriod(new DateInterval(initial, end));
 
+    }
+
+    public PhaseStatus currentStatus() {
+        return this.status;
+    }
+
+    public String description() {
+        return this.description.toString();
     }
 
     @Override

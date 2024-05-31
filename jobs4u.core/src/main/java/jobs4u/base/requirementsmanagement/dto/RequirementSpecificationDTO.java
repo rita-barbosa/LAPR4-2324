@@ -1,6 +1,20 @@
 package jobs4u.base.requirementsmanagement.dto;
 
+import lombok.Getter;
+
 public class RequirementSpecificationDTO {
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getPlugin() {
+        return plugin;
+    }
 
     private final String name;
     private final String description;

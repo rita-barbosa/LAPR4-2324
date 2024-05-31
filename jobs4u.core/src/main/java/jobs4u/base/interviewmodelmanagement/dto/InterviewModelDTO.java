@@ -17,7 +17,7 @@ public class InterviewModelDTO {
         this.plugin = plugin;
     }
 
-    public String filename() {
+    public String name() {
         return this.name;
     }
     public String description(){return this.description;}

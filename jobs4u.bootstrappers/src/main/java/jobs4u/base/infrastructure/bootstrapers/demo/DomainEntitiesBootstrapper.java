@@ -11,17 +11,18 @@ import jobs4u.base.candidatemanagement.application.CandidateManagementService;
 import jobs4u.base.candidatemanagement.domain.Candidate;
 import jobs4u.base.candidatemanagement.domain.PhoneNumber;
 import jobs4u.base.candidatemanagement.repository.CandidateRepository;
+import jobs4u.base.contracttypemanagement.domain.ContractType;
 import jobs4u.base.criteriamanagement.domain.Criteria;
 import jobs4u.base.criteriamanagement.repository.CriteriaRepository;
 import jobs4u.base.customermanagement.application.CustomerManagementService;
 import jobs4u.base.infrastructure.bootstrapers.UsersBootstrapperBase;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.domain.*;
-import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
-import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
-import jobs4u.base.jobopeningmanagement.repositories.ContractTypeRepository;
+import jobs4u.base.contracttypemanagement.dto.ContractTypeDTO;
+import jobs4u.base.workmodemanagement.dto.WorkModeDTO;
+import jobs4u.base.contracttypemanagement.repository.ContractTypeRepository;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
-import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
+import jobs4u.base.workmodemanagement.repository.WorkModeRepository;
 import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
 import jobs4u.base.interviewmodelmanagement.repositories.InterviewModelRepository;
 import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
@@ -30,6 +31,7 @@ import jobs4u.base.recruitmentprocessmanagement.domain.*;
 import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
 import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
 import jobs4u.base.usermanagement.domain.BaseRoles;
+import jobs4u.base.workmodemanagement.domain.WorkMode;
 
 import java.io.File;
 import java.text.ParseException;
@@ -238,19 +240,19 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         JobReference jobReference3 = new JobReference("ISEP", 4);
 
         JobOpening jobOpening1 = new JobOpening("Front End Junior Developer", contract, mode, "123 Main Street",
-                "Flagtown", "Star District", "USA", "12345", 10, description,
+                "Flagtown", "Star District", "USA", "4500-900", 10, description,
                 requirementSpecificationsList.get(0),interviewModelsList.get(0), jobReference);
 
         JobOpening jobOpening2 = new JobOpening("Back End Senior Developer", contract, mode, "456 Elm Street",
-                "Maple Town", "Moonlight District", "Canada", "54321", 15, description,
+                "Maple Town", "Moonlight District", "Canada", "4500-900", 15, description,
                 requirementSpecificationsList.get(0),interviewModelsList.get(0), jobReference1);
 
         JobOpening jobOpening3 = new JobOpening("Back End Senior Developer", contract, mode, "MM Street",
-                "MM Town", "MM District", "MMM", "54321", 8, description,
+                "MM Town", "MM District", "MMM", "4500-900", 8, description,
                 requirementSpecificationsList.get(0), interviewModelsList.get(0),jobReference2);
 
         JobOpening jobOpening4 = new JobOpening("Night Guard", contract, mode, "Freddy fazbear Street",
-                "Chica Town", "Foxy District", "MMM", "54321", 8, description,
+                "Chica Town", "Foxy District", "MMM", "4500-900", 8, description,
                 requirementSpecificationsList.get(0), interviewModelsList.get(0),jobReference3);
 
         jobOpening2.getStatus().setStatusDescriptionAsSTARTED();
@@ -316,7 +318,7 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         final Set<Role> roles = new HashSet<>();
         roles.add(BaseRoles.CUSTOMER_MANAGER);
         SystemUser customerManager = registerUser("customerM2@email.com", "Password-1", "Joana", "Cash", roles);
-        Address address = new Address("StreetLane", "City Garden", "District 9", "14th", "15632");
+        Address address = new Address("StreetLane", "City Garden", "District 9", "14th", "4590-890");
 
         customerManagementService.registerNewCustomer("Instituto Superior de Engenharia do Porto", address.toString(),
                 "ISEP", customerManager, "isep@email.com");

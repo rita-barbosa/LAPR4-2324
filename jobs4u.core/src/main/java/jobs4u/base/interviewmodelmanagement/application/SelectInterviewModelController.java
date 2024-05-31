@@ -36,7 +36,7 @@ public class SelectInterviewModelController {
     public Iterable<InterviewModelDTO> availableInterviewModels() {
         authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN);
 
-        return interviewModelManagementService.availableInterviewModels();
+        return interviewModelManagementService.allInterviewModels();
     }
 
     public boolean updateJobOpening(JobOpeningDTO jobOpeningDTO, InterviewModelDTO interviewModelDTO) {
@@ -45,10 +45,10 @@ public class SelectInterviewModelController {
 
         if (jo.isPresent()) {
 
-            Optional<InterviewModel> im = interviewModelRepository.ofIdentity(new InterviewModelName(interviewModelDTO.filename()));
+            Optional<InterviewModel> im = interviewModelRepository.ofIdentity(new InterviewModelName(interviewModelDTO.name()));
 
             if (im.isPresent()) {
-                jo.get().updateJobOpening(im.get());
+                jo.get().changeInterviewModel(im.get());
                 jobOpeningRepository.save(jo.get());
                 return true;
             }

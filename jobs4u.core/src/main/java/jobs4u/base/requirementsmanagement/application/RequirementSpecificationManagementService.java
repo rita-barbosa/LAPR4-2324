@@ -13,8 +13,7 @@ public class RequirementSpecificationManagementService {
 
     private final RequirementSpecificationDTOService dtoSvc = new RequirementSpecificationDTOService();
 
-    public Iterable<RequirementSpecificationDTO> availableRequirementSpecification() {
-        return dtoSvc.convertToDTO(repo.requirementsSpecifications());
+    public Iterable<RequirementSpecificationDTO> allRequirementSpecifications() {
+        return dtoSvc.convertToDTO(repo.findAll());
     }
-
 }

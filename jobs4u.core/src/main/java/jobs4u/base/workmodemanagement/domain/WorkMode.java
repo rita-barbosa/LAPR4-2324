@@ -1,15 +1,14 @@
-package jobs4u.base.jobopeningmanagement.domain;
+package jobs4u.base.workmodemanagement.domain;
 
 import eapli.framework.domain.model.AggregateRoot;
 import eapli.framework.domain.model.DomainEntities;
 import eapli.framework.domain.model.ValueObject;
 import eapli.framework.representations.dto.DTOable;
 import eapli.framework.validations.Preconditions;
-import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
+import jobs4u.base.workmodemanagement.dto.WorkModeDTO;
 
 import java.util.Objects;
 

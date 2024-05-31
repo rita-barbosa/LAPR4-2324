@@ -82,6 +82,17 @@ to help me analyze the candidates.
 > for job openings that don't have an interview, as it is based on listing the candidates and their interview scores.
 
 
+> **Question:** US1019 - In the user story description: "As a Customer Manager, I want to get and ordered list of
+> candidates, using the job interview points (grades), to help me analyze the candidates." Does the intention "analyze
+> the candidates" impose any change/removal of candidates in the system?
+>
+>
+> **Answer:** The reference to "analyze the candidates" is only to convey the idea that in this user story (US), the
+> system should provide a way for the Customer Manager to view the interview results to help decide the ranking of
+> candidates. Nothing more. The ranking of candidates is recorded in the system through US1013.
+
+
+
 ## 3. Analysis
 
 In this functionality, the customer manager needs to select a job opening and then the order list of the candidates will
@@ -182,15 +193,24 @@ To make the design of this user story, were used the following patterns:
 
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
+**Test 1:** Verifies that the list is in descending order
 
-**Test 1:** Verifies that it is not possible to ...
-
-**Refers to Acceptance Criteria:** G002.1
+**Refers to Acceptance Criteria:** 1019.2
 
 ````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
+@Test
+public void ensureListIsInDescendingOrder() {
+...
+}
+````
+
+**Test 1:** Verifies that the job opening has interviews
+
+**Refers to Acceptance Criteria:** 1019.3
+
+````
+@Test
+public void ensureJobOpeningHasInterview() {
 ...
 }
 ````

@@ -12,13 +12,13 @@ It is the first time the task is assigned.
 
 - **1017.1.** The system should allow the user to provide the file path to the text file.
 
-- **1017.2.** The system should ask the which interview is related to the responses.
+- **1017.2.** The system should ask the customer manager which interview is related to the responses.
 
 - **1017.3.** It is necessary the use of ANTLR.
 
 - **1017.4.** The system must have at least one interview.
 
-- **1017.5.** The exported file should be in .txt format.
+- **1017.5.** The uploaded file should be in .txt format.
 
 
 **Dependencies/References:**
@@ -50,6 +50,15 @@ must follow specific technical requirements, specified in LPROG. The ANTLR tool 
 > **Answer:** The mentioned case should be considered a file validation error (the submitted file does not comply with
 > the defined grammar).
 
+
+> **Question:** US1017 - In terms of "upload", it definitely goes through grammar checking, and upon success, the interview
+> response file should be placed in the folder with the "Application" files, correct?
+>
+>
+> **Answer:** Yes, the syntax should be checked, and if everything is correct, the file should be "imported" into the
+> system so that it can be used later, for example, within the scope of US1018. What solution for "importing" is part of
+> your solution. Ideally, I think it would make sense for it to be integrated into the database. If that's not possible,
+> I think it is acceptable for it to be in a folder/directory on a server.
 
 ## 3. Analysis
 
@@ -158,18 +167,18 @@ To make the design of this user story, were used the following patterns:
 
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
+**Test 1:** Verifies the uploaded file format
 
-**Test 1:** Verifies that it is not possible to ...
-
-**Refers to Acceptance Criteria:** G002.1
+**Refers to Acceptance Criteria:** 1017.5
 
 ````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
+@Test
+public void ensureFileFormat() {
 ...
 }
 ````
+
+
 
 ## 5. Implementation
 

@@ -9,7 +9,7 @@ public class PhaseDescription implements ValueObject {
 
     private String descriptionText;
 
-    protected PhaseDescription(){
+    protected PhaseDescription() {
         // for ORM
     }
 
@@ -20,6 +20,11 @@ public class PhaseDescription implements ValueObject {
     }
 
     public String getDescriptionText() {
+        return descriptionText;
+    }
+
+    @Override
+    public String toString() {
         return descriptionText;
     }
 }

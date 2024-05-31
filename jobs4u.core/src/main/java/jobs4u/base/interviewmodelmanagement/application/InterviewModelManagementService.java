@@ -12,10 +12,8 @@ public class InterviewModelManagementService {
 
     private final InterviewModelDtoService dtoService = new InterviewModelDtoService();
 
-    public Iterable<InterviewModelDTO> availableInterviewModels() {
-        Iterable<InterviewModel> interviewModels = repository.findAll();
-
-        return dtoService.toDto(interviewModels);
+    public Iterable<InterviewModelDTO> allInterviewModels() {
+         return dtoService.toDto(repository.findAll());
     }
 
     public static void registerInterviewPlugin(String nameOfInterviewPlugin, String descriptionOfInterviewPlugin, String fullClassName){

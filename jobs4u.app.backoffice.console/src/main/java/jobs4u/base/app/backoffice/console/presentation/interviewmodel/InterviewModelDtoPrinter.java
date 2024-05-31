@@ -9,6 +9,6 @@ public class InterviewModelDtoPrinter implements Visitor<InterviewModelDTO> {
     @Override
     public void visit(InterviewModelDTO intModel) {
 
-        System.out.printf("%s%n", intModel.filename());
+        System.out.printf("%s%n", intModel.name());
     }
 }

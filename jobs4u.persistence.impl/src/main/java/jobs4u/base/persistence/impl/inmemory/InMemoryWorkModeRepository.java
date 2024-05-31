@@ -1,8 +1,8 @@
 package jobs4u.base.persistence.impl.inmemory;
 
 import eapli.framework.infrastructure.repositories.impl.inmemory.InMemoryDomainRepository;
-import jobs4u.base.jobopeningmanagement.domain.WorkMode;
-import jobs4u.base.jobopeningmanagement.repositories.WorkModeRepository;
+import jobs4u.base.workmodemanagement.domain.WorkMode;
+import jobs4u.base.workmodemanagement.repository.WorkModeRepository;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -80,12 +80,12 @@ information the user changes.
 end note
 
 
-class WorkMode<<(V,#FF8B40) value object>> {
+class WorkMode {
 -  workModeDenomination : String
 + valueOf(String workModeDenomination)
 }
 
-class ContractType <<(V,#FF8B40) value object>> {
+class ContractType  {
 - contractTypeDenomination : String
 + valueOf(String contractTypeDenomination)
 }

@@ -1,4 +1,4 @@
-package jobs4u.base.jobopeningmanagement.dto;
+package jobs4u.base.workmodemanagement.dto;
 
 import eapli.framework.validations.Preconditions;
 

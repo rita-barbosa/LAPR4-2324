@@ -12,8 +12,8 @@ import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
-import jobs4u.base.jobopeningmanagement.dto.ContractTypeDTO;
-import jobs4u.base.jobopeningmanagement.dto.WorkModeDTO;
+import jobs4u.base.contracttypemanagement.dto.ContractTypeDTO;
+import jobs4u.base.workmodemanagement.dto.WorkModeDTO;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 
 import java.util.*;
@@ -29,7 +29,7 @@ public class JobOpeningManagementService {
 
     private final CustomerManagementService customerManagementService = new CustomerManagementService();
 
-    public Iterable<JobOpening> getUNFINISHEDJobOpenings(){
+    public Iterable<JobOpening> getUNFINISHEDJobOpenings() {
         return jobOpeningRepository.getUNFINISHEDJobOpeningList();
     }
 
@@ -37,7 +37,7 @@ public class JobOpeningManagementService {
                                          WorkModeDTO workModeDenomination, String streetName, String city,
                                          String district, String state, String zipcode, int numVacancies,
                                          String description, RequirementSpecification requirementsFile,
-                                         CustomerDTO companyInfo){
+                                         CustomerDTO companyInfo) {
 
         JobReference lastReference = jobOpeningRepository.lastJobReference(companyInfo.customerCode());
 
@@ -52,25 +52,25 @@ public class JobOpeningManagementService {
         return dtoSvc.convertToDTO(jobOpeningRepository.findAllJobOpeningsNotStarted());
     }
 
-    public boolean checkJobOpeningByJobRef(String customerCode, int sequentialCode){
+    public boolean checkJobOpeningByJobRef(String customerCode, int sequentialCode) {
         return jobOpeningRepository.containsOfIdentity(new JobReference(customerCode, sequentialCode));
     }
 
-    public Optional<JobOpening> getJobOpeningByJobRef(String customerCode, int sequentialCode){
+    public Optional<JobOpening> getJobOpeningByJobRef(String customerCode, int sequentialCode) {
         return jobOpeningRepository.ofIdentity(new JobReference(customerCode, sequentialCode));
     }
 
     public List<JobOpening> getJobOpeningsFromCustomerCodes(List<CustomerDTO> customerDTOList) {
         Set<CustomerCode> customerCodes = new HashSet<>();
-        for (CustomerDTO customerDTO : customerDTOList){
+        for (CustomerDTO customerDTO : customerDTOList) {
             customerCodes.add(new CustomerCode(customerDTO.customerCode()));
         }
-       return jobOpeningRepository.getJobOpeningListMatchingCustomerCodesList(customerCodes);
+        return jobOpeningRepository.getJobOpeningListMatchingCustomerCodesList(customerCodes);
     }
 
     public List<JobOpening> filterJobOpeningListByCompanyName(CustomerDTO dto) {
         Optional<Customer> customer = customerManagementService.getCustomerByDTO(dto);
-        if (customer.isPresent()){
+        if (customer.isPresent()) {
             return jobOpeningRepository.getJobOpeningListMatchingCustomer(customer.get());
         }
         throw new NoSuchElementException("Failure - filterJobOpeningListByCompanyName");
@@ -78,7 +78,7 @@ public class JobOpeningManagementService {
 
     public List<JobOpening> filterJobOpeningListByCustomerCode(String customerCode) {
         Optional<Customer> customer = customerManagementService.getCustomerByCustomerCode(customerCode);
-        if (customer.isPresent()){
+        if (customer.isPresent()) {
             return jobOpeningRepository.getJobOpeningListMatchingCustomer(customer.get());
         }
         throw new NoSuchElementException("Unable to retrieve the customer with customer code " + customerCode);
@@ -93,17 +93,17 @@ public class JobOpeningManagementService {
     public List<JobOpening> filterJobOpeningListByDateInterval(DateInterval interval, List<JobOpening> jobOpenings) {
         List<JobOpening> filtered = jobOpeningRepository.getJobOpeningListWithinDateInterval(interval);
         jobOpenings.removeIf(jobOpening -> !filtered.contains(jobOpening));
-        if (jobOpenings.isEmpty()){
+        if (jobOpenings.isEmpty()) {
             throw new NoSuchElementException("There are no job openings in the defined interval.");
         }
         return jobOpenings;
     }
 
-    public Iterable<JobOpening> getAllUnfinishedJobOpenings(){
+    public Iterable<JobOpening> getAllUnfinishedJobOpenings() {
         return jobOpeningRepository.findAllJobOpeningsWithoutRecruitmentProcess();
     }
 
-    public boolean setupJobOpeningWithRecruitmentProcess(RecruitmentProcess recruitmentProcess, JobOpening jobOpening){
+    public boolean setupJobOpeningWithRecruitmentProcess(RecruitmentProcess recruitmentProcess, JobOpening jobOpening) {
         JobOpening jobOpening1 = jobOpeningRepository.ofIdentity(jobOpening.getJobReference()).get();
         jobOpening1.updateStatusToNotStarted();
         jobOpening1.addRecruitmentProcess(recruitmentProcess);
@@ -117,25 +117,28 @@ public class JobOpeningManagementService {
         return true;
     }
 
-    public List<JobOpeningDTO> getJobOpeningsList(){
+    public List<JobOpeningDTO> getJobOpeningsList() {
         List<JobOpeningDTO> jobOpenings = new ArrayList<>();
         for (JobOpening jobOpening : jobOpeningRepository.findAll()) {
             jobOpenings.add(jobOpening.toDTO());
-
         }
-        return  jobOpenings;
+        return jobOpenings;
     }
 
-    public JobOpening getJobOpening(JobOpeningDTO jobOpeningDTO){
+    public JobOpening getJobOpening(JobOpeningDTO jobOpeningDTO) {
         String jobReference = jobOpeningDTO.getJobReference();
         JobOpening jobOpening = null;
 
         for (JobOpening job : jobOpeningRepository.findAll()) {
-            if (job.getJobReference().toString().equals(jobReference)){
+            if (job.getJobReference().toString().equals(jobReference)) {
                 jobOpening = job;
             }
         }
         return jobOpening;
     }
 
+    public Iterable<JobOpeningDTO> jobOpeningsOfCustomerManager(String customerManagerUsername) {
+        Iterable<JobOpening> list = jobOpeningRepository.getJobOpeningListMatchingCustomerManager(customerManagerUsername);
+        return dtoSvc.convertToDTO(list);
+    }
 }

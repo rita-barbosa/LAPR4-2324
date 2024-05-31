@@ -65,6 +65,40 @@ must follow specific technical requirements, specified in LPROG. The ANTLR tool 
 > syntax is correct). US 1015 is the one that executes the verification of requirements for the candidates (based on the
 > previously uploaded files).
 
+
+> **Question:** Submission of a file for verification – My group has a question regarding US2004, specifically about the
+> file submission process. We would like to know if "submit the file for verification" in US2004 only involves storing 
+> the file path in the system and performing its syntactic analysis (as mentioned in Q180), or if it also involves extracting
+> and storing the information contained in the file in specific structures for later verification. We have this doubt because
+> there are User Stories where it is explicit that the information from the files is supposed to be imported, such as in
+> US2002: "As Operator, I want to register an application of a candidate for a job opening and import all files received."
+> However, in US2004 it is not explicit what "submit the file" means.
+>
+> **Answer:** Submitting the file means "importing" the file into the system, verifying its syntactic correctness. The 
+> file becomes part of the system, allowing for subsequent operations on that file/data, such as in US1015. I do not want
+> to dictate how this should be done in terms of the solution.
+
+
+> **Question:** About the Us2004, you previously stated that "the Operator uploads a file with the requirements and the 
+> system should validate the file (verify of the syntax is correct). US 1015 is the one that executes the verification...".
+> What should happen if the file fails this verification? Is the application instantly refused or do you have something
+> else in mind?
+>
+> **Answer:** A file that fails the verification means that that file has an error (syntactic error) it does not mean that
+> the application does not meet the requirements. The user should fix the error and submit again. Only US 1015 results 
+> in approving or rejecting an application.
+
+
+> **Question:** - About the Us2004, when the Operator uploads the text file, in which phase is this US going to be?
+>
+> **Answer:** All the files of the candidate must have been imported before. These files will be necessary for the operator
+> to be able to answer the questions in the requirements specification template. Only then can the operator upload the file
+> with the answers. This is the normal sequence. Regarding the phase of the process, I think it will depend on the proposed
+> solution. I am open to solutions that do not invalidate the data consistency of the system
+
+
+
+
 ## 3. Analysis
 
 After inserting the candidate's answers on to the generated template, the Operator submits them into the system. This file
