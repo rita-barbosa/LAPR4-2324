@@ -44,11 +44,11 @@
         <!--        <class>jobs4u.base.interviewmodelmanagement.domain.InterviewModel</class>-->
 
         <properties>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:tcp://localhost/~/jobs4u"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:tcp://vsgate-s2.dei.isep.ipp.pt:10773/jobs4u"/>
             <!--                  <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:~\jobs4u"/>-->
 
-            <property name="jakarta.persistence.jdbc.user" value="sa"/>
-            <property name="jakarta.persistence.jdbc.password" value=""/>
+            <property name="jakarta.persistence.jdbc.user" value="admin"/>
+            <property name="jakarta.persistence.jdbc.password" value="2dg2"/>
             <property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver"/>
             <!--            <property name="jakarta.persistence.schema-generation.database.action" value="create"/>-->
             <!-- <property name="eclipselink.logging.level" value="FINE"/> -->
