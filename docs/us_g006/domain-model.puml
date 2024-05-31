@@ -111,11 +111,11 @@ package "<<aggregate>> Application" {
 package "<<aggregate>> Recruitment Process" {
     entity RecruitmentProcess <<entity>> <<root>> {}
     class RecruitmentPeriod <<(V,#FF8B40) value object>> {}
-    entity Phase <<entity>> {}
+    class Phase <<(V,#FF8B40) value object>> {}
     class PhasePeriod <<(V,#FF8B40) value object>> {}
     class PhaseDescription <<(V,#FF8B40) value object>> {}
     class PhaseType <<(V,#FF8B40) value object>> {}
-    class PhaseStatus <<(V,#FF8B40) value object>> {}
+    class RecruitmentProcessStatus <<(V,#FF8B40) value object>> {}
 }
 
 
@@ -171,11 +171,11 @@ Rank --> "*" RankEntry : encompasses
 Rank --> "*" Application : rates
 '--
 RecruitmentProcess --> "1" RecruitmentPeriod : goes on for
-RecruitmentProcess ---> "5..6" Phase : encompasses
+RecruitmentProcess ---> "4..5" Phase : encompasses
+RecruitmentProcess --> "1" RecruitmentProcessStatus : describes <
 '--
 Phase --> "1" PhasePeriod :  goes on for
 Phase --> "1" PhaseType : categorizes <
-Phase --> "1" PhaseStatus : categorizes <
 Phase --> "1" PhaseDescription : describes <
 '--
 Application ---> "0..1" Interview : includes
