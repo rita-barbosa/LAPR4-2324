@@ -1,6 +1,7 @@
 package jobs4u.base.jobopeningmanagement.repositories;
 
 import eapli.framework.domain.repositories.DomainRepository;
+import eapli.framework.infrastructure.authz.domain.model.Username;
 import eapli.framework.time.domain.model.DateInterval;
 import jobs4u.base.customermanagement.domain.Customer;
 import jobs4u.base.customermanagement.domain.CustomerCode;
@@ -31,5 +32,5 @@ public interface JobOpeningRepository extends DomainRepository<JobReference, Job
     Iterable<JobOpening> findAllJobOpeningsWithCustomerCode(String c);
     Optional<JobOpening> getJobOpeningByJobReference(JobReference id);
 
-    Iterable<JobOpening> getJobOpeningListMatchingCustomerManager(String customerManagerUsername);
+    Iterable<JobOpening> getJobOpeningListMatchingCustomerManager(Username customerManagerUsername);
 }

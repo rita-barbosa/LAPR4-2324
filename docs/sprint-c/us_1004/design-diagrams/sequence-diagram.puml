@@ -67,12 +67,18 @@ loop while user wants to edit
     USER -> UI : selects information that wants to edit
     activate UI
 
+    UI -> CTRL: necessaryInformation(selectInformation)
+    activate CTRL
+
     alt information == (requirements | interviewModel | ContractType | WorkMode)
 
-        ref over UI
+        ref over CTRL
             Check **sequence-diagram-get-information**
         end ref
     end alt
+
+    CTRL --> UI: necessaryInformationDto
+    deactivate CTRL
 
     UI --> USER : asks for the new information
     deactivate UI

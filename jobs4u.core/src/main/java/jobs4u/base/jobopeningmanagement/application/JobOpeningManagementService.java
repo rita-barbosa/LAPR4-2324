@@ -1,5 +1,6 @@
 package jobs4u.base.jobopeningmanagement.application;
 
+import eapli.framework.infrastructure.authz.domain.model.Username;
 import eapli.framework.time.domain.model.DateInterval;
 import jobs4u.base.customermanagement.application.CustomerManagementService;
 import jobs4u.base.customermanagement.domain.Customer;
@@ -137,7 +138,7 @@ public class JobOpeningManagementService {
         return jobOpening;
     }
 
-    public Iterable<JobOpeningDTO> jobOpeningsOfCustomerManager(String customerManagerUsername) {
+    public Iterable<JobOpeningDTO> jobOpeningsOfCustomerManager(Username customerManagerUsername) {
         Iterable<JobOpening> list = jobOpeningRepository.getJobOpeningListMatchingCustomerManager(customerManagerUsername);
         return dtoSvc.convertToDTO(list);
     }

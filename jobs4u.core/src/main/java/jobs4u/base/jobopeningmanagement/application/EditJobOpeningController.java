@@ -51,7 +51,7 @@ public class EditJobOpeningController {
 
     public Iterable<JobOpeningDTO> getJobOpeningList() {
         return auth.loggedinUserWithPermissions(BaseRoles.CUSTOMER_MANAGER)
-                .map(user -> joSvc.jobOpeningsOfCustomerManager(user.identity().toString()))
+                .map(user -> joSvc.jobOpeningsOfCustomerManager(user.identity()))
                 .orElseThrow(() -> new IllegalArgumentException("User doesn't have the necessary permissions to view job openings"));
     }
 
