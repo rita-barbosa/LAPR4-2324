@@ -93,6 +93,15 @@ package "<<aggregate>> Application" {
      class File <<(V,#FF8B40) value object>> {}
 }
 
+package "<<aggregate>> Notification" {
+    entity Notification <<entity>> <<root>> {}
+    class NotificationBody <<(V,#FF8B40) value object>>{}
+    class NotificationType <<(V,#FF8B40) value object>>{}
+    class NotificationRecipient <<(V,#FF8B40) value object>>{}
+    class NotificationStatus <<(V,#FF8B40) value object>>{}
+    class NotificationDate <<(V,#FF8B40) value object>>{}
+}
+
 package "<<aggregate>> Recruitment Process" {
     entity RecruitmentProcess <<entity>> <<root>> {}
     class RecruitmentPeriod <<(V,#FF8B40) value object>> {}
@@ -189,5 +198,13 @@ InterviewModel --> "1" ConfigFileName: configures <
 RequirementSpecification --> "1" RequirementName: identifies <
 RequirementSpecification --> "1" RequirementDescription: describes <
 RequirementSpecification --> "1" ConfigFileName: configures <
-
+'--
+Notification ---> NotificationBody : has
+Notification --> NotificationRecipient : has
+Notification --> NotificationStatus : has
+Notification ---> NotificationDate : has
+Notification -> NotificationType : has
+'__
+Notification --> "1" Candidate : notifies
+Notification --> "1" Customer : notifies
 @enduml
