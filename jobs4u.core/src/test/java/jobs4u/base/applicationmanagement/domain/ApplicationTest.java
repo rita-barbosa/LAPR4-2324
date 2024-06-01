@@ -1,23 +1,31 @@
 package jobs4u.base.applicationmanagement.domain;
 
-import org.junit.jupiter.api.Test;
+import com.ibm.icu.impl.Pair;
+import org.junit.Test;
 
 import java.io.File;
+import java.io.IOException;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+
 import static org.junit.jupiter.api.Assertions.*;
 
-class ApplicationTest {
-    RequirementAnswer requirementAnswer = new RequirementAnswer("plugins-config-file/requirement/r-answer-1.txt");
+public class ApplicationTest {
+    File n = new File(new File("../plugins-config-file/requirement/r-answer-1.txt").getCanonicalPath());
+    RequirementAnswer requirementAnswer = new RequirementAnswer(n.toString());
     RequirementResult requirementResult = new RequirementResult(true);
     Set<ApplicationFile> files = new HashSet<>();
 
     Date date = new Date(2024, Calendar.JANUARY, 5);
     Interview interview = new Interview("interview1", new Date(2024, Calendar.FEBRUARY, 2),
             new InterviewResult("correct", 50, "wrong"), "answer");
+
+    public ApplicationTest() throws IOException {
+    }
 
 
     @Test
@@ -29,6 +37,7 @@ class ApplicationTest {
     public void ensureMustHaveRequirementResult() {
         assertThrows(IllegalArgumentException.class, () -> new Application(requirementAnswer, null, files, date, interview));
     }
+
     @Test
     public void ensureMustHaveFile() {
         assertThrows(IllegalArgumentException.class, () -> new Application(requirementAnswer, requirementResult, null, date, interview));
@@ -39,5 +48,10 @@ class ApplicationTest {
         assertThrows(IllegalArgumentException.class, () -> new Application(requirementAnswer, requirementResult, files, null, interview));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void ensureMustHaveRequirementsToVerify() {
+        Application a = new Application(new RequirementAnswer("not a file hehe"), requirementResult, files, date, interview);
+        a.updateRequirementResult(Pair.of(true, ""));
+    }
 
 }
