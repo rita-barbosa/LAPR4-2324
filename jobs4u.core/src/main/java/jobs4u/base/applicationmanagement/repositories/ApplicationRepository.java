@@ -8,4 +8,6 @@ import java.util.List;
 public interface ApplicationRepository extends DomainRepository<Long, Application> {
 
     Iterable<Application> applications();
+
+    Iterable<Application> applicationsForJobOpeningWithRequirements(String jobReference);
 }

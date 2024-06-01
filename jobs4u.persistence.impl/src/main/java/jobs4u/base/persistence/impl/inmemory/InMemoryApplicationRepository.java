@@ -25,4 +25,9 @@ public class InMemoryApplicationRepository
         }
         return applicationList;
     }
+
+    @Override
+    public Iterable<Application> applicationsForJobOpeningWithRequirements(String jobReference) {
+        return null;
+    }
 }

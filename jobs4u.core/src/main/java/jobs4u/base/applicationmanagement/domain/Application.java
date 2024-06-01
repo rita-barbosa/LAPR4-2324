@@ -1,5 +1,6 @@
 package jobs4u.base.applicationmanagement.domain;
 
+import com.ibm.icu.impl.Pair;
 import eapli.framework.domain.model.AggregateRoot;
 import eapli.framework.domain.model.DomainEntities;
 import eapli.framework.representations.dto.DTOable;
@@ -21,9 +22,9 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @Column(nullable = false)
+    //    @Column(nullable = false)
     private RequirementAnswer requirementAnswer;
-//    @Column(nullable = false)
+    //    @Column(nullable = false)
     private RequirementResult requirementResult;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -139,21 +140,25 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
         this.applicationStatus.setStatusDescriptionAsNOT_CHECKED();
     }
 
-    protected Application(){
+    protected Application() {
         //for ORM
     }
 
-    public Candidate getCandidate() {
+    public Candidate candidate() {
         return candidate;
     }
 
+    public String requirementAnswerFilePath() {
+        return this.requirementAnswer.requirementAnswer();
+    }
+
     @Override
-    public boolean sameAs(Object other){
+    public boolean sameAs(Object other) {
         return DomainEntities.areEqual(this, other);
     }
 
     @Override
-    public int compareTo(Long other){
+    public int compareTo(Long other) {
         return AggregateRoot.super.compareTo(other);
     }
 
@@ -163,13 +168,14 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
     }
 
     @Override
-    public boolean equals(Object o){
-        if(this == o) return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
         if (!(o instanceof Application)) return false;
         Application that = (Application) o;
         return Objects.equals(version, that.version) && Objects.equals(id, that.id) &&
                 Objects.equals(requirementAnswer, that.requirementAnswer) && Objects.equals(requirementResult, that.requirementResult) && Objects.equals(files, that.files);
     }
+
     @Override
     public int hashCode() {
         return DomainEntities.hashCode(this);
@@ -178,6 +184,13 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
     @Override
     public ApplicationDTO toDTO() {
         return new ApplicationDTO(id, files, applicationDate,
-                applicationStatus.getStatusDescription(),candidate.user().username().toString());
+                applicationStatus.getStatusDescription(), candidate.user().username().toString());
+    }
+
+    public void updateRequirementResult(Pair<Boolean, String> result) {
+        if (result.second != null)
+            this.requirementResult = RequirementResult.valueOf(result.first, result.second);
+        else
+            this.requirementResult = RequirementResult.valueOf(result.first);
     }
 }

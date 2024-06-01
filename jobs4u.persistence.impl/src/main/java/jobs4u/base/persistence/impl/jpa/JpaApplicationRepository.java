@@ -33,4 +33,9 @@ public class JpaApplicationRepository
 
     }
 
+    @Override
+    public Iterable<Application> applicationsForJobOpeningWithRequirements(String jobReference) {
+        return null;
+    }
+
 }

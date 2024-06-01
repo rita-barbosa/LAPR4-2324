@@ -11,8 +11,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ApplicationTest {
-
-    RequirementAnswer requirementAnswer = new RequirementAnswer("The requirement was complete!");
+    RequirementAnswer requirementAnswer = new RequirementAnswer("plugins-config-file/requirement/r-answer-1.txt");
     RequirementResult requirementResult = new RequirementResult(true);
     Set<ApplicationFile> files = new HashSet<>();
 

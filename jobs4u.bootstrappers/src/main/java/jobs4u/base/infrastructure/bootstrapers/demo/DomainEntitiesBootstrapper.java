@@ -38,7 +38,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implements Action {
+public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements Action {
 
     CustomerManagementService customerManagementService = new CustomerManagementService();
 
@@ -95,7 +95,7 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         criteriaRepository.save(new Criteria("Status [STARTED]", JobOpening.class.getSimpleName()));
         criteriaRepository.save(new Criteria("Company Name", JobOpening.class.getSimpleName()));
         criteriaRepository.save(new Criteria("Customer Code", JobOpening.class.getSimpleName()));
-          criteriaRepository.save(new Criteria("Time Interval", JobOpening.class.getSimpleName()));
+        criteriaRepository.save(new Criteria("Time Interval", JobOpening.class.getSimpleName()));
     }
 
     private void persistRecruitmentProcesses() {
@@ -116,7 +116,7 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
             Calendar start3 = Calendars.fromDate(df.parse("10-03-2024"));
             Calendar end3 = Calendars.fromDate(df.parse("10-04-2024"));
             dateInterval3 = new DateInterval(start3, end3);
-        }catch (ParseException e){
+        } catch (ParseException e) {
             System.out.println(e.getMessage());
         }
 
@@ -189,15 +189,15 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         List<Phase> phases11 = new ArrayList<>();
         List<Phase> phases22 = new ArrayList<>();
         List<Phase> phases33 = new ArrayList<>();
-        for (Phase phase : phases1){
+        for (Phase phase : phases1) {
             Phase phase1 = phaseRepository.save(phase);
             phases11.add(phase1);
         }
-        for (Phase phase : phases2){
+        for (Phase phase : phases2) {
             Phase phase2 = phaseRepository.save(phase);
             phases22.add(phase2);
         }
-        for (Phase phase : phases3){
+        for (Phase phase : phases3) {
             Phase phase3 = phaseRepository.save(phase);
             phases33.add(phase3);
         }
@@ -209,15 +209,15 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         recruitmentProcess2 = recruitmentProcessRepository.save(recruitmentProcess2);
         recruitmentProcess3 = recruitmentProcessRepository.save(recruitmentProcess3);
 
-        for (Phase phase : phases1){
+        for (Phase phase : phases1) {
             phase.setRecruitmentprocess(recruitmentProcess1);
             phaseRepository.save(phase);
         }
-        for (Phase phase : phases2){
+        for (Phase phase : phases2) {
             phase.setRecruitmentprocess(recruitmentProcess2);
             phaseRepository.save(phase);
         }
-        for (Phase phase : phases3){
+        for (Phase phase : phases3) {
             phase.setRecruitmentprocess(recruitmentProcess3);
             phaseRepository.save(phase);
         }
@@ -226,7 +226,6 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         recruitmentProcessList.add(recruitmentProcess2);
         recruitmentProcessList.add(recruitmentProcess3);
     }
-
 
 
     private void persistJobOpenings() {
@@ -241,19 +240,19 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
 
         JobOpening jobOpening1 = new JobOpening("Front End Junior Developer", contract, mode, "123 Main Street",
                 "Flagtown", "Star District", "USA", "4500-900", 10, description,
-                requirementSpecificationsList.get(0),interviewModelsList.get(0), jobReference);
+                requirementSpecificationsList.get(0), interviewModelsList.get(0), jobReference);
 
         JobOpening jobOpening2 = new JobOpening("Back End Senior Developer", contract, mode, "456 Elm Street",
                 "Maple Town", "Moonlight District", "Canada", "4500-900", 15, description,
-                requirementSpecificationsList.get(0),interviewModelsList.get(0), jobReference1);
+                requirementSpecificationsList.get(0), interviewModelsList.get(0), jobReference1);
 
         JobOpening jobOpening3 = new JobOpening("Back End Senior Developer", contract, mode, "MM Street",
                 "MM Town", "MM District", "MMM", "4500-900", 8, description,
-                requirementSpecificationsList.get(0), interviewModelsList.get(0),jobReference2);
+                requirementSpecificationsList.get(0), interviewModelsList.get(0), jobReference2);
 
         JobOpening jobOpening4 = new JobOpening("Night Guard", contract, mode, "Freddy fazbear Street",
                 "Chica Town", "Foxy District", "MMM", "4500-900", 8, description,
-                requirementSpecificationsList.get(0), interviewModelsList.get(0),jobReference3);
+                requirementSpecificationsList.get(0), interviewModelsList.get(0), jobReference3);
 
         jobOpening2.getStatus().setStatusDescriptionAsSTARTED();
 
@@ -281,12 +280,12 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
     private void persistRequirementSpecifications() {
         String description1 = "Back-End Developer With Experience in Java";
         String name1 = "Requirements_Back_End_Dev.jar";
-        String fullClassName1 = "Plugins/Requirements/Back_End_Dev/Requirements_Back_End_Dev.jar";
+        String fullClassName1 = "jobs4u.plugin.core.adapter.RequirementPluginAdapter";
         RequirementSpecification requirementSpecification1 = new RequirementSpecification(name1, description1, fullClassName1, "plugins-config-file/requirement/r-config-1.txt");
 
         String description2 = "Front-End Developer With Experience in Java";
         String name2 = "Requirements_Front_End_Dev.jar";
-        String fullClassName2 = "Plugins/Requirements/Front_End_Dev/Requirements_Front_End_Dev.jar";
+        String fullClassName2 = "jobs4u.plugin.core.adapter.RequirementPluginAdapter";
         RequirementSpecification requirementSpecification2 = new RequirementSpecification(name2, description2, fullClassName2, "plugins-config-file/requirement/r-config-1.txt");
 
         requirementSpecificationsList.add(requirementSpecification1);
@@ -298,14 +297,14 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
     private void persistInterviewModels() {
         String description1 = "Back-End Developer With Experience in Java";
         String name1 = "Interview_Back_End_Dev.jar";
-        String fullClassName1 = "Plugins/Interviews/Back_End_Dev/Interview_Back_End_Dev.jar";
-        InterviewModel interviewModel1 = new InterviewModel(name1, description1, fullClassName1,"plugins-config-file/requirement/r-config-1.txt");
+        String fullClassName1 = "jobs4u.plugin.core.adapter.InterviewPluginAdapter";
+        InterviewModel interviewModel1 = new InterviewModel(name1, description1, fullClassName1, "plugins-config-file/requirement/r-config-1.txt");
 
 
         String description2 = "Front-End Developer With Experience in Java";
         String name2 = "Interview_Front_End_Dev.jar";
-        String fullClassName2 = "Plugins/Interviews/Front_End_Dev/Interview_Front_End_Dev.jar";
-        InterviewModel interviewModel2 = new InterviewModel(name2, description2, fullClassName2,"plugins-config-file/requirement/r-config-1.txt");
+        String fullClassName2 = "jobs4u.plugin.core.adapter.InterviewPluginAdapter";
+        InterviewModel interviewModel2 = new InterviewModel(name2, description2, fullClassName2, "plugins-config-file/requirement/r-config-1.txt");
 
         interviewModelsList.add(interviewModel1);
         interviewModelsList.add(interviewModel2);
@@ -324,12 +323,12 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
                 "ISEP", customerManager, "isep@email.com");
     }
 
-    private void persistCandidates(){
+    private void persistCandidates() {
         final Set<Role> roles = new HashSet<>();
         roles.add(BaseRoles.CANDIDATE_USER);
         PhoneNumber phoneNumber = new PhoneNumber("+351", "910000034");
 
-        candidateManagementService.registerCandidate("Joana","candidate@email.com",phoneNumber);
+        candidateManagementService.registerCandidate("Joana", "candidate@email.com", phoneNumber);
     }
 
     private void persistWorkModes() {
@@ -350,9 +349,9 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         contractTypeRepository.save(contractType1);
     }
 
-    private void persistApplications(){
-        RequirementAnswer requirementAnswer = new RequirementAnswer("The requirement was complete!");
-        RequirementResult requirementResult = new RequirementResult(true);
+    private void persistApplications() {
+        RequirementAnswer requirementAnswer = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
+        RequirementResult requirementResult =  RequirementResult.valueOf(true);
         ApplicationFile file = new ApplicationFile(new File("example.txt"));
         Set<ApplicationFile> files = new HashSet<>();
         files.add(file);
@@ -364,8 +363,8 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
 
         Optional<Candidate> opCandidate = candidateRepository.findByPhoneNumber(phone);
 
-        RequirementAnswer requirementAnswer1 = new RequirementAnswer("The requirement was complete!");
-        RequirementResult requirementResult1 = new RequirementResult(true);
+        RequirementAnswer requirementAnswer1 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
+        RequirementResult requirementResult1 =  RequirementResult.valueOf(true);
         ApplicationFile file1 = new ApplicationFile(new File("example1.txt"));
         Set<ApplicationFile> files1 = new HashSet<>();
         files1.add(file1);
@@ -374,7 +373,7 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
                 new InterviewResult("passed", 60, "the grade is above 50"), "accepted");
 
         Application application, application1;
-        if (opCandidate.isPresent()){
+        if (opCandidate.isPresent()) {
             Candidate candidate = opCandidate.get();
             application = new Application(requirementAnswer, requirementResult, files, date, candidate, interview);
             application1 = new Application(requirementAnswer1, requirementResult1, files1, date1, candidate, interview1);
