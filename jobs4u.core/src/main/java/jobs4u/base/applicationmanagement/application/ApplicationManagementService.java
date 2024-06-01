@@ -39,7 +39,7 @@ public class ApplicationManagementService {
     public List<ApplicationDTO> getAllApplicationsThatHaveCandidate(Candidate candidate){
         List<ApplicationDTO> list = new ArrayList<>();
         for(Application application : applicationRepository.applications()){
-            if(application.getCandidate().sameAs(candidate)){
+            if(application.candidate().sameAs(candidate)){
                 list.add(application.toDTO());
             }
         }
