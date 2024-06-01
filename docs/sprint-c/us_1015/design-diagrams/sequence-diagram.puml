@@ -13,8 +13,10 @@ participant ":JobOpeningManagementService" as JOMS <<service>>
 participant ":JobOpeningDTOService" as JOS_DTO <<service>>
 database ":JobOpeningRepository" as JO_REPO <<repository>>
 participant ":JobOpening" as JO <<domain>>
+database ":RequirementSpecificationRepository" as RS_REPO <<repository>>
 database ":ApplicationRepository" as A_REPO <<repository>>
 participant ":RequirementSpecificationPlugin" as RSP <<interface>>
+participant ":FileManagement" as FM <<interface>>
 participant ":Application" as A <<domain>>
 
 
@@ -77,7 +79,17 @@ activate UI
         A_REPO --> CTRL: applications
         deactivate A_REPO
 
+             CTRL -> RS_REPO: requirementSpecificationByRequirementName(requirementName)
+             activate RS_REPO
+             deactivate RS_REPO
+
+             CTRL -> FM: importData(configFileName)
+             activate FM
+             deactivate FM
+
         loop for each application
+
+
              CTRL -> RSP: evaluateRequirementsFile(requirementAnswer)
              activate RSP
 

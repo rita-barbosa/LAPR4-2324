@@ -20,6 +20,7 @@ package "<<aggregate>> Requirement Specification" {
     entity RequirementSpecification <<entity>> <<root>>  {}
     class RequirementName <<(V,#FF8B40) value object>> <<identifier>> {}
     class RequirementDescription <<(V,#FF8B40) value object>> {}
+    class FullClassName <<(V,#FF8B40) value object>> {}
      class ConfigFileName <<(V,#FF8B40) value object>> {}
 }
 'AGGREGATES
@@ -93,4 +94,5 @@ Interview --> "1" Schedule : follows a
 RequirementSpecification --> "1" RequirementName: identifies <
 RequirementSpecification --> "1" RequirementDescription: describes <
 RequirementSpecification --> "1" ConfigFileName: configures <
+RequirementSpecification --> "1" FullClassName: configures <
 @enduml

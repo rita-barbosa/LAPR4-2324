@@ -22,6 +22,10 @@ class VerifyRequirementsController  {
 }
 
 'Requirements
+interface FileManagement {
++ importData(file)
+}
+
 interface RequirementSpecificationPlugin {
 + evaluateFile(file) : Integer
 }
@@ -74,7 +78,8 @@ VerifyRequirementUI .--> VerifyRequirementsController
 VerifyRequirementsController --> AuthorizationService
 VerifyRequirementsController --> JobOpeningRepository
 VerifyRequirementsController --> ApplicationRepository
-VerifyRequirementsController --> RequirementSpecificationPlugin
+VerifyRequirementsController .--> RequirementSpecificationPlugin
+VerifyRequirementsController .--> FileManagement
 VerifyRequirementsController --> JobOpeningManagementService
 
 JobOpeningManagementService --> JobOpeningRepository
