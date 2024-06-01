@@ -36,6 +36,7 @@
 		<module>jobs4u.app.candidate.console</module>
 		<module>jobs4u.app.customer.console</module>
         <module>jobs4u.plugins</module>
+		<module>jobs4u.followup.server</module>
     </modules>
 	<version>0.1.0</version>
 
