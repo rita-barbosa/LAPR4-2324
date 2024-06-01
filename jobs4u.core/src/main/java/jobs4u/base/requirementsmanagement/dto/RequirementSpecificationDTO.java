@@ -25,12 +25,6 @@ public class RequirementSpecificationDTO {
         this.description = description;
     }
 
-    public RequirementSpecificationDTO(String name, String description, String plugin) {
-        this.name = name;
-        this.description = description;
-        this.plugin = plugin;
-    }
-
     public String filename() {
         return this.name;
     }

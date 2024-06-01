@@ -9,21 +9,21 @@ class InterviewModelTest {
 
     String name = "Prime Minister";
     String description = "Prime Ministers with experience in running a country.";
-    String fullClassName = "Plugins/Interviews/Prime_Minister/Prime_Minister_Interview_Plugin.jar";
+    String fullClassName = "jobs4u.plugin.core.adapter.InterviewPluginAdapter";
 
     @Test
     void ensureSameAsWorksAsExpected() {
         String description1 = "Back-End Developer With Experience in Java";
         String name1 = "Back-End Developer";
-        String fullClassName1 = "Plugins/Interviews/Back_End_Dev/Back_End_Dev_Interview_Plugin.jar";
-        InterviewModel interviewModel1 = new InterviewModel(name1, description1, fullClassName1);
+        String fullClassName1 = "jobs4u.plugin.core.adapter.InterviewPluginAdapter1";
+        InterviewModel interviewModel1 = new InterviewModel(name1, description1, fullClassName1,"plugins-config-file/requirement/r-config-1.txt");
 
         String description2 = "Front-End Developer With Experience in HTML";
         String name2 = "Front-End Developer";
-        String fullClassName2 = "Plugins/Interviews/Front_End_Dev/Front_End_Dev_Interview_Plugin.jar";
-        InterviewModel interviewModel2 = new InterviewModel(name2, description2, fullClassName2);
+        String fullClassName2 = "jobs4u.plugin.core.adapter.InterviewPluginAdapter2";
+        InterviewModel interviewModel2 = new InterviewModel(name2, description2, fullClassName2,"plugins-config-file/requirement/r-config-1.txt");
 
-        InterviewModel interviewModel3 = new InterviewModel(name2, description2, fullClassName2);
+        InterviewModel interviewModel3 = new InterviewModel(name2, description2, fullClassName2,"plugins-config-file/requirement/r-config-1.txt");
 
         // Assert that the sameAs() method checks that two different interview models are different
         assertFalse(interviewModel1.sameAs(interviewModel2));
@@ -37,17 +37,17 @@ class InterviewModelTest {
 
     @Test
     void ensureItHasAnInterviewModelName() {
-        assertThrows(IllegalArgumentException.class, () -> new InterviewModel(null, description, fullClassName));
+        assertThrows(IllegalArgumentException.class, () -> new InterviewModel(null, description, fullClassName,"plugins-config-file/requirement/r-config-1.txt"));
     }
 
     @Test
     void ensureItHasAnInterviewModelDescription() {
-        assertThrows(IllegalArgumentException.class, () -> new InterviewModel(name, null, fullClassName));
+        assertThrows(IllegalArgumentException.class, () -> new InterviewModel(name, null, fullClassName,"plugins-config-file/requirement/r-config-1.txt"));
     }
 
     @Test
     void ensureItHasAPluginJarFile() {
-        assertThrows(IllegalArgumentException.class, () -> new InterviewModel(name, description, null));
+        assertThrows(IllegalArgumentException.class, () -> new InterviewModel(name, description, null,"plugins-config-file/requirement/r-config-1.txt"));
     }
 
 }

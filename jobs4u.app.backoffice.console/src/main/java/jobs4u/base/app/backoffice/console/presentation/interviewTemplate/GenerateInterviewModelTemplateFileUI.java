@@ -6,7 +6,7 @@ import eapli.framework.io.util.Console;
 import eapli.framework.presentation.console.AbstractUI;
 import eapli.framework.presentation.console.SelectWidget;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.listing.JobOpeningPrinter;
-import jobs4u.base.interviewModelTemplate.application.GenerateInterviewModelTemplateFileController;
+import jobs4u.base.interviewmodelmanagement.application.GenerateInterviewModelTemplateFileController;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 
 import java.io.File;

@@ -1,8 +1,8 @@
-package jobs4u.base.interviewModelTemplate.application;
+package jobs4u.base.requirementsmanagement.application;
 
+import eapli.framework.application.UseCaseController;
 import eapli.framework.infrastructure.authz.application.AuthorizationService;
 import eapli.framework.infrastructure.authz.application.AuthzRegistry;
-import jobs4u.base.interviewModelTemplate.services.InterviewTemplateManagerService;
 import jobs4u.base.jobopeningmanagement.application.JobOpeningListDTOService;
 import jobs4u.base.jobopeningmanagement.application.JobOpeningManagementService;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
@@ -12,7 +12,8 @@ import jobs4u.base.usermanagement.domain.BaseRoles;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GenerateInterviewModelTemplateFileController {
+@UseCaseController
+public class GenerateRequirementsTemplateFileController {
 
     private final AuthorizationService authz;
 
@@ -20,18 +21,18 @@ public class GenerateInterviewModelTemplateFileController {
 
     private final JobOpeningListDTOService jobOpeningListDTOService;
 
-    private final InterviewTemplateManagerService interviewTemplateManagerService;
+    private final RequirementsTemplateManagerService requirementsTemplateManagerService;
 
 
-    public GenerateInterviewModelTemplateFileController() {
+    public GenerateRequirementsTemplateFileController() {
         this.authz = AuthzRegistry.authorizationService();
         this.jobOpeningManagementService = new JobOpeningManagementService();
         this.jobOpeningListDTOService = new JobOpeningListDTOService();
-        this.interviewTemplateManagerService = new InterviewTemplateManagerService();
+        this.requirementsTemplateManagerService = new RequirementsTemplateManagerService();
     }
 
     public List<JobOpeningDTO> getJobOpeningList() {
-        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.OPERATOR);
         List<JobOpening> jobOpenings = new ArrayList<>();
         for (JobOpening job : jobOpeningManagementService.getUNFINISHEDJobOpenings()){
             jobOpenings.add(job);
@@ -40,7 +41,9 @@ public class GenerateInterviewModelTemplateFileController {
     }
 
     public boolean exportTemplateFile(JobOpeningDTO jobOpeningDTO, String directoryPath) {
-        return interviewTemplateManagerService.generateNewTemplate(interviewTemplateManagerService.getInterviewFromJobOpening(jobOpeningDTO), directoryPath);
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.OPERATOR);
+        return requirementsTemplateManagerService.generateNewTemplate(requirementsTemplateManagerService.getRequirementFromJobOpeningDTO(jobOpeningDTO), directoryPath);
     }
+
 
 }

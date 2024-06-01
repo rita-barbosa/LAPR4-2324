@@ -6,6 +6,8 @@ import eapli.framework.representations.dto.DTOable;
 import eapli.framework.validations.Preconditions;
 import jakarta.persistence.*;
 
+import jobs4u.base.pluginmanagement.domain.ConfigFileName;
+import jobs4u.base.pluginmanagement.domain.FullClassName;
 import jobs4u.base.requirementsmanagement.dto.RequirementSpecificationDTO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,14 +27,17 @@ public class RequirementSpecification implements DTOable<RequirementSpecificatio
 
     private FullClassName plugin;
 
-    public RequirementSpecification(String requirementName, String description, String plugin) {
+    private ConfigFileName configFile;
+
+    public RequirementSpecification(String requirementName, String description, String plugin, String configFile) {
         Preconditions.noneNull(requirementName, description, plugin);
         Preconditions.nonEmpty(requirementName);
         Preconditions.nonEmpty(description);
         Preconditions.nonEmpty(plugin);
         this.requirementName = new RequirementName(requirementName);
         this.description = new RequirementDescription(description);
-        this.plugin = new FullClassName(plugin);
+        this.plugin = FullClassName.valueOf(plugin);
+        this.configFile = ConfigFileName.valueOf(configFile);
     }
 
     protected RequirementSpecification() {
@@ -41,7 +46,7 @@ public class RequirementSpecification implements DTOable<RequirementSpecificatio
 
     @Override
     public RequirementSpecificationDTO toDTO() {
-        return new RequirementSpecificationDTO(requirementName.name(), description.description(), plugin.pluginName());
+        return new RequirementSpecificationDTO(requirementName.name(), description.description());
     }
 
     @Override
@@ -62,13 +67,8 @@ public class RequirementSpecification implements DTOable<RequirementSpecificatio
         return description;
     }
 
-    public FullClassName pluginJarFile() {
+    public FullClassName className() {
         return plugin;
-    }
-
-    @Override
-    public int hashCode() {
-        return DomainEntities.hashCode(this);
     }
 
     @Override
@@ -76,6 +76,11 @@ public class RequirementSpecification implements DTOable<RequirementSpecificatio
         if (this == o) return true;
         if (!(o instanceof RequirementSpecification)) return false;
         RequirementSpecification that = (RequirementSpecification) o;
-        return Objects.equals(requirementName, that.requirementName) && Objects.equals(description, that.description) && Objects.equals(plugin, that.plugin);
+        return Objects.equals(requirementName, that.requirementName) && Objects.equals(description, that.description) && Objects.equals(plugin, that.plugin) && Objects.equals(configFile, that.configFile);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(requirementName, description, plugin, configFile);
     }
 }

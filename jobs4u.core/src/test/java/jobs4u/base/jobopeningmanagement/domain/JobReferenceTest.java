@@ -41,8 +41,8 @@ public class JobReferenceTest {
 
         String name = "Senior Developer";
         String description = "Database maintenance";
-        String fullClassName = "senior-developer-database.jar";
-        RequirementSpecification requirementSpecification = new RequirementSpecification(name, description, fullClassName);
+        String fullClassName = "jobs4u.plugin.core.adapter.RequirementPluginAdapter";
+        RequirementSpecification requirementSpecification = new RequirementSpecification(name, description, fullClassName, "plugins-config-file/requirement/r-config-1.txt");
 
         assertEquals(4, new JobOpening("Senior Dev", contractType, workMode, address,
                 15, "description", requirementSpecification,

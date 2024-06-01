@@ -1,4 +1,4 @@
-package jobs4u.base.interviewModelTemplate.services;
+package jobs4u.base.interviewmodelmanagement.application;
 
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
@@ -24,7 +24,7 @@ public class InterviewTemplateManagerService {
 
     public boolean generateNewTemplate(InterviewModel interviewModel, String outputDirectory) {
         try {
-            String[] command = {"java", "-jar", interviewModel.pluginJarFile().pluginName(), "-template", (outputDirectory + "\\")};
+            String[] command = {"java", "-jar", interviewModel.className().toString(), "-template", (outputDirectory + "\\")};
 
             ProcessBuilder processBuilder = new ProcessBuilder(command);
             Process process = processBuilder.start();

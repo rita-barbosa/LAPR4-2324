@@ -25,7 +25,7 @@
         <class>jobs4u.base.requirementsmanagement.domain.RequirementSpecification</class>
         <class>jobs4u.base.requirementsmanagement.domain.RequirementName</class>
         <class>jobs4u.base.requirementsmanagement.domain.RequirementDescription</class>
-        <class>jobs4u.base.requirementsmanagement.domain.FullClassName</class>
+        <class>jobs4u.base.pluginmanagement.domain.FullClassName</class>
         <class>jobs4u.base.interviewmodelmanagement.domain.InterviewModel</class>
         <class>jobs4u.base.interviewmodelmanagement.domain.InterviewModelDescription</class>
         <class>jobs4u.base.interviewmodelmanagement.domain.InterviewModelName</class>

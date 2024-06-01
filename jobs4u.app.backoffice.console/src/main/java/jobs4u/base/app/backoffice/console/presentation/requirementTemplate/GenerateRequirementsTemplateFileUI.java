@@ -7,12 +7,9 @@ import eapli.framework.presentation.console.AbstractUI;
 import eapli.framework.presentation.console.SelectWidget;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.listing.JobOpeningPrinter;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
-import jobs4u.base.requirementTemplate.application.GenerateRequirementsTemplateFileController;
+import jobs4u.base.requirementsmanagement.application.GenerateRequirementsTemplateFileController;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileSystemException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;

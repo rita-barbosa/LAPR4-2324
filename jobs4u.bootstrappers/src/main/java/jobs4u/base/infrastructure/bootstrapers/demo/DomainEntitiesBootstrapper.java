@@ -282,12 +282,12 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         String description1 = "Back-End Developer With Experience in Java";
         String name1 = "Requirements_Back_End_Dev.jar";
         String fullClassName1 = "Plugins/Requirements/Back_End_Dev/Requirements_Back_End_Dev.jar";
-        RequirementSpecification requirementSpecification1 = new RequirementSpecification(name1, description1, fullClassName1);
+        RequirementSpecification requirementSpecification1 = new RequirementSpecification(name1, description1, fullClassName1, "plugins-config-file/requirement/r-config-1.txt");
 
         String description2 = "Front-End Developer With Experience in Java";
         String name2 = "Requirements_Front_End_Dev.jar";
         String fullClassName2 = "Plugins/Requirements/Front_End_Dev/Requirements_Front_End_Dev.jar";
-        RequirementSpecification requirementSpecification2 = new RequirementSpecification(name2, description2, fullClassName2);
+        RequirementSpecification requirementSpecification2 = new RequirementSpecification(name2, description2, fullClassName2, "plugins-config-file/requirement/r-config-1.txt");
 
         requirementSpecificationsList.add(requirementSpecification1);
         requirementSpecificationsList.add(requirementSpecification2);
@@ -299,13 +299,13 @@ public class DomainEntitiesBootstrapper  extends UsersBootstrapperBase implement
         String description1 = "Back-End Developer With Experience in Java";
         String name1 = "Interview_Back_End_Dev.jar";
         String fullClassName1 = "Plugins/Interviews/Back_End_Dev/Interview_Back_End_Dev.jar";
-        InterviewModel interviewModel1 = new InterviewModel(name1, description1, fullClassName1);
+        InterviewModel interviewModel1 = new InterviewModel(name1, description1, fullClassName1,"plugins-config-file/requirement/r-config-1.txt");
 
 
         String description2 = "Front-End Developer With Experience in Java";
         String name2 = "Interview_Front_End_Dev.jar";
         String fullClassName2 = "Plugins/Interviews/Front_End_Dev/Interview_Front_End_Dev.jar";
-        InterviewModel interviewModel2 = new InterviewModel(name2, description2, fullClassName2);
+        InterviewModel interviewModel2 = new InterviewModel(name2, description2, fullClassName2,"plugins-config-file/requirement/r-config-1.txt");
 
         interviewModelsList.add(interviewModel1);
         interviewModelsList.add(interviewModel2);

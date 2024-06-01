@@ -7,7 +7,8 @@ import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jobs4u.base.interviewmodelmanagement.dto.InterviewModelDTO;
-import jobs4u.base.requirementsmanagement.domain.FullClassName;
+import jobs4u.base.pluginmanagement.domain.ConfigFileName;
+import jobs4u.base.pluginmanagement.domain.FullClassName;
 
 import java.util.Objects;
 
@@ -21,15 +22,17 @@ public class InterviewModel implements AggregateRoot<InterviewModelName> {
     private InterviewModelDescription description;
 
     private FullClassName plugin;
+    private ConfigFileName configFile;
 
-    public InterviewModel(String interviewModelName, String description, String fullClassName) {
-        Preconditions.noneNull(interviewModelName,description,fullClassName);
+    public InterviewModel(String interviewModelName, String description, String fullClassName, String configFile) {
+        Preconditions.noneNull(interviewModelName, description, fullClassName);
         Preconditions.nonEmpty(interviewModelName);
         Preconditions.nonEmpty(description);
         Preconditions.nonEmpty(fullClassName);
         this.interviewModelName = new InterviewModelName(interviewModelName);
         this.description = new InterviewModelDescription(description);
-        this.plugin = new FullClassName(fullClassName);
+        this.plugin = FullClassName.valueOf(fullClassName);
+        this.configFile = ConfigFileName.valueOf(configFile);
     }
 
     public InterviewModel() {
@@ -54,19 +57,20 @@ public class InterviewModel implements AggregateRoot<InterviewModelName> {
         return description;
     }
 
-    public FullClassName pluginJarFile() {
+    public FullClassName className() {
         return plugin;
     }
-    public String nameString(){
-        return this.interviewModelName.name();
-    }
-    public String descriptionString(){
+
+    public String nameString() {
         return this.interviewModelName.name();
     }
 
-    @Override
-    public int hashCode() {
-        return DomainEntities.hashCode(this);
+    public String descriptionString() {
+        return this.interviewModelName.name();
+    }
+
+    public InterviewModelDTO toDto() {
+        return new InterviewModelDTO(nameString(), descriptionString());
     }
 
     @Override
@@ -74,10 +78,11 @@ public class InterviewModel implements AggregateRoot<InterviewModelName> {
         if (this == o) return true;
         if (!(o instanceof InterviewModel)) return false;
         InterviewModel that = (InterviewModel) o;
-        return Objects.equals(interviewModelName, that.interviewModelName) && Objects.equals(description, that.description) && Objects.equals(plugin, that.plugin);
+        return Objects.equals(interviewModelName, that.interviewModelName) && Objects.equals(description, that.description) && Objects.equals(plugin, that.plugin) && Objects.equals(configFile, that.configFile);
     }
 
-    public InterviewModelDTO toDto() {
-        return  new InterviewModelDTO(nameString(), descriptionString());
+    @Override
+    public int hashCode() {
+        return Objects.hash(interviewModelName, description, plugin, configFile);
     }
 }

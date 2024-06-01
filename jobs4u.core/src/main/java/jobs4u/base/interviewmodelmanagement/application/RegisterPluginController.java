@@ -1,6 +1,6 @@
 package jobs4u.base.interviewmodelmanagement.application;
 
-import jobs4u.base.interviewmodelmanagement.application.RequirementSpecificationManagementService;
+import jobs4u.base.requirementsmanagement.application.RequirementSpecificationManagementService;
 
 public class RegisterPluginController {
 
@@ -8,19 +8,19 @@ public class RegisterPluginController {
 
     private final static RequirementSpecificationManagementService requirementSpecificationManagementService = new RequirementSpecificationManagementService();
 
-    public void registerInterviewPlugin(String nameOfInterviewPlugin, String descriptionOfInterviewPlugin, String pathOfInterviewPlugin){
-        interviewModelManagementService.registerInterviewPlugin(nameOfInterviewPlugin, descriptionOfInterviewPlugin, pathOfInterviewPlugin);
+    public void registerInterviewPlugin(String nameOfInterviewPlugin, String descriptionOfInterviewPlugin, String pathOfInterviewPlugin, String configFile) {
+        interviewModelManagementService.registerInterviewPlugin(nameOfInterviewPlugin, descriptionOfInterviewPlugin, pathOfInterviewPlugin,configFile);
     }
 
-    public void registerRequirementPlugin(String nameOfInterviewPlugin, String descriptionOfInterviewPlugin, String pathOfInterviewPlugin){
-        requirementSpecificationManagementService.registerRequirementPlugin(nameOfInterviewPlugin, descriptionOfInterviewPlugin, pathOfInterviewPlugin);
+    public void registerRequirementPlugin(String nameOfInterviewPlugin, String descriptionOfInterviewPlugin, String pathOfInterviewPlugin, String configFile) {
+        requirementSpecificationManagementService.registerRequirementPlugin(nameOfInterviewPlugin, descriptionOfInterviewPlugin, pathOfInterviewPlugin, configFile);
     }
 
-    public boolean checkIfInterviewModelAlreadyExists(String identifier){
+    public boolean checkIfInterviewModelAlreadyExists(String identifier) {
         return interviewModelManagementService.checkIfInterviewModelAlreadyExists(identifier);
     }
 
-    public boolean checkIfRequirementSpecificationAlreadyExists(String identifier){
+    public boolean checkIfRequirementSpecificationAlreadyExists(String identifier) {
         return requirementSpecificationManagementService.checkIfRequirementSpecificationAlreadyExists(identifier);
     }
 

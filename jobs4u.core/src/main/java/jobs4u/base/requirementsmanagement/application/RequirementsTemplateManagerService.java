@@ -1,4 +1,4 @@
-package jobs4u.base.requirementTemplate.services;
+package jobs4u.base.requirementsmanagement.application;
 
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
@@ -25,14 +25,14 @@ public class RequirementsTemplateManagerService {
 
     public boolean generateNewTemplate(RequirementSpecification requirementSpecification, String outputDirectory) {
         try {
-            String[] command = {"java", "-jar", requirementSpecification.pluginJarFile().pluginName(), "-template", (outputDirectory + "\\")};
+            String[] command = {"java", "-jar", requirementSpecification.className().toString(), "-template", (outputDirectory + "\\")};
 
             ProcessBuilder processBuilder = new ProcessBuilder(command);
             Process process = processBuilder.start();
 
             int exitCode = process.waitFor();
             System.out.println("Template command executed. Process exited with code: " + exitCode);
-            if (exitCode == 0){
+            if (exitCode == 0) {
                 return true;
             }
         } catch (IOException | InterruptedException e) {
