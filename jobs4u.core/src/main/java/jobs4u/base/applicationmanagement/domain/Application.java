@@ -9,6 +9,8 @@ import jakarta.persistence.*;
 import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
 import jobs4u.base.candidatemanagement.domain.Candidate;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 @Entity
@@ -188,9 +190,24 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
     }
 
     public void updateRequirementResult(Pair<Boolean, String> result) {
-        if (result.second != null)
-            this.requirementResult = RequirementResult.valueOf(result.first, result.second);
-        else
-            this.requirementResult = RequirementResult.valueOf(result.first);
+        Preconditions.nonEmpty(requirementAnswerFilePath());
+        File requirementFile = new File(requirementAnswerFilePath());
+        try {
+            if (!requirementFile.isAbsolute()) {
+                requirementFile = requirementFile.getCanonicalFile();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to get the absolute path of the requirement answer file.", e);
+        }
+
+        if (requirementFile.exists() && requirementFile.isFile()) {
+            if (!result.second.isEmpty()) {
+                this.requirementResult = RequirementResult.valueOf(result.first, result.second);
+            } else {
+                this.requirementResult = RequirementResult.valueOf(result.first);
+            }
+        } else {
+            throw new IllegalArgumentException("No valid requirement answer file.");
+        }
     }
 }
