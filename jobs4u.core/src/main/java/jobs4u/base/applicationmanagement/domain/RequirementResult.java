@@ -10,21 +10,35 @@ import java.util.Objects;
 public class RequirementResult implements ValueObject {
     private Boolean requirementResult;
 
-    public RequirementResult(Boolean answer){
+    private String reqJustification;
+
+    protected RequirementResult(Boolean answer) {
         Preconditions.noneNull(answer);
+
+        this.requirementResult = answer;
+        this.reqJustification = "";
+    }
+
+    protected RequirementResult() {}
+
+    protected RequirementResult(Boolean answer, String reqJustification) {
+        Preconditions.noneNull(answer, reqJustification);
+        Preconditions.nonEmpty(reqJustification);
+
+        this.reqJustification = reqJustification;
         this.requirementResult = answer;
     }
 
-    public RequirementResult(){
-        //for ORM
-    }
-
-    public Boolean requirementResult(){
+    public Boolean requirementResult() {
         return requirementResult;
     }
 
-    public static RequirementResult valueOf(final Boolean answer){
+    public static RequirementResult valueOf(final Boolean answer) {
         return new RequirementResult(answer);
+    }
+
+    public static RequirementResult valueOf(final Boolean answer, final String justification) {
+        return new RequirementResult(answer, justification);
     }
 
     @Override

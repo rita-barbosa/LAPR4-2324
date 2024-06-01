@@ -35,4 +35,9 @@ public class JpaRequirementSpecificationRepository
         return matchOne("e.requirementName.name=:filename", params);
     }
 
+    @Override
+    public Optional<RequirementSpecification> requirementSpecificationByRequirementName(String requirement) {
+        return Optional.empty();
+    }
+
 }

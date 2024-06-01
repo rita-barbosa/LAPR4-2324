@@ -25,18 +25,18 @@ public class RequirementSpecification implements DTOable<RequirementSpecificatio
 
     private RequirementDescription description;
 
-    private FullClassName plugin;
-
+    private FullClassName reqSpec;
+    private FullClassName dataImporter;
     private ConfigFileName configFile;
 
-    public RequirementSpecification(String requirementName, String description, String plugin, String configFile) {
-        Preconditions.noneNull(requirementName, description, plugin);
+    public RequirementSpecification(String requirementName, String description, String reqSpec, String configFile) {
+        Preconditions.noneNull(requirementName, description, reqSpec);
         Preconditions.nonEmpty(requirementName);
         Preconditions.nonEmpty(description);
-        Preconditions.nonEmpty(plugin);
+        Preconditions.nonEmpty(reqSpec);
         this.requirementName = new RequirementName(requirementName);
         this.description = new RequirementDescription(description);
-        this.plugin = FullClassName.valueOf(plugin);
+        this.reqSpec = FullClassName.valueOf(reqSpec);
         this.configFile = ConfigFileName.valueOf(configFile);
     }
 
@@ -68,7 +68,15 @@ public class RequirementSpecification implements DTOable<RequirementSpecificatio
     }
 
     public FullClassName className() {
-        return plugin;
+        return this.reqSpec;
+    }
+
+    public FullClassName dataImporter() {
+        return this.dataImporter;
+    }
+
+    public ConfigFileName configurationFile() {
+        return this.configFile;
     }
 
     @Override
@@ -76,11 +84,11 @@ public class RequirementSpecification implements DTOable<RequirementSpecificatio
         if (this == o) return true;
         if (!(o instanceof RequirementSpecification)) return false;
         RequirementSpecification that = (RequirementSpecification) o;
-        return Objects.equals(requirementName, that.requirementName) && Objects.equals(description, that.description) && Objects.equals(plugin, that.plugin) && Objects.equals(configFile, that.configFile);
+        return Objects.equals(requirementName, that.requirementName) && Objects.equals(description, that.description) && Objects.equals(reqSpec, that.reqSpec) && Objects.equals(configFile, that.configFile);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(requirementName, description, plugin, configFile);
+        return Objects.hash(requirementName, description, reqSpec, configFile);
     }
 }

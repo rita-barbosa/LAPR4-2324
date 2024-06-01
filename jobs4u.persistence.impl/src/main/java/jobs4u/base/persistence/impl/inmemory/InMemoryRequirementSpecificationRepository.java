@@ -31,4 +31,9 @@ public class InMemoryRequirementSpecificationRepository
     public Optional<RequirementSpecification> getFileByName(String filename) {
        return matchOne(e -> e.identity().name().equals(filename));
     }
+
+    @Override
+    public Optional<RequirementSpecification> requirementSpecificationByRequirementName(String requirement) {
+        return Optional.empty();
+    }
 }
