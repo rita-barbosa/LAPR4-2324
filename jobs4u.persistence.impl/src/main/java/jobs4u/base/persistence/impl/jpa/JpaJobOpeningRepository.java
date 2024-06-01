@@ -158,4 +158,9 @@ public class JpaJobOpeningRepository
         return q.getResultList();
     }
 
+    @Override
+    public Iterable<JobOpening> jobOpeningsInScreeingListOfCustomerManager(Username customerManagerUsername) {
+        return null;
+    }
+
 }

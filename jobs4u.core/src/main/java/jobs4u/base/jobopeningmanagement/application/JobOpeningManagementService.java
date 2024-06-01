@@ -142,4 +142,10 @@ public class JobOpeningManagementService {
         Iterable<JobOpening> list = jobOpeningRepository.getJobOpeningListMatchingCustomerManager(customerManagerUsername);
         return dtoSvc.convertToDTO(list);
     }
+
+    public Iterable<JobOpeningDTO> jobOpeningsInScreeingListOfCustomerManager(Username customerManagerUsername) {
+        return dtoSvc.convertToDTO(jobOpeningRepository.jobOpeningsInScreeingListOfCustomerManager(customerManagerUsername));
+    }
+
+
 }

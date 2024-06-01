@@ -133,4 +133,9 @@ public class InMemoryJobOpeningRepository
         return Collections.emptyList();
     }
 
+    @Override
+    public Iterable<JobOpening> jobOpeningsInScreeingListOfCustomerManager(Username customerManagerUsername) {
+        return null;
+    }
+
 }

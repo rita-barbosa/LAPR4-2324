@@ -33,4 +33,6 @@ public interface JobOpeningRepository extends DomainRepository<JobReference, Job
     Optional<JobOpening> getJobOpeningByJobReference(JobReference id);
 
     Iterable<JobOpening> getJobOpeningListMatchingCustomerManager(Username customerManagerUsername);
+
+    Iterable<JobOpening> jobOpeningsInScreeingListOfCustomerManager(Username customerManagerUsername);
 }
