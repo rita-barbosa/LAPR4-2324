@@ -221,28 +221,21 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         this.recruitmentProcess = recruitmentProcess;
     }
 
-    public JobOpeningStatus getStatus() {
+    public JobOpeningStatus currentStatus() {
         return status;
     }
 
-    public JobReference getJobReference() {
-        return jobReference;
-    }
-
-    public Address getAddress() {
+    public Address addressOfJobOpening() {
         return address;
     }
 
-    public Description getDescription() {
+    public Description descriptionOfJobOpening() {
         return description;
     }
-
-
 
     public Set<Application> getApplications() {
         return applications;
     }
-
 
     public RecruitmentProcess getRecruitmentProcess() {
         return recruitmentProcess;
@@ -275,6 +268,10 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
 
     public void updateStatusToNotStarted() {
         this.status = new JobOpeningStatus(JobOpeningStatusEnum.NOT_STARTED);
+    }
+
+    public void updateStatusToEnded() {
+        this.status = new JobOpeningStatus(JobOpeningStatusEnum.ENDED);
     }
 
 
