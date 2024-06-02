@@ -9,6 +9,6 @@ class FullClassNameTest {
 
     @Test
     void ensureItHasAName() {
-        assertThrows(IllegalArgumentException.class, () -> FullClassName.valueOf(null));
+        assertThrows(IllegalArgumentException.class, () -> FullClassName.valueOf(null,null));
     }
 }

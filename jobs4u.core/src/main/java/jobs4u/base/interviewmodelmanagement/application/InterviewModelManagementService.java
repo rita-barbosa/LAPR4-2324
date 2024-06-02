@@ -16,8 +16,8 @@ public class InterviewModelManagementService {
          return dtoService.toDto(repository.findAll());
     }
 
-    public static void registerInterviewPlugin(String nameOfInterviewPlugin, String descriptionOfInterviewPlugin, String fullClassName, String configFile){
-        InterviewModel interviewModel = new InterviewModel(nameOfInterviewPlugin, descriptionOfInterviewPlugin, fullClassName,configFile);
+    public static void registerInterviewPlugin(String nameOfInterviewPlugin, String descriptionOfInterviewPlugin, String fullClassName, String configFile,String dataImporter){
+        InterviewModel interviewModel = new InterviewModel(nameOfInterviewPlugin, descriptionOfInterviewPlugin, fullClassName,configFile,dataImporter);
         repository.save(interviewModel);
     }
 

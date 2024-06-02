@@ -8,12 +8,12 @@ public class RegisterPluginController {
 
     private final static RequirementSpecificationManagementService requirementSpecificationManagementService = new RequirementSpecificationManagementService();
 
-    public void registerInterviewPlugin(String nameOfInterviewPlugin, String descriptionOfInterviewPlugin, String pathOfInterviewPlugin, String configFile) {
-        interviewModelManagementService.registerInterviewPlugin(nameOfInterviewPlugin, descriptionOfInterviewPlugin, pathOfInterviewPlugin,configFile);
+    public void registerInterviewPlugin(String nameOfInterviewPlugin, String descriptionOfInterviewPlugin, String pathOfInterviewPlugin, String configFile,String dataImporter) {
+        interviewModelManagementService.registerInterviewPlugin(nameOfInterviewPlugin, descriptionOfInterviewPlugin, pathOfInterviewPlugin,configFile,dataImporter);
     }
 
-    public void registerRequirementPlugin(String nameOfInterviewPlugin, String descriptionOfInterviewPlugin, String pathOfInterviewPlugin, String configFile) {
-        requirementSpecificationManagementService.registerRequirementPlugin(nameOfInterviewPlugin, descriptionOfInterviewPlugin, pathOfInterviewPlugin, configFile);
+    public void registerRequirementPlugin(String nameOfInterviewPlugin, String descriptionOfInterviewPlugin, String pathOfInterviewPlugin, String configFile,String dataImporter) {
+        requirementSpecificationManagementService.registerRequirementPlugin(nameOfInterviewPlugin, descriptionOfInterviewPlugin, pathOfInterviewPlugin, configFile,dataImporter);
     }
 
     public boolean checkIfInterviewModelAlreadyExists(String identifier) {

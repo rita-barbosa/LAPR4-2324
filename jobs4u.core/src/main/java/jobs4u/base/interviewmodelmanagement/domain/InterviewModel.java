@@ -24,14 +24,14 @@ public class InterviewModel implements AggregateRoot<InterviewModelName> {
     private FullClassName plugin;
     private ConfigFileName configFile;
 
-    public InterviewModel(String interviewModelName, String description, String fullClassName, String configFile) {
+    public InterviewModel(String interviewModelName, String description, String fullClassName, String configFile, String dataImporter) {
         Preconditions.noneNull(interviewModelName, description, fullClassName);
         Preconditions.nonEmpty(interviewModelName);
         Preconditions.nonEmpty(description);
         Preconditions.nonEmpty(fullClassName);
         this.interviewModelName = new InterviewModelName(interviewModelName);
         this.description = new InterviewModelDescription(description);
-        this.plugin = FullClassName.valueOf(fullClassName);
+        this.plugin = FullClassName.valueOf(fullClassName,dataImporter);
         this.configFile = ConfigFileName.valueOf(configFile);
     }
 
@@ -57,8 +57,8 @@ public class InterviewModel implements AggregateRoot<InterviewModelName> {
         return description;
     }
 
-    public FullClassName className() {
-        return plugin;
+    public String className() {
+        return plugin.mainClass();
     }
 
     public String nameString() {

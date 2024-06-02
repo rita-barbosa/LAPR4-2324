@@ -24,7 +24,7 @@ public class InterviewTemplateManagerService {
 
     public boolean generateNewTemplate(InterviewModel interviewModel, String outputDirectory) {
         try {
-            String[] command = {"java", "-jar", interviewModel.className().toString(), "-template", (outputDirectory + "\\")};
+            String[] command = {"java", "-jar", interviewModel.className(), "-template", (outputDirectory + "\\")};
 
             ProcessBuilder processBuilder = new ProcessBuilder(command);
             Process process = processBuilder.start();

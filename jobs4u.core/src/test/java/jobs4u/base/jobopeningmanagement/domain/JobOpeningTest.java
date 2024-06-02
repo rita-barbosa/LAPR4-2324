@@ -36,7 +36,8 @@ public class JobOpeningTest {
         String name = "Senior Developer";
         String description = "Database maintenance";
         String fullClassName = "jobs4u.plugin.core.adapter.RequirementPluginAdapter";
-        return new RequirementSpecification(name, description, fullClassName, "plugins-config-file/requirement/r-config-1.txt");
+        String dataImporter = "jobs4u.plugin.core.adapter.FileManagementAdapter";
+        return new RequirementSpecification(name, description, fullClassName, "plugins-config-file/requirement/r-config-1.txt",dataImporter);
     }
 
     @Test
@@ -163,7 +164,7 @@ public class JobOpeningTest {
         recruitmentProcess.addPhases(listA);
         opening.addRecruitmentProcess(recruitmentProcess);
 
-        opening.changeRequirementSpecification(new RequirementSpecification("Test.jar","Test","test.new.plugin.Classe", "plugins-config-file/requirement/r-config-1.txt"));
+        opening.changeRequirementSpecification(new RequirementSpecification("Test.jar", "Test", "test.new.plugin.Classe", "plugins-config-file/requirement/r-config-1.txt","test.new.plugin.Classe"));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -190,6 +191,6 @@ public class JobOpeningTest {
         recruitmentProcess.addPhases(listA);
         opening.addRecruitmentProcess(recruitmentProcess);
 
-        opening.changeInterviewModel(new InterviewModel("Test.jar","Test","test.new.plugin.Classe","plugins-config-file/requirement/r-config-1.txt"));
+        opening.changeInterviewModel(new InterviewModel("Test.jar", "Test", "test.new.plugin.Classe", "plugins-config-file/requirement/r-config-1.txt","test.new.Classe"));
     }
 }

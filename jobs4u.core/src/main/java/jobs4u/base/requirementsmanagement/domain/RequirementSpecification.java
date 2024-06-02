@@ -24,18 +24,18 @@ public class RequirementSpecification implements DTOable<RequirementSpecificatio
     private RequirementName requirementName;
 
     private RequirementDescription description;
-
     private FullClassName reqSpec;
     private ConfigFileName configFile;
 
-    public RequirementSpecification(String requirementName, String description, String reqSpec, String configFile) {
+    public RequirementSpecification(String requirementName, String description, String reqSpec, String configFile, String dataImporter) {
         Preconditions.noneNull(requirementName, description, reqSpec);
         Preconditions.nonEmpty(requirementName);
         Preconditions.nonEmpty(description);
         Preconditions.nonEmpty(reqSpec);
+        Preconditions.nonEmpty(dataImporter);
         this.requirementName = new RequirementName(requirementName);
         this.description = new RequirementDescription(description);
-        this.reqSpec = FullClassName.valueOf(reqSpec);
+        this.reqSpec = FullClassName.valueOf(reqSpec,dataImporter);
         this.configFile = ConfigFileName.valueOf(configFile);
     }
 
@@ -66,10 +66,13 @@ public class RequirementSpecification implements DTOable<RequirementSpecificatio
         return description;
     }
 
-    public FullClassName className() {
-        return this.reqSpec;
+    public String className() {
+        return this.reqSpec.mainClass();
     }
 
+    public String dataImporter() {
+        return this.reqSpec.dataImporter();
+    }
 
     public ConfigFileName configurationFile() {
         return this.configFile;

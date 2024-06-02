@@ -38,7 +38,7 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
     private ContractType contractType;
     @ManyToOne(optional = false)
     @JoinColumn(nullable = false)
-    private  WorkMode workMode;
+    private WorkMode workMode;
     @Column(nullable = false)
     private JobOpeningStatus status;
     @EmbeddedId
@@ -316,7 +316,8 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         Preconditions.noneNull(requirementSpecification);
         Preconditions.ensure(!status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.ENDED)));
         if (status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.STARTED))) {
-            Preconditions.ensure(recruitmentProcess.currentActivePhase().equalsIgnoreCase("Interview"));
+            String active = recruitmentProcess.currentActivePhase();
+            Preconditions.ensure(active.equalsIgnoreCase("Application") || active.equalsIgnoreCase("Screening"));
         }
         this.interviewModel = interviewModel;
     }

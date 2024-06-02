@@ -286,12 +286,13 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         String description1 = "Back-End Developer With Experience in Java";
         String name1 = "Requirements_Back_End_Dev.jar";
         String fullClassName1 = "jobs4u.plugin.core.adapter.RequirementPluginAdapter";
-        RequirementSpecification requirementSpecification1 = new RequirementSpecification(name1, description1, fullClassName1, "plugins-config-file/requirement/r-config-1.txt");
+        String dataImporter = "jobs4u.plugin.core.adapter.FileManagementAdapter";
+        RequirementSpecification requirementSpecification1 = new RequirementSpecification(name1, description1, fullClassName1, "plugins-config-file/requirement/r-config-1.txt",dataImporter);
 
         String description2 = "Front-End Developer With Experience in Java";
         String name2 = "Requirements_Front_End_Dev.jar";
         String fullClassName2 = "jobs4u.plugin.core.adapter.RequirementPluginAdapter";
-        RequirementSpecification requirementSpecification2 = new RequirementSpecification(name2, description2, fullClassName2, "plugins-config-file/requirement/r-config-1.txt");
+        RequirementSpecification requirementSpecification2 = new RequirementSpecification(name2, description2, fullClassName2, "plugins-config-file/requirement/r-config-1.txt",dataImporter);
 
         requirementSpecificationsList.add(requirementSpecification1);
         requirementSpecificationsList.add(requirementSpecification2);
@@ -303,13 +304,14 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         String description1 = "Back-End Developer With Experience in Java";
         String name1 = "Interview_Back_End_Dev.jar";
         String fullClassName1 = "jobs4u.plugin.core.adapter.InterviewPluginAdapter";
-        InterviewModel interviewModel1 = new InterviewModel(name1, description1, fullClassName1, "plugins-config-file/requirement/r-config-1.txt");
+        String dataImporter = "jobs4u.plugin.core.adapter.FileManagementAdapter";
+        InterviewModel interviewModel1 = new InterviewModel(name1, description1, fullClassName1, "plugins-config-file/requirement/r-config-1.txt",dataImporter);
 
 
         String description2 = "Front-End Developer With Experience in Java";
         String name2 = "Interview_Front_End_Dev.jar";
         String fullClassName2 = "jobs4u.plugin.core.adapter.InterviewPluginAdapter";
-        InterviewModel interviewModel2 = new InterviewModel(name2, description2, fullClassName2, "plugins-config-file/requirement/r-config-1.txt");
+        InterviewModel interviewModel2 = new InterviewModel(name2, description2, fullClassName2, "plugins-config-file/requirement/r-config-1.txt",dataImporter);
 
         interviewModelsList.add(interviewModel1);
         interviewModelsList.add(interviewModel2);

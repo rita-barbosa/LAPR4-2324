@@ -18,8 +18,8 @@ public class RequirementSpecificationManagementService {
     public Iterable<RequirementSpecificationDTO> allRequirementSpecifications() {
         return dtoSvc.convertToDTO(repo.findAll());
     }
-    public static void registerRequirementPlugin(String nameOfRequirementPlugin, String descriptionOfRequirementPlugin, String fullClassName,String configFile){
-        RequirementSpecification requirementSpecification = new RequirementSpecification(nameOfRequirementPlugin, descriptionOfRequirementPlugin, fullClassName, configFile);
+    public static void registerRequirementPlugin(String nameOfRequirementPlugin, String descriptionOfRequirementPlugin, String fullClassName,String configFile, String dataImporter){
+        RequirementSpecification requirementSpecification = new RequirementSpecification(nameOfRequirementPlugin, descriptionOfRequirementPlugin, fullClassName, configFile,dataImporter);
         repo.save(requirementSpecification);
     }
 

@@ -34,10 +34,11 @@ public class RegisterPluginUI extends AbstractUI {
         String fullClassName = Console.readNonEmptyLine("Provide the full class name of the class of the plugin:",
                 "Providing the full class name of the class of the plugin is obligatory.");
         String configFile =  Console.readNonEmptyLine("Provide the configuration file of the plugin:","Providing the configuration filepath is mandatory.");
+        String dataImporter =  Console.readNonEmptyLine("Provide the data importer full class name of the plugin:","Providing the data importer full class name is mandatory.");
         if(option.equals("1")) {
-            controller.registerInterviewPlugin(name, description, fullClassName,configFile);
+            controller.registerInterviewPlugin(name, description, fullClassName,configFile,dataImporter);
         }else if(option.equals("2")){
-            controller.registerRequirementPlugin(name, description, fullClassName,configFile);
+            controller.registerRequirementPlugin(name, description, fullClassName,configFile,dataImporter);
         }
         System.out.println("Worked!");
 
