@@ -61,6 +61,10 @@ public class JobOpeningManagementService {
         return jobOpeningRepository.ofIdentity(new JobReference(customerCode, sequentialCode));
     }
 
+    public Optional<JobOpening> getJobOpeningByJobRef(String jobReference) {
+        return jobOpeningRepository.ofIdentity(new JobReference(jobReference));
+    }
+
     public List<JobOpening> getJobOpeningsFromCustomerCodes(List<CustomerDTO> customerDTOList) {
         Set<CustomerCode> customerCodes = new HashSet<>();
         for (CustomerDTO customerDTO : customerDTOList) {
@@ -105,13 +109,13 @@ public class JobOpeningManagementService {
     }
 
     public boolean setupJobOpeningWithRecruitmentProcess(RecruitmentProcess recruitmentProcess, JobOpening jobOpening) {
-        JobOpening jobOpening1 = jobOpeningRepository.ofIdentity(jobOpening.getJobReference()).get();
+        JobOpening jobOpening1 = jobOpeningRepository.ofIdentity(jobOpening.jobReference()).get();
         jobOpening1.updateStatusToNotStarted();
         jobOpening1.addRecruitmentProcess(recruitmentProcess);
 
         jobOpening1 = jobOpeningRepository.save(jobOpening1);
 
-        recruitmentProcess.setJobOpening(jobOpening1);
+        recruitmentProcess.referToJobOpening(jobOpening1);
 
         recruitmentProcessManagementService.saveToRepository(recruitmentProcess);
 
@@ -126,12 +130,21 @@ public class JobOpeningManagementService {
         return jobOpenings;
     }
 
+    public boolean saveToRepository(JobOpening jobOpening){
+        try {
+            jobOpeningRepository.save(jobOpening);
+        }catch (Exception e){
+            return false;
+        }
+        return true;
+    }
+
     public JobOpening getJobOpening(JobOpeningDTO jobOpeningDTO) {
         String jobReference = jobOpeningDTO.getJobReference();
         JobOpening jobOpening = null;
 
         for (JobOpening job : jobOpeningRepository.findAll()) {
-            if (job.getJobReference().toString().equals(jobReference)) {
+            if (job.jobReference().toString().equals(jobReference)) {
                 jobOpening = job;
             }
         }
@@ -140,6 +153,11 @@ public class JobOpeningManagementService {
 
     public Iterable<JobOpeningDTO> jobOpeningsOfCustomerManager(Username customerManagerUsername) {
         Iterable<JobOpening> list = jobOpeningRepository.getJobOpeningListMatchingCustomerManager(customerManagerUsername);
+        return dtoSvc.convertToDTO(list);
+    }
+
+    public Iterable<JobOpeningDTO> plannedJobOpeningsOfCustomerManager(Username customerManagerUsername) {
+        Iterable<JobOpening> list = jobOpeningRepository.getPlannedJobOpeningListMatchingCustomerManager(customerManagerUsername);
         return dtoSvc.convertToDTO(list);
     }
 
