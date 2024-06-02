@@ -26,7 +26,6 @@ public class RequirementSpecification implements DTOable<RequirementSpecificatio
     private RequirementDescription description;
 
     private FullClassName reqSpec;
-    private FullClassName dataImporter;
     private ConfigFileName configFile;
 
     public RequirementSpecification(String requirementName, String description, String reqSpec, String configFile) {
@@ -71,9 +70,6 @@ public class RequirementSpecification implements DTOable<RequirementSpecificatio
         return this.reqSpec;
     }
 
-    public FullClassName dataImporter() {
-        return this.dataImporter;
-    }
 
     public ConfigFileName configurationFile() {
         return this.configFile;
