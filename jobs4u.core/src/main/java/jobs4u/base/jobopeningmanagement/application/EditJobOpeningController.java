@@ -3,6 +3,8 @@ package jobs4u.base.jobopeningmanagement.application;
 import eapli.framework.infrastructure.authz.application.AuthorizationService;
 import eapli.framework.infrastructure.authz.application.AuthzRegistry;
 import eapli.framework.infrastructure.authz.domain.model.SystemUser;
+import eapli.framework.io.util.Console;
+import eapli.framework.presentation.console.SelectWidget;
 import jobs4u.base.contracttypemanagement.application.ContractTypeManagementService;
 import jobs4u.base.contracttypemanagement.domain.ContractType;
 import jobs4u.base.contracttypemanagement.repository.ContractTypeRepository;
@@ -29,9 +31,8 @@ import jobs4u.base.requirementsmanagement.application.RequirementSpecificationMa
 import jobs4u.base.requirementsmanagement.dto.RequirementSpecificationDTO;
 import jobs4u.base.workmodemanagement.repository.WorkModeRepository;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Supplier;
 
 import static jobs4u.base.jobopeningmanagement.domain.EditableInformation.*;
 
@@ -118,4 +119,14 @@ public class EditJobOpeningController {
     }
 
 
+    public Iterable<?> necessaryInformation(EditableInformation ed) {
+        Map<EditableInformation, Supplier<Iterable<?>>> infoMap = Map.of(
+                REQ_SPECI, this::requirementSpecifications,
+                INT_MODEL, this::interviewModels,
+                WORK_MODE, this::workModes,
+                CONTRACT_TYPE, this::contractTypes
+        );
+
+        return infoMap.containsKey(ed) ? infoMap.get(ed).get() : null;
+    }
 }
