@@ -5,6 +5,8 @@ import jobs4u.base.contracttypemanagement.dto.ContractTypeDTO;
 import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
 import jobs4u.base.recruitmentprocessmanagement.domain.Phase;
 import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
+import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcessStatus;
+import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcessStatusEnum;
 import jobs4u.base.workmodemanagement.dto.WorkModeDTO;
 import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 import org.junit.Test;
@@ -155,10 +157,10 @@ public class JobOpeningTest {
             throw new RuntimeException(e);
         }
 
-        RecruitmentProcess recruitmentProcess = new RecruitmentProcess(start, finish, listA);
-        Phase phase = new Phase("Test", "Screening", "ON_GOING", start, finish);
+        RecruitmentProcess recruitmentProcess = new RecruitmentProcess(start, finish, listA, new RecruitmentProcessStatus(RecruitmentProcessStatusEnum.PLANNED));
+        Phase phase = new Phase("Test", "Screening", start, finish);
         listA.add(phase);
-        recruitmentProcess.setPhases(listA);
+        recruitmentProcess.addPhases(listA);
         opening.addRecruitmentProcess(recruitmentProcess);
 
         opening.changeRequirementSpecification(new RequirementSpecification("Test.jar","Test","test.new.plugin.Classe", "plugins-config-file/requirement/r-config-1.txt"));
@@ -182,10 +184,10 @@ public class JobOpeningTest {
             throw new RuntimeException(e);
         }
 
-        RecruitmentProcess recruitmentProcess = new RecruitmentProcess(start, finish, listA);
-        Phase phase = new Phase("Test", "Interview", "ON_GOING", start, finish);
+        RecruitmentProcess recruitmentProcess = new RecruitmentProcess(start, finish, listA, new RecruitmentProcessStatus(RecruitmentProcessStatusEnum.PLANNED));
+        Phase phase = new Phase("Test", "Interview", start, finish);
         listA.add(phase);
-        recruitmentProcess.setPhases(listA);
+        recruitmentProcess.addPhases(listA);
         opening.addRecruitmentProcess(recruitmentProcess);
 
         opening.changeInterviewModel(new InterviewModel("Test.jar","Test","test.new.plugin.Classe","plugins-config-file/requirement/r-config-1.txt"));
