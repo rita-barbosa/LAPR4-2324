@@ -28,9 +28,11 @@ class PhaseTest {
             throw new RuntimeException(e);
         }
 
+        RecruitmentProcess recruitmentProcess = new RecruitmentProcess();
+
         Calendar finalFinish = finish;
         Calendar finalStart = start;
-        assertThrows(IllegalArgumentException.class, () -> new Phase(phaseType, phaseDescription,phaseStatus, finalStart, finalFinish));
+        assertThrows(IllegalArgumentException.class, () -> new Phase(phaseType, phaseDescription, finalStart, finalFinish));
 
     }
 
@@ -50,33 +52,14 @@ class PhaseTest {
             throw new RuntimeException(e);
         }
 
-        Calendar finalFinish = finish;
-        Calendar finalStart = start;
-        assertThrows(IllegalArgumentException.class, () -> new Phase(phaseType, phaseDescription,phaseStatus, finalStart, finalFinish));
-
-    }
-
-    @Test
-    void ensureItCantCreateWithNullParameter3() {
-
-        String phaseType = "TestPhase";
-        String phaseDescription = "Testing purposes";
-        String phaseStatus = null;
-        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-        Calendar start = null;
-        Calendar finish = null;
-        try {
-            start = Calendars.fromDate(df.parse("16-03-2004"));
-            finish = Calendars.fromDate(df.parse("18-03-2024"));
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        RecruitmentProcess recruitmentProcess = new RecruitmentProcess();
 
         Calendar finalFinish = finish;
         Calendar finalStart = start;
-        assertThrows(IllegalArgumentException.class, () -> new Phase(phaseType, phaseDescription,phaseStatus, finalStart, finalFinish));
+        assertThrows(IllegalArgumentException.class, () -> new Phase(phaseType, phaseDescription, finalStart, finalFinish));
 
     }
+
 
     @Test
     void ensureItCantCreateWithNullParameter4() {
@@ -94,9 +77,11 @@ class PhaseTest {
             throw new RuntimeException(e);
         }
 
+        RecruitmentProcess recruitmentProcess = new RecruitmentProcess();
+
         Calendar finalFinish = finish;
         Calendar finalStart = start;
-        assertThrows(IllegalArgumentException.class, () -> new Phase(phaseType, phaseDescription,phaseStatus, finalStart, finalFinish));
+        assertThrows(IllegalArgumentException.class, () -> new Phase(phaseType, phaseDescription, finalStart, finalFinish));
 
     }
 
@@ -116,9 +101,11 @@ class PhaseTest {
             throw new RuntimeException(e);
         }
 
+        RecruitmentProcess recruitmentProcess = new RecruitmentProcess();
+
         Calendar finalFinish = finish;
         Calendar finalStart = start;
-        assertThrows(IllegalArgumentException.class, () -> new Phase(phaseType, phaseDescription,phaseStatus, finalStart, finalFinish));
+        assertThrows(IllegalArgumentException.class, () -> new Phase(phaseType, phaseDescription, finalStart, finalFinish));
 
     }
 
@@ -138,9 +125,11 @@ class PhaseTest {
             throw new RuntimeException(e);
         }
 
+        RecruitmentProcess recruitmentProcess = new RecruitmentProcess();
+
         Calendar finalFinish = finish;
         Calendar finalStart = start;
-        assertThrows(IllegalArgumentException.class, () -> new Phase(phaseType, phaseDescription,phaseStatus, finalStart, finalFinish));
+        assertThrows(IllegalArgumentException.class, () -> new Phase(phaseType, phaseDescription, finalStart, finalFinish));
 
     }
 
@@ -160,9 +149,11 @@ class PhaseTest {
             throw new RuntimeException(e);
         }
 
+        RecruitmentProcess recruitmentProcess = new RecruitmentProcess();
+
         Calendar finalFinish = finish;
         Calendar finalStart = start;
-        assertThrows(IllegalArgumentException.class, () -> new Phase(phaseType, phaseDescription,phaseStatus, finalStart, finalFinish));
+        assertThrows(IllegalArgumentException.class, () -> new Phase(phaseType, phaseDescription, finalStart, finalFinish));
 
     }
 
