@@ -2,6 +2,7 @@ package jobs4u.base.persistence.impl.jpa;
 
 import eapli.framework.domain.repositories.TransactionalContext;
 import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
+import jakarta.persistence.TypedQuery;
 import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
 
@@ -14,11 +15,11 @@ public class JpaApplicationRepository
         extends JpaAutoTxRepository<Application, Long, Long>
         implements ApplicationRepository {
 
-    public JpaApplicationRepository(final TransactionalContext autoTx){
+    public JpaApplicationRepository(final TransactionalContext autoTx) {
         super(autoTx, "id");
     }
 
-    public JpaApplicationRepository(final String puname){
+    public JpaApplicationRepository(final String puname) {
         super(puname, jobs4u.base.Application.settings().getExtendedPersistenceProperties(), "id");
     }
 
@@ -35,7 +36,22 @@ public class JpaApplicationRepository
 
     @Override
     public Iterable<Application> applicationsForJobOpeningWithRequirements(String jobReference) {
-        return null;
+        String[] f = jobReference.split("-");
+        final TypedQuery<Application>
+                q = createQuery("SELECT a \n" +
+                        "FROM Application a \n" +
+                        "WHERE a.id IN (\n" +
+                        "    SELECT app.id \n" +
+                        "    FROM JobOpening jo \n" +
+                        "    JOIN jo.applications app \n" +
+                        "    WHERE jo.jobReference.companyCode = :companyCode \n" +
+                        "    AND jo.jobReference.sequentialCode = :sequentialCode\n" +
+                        ")\n" +
+                        "AND a.requirementAnswer IS NOT NULL",
+                Application.class);
+        q.setParameter("companyCode", f[0]);
+        q.setParameter("sequentialCode", f[1]);
+        return q.getResultList();
     }
 
 }

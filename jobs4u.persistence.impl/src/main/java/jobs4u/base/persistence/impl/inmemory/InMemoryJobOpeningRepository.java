@@ -12,6 +12,8 @@ import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatus;
 import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatusEnum;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
+import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcessStatus;
+import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcessStatusEnum;
 
 import java.util.*;
 
@@ -128,15 +130,24 @@ public class InMemoryJobOpeningRepository
         List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername);
 
         for (Customer customer : customers) {
-            return match(e -> customer.customerCode().toString().contains(e.jobReference().getcustomerCode()));
+            return match(e -> customer.customerCode().toString().equals(e.jobReference().getcustomerCode()));
         }
         return Collections.emptyList();
     }
 
     @Override
     public Iterable<JobOpening> jobOpeningsInScreeingListOfCustomerManager(Username customerManagerUsername) {
-        return null;
+        CustomerRepository custRepo = PersistenceContext.repositories().customers();
+        List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername);
+
+        return match(e -> {
+            if (e.getRecruitmentProcess().currentActivePhase().equalsIgnoreCase("screening")) {
+                return customers.stream().anyMatch(customer -> customer.customerCode().toString().equals(e.jobReference().getcustomerCode()));
+            }
+            return false;
+        });
     }
+
 
     @Override
     public Iterable<JobOpening> getPlannedJobOpeningListMatchingCustomerManager(Username customerManagerUsername) {

@@ -85,7 +85,7 @@ public class RegisterJobOpeningController {
                                                    CustomerDTO companyInfo) {
 
         authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
-        Optional<RequirementSpecification> requirementSpecification = requirementSpecificationRepository.getFileByName(requirementsFileName.filename());
+        Optional<RequirementSpecification> requirementSpecification = requirementSpecificationRepository.requirementSpecificationByRequirementName(requirementsFileName.filename());
 
         if (requirementSpecification.isEmpty()) {
             throw new NoSuchElementException("No requirement specifications where found.");

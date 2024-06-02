@@ -16,7 +16,7 @@ public class RequirementsTemplateManagerService {
             .repositories().requirementSpecifications();
 
     public RequirementSpecification getRequirementFromJobOpeningDTO(JobOpeningDTO jobOpeningDTO) {
-        Optional<RequirementSpecification> optional = requirementSpecificationRepository.getFileByName(jobOpeningDTO.getRequirementName());
+        Optional<RequirementSpecification> optional = requirementSpecificationRepository.requirementSpecificationByRequirementName(jobOpeningDTO.getRequirementName());
         if (optional.isPresent()) {
             return optional.get();
         }

@@ -28,16 +28,13 @@ public class JpaRequirementSpecificationRepository
         return findAll();
     }
 
-    @Override
-    public Optional<RequirementSpecification> getFileByName(String filename) {
-        final Map<String, Object> params = new HashMap<>();
-        params.put("filename", filename);
-        return matchOne("e.requirementName.name=:filename", params);
-    }
 
     @Override
     public Optional<RequirementSpecification> requirementSpecificationByRequirementName(String requirement) {
-        return Optional.empty();
+        final Map<String, Object> params = new HashMap<>();
+        params.put("req", requirement);
+        return matchOne("e.requirementName.name=:req", params);
+
     }
 
 }
