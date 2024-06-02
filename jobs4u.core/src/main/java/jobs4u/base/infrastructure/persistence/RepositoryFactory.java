@@ -29,7 +29,6 @@ import jobs4u.base.customermanagement.repository.CustomerRepository;
 import jobs4u.base.contracttypemanagement.repository.ContractTypeRepository;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.workmodemanagement.repository.WorkModeRepository;
-import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
 import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
 import jobs4u.base.interviewmodelmanagement.repositories.InterviewModelRepository;
 import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
@@ -219,20 +218,5 @@ public interface RepositoryFactory {
      */
     RecruitmentProcessRepository recruitmentProcesses();
 
-
-    /**
-     *
-     * @param autoTx
-     *            the transactional context to enroll
-     * @return
-     */
-    PhaseRepository phases(TransactionalContext autoTx);
-
-    /**
-     * repository will be created in auto transaction mode
-     *
-     * @return
-     */
-    PhaseRepository phases();
 
 }

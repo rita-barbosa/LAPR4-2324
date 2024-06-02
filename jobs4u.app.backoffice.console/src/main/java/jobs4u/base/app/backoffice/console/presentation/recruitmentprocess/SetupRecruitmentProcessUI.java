@@ -7,6 +7,7 @@ import eapli.framework.time.domain.model.TimeInterval;
 import eapli.framework.time.util.Calendars;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.recruitmentprocessmanagement.application.SetupRecruitmentProcessController;
+import jobs4u.base.recruitmentprocessmanagement.domain.PhaseTypeEnum;
 import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
 import jobs4u.base.recruitmentprocessmanagement.dto.AllPhasesDTO;
 import jobs4u.base.recruitmentprocessmanagement.dto.PhaseDTO;
@@ -25,19 +26,19 @@ public class SetupRecruitmentProcessUI extends AbstractUI {
     @Override
     protected boolean doShow() {
 
-        allPhases.add("Applications");
-        allPhases.add("Screening");
-        allPhases.add("Interviews");
-        allPhases.add("Analysis");
-        allPhases.add("Result");
+        allPhases.add(String.valueOf(PhaseTypeEnum.APPLICATION));
+        allPhases.add(String.valueOf(PhaseTypeEnum.SCREENING));
+        allPhases.add(String.valueOf(PhaseTypeEnum.INTERVIEW));
+        allPhases.add(String.valueOf(PhaseTypeEnum.ANALYSIS));
+        allPhases.add(String.valueOf(PhaseTypeEnum.RESULTS));
 
         List<JobOpening> listUnfinishedJobOpenings = controller.getAllIncompleteJobOpenings();
         List<String> jobOpeningRefs = new ArrayList<>();
 
         System.out.println("Choose from one of the following job openings to setup a recruitment process:");
         for (JobOpening jobOpening : listUnfinishedJobOpenings) {
-            jobOpeningRefs.add(jobOpening.getJobReference().toString());
-            System.out.println("Job Opening Reference: " + jobOpening.getJobReference().toString() + " | Description: " + jobOpening.getDescription().description());
+            jobOpeningRefs.add(jobOpening.jobReference().toString());
+            System.out.println("Job Opening Reference: " + jobOpening.jobReference().toString() + " | Description: " + jobOpening.descriptionOfJobOpening().description());
         }
 
         JobOpening jobOpening = chooseJobOpening(listUnfinishedJobOpenings, jobOpeningRefs);
@@ -119,7 +120,7 @@ public class SetupRecruitmentProcessUI extends AbstractUI {
 
         DateInterval dateInterval = new DateInterval(initialInfo, endInfo);
 
-        PhaseDTO phaseDTO = new PhaseDTO(allPhases.get(i), description, "TO BE STARTED", dateInterval);
+        PhaseDTO phaseDTO = new PhaseDTO(allPhases.get(i), description, dateInterval);
 
         return phaseDTO;
     }

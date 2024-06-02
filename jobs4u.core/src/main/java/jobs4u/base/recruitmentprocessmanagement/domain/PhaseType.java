@@ -27,24 +27,4 @@ public class PhaseType implements ValueObject {
         return typeDenomination;
     }
 
-    public void setTypeDescriptionAsAPPLICATION(){
-        this.typeDenomination = String.valueOf(PhaseTypeEnum.APPLICATION);
-    }
-    public void setTypeDescriptionAsSCREENING(){
-        this.typeDenomination = String.valueOf(PhaseTypeEnum.SCREENING);
-    }
-
-    public void setTypeDescriptionAsINTERVIEWS(){
-        this.typeDenomination = String.valueOf(PhaseTypeEnum.INTERVIEWS);
-    }
-
-    public void setTypeDescriptionAsANALYSIS(){
-        this.typeDenomination = String.valueOf(PhaseTypeEnum.ANALYSIS);
-    }
-
-    public void setTypeDescriptionAsRESULT(){
-        this.typeDenomination = String.valueOf(PhaseTypeEnum.RESULT);
-    }
-
-
 }

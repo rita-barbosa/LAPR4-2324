@@ -28,7 +28,6 @@ import jobs4u.base.interviewmodelmanagement.repositories.InterviewModelRepositor
 import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
 import jobs4u.base.recruitmentprocessmanagement.domain.*;
-import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
 import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
 import jobs4u.base.usermanagement.domain.BaseRoles;
 import jobs4u.base.workmodemanagement.domain.WorkMode;
@@ -52,8 +51,6 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
     List<InterviewModel> interviewModelsList = new ArrayList<>();
     private CriteriaRepository criteriaRepository;
     private RecruitmentProcessRepository recruitmentProcessRepository;
-    private PhaseRepository phaseRepository;
-
     private ApplicationRepository applicationRepository;
 
     private CandidateRepository candidateRepository;
@@ -86,7 +83,6 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         this.interviewModelRepository = PersistenceContext.repositories().interviewModels();
         this.criteriaRepository = PersistenceContext.repositories().criteria();
         this.recruitmentProcessRepository = PersistenceContext.repositories().recruitmentProcesses();
-        this.phaseRepository = PersistenceContext.repositories().phases();
         this.candidateRepository = PersistenceContext.repositories().candidates();
         this.applicationRepository = PersistenceContext.repositories().applications();
     }
@@ -102,21 +98,76 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         DateInterval dateInterval1 = null;
         DateInterval dateInterval2 = null;
         DateInterval dateInterval3 = null;
+        Calendar start1 = null;
+        Calendar end1 = null;
+        Calendar start2 = null;
+        Calendar end2 = null;
+        Calendar start3 = null;
+        Calendar end3 = null;
+        Calendar start4 = null;
+        Calendar end4 = null;
+        Calendar start5 = null;
+        Calendar end5 = null;
+        Calendar start6 = null;
+        Calendar end6 = null;
+        Calendar start7 = null;
+        Calendar end7 = null;
+        Calendar start8 = null;
+        Calendar end8 = null;
+        Calendar start9 = null;
+        Calendar end9 = null;
+        Calendar start10 = null;
+        Calendar end10 = null;
+        Calendar start11 = null;
+        Calendar end11 = null;
+        Calendar start12 = null;
+        Calendar end12 = null;
+        Calendar start13 = null;
+        Calendar end13 = null;
+        Calendar start14 = null;
+        Calendar end14 = null;
+        Calendar start15 = null;
+        Calendar end15 = null;
+
         try {
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
-            Calendar start1 = Calendars.fromDate(df.parse("25-04-2024"));
-            Calendar end1 = Calendars.fromDate(df.parse("17-06-2024"));
-            dateInterval1 = new DateInterval(start1, end1);
+            start1 = Calendars.fromDate(df.parse("25-04-2024"));
+            end1 = Calendars.fromDate(df.parse("29-04-2024"));
+            start2 = Calendars.fromDate(df.parse("01-05-2024"));
+            end2 = Calendars.fromDate(df.parse("07-05-2024"));
+            start3 = Calendars.fromDate(df.parse("08-05-2024"));
+            end3 = Calendars.fromDate(df.parse("10-05-2024"));
+            start4 = Calendars.fromDate(df.parse("11-05-2024"));
+            end4 = Calendars.fromDate(df.parse("17-05-2024"));
+            start5 = Calendars.fromDate(df.parse("25-05-2024"));
+            end5 = Calendars.fromDate(df.parse("17-06-2024"));
+            dateInterval1 = new DateInterval(start1, end5);
 
-            Calendar start2 = Calendars.fromDate(df.parse("10-01-2024"));
-            Calendar end2 = Calendars.fromDate(df.parse("10-02-2024"));
-            dateInterval2 = new DateInterval(start2, end2);
+            start6 = Calendars.fromDate(df.parse("10-01-2024"));
+            end6 = Calendars.fromDate(df.parse("13-01-2024"));
+            start7 = Calendars.fromDate(df.parse("14-01-2024"));
+            end7 = Calendars.fromDate(df.parse("17-01-2024"));
+            start8 = Calendars.fromDate(df.parse("20-01-2024"));
+            end8 = Calendars.fromDate(df.parse("21-01-2024"));
+            start9 = Calendars.fromDate(df.parse("22-01-2024"));
+            end9 = Calendars.fromDate(df.parse("24-01-2024"));
+            start10 = Calendars.fromDate(df.parse("25-01-2024"));
+            end10 = Calendars.fromDate(df.parse("30-01-2024"));
+            dateInterval2 = new DateInterval(start6, end10);
 
-            Calendar start3 = Calendars.fromDate(df.parse("10-03-2024"));
-            Calendar end3 = Calendars.fromDate(df.parse("10-04-2024"));
-            dateInterval3 = new DateInterval(start3, end3);
-        } catch (ParseException e) {
+            start11 = Calendars.fromDate(df.parse("10-02-2024"));
+            end11 = Calendars.fromDate(df.parse("13-02-2024"));
+            start12 = Calendars.fromDate(df.parse("14-02-2024"));
+            end12 = Calendars.fromDate(df.parse("17-02-2024"));
+            start13 = Calendars.fromDate(df.parse("20-02-2024"));
+            end13 = Calendars.fromDate(df.parse("21-02-2024"));
+            start14 = Calendars.fromDate(df.parse("22-02-2024"));
+            end14 = Calendars.fromDate(df.parse("24-02-2024"));
+            start15 = Calendars.fromDate(df.parse("25-02-2024"));
+            end15 = Calendars.fromDate(df.parse("30-02-2024"));
+            dateInterval3 = new DateInterval(start11, end15);
+        }catch (ParseException e){
             System.out.println(e.getMessage());
         }
 
@@ -126,101 +177,53 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
 
         List<Phase> phases3 = new ArrayList<>();
 
-        RecruitmentProcess recruitmentProcess1 = new RecruitmentProcess(dateInterval1.start(), dateInterval1.end(), phases1);
+        Phase application1 = new Phase(String.valueOf(PhaseTypeEnum.APPLICATION), "Candidates send applications.", start1, end1);
+        Phase screening1 = new Phase(String.valueOf(PhaseTypeEnum.SCREENING), "Candidates screening.",  start2, end2);
+        Phase analysis1 = new Phase(String.valueOf(PhaseTypeEnum.ANALYSIS), "Candidates analysis.",  start3, end3);
+        Phase interview1 = new Phase(String.valueOf(PhaseTypeEnum.INTERVIEW),"Candidates get interviewed.",  start4, end4);
+        Phase result1 = new Phase(String.valueOf(PhaseTypeEnum.RESULTS),"Candidates get results.",  start5, end5);
 
-        RecruitmentProcess recruitmentProcess2 = new RecruitmentProcess(dateInterval2.start(), dateInterval2.end(), phases2);
-
-        RecruitmentProcess recruitmentProcess3 = new RecruitmentProcess(dateInterval3.start(), dateInterval3.end(), phases3);
-
-
-        Phase application1 = new Phase(new PhaseType(PhaseTypeEnum.APPLICATION), new PhaseDescription("Candidates send applications."),
-                new PhaseStatus(PhaseStatusEnum.CONCLUDED), new PhasePeriod(dateInterval1));
-        Phase screening1 = new Phase(new PhaseType(PhaseTypeEnum.SCREENING), new PhaseDescription("Candidates screening."),
-                new PhaseStatus(PhaseStatusEnum.ON_GOING), new PhasePeriod(dateInterval1));
-        Phase analysis1 = new Phase(new PhaseType(PhaseTypeEnum.ANALYSIS), new PhaseDescription("Candidates analysis."),
-                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod(dateInterval1));
-        Phase interview1 = new Phase(new PhaseType(PhaseTypeEnum.INTERVIEWS), new PhaseDescription("Candidates get interviewed."),
-                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod(dateInterval1));
-        Phase result1 = new Phase(new PhaseType(PhaseTypeEnum.RESULT), new PhaseDescription("Candidates get results."),
-                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod(dateInterval1));
-
-        Phase application2 = new Phase(new PhaseType(PhaseTypeEnum.APPLICATION), new PhaseDescription("Candidates send applications."),
-                new PhaseStatus(PhaseStatusEnum.CONCLUDED), new PhasePeriod(dateInterval2));
-        Phase screening2 = new Phase(new PhaseType(PhaseTypeEnum.SCREENING), new PhaseDescription("Candidates screening."),
-                new PhaseStatus(PhaseStatusEnum.ON_GOING), new PhasePeriod(dateInterval2));
-        Phase analysis2 = new Phase(new PhaseType(PhaseTypeEnum.ANALYSIS), new PhaseDescription("Candidates analysis."),
-                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod(dateInterval2));
-        Phase interview2 = new Phase(new PhaseType(PhaseTypeEnum.INTERVIEWS), new PhaseDescription("Candidates get interviewed."),
-                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod(dateInterval2));
-        Phase result2 = new Phase(new PhaseType(PhaseTypeEnum.RESULT), new PhaseDescription("Candidates get results."),
-                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod(dateInterval2));
+        Phase application2 = new Phase(String.valueOf(PhaseTypeEnum.APPLICATION), "Candidates send applications.", start6, end6);
+        Phase screening2 = new Phase(String.valueOf(PhaseTypeEnum.SCREENING),"Candidates screening.", start7, end7);
+        Phase analysis2 = new Phase(String.valueOf(PhaseTypeEnum.ANALYSIS), "Candidates analysis.", start8, end8);
+        Phase interview2 = new Phase(String.valueOf(PhaseTypeEnum.INTERVIEW), "Candidates get interviewed.", start9, end9);
+        Phase result2 = new Phase(String.valueOf(PhaseTypeEnum.RESULTS),"Candidates get results.", start10, end10);
 
 
-        Phase application3 = new Phase(new PhaseType(PhaseTypeEnum.APPLICATION), new PhaseDescription("Candidates send applications."),
-                new PhaseStatus(PhaseStatusEnum.CONCLUDED), new PhasePeriod(dateInterval3));
-        Phase screening3 = new Phase(new PhaseType(PhaseTypeEnum.SCREENING), new PhaseDescription("Candidates screening."),
-                new PhaseStatus(PhaseStatusEnum.ON_GOING), new PhasePeriod(dateInterval3));
-        Phase analysis3 = new Phase(new PhaseType(PhaseTypeEnum.ANALYSIS), new PhaseDescription("Candidates analysis."),
-                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod(dateInterval3));
-        Phase interview3 = new Phase(new PhaseType(PhaseTypeEnum.INTERVIEWS), new PhaseDescription("Candidates get interviewed."),
-                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod(dateInterval3));
-        Phase result3 = new Phase(new PhaseType(PhaseTypeEnum.RESULT), new PhaseDescription("Candidates get results."),
-                new PhaseStatus(PhaseStatusEnum.PLANNED), new PhasePeriod(dateInterval3));
+        Phase application3 = new Phase(String.valueOf(PhaseTypeEnum.APPLICATION),"Candidates send applications.", start11, end11);
+        Phase screening3 = new Phase(String.valueOf(PhaseTypeEnum.SCREENING), "Candidates screening.", start12, end12);
+        Phase analysis3 = new Phase(String.valueOf(PhaseTypeEnum.ANALYSIS), "Candidates analysis.", start13, end13);
+        Phase interview3 = new Phase(String.valueOf(PhaseTypeEnum.INTERVIEW), "Candidates get interviewed.", start14, end14);
+        Phase result3 = new Phase(String.valueOf(PhaseTypeEnum.RESULTS), "Candidates get results.", start15, end15);
 
 
         phases1.add(application1);
         phases1.add(screening1);
-        phases1.add(analysis1);
         phases1.add(interview1);
+        phases1.add(analysis1);
         phases1.add(result1);
 
         phases2.add(application2);
         phases2.add(screening2);
-        phases2.add(analysis2);
         phases2.add(interview2);
+        phases2.add(analysis2);
         phases2.add(result2);
 
         phases3.add(application3);
         phases3.add(screening3);
-        phases3.add(analysis3);
         phases3.add(interview3);
+        phases3.add(analysis3);
         phases3.add(result3);
 
-        List<Phase> phases11 = new ArrayList<>();
-        List<Phase> phases22 = new ArrayList<>();
-        List<Phase> phases33 = new ArrayList<>();
-        for (Phase phase : phases1) {
-            Phase phase1 = phaseRepository.save(phase);
-            phases11.add(phase1);
-        }
-        for (Phase phase : phases2) {
-            Phase phase2 = phaseRepository.save(phase);
-            phases22.add(phase2);
-        }
-        for (Phase phase : phases3) {
-            Phase phase3 = phaseRepository.save(phase);
-            phases33.add(phase3);
-        }
+        RecruitmentProcess recruitmentProcess1 = new RecruitmentProcess(dateInterval1.start(), dateInterval1.end(), phases1, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.PLANNED)));
 
-        recruitmentProcess1.setPhases(phases11);
-        recruitmentProcess2.setPhases(phases22);
-        recruitmentProcess3.setPhases(phases33);
+        RecruitmentProcess recruitmentProcess2 = new RecruitmentProcess(dateInterval2.start(), dateInterval2.end(), phases2, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.PLANNED)));
+
+        RecruitmentProcess recruitmentProcess3 = new RecruitmentProcess(dateInterval3.start(), dateInterval3.end(), phases3, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.PLANNED)));
+
         recruitmentProcess1 = recruitmentProcessRepository.save(recruitmentProcess1);
         recruitmentProcess2 = recruitmentProcessRepository.save(recruitmentProcess2);
         recruitmentProcess3 = recruitmentProcessRepository.save(recruitmentProcess3);
-
-        for (Phase phase : phases1) {
-            phase.setRecruitmentprocess(recruitmentProcess1);
-            phaseRepository.save(phase);
-        }
-        for (Phase phase : phases2) {
-            phase.setRecruitmentprocess(recruitmentProcess2);
-            phaseRepository.save(phase);
-        }
-        for (Phase phase : phases3) {
-            phase.setRecruitmentprocess(recruitmentProcess3);
-            phaseRepository.save(phase);
-        }
 
         recruitmentProcessList.add(recruitmentProcess1);
         recruitmentProcessList.add(recruitmentProcess2);
@@ -254,7 +257,9 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
                 "Chica Town", "Foxy District", "MMM", "4500-900", 8, description,
                 requirementSpecificationsList.get(0), interviewModelsList.get(0), jobReference3);
 
-        jobOpening2.getStatus().setStatusDescriptionAsSTARTED();
+        jobOpening1.updateStatusToNotStarted();
+        jobOpening2.updateStatusToNotStarted();
+        jobOpening3.updateStatusToNotStarted();
 
         jobOpeningRepository.save(jobOpening4);
         jobOpening1 = jobOpeningRepository.save(jobOpening1);
@@ -270,7 +275,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         for (int i = 0; i < 3; i++) {
             jobOpenings.get(i).addRecruitmentProcess(recruitmentProcessList.get(i));
             jobOpenings.get(i).updateStatusToNotStarted();
-            recruitmentProcessList.get(i).setJobOpening(jobOpenings.get(i));
+            recruitmentProcessList.get(i).referToJobOpening(jobOpenings.get(i));
             jobOpeningRepository.save(jobOpenings.get(i));
             recruitmentProcessRepository.save(recruitmentProcessList.get(i));
         }

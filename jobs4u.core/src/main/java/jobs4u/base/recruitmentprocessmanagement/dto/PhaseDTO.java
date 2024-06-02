@@ -12,19 +12,15 @@ public class PhaseDTO {
 
     private String description;
 
-    private String status;
-
     private DateInterval period;
 
-    public PhaseDTO(String phaseType, String description, String status, DateInterval period){
-        Preconditions.noneNull(phaseType,description,period,status);
+    public PhaseDTO(String phaseType, String description, DateInterval period){
+        Preconditions.noneNull(phaseType,description,period);
         Preconditions.nonEmpty(phaseType);
         Preconditions.nonEmpty(description);
-        Preconditions.nonEmpty(status);
 
         this.description = description;
         this.phaseType = phaseType;
-        this.status = status;
         this.period = period;
     }
 
@@ -34,10 +30,6 @@ public class PhaseDTO {
 
     public String getDescription() {
         return description;
-    }
-
-    public String getStatus() {
-        return status;
     }
 
     public Calendar getInitialDate() {
@@ -53,11 +45,11 @@ public class PhaseDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PhaseDTO phaseDTO = (PhaseDTO) o;
-        return Objects.equals(phaseType, phaseDTO.phaseType) && Objects.equals(description, phaseDTO.description) && Objects.equals(status, phaseDTO.status);
+        return Objects.equals(phaseType, phaseDTO.phaseType) && Objects.equals(description, phaseDTO.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(phaseType, description, status);
+        return Objects.hash(phaseType, description);
     }
 }
