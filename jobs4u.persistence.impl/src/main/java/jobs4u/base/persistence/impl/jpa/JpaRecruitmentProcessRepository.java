@@ -8,7 +8,9 @@ import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
 import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
 import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 
+import javax.management.Query;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,4 +27,10 @@ public class JpaRecruitmentProcessRepository
         super(puname, Application.settings().getExtendedPersistenceProperties(), "recruitmentID");
     }
 
+    @Override
+    public Optional<RecruitmentProcess> getRecruitmentProcessByJobReference(JobReference jobReference) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("job", jobReference);
+        return matchOne("e.jobOpening.jobReference = :job", map);
+    }
 }
