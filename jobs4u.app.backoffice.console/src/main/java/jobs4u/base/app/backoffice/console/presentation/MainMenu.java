@@ -31,18 +31,19 @@ import jobs4u.base.app.backoffice.console.presentation.candidate.ListAllCandidat
 import jobs4u.base.app.backoffice.console.presentation.candidate.ListCandidateDataAction;
 import jobs4u.base.app.backoffice.console.presentation.candidate.RegisterCandidateAction;
 import jobs4u.base.app.backoffice.console.presentation.customer.RegisterCustomerAction;
-import jobs4u.base.app.backoffice.console.presentation.interviewTemplate.GenerateInterviewModelTemplateFileUI;
+import jobs4u.base.app.backoffice.console.presentation.interviewmodel.GenerateInterviewModelTemplateFileUI;
 import jobs4u.base.app.backoffice.console.presentation.interviewmodel.SelectInterviewModelAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.editing.EditJobOpeningAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.listing.ListJobOpeningsAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.registration.RegisterJobOpeningAction;
-import jobs4u.base.app.backoffice.console.presentation.listApplications.ListJobOpeningApplicationsAction;
+import jobs4u.base.app.backoffice.console.presentation.application.listing.ListJobOpeningApplicationsAction;
 import jobs4u.base.app.backoffice.console.presentation.recruitmentprocess.ChangePhaseStatesAction;
-import jobs4u.base.app.backoffice.console.presentation.requirementTemplate.GenerateRequirementsTemplateFileUI;
-import jobs4u.base.app.backoffice.console.presentation.operator.RegisterJobOpeningApplicationsAction;
+import jobs4u.base.app.backoffice.console.presentation.requirementspecification.GenerateRequirementsTemplateFileUI;
+import jobs4u.base.app.backoffice.console.presentation.application.registration.RegisterJobOpeningApplicationsAction;
 import jobs4u.base.app.backoffice.console.presentation.recruitmentprocess.SetupRecruitmentProcessAction;
 import jobs4u.base.app.backoffice.console.presentation.requirementspecification.SelectRequirementSpecificationAction;
 import jobs4u.base.app.backoffice.console.presentation.languageengineer.RegisterPluginAction;
+import jobs4u.base.app.backoffice.console.presentation.requirementspecification.VerifyRequirementAction;
 import jobs4u.base.app.common.console.presentation.authz.MyUserMenu;
 import jobs4u.base.usermanagement.domain.BaseRoles;
 import eapli.framework.actions.Actions;
@@ -249,18 +250,11 @@ public class MainMenu extends AbstractUI {
         menu.addItem(6, "Setup a recruitment process", new SetupRecruitmentProcessAction());
         menu.addItem(7, "Edit a job opening", new EditJobOpeningAction());
         menu.addItem(8, "Opening / Closing phases", new ChangePhaseStatesAction());
+        menu.addItem(9, "Verify Requirement Specifitions of applications", new VerifyRequirementAction());
         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
 
         return menu;
     }
-
-//    private Menu buildAdminSettingsMenu() {
-//        final Menu menu = new Menu("Settings >");
-//
-//        menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
-//
-//        return menu;
-//    }
 
     private Menu buildUsersMenu() {
         final Menu menu = new Menu("Users >");
