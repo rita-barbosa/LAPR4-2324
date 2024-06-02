@@ -163,4 +163,20 @@ public class JpaJobOpeningRepository
         return null;
     }
 
+    @Override
+    public Iterable<JobOpening> getPlannedJobOpeningListMatchingCustomerManager(Username customerManagerUsername) {
+        final TypedQuery<JobOpening>
+                q = createQuery("SELECT e \n" +
+                        "FROM JobOpening e \n" +
+                        "WHERE e.jobReference.companyCode IN (\n" +
+                        "    SELECT code.customerCode \n" +
+                        "    FROM Customer c \n" +
+                        "    WHERE c.customerManager.username.value = :manager\n" +
+                        ")\n" +
+                        "AND (e.status.statusDescription = 'STARTED' OR e.status.statusDescription = 'NOT_STARTED')",
+                JobOpening.class);
+        q.setParameter("manager", customerManagerUsername.toString());
+        return q.getResultList();
+    }
+
 }
