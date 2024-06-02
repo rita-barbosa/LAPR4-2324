@@ -217,7 +217,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
 
         RecruitmentProcess recruitmentProcess1 = new RecruitmentProcess(dateInterval1.start(), dateInterval1.end(), phases1, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.PLANNED)));
 
-        RecruitmentProcess recruitmentProcess2 = new RecruitmentProcess(dateInterval2.start(), dateInterval2.end(), phases2, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.PLANNED)));
+        RecruitmentProcess recruitmentProcess2 = new RecruitmentProcess(dateInterval2.start(), dateInterval2.end(), phases2, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.SCREENING)));
 
         RecruitmentProcess recruitmentProcess3 = new RecruitmentProcess(dateInterval3.start(), dateInterval3.end(), phases3, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.PLANNED)));
 
@@ -284,7 +284,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
 
     private void persistRequirementSpecifications() {
         String description1 = "Back-End Developer With Experience in Java";
-        String name1 = "Requirements_Back_End_Dev.jar";
+        String name1 = "Requirements_Back_End_Dev";
         String fullClassName1 = "jobs4u.plugin.core.adapter.RequirementPluginAdapter";
         String dataImporter = "jobs4u.plugin.core.adapter.FileManagementAdapter";
         RequirementSpecification requirementSpecification1 = new RequirementSpecification(name1, description1, fullClassName1, "plugins-config-file/requirement/r-config-1.txt",dataImporter);
@@ -404,7 +404,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         jobs.get(0).setApplications(applicationsSet);
         jobOpeningRepository.save(jobs.get(0));
 
-        jobs.get(1).setApplications(applicationsSet1);
-        jobOpeningRepository.save(jobs.get(1));
+        jobs.get(2).setApplications(applicationsSet1);
+        jobOpeningRepository.save(jobs.get(2));
     }
 }
