@@ -37,6 +37,7 @@ import jobs4u.base.app.backoffice.console.presentation.jobopening.editing.EditJo
 import jobs4u.base.app.backoffice.console.presentation.jobopening.listing.ListJobOpeningsAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.registration.RegisterJobOpeningAction;
 import jobs4u.base.app.backoffice.console.presentation.listApplications.ListJobOpeningApplicationsAction;
+import jobs4u.base.app.backoffice.console.presentation.recruitmentprocess.ChangePhaseStatesAction;
 import jobs4u.base.app.backoffice.console.presentation.requirementTemplate.GenerateRequirementsTemplateFileUI;
 import jobs4u.base.app.backoffice.console.presentation.operator.RegisterJobOpeningApplicationsAction;
 import jobs4u.base.app.backoffice.console.presentation.recruitmentprocess.SetupRecruitmentProcessAction;
@@ -170,6 +171,7 @@ public class MainMenu extends AbstractUI {
             mainMenu.addSubMenu(4, candidateMenu);
             final Menu pluginMenu = buildCustomerManagerPluginMenu();
             mainMenu.addSubMenu(5, pluginMenu);
+
         }
         if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.OPERATOR)) {
             final Menu pluginMenu = buildOperatorPluginMenu();
@@ -246,6 +248,7 @@ public class MainMenu extends AbstractUI {
         menu.addItem(5, "List job opening applications", new ListJobOpeningApplicationsAction());
         menu.addItem(6, "Setup a recruitment process", new SetupRecruitmentProcessAction());
         menu.addItem(7, "Edit a job opening", new EditJobOpeningAction());
+        menu.addItem(8, "Opening / Closing phases", new ChangePhaseStatesAction());
         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
 
         return menu;
