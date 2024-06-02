@@ -189,7 +189,333 @@ No new tests were made regarding the domain entities within this functionality.
 
 ## 5. Implementation
 
+### ChangePhaseStatusUI
+
+```
+package jobs4u.base.app.backoffice.console.presentation.recruitmentprocess;
+
+import eapli.framework.presentation.console.AbstractUI;
+import eapli.framework.presentation.console.SelectWidget;
+import jobs4u.base.app.backoffice.console.presentation.requirementspecification.JobOpeningDTOPrinter;
+import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
+import jobs4u.base.recruitmentprocessmanagement.application.ChangePhaseStatesController;
+import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcessStatusEnum;
+import jobs4u.base.recruitmentprocessmanagement.dto.RecruitmentProcessDTO;
+
+import java.util.Scanner;
+
+public class ChangePhaseStatesUI extends AbstractUI {
+
+    private ChangePhaseStatesController controller = new ChangePhaseStatesController();
+
+    private Scanner read = new Scanner(System.in);
+
+    @Override
+    protected boolean doShow() {
+
+        System.out.println();
+
+        SelectWidget<JobOpeningDTO> selector_jo;
+        final JobOpeningDTO jobOpeningDTO;
+
+        try {
+            selector_jo = new SelectWidget<>("Select A Job Opening:", controller.getJobOpeningList(), new JobOpeningDTOPrinter());
+            selector_jo.show();
+            jobOpeningDTO = selector_jo.selectedElement();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        RecruitmentProcessDTO recruitmentProcessDTO = null;
+
+        try {
+            recruitmentProcessDTO = controller.getRecruitmentProcessDTOWithJobReference(jobOpeningDTO.getJobReference());
+            System.out.println(recruitmentProcessDTO.toString());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        System.out.println("Do you want to go back a phase or move on to the next? (Back | Next)");
+        String answer = read.next();
+
+        while(true) {
+            if (answer.equalsIgnoreCase("back")) {
+                if(checkIfItCanGoBack(recruitmentProcessDTO)){
+                    controller.goBackAPhase(recruitmentProcessDTO.getJobOpening());
+                }
+                break;
+            } else if (answer.equalsIgnoreCase("next")) {
+                if(checkIfItCanGoNext(recruitmentProcessDTO)){
+                    controller.goNextPhase(recruitmentProcessDTO.getJobOpening());
+                }
+                break;
+            } else {
+                System.out.println("Wrong Answer. Try Again:\n");
+                answer = read.next();
+            }
+        }
+
+        System.out.println("Worked!\n");
+
+        return false;
+    }
+
+    private boolean checkIfItCanGoNext(RecruitmentProcessDTO recruitmentProcessDTO) {
+        if(recruitmentProcessDTO.getRecruitmentProcessStatus().equals(String.valueOf(RecruitmentProcessStatusEnum.RESULTS))) {
+            System.out.println("You'll Be Ending The Recruitment Process.\n");
+            System.out.println("Are You Sure? (Yes | No)");
+            String answer = read.next();
+
+            if(answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")){
+                return true;
+            } else {
+                return false;
+            }
+        } else if(recruitmentProcessDTO.getRecruitmentProcessStatus().equals(String.valueOf(RecruitmentProcessStatusEnum.CONCLUDED))) {
+            System.out.println("Unable To Open Next Phase.\n");
+            System.out.println("REASON : Recruitment Process Has Concluded.\n");
+            return false;
+        } else if(recruitmentProcessDTO.getRecruitmentProcessStatus().equals(String.valueOf(RecruitmentProcessStatusEnum.PLANNED))) {
+            System.out.println("You'll Be Starting The Recruitment Process.");
+            System.out.println("Are You Sure? (Yes | No)");
+            String answer = read.next();
+
+            if(answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")){
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
+    }
+
+    public boolean checkIfItCanGoBack(RecruitmentProcessDTO recruitmentProcessDTO){
+        if(recruitmentProcessDTO.getRecruitmentProcessStatus().equals(String.valueOf(RecruitmentProcessStatusEnum.PLANNED)) || recruitmentProcessDTO.getRecruitmentProcessStatus().equals(String.valueOf(RecruitmentProcessStatusEnum.CONCLUDED))){
+            System.out.println("Unable To Go Back.");
+            System.out.println("REASON : Recruitment Process Hasn't Started Or Has Concluded.");
+            return false;
+        } else {
+            System.out.println("Has Any Progress Been Made On The Current Phase? (Yes | No)");
+            String answer = read.next();
+
+            if(answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")){
+                System.out.println("Unable To Go Back A Phase.");
+                System.out.println("REASON : Progress Has Been Made On The Current Phase.");
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+    @Override
+    public String headline() {
+        return "=-=-=-=-=-=OPENING/CLOSING PHASES=-=-=-=-=-=\n";
+    }
+}
+
+```
+
+### ChangePhaseStatusController
+
+```
+package jobs4u.base.recruitmentprocessmanagement.application;
+
+import eapli.framework.infrastructure.authz.application.AuthorizationService;
+import eapli.framework.infrastructure.authz.application.AuthzRegistry;
+import eapli.framework.infrastructure.authz.domain.model.SystemUser;
+import jobs4u.base.customermanagement.application.CustomerManagementService;
+import jobs4u.base.jobopeningmanagement.application.JobOpeningListDTOService;
+import jobs4u.base.jobopeningmanagement.application.JobOpeningManagementService;
+import jobs4u.base.jobopeningmanagement.domain.JobReference;
+import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
+import jobs4u.base.recruitmentprocessmanagement.dto.RecruitmentProcessDTO;
+import jobs4u.base.usermanagement.domain.BaseRoles;
+import org.hibernate.mapping.Collection;
+
+import java.util.Collections;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+public class ChangePhaseStatesController {
+
+    private final AuthorizationService authz;
+    private final CustomerManagementService customerManagementService;
+    private final JobOpeningManagementService jobOpeningManagementService;
+    private final RecruitmentProcessManagementService recruitmentProcessManagementService;
+    private final JobOpeningListDTOService jobOpeningListDTOService;
+
+    public ChangePhaseStatesController() {
+        this.authz = AuthzRegistry.authorizationService();
+        this.customerManagementService = new CustomerManagementService();
+        this.jobOpeningManagementService = new JobOpeningManagementService();
+        this.jobOpeningListDTOService = new JobOpeningListDTOService();
+        this.recruitmentProcessManagementService = new RecruitmentProcessManagementService();
+    }
+    public Iterable<JobOpeningDTO> getJobOpeningList() throws ClassNotFoundException {
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
+        Optional<SystemUser> user = authz.loggedinUserWithPermissions(BaseRoles.CUSTOMER_MANAGER);
+        if (user.isPresent()) {
+            return jobOpeningManagementService.plannedJobOpeningsOfCustomerManager(user.get().username());
+        }else {
+            return Collections.emptyList();
+        }
+
+    }
+
+    public RecruitmentProcessDTO getRecruitmentProcessDTOWithJobReference(String jobReference) throws ClassNotFoundException {
+        try {
+            return recruitmentProcessManagementService.getRecruitmentProcessWithJobReference(new JobReference(jobReference));
+        }catch(Exception e){
+            System.out.println("[ No Job Openings Found Associated To This Customer Manager ]");
+            throw new ClassNotFoundException("It was not possible to retrieve the job opening's data.");
+        }
+    }
+
+    public boolean goBackAPhase(String jobReference) {
+        try {
+            recruitmentProcessManagementService.goBackAPhase(jobReference);
+        }catch (Exception e){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean goNextPhase(String jobReference) {
+        try {
+            recruitmentProcessManagementService.goNextPhase(jobReference);
+        }catch (Exception e){
+            return false;
+        }
+        return true;
+    }
+}
+
+```
+
+### RecuitmentProcessManagementService
+
+```
+package jobs4u.base.recruitmentprocessmanagement.application;
+
+import jobs4u.base.infrastructure.persistence.PersistenceContext;
+import jobs4u.base.jobopeningmanagement.application.JobOpeningManagementService;
+import jobs4u.base.jobopeningmanagement.domain.JobOpening;
+import jobs4u.base.jobopeningmanagement.domain.JobReference;
+import jobs4u.base.recruitmentprocessmanagement.domain.Phase;
+import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
+import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcessStatus;
+import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcessStatusEnum;
+import jobs4u.base.recruitmentprocessmanagement.dto.AllPhasesDTO;
+import jobs4u.base.recruitmentprocessmanagement.dto.PhaseDTO;
+import jobs4u.base.recruitmentprocessmanagement.dto.RecruitmentProcessDTO;
+import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Optional;
+
+public class RecruitmentProcessManagementService {
+
+    private static final RecruitmentProcessRepository recruitmentProcessRepository = PersistenceContext.repositories().recruitmentProcesses();
+
+    private static final JobOpeningManagementService jobOpeningManagementService = new JobOpeningManagementService();
+
+    public static RecruitmentProcess setupRecruitmentProcess(Calendar start, Calendar end, AllPhasesDTO allPhasesDTO, JobOpening jobOpening){
+
+        List<Phase> listPhases = new ArrayList<>();
+
+        RecruitmentProcess recruitmentProcess = new RecruitmentProcess(start, end, listPhases, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.PLANNED)));
+
+        for (PhaseDTO phaseDTO : allPhasesDTO.getListOfPhases()){
+            Phase phase = new Phase(phaseDTO.getPhaseType(), phaseDTO.getDescription(), phaseDTO.getInitialDate(), phaseDTO.getFinalDate());
+            listPhases.add(phase);
+        }
+
+        recruitmentProcess.addPhases(listPhases);
+
+        recruitmentProcess = recruitmentProcessRepository.save(recruitmentProcess);
+
+        return recruitmentProcess;
+    }
+
+    public boolean saveToRepository(RecruitmentProcess recruitmentProcess){
+        try{
+            recruitmentProcessRepository.save(recruitmentProcess);
+        }catch (Exception e){
+            return false;
+        }
+        return true;
+    }
+
+    public RecruitmentProcessDTO getRecruitmentProcessWithJobReference(JobReference jobReference){
+        return recruitmentProcessRepository.getRecruitmentProcessByJobReference(jobReference).get().toDTO();
+    }
+
+    public boolean goBackAPhase(String jobReference) {
+        List<RecruitmentProcessStatusEnum> recruitmentProcessStatusEnum = new ArrayList<>();
+        for (RecruitmentProcessStatusEnum recruitmentProcessStatusEnum1 : RecruitmentProcessStatusEnum.values()){
+            recruitmentProcessStatusEnum.add(recruitmentProcessStatusEnum1);
+        }
+        int i = 0;
+        Optional<RecruitmentProcess> recruitmentProcess = recruitmentProcessRepository.getRecruitmentProcessByJobReference(new JobReference(jobReference));
+        RecruitmentProcess recruitmentProcess1 = recruitmentProcess.get();
+        try {
+            while(!(String.valueOf(recruitmentProcessStatusEnum.get(i)).equals(recruitmentProcess1.recruitmentProcessStatus().currentStatus().toString()))){
+                i++;
+            }
+
+            recruitmentProcess1.changeStatus(String.valueOf(recruitmentProcessStatusEnum.get(i-1)));
+            recruitmentProcessRepository.save(recruitmentProcess1);
+
+            if(String.valueOf(RecruitmentProcessStatusEnum.CONCLUDED).equals(recruitmentProcess1.recruitmentProcessStatus().toString())){
+                JobOpening jobOpening = jobOpeningManagementService.getJobOpeningByJobRef(jobReference).get();
+                jobOpening.updateStatusToEnded();
+                jobOpeningManagementService.saveToRepository(jobOpening);
+            }
+
+        }catch (Exception e){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean goNextPhase(String jobReference) {
+        List<RecruitmentProcessStatusEnum> recruitmentProcessStatusEnum = new ArrayList<>();
+        for (RecruitmentProcessStatusEnum recruitmentProcessStatusEnum1 : RecruitmentProcessStatusEnum.values()){
+            recruitmentProcessStatusEnum.add(recruitmentProcessStatusEnum1);
+        }
+        int i = 0;
+        Optional<RecruitmentProcess> recruitmentProcess = recruitmentProcessRepository.getRecruitmentProcessByJobReference(new JobReference(jobReference));
+        RecruitmentProcess recruitmentProcess1 = recruitmentProcess.get();
+        try {
+            while(!(String.valueOf(recruitmentProcessStatusEnum.get(i)).equals(recruitmentProcess1.recruitmentProcessStatus().currentStatus().toString()))){
+                i++;
+            }
+
+            recruitmentProcess1.changeStatus(String.valueOf(recruitmentProcessStatusEnum.get(i+1)));
+            recruitmentProcessRepository.save(recruitmentProcess1);
+
+            if(String.valueOf(RecruitmentProcessStatusEnum.CONCLUDED).equals(recruitmentProcess1.recruitmentProcessStatus().toString())){
+                JobOpening jobOpening = jobOpeningManagementService.getJobOpeningByJobRef(jobReference).get();
+                jobOpening.updateStatusToEnded();
+                jobOpeningManagementService.saveToRepository(jobOpening);
+            }
+
+        }catch (Exception e){
+            return false;
+        }
+        return true;
+    }
+}
+
+```
 
 
 ## 6. Integration/Demonstration
 
+To activate this feature, you'll need to run the script named `run-backoffice-app` and log in with Customer Manager
+permissions. Then, navigate to the "Job Openings" menu and select option 8 - `Opening / Closing phases` - to access this
+feature.
