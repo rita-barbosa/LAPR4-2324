@@ -1,57 +1,113 @@
 package jobs4u.base.recruitmentprocessmanagement.application;
 
-import eapli.framework.time.domain.model.DateInterval;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
+import jobs4u.base.jobopeningmanagement.application.JobOpeningManagementService;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
+import jobs4u.base.jobopeningmanagement.domain.JobReference;
 import jobs4u.base.recruitmentprocessmanagement.domain.Phase;
 import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
+import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcessStatus;
+import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcessStatusEnum;
 import jobs4u.base.recruitmentprocessmanagement.dto.AllPhasesDTO;
 import jobs4u.base.recruitmentprocessmanagement.dto.PhaseDTO;
-import jobs4u.base.recruitmentprocessmanagement.repository.PhaseRepository;
+import jobs4u.base.recruitmentprocessmanagement.dto.RecruitmentProcessDTO;
 import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 
 public class RecruitmentProcessManagementService {
 
     private static final RecruitmentProcessRepository recruitmentProcessRepository = PersistenceContext.repositories().recruitmentProcesses();
 
-    private static final PhaseRepository phaseRepository = PersistenceContext.repositories().phases();
+    private static final JobOpeningManagementService jobOpeningManagementService = new JobOpeningManagementService();
 
     public static RecruitmentProcess setupRecruitmentProcess(Calendar start, Calendar end, AllPhasesDTO allPhasesDTO, JobOpening jobOpening){
 
         List<Phase> listPhases = new ArrayList<>();
 
-        RecruitmentProcess recruitmentProcess = new RecruitmentProcess(start, end, listPhases);
+        RecruitmentProcess recruitmentProcess = new RecruitmentProcess(start, end, listPhases, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.PLANNED)));
 
         for (PhaseDTO phaseDTO : allPhasesDTO.getListOfPhases()){
-            Phase phase = new Phase(phaseDTO.getPhaseType(), phaseDTO.getDescription(), phaseDTO.getStatus(), phaseDTO.getInitialDate(), phaseDTO.getFinalDate());
-            phase = phaseRepository.save(phase);
+            Phase phase = new Phase(phaseDTO.getPhaseType(), phaseDTO.getDescription(), phaseDTO.getInitialDate(), phaseDTO.getFinalDate());
             listPhases.add(phase);
         }
 
-        recruitmentProcess.setPhases(listPhases);
+        recruitmentProcess.addPhases(listPhases);
 
         recruitmentProcess = recruitmentProcessRepository.save(recruitmentProcess);
-
-        for (Phase phase : listPhases){
-            phase.setRecruitmentprocess(recruitmentProcess);
-            phaseRepository.save(phase);
-        }
 
         return recruitmentProcess;
     }
 
     public boolean saveToRepository(RecruitmentProcess recruitmentProcess){
-        List<Phase> list = recruitmentProcess.allPhases();
-        recruitmentProcess = recruitmentProcessRepository.save(recruitmentProcess);
-        for (Phase phase : list){
-            phase.setRecruitmentprocess(recruitmentProcess);
-            phaseRepository.save(phase);
+        try{
+            recruitmentProcessRepository.save(recruitmentProcess);
+        }catch (Exception e){
+            return false;
         }
         return true;
     }
 
+    public RecruitmentProcessDTO getRecruitmentProcessWithJobReference(JobReference jobReference){
+        return recruitmentProcessRepository.getRecruitmentProcessByJobReference(jobReference).get().toDTO();
+    }
+
+    public boolean goBackAPhase(String jobReference) {
+        List<RecruitmentProcessStatusEnum> recruitmentProcessStatusEnum = new ArrayList<>();
+        for (RecruitmentProcessStatusEnum recruitmentProcessStatusEnum1 : RecruitmentProcessStatusEnum.values()){
+            recruitmentProcessStatusEnum.add(recruitmentProcessStatusEnum1);
+        }
+        int i = 0;
+        Optional<RecruitmentProcess> recruitmentProcess = recruitmentProcessRepository.getRecruitmentProcessByJobReference(new JobReference(jobReference));
+        RecruitmentProcess recruitmentProcess1 = recruitmentProcess.get();
+        try {
+            while(!(String.valueOf(recruitmentProcessStatusEnum.get(i)).equals(recruitmentProcess1.recruitmentProcessStatus().currentStatus().toString()))){
+                i++;
+            }
+
+            recruitmentProcess1.changeStatus(String.valueOf(recruitmentProcessStatusEnum.get(i-1)));
+            recruitmentProcessRepository.save(recruitmentProcess1);
+
+            if(String.valueOf(RecruitmentProcessStatusEnum.CONCLUDED).equals(recruitmentProcess1.recruitmentProcessStatus().toString())){
+                JobOpening jobOpening = jobOpeningManagementService.getJobOpeningByJobRef(jobReference).get();
+                jobOpening.updateStatusToEnded();
+                jobOpeningManagementService.saveToRepository(jobOpening);
+            }
+
+        }catch (Exception e){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean goNextPhase(String jobReference) {
+        List<RecruitmentProcessStatusEnum> recruitmentProcessStatusEnum = new ArrayList<>();
+        for (RecruitmentProcessStatusEnum recruitmentProcessStatusEnum1 : RecruitmentProcessStatusEnum.values()){
+            recruitmentProcessStatusEnum.add(recruitmentProcessStatusEnum1);
+        }
+        int i = 0;
+        Optional<RecruitmentProcess> recruitmentProcess = recruitmentProcessRepository.getRecruitmentProcessByJobReference(new JobReference(jobReference));
+        RecruitmentProcess recruitmentProcess1 = recruitmentProcess.get();
+        try {
+            while(!(String.valueOf(recruitmentProcessStatusEnum.get(i)).equals(recruitmentProcess1.recruitmentProcessStatus().currentStatus().toString()))){
+                i++;
+            }
+
+            recruitmentProcess1.changeStatus(String.valueOf(recruitmentProcessStatusEnum.get(i+1)));
+            recruitmentProcessRepository.save(recruitmentProcess1);
+
+            if(String.valueOf(RecruitmentProcessStatusEnum.CONCLUDED).equals(recruitmentProcess1.recruitmentProcessStatus().toString())){
+                JobOpening jobOpening = jobOpeningManagementService.getJobOpeningByJobRef(jobReference).get();
+                jobOpening.updateStatusToEnded();
+                jobOpeningManagementService.saveToRepository(jobOpening);
+            }
+
+        }catch (Exception e){
+            return false;
+        }
+        return true;
+    }
 }
