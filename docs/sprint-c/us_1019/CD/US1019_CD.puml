@@ -2,12 +2,12 @@
 title US1019 Class Diagram
 
 'package "Presentation" {
-    class ListCandidatesUI <<Presentation>> {
+    class ListOrderedCandidatesUI <<Presentation>> {
     }
 '}
 
 'package "Application" {
-    class ListCandidatesController <<Application>> {
+    class ListOrderedCandidatesController <<Application>> {
         + getJobOpeningList()
         + getCandidateList(jobOpeningDTO)
     }

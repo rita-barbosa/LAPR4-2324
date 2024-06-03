@@ -155,12 +155,12 @@ To be able to promote encapsulation between layers, it will be used DTOs.
 
 **Application Layer Classes**
 
-* ListCandidatesController
+* ListOrderedCandidatesController
 
 
 **Presentation Layer Classes**
 
-* ListCandidatesUI
+* ListOrderedCandidatesUI
 
 
 ### 4.1. Realization

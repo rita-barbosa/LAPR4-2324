@@ -9,8 +9,8 @@ title US1019 Sequence Diagram
 autonumber
 
 actor "Customer Manager" as CM
-participant "<<presentation>>\n:ListCandidatesUI" as UI
-participant "<<application>>\n:ListCandidatesController" as CTRL
+participant "<<presentation>>\n:ListOrderedCandidatesUI" as UI
+participant "<<application>>\n:ListOrderedCandidatesController" as CTRL
 participant "<<repository>>\n:JobOpeningRepository" as JobOpeningRepository
 participant "<<service>>\n:JobOpeningManagementService" as JobManagement
 participant "<<repository>>\n:JobOpeningRepository" as JobOpeningRepository
