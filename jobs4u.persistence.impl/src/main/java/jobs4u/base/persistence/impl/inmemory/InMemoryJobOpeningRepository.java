@@ -12,8 +12,6 @@ import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatus;
 import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatusEnum;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
-import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcessStatus;
-import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcessStatusEnum;
 
 import java.util.*;
 
@@ -141,7 +139,7 @@ public class InMemoryJobOpeningRepository
     public Iterable<JobOpening> getJobOpeningFromUsername(String username) {
         List<Customer> customers = custRepo.getCustomersByUsername(username);
         for (Customer customer : customers) {
-            return match(e -> customer.customerCode().toString().equals(e.jobReference().getcustomerCode()));
+            return match(e -> customer.customerCode().costumerCode().equals(e.jobReference().getcustomerCode()));
         }
         return Collections.emptyList();
     }
