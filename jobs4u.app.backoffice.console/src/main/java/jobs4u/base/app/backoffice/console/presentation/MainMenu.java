@@ -27,6 +27,7 @@ import jobs4u.base.Application;
 import jobs4u.base.app.backoffice.console.presentation.authz.AddUserUI;
 import jobs4u.base.app.backoffice.console.presentation.authz.EnableDisableUserAction;
 import jobs4u.base.app.backoffice.console.presentation.authz.ListUsersAction;
+import jobs4u.base.app.backoffice.console.presentation.candidate.EnableDisableCandidateAction;
 import jobs4u.base.app.backoffice.console.presentation.candidate.ListAllCandidatesAction;
 import jobs4u.base.app.backoffice.console.presentation.candidate.ListCandidateDataAction;
 import jobs4u.base.app.backoffice.console.presentation.candidate.RegisterCandidateAction;
@@ -218,8 +219,9 @@ public class MainMenu extends AbstractUI {
 
     private Menu buildOperatorCandidateMenu() {
         final Menu menu = new Menu("Candidates >");
-        menu.addItem(1, "Register a new candidate", new RegisterCandidateAction());
+        menu.addItem(1, "Register a New Candidate", new RegisterCandidateAction());
         menu.addItem(2, "List All Candidates", new ListAllCandidatesAction());
+        menu.addItem(3, "Activate/Deactivate a Candidate", new EnableDisableCandidateAction());
         return menu;
     }
 
