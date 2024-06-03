@@ -5,9 +5,6 @@ import jobs4u.base.applicationmanagement.application.AnalyseApplicationFilesCont
 import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-
 public class AnalyseApplicationFilesUI extends AbstractUI {
 
     AnalyseApplicationFilesController controller = new AnalyseApplicationFilesController();
