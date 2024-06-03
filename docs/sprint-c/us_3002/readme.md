@@ -111,11 +111,11 @@ The further topics illustrate and explain this functionality usage flow, and the
 
 **Customer App Sequence Diagram**
 
-![US3002 Customer App Sequence Diagram](./US3002_SD/us3002_sd_customer_app.svg)
+![US3002 Customer App Sequence Diagram](./US3002_SD/us3002_sd_client_app.svg)
 
 **FollowUp Server/Domain Sequence Diagram**
 
-![US3002 FollowUp Server Sequence Diagram](./US3002_SD/us3002_sd_system_server.svg)
+![US3002 FollowUp Server Sequence Diagram](./US3002_SD/us3002_sd_server_domain.svg)
 
 
 ### 4.2. Class Diagram
@@ -181,7 +181,7 @@ No new tests were made regarding the domain entities within this functionality.
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
+*In this section the team should present, if necessary, some evidences that the implementation is according to the
 design. It should also describe and explain other important artifacts necessary to fully understand the implementation
 like, for instance, configuration files.*
 

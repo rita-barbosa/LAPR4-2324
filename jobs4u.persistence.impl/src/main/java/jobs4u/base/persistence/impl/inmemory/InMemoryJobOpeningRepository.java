@@ -12,11 +12,10 @@ import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatus;
 import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatusEnum;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
-import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcessStatus;
-import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcessStatusEnum;
 
 import java.util.*;
 
+//TODO CHECK JOB OPENING BY USERNAME QUERY
 public class InMemoryJobOpeningRepository
         extends InMemoryDomainRepository<JobOpening, JobReference>
         implements JobOpeningRepository {
@@ -24,6 +23,8 @@ public class InMemoryJobOpeningRepository
     static {
         InMemoryInitializer.init();
     }
+
+    private final CustomerRepository custRepo = PersistenceContext.repositories().customers();
 
     @Override
     public JobReference lastJobReference(String customerCode) {
@@ -126,11 +127,19 @@ public class InMemoryJobOpeningRepository
 
     @Override
     public Iterable<JobOpening> getJobOpeningListMatchingCustomerManager(Username customerManagerUsername) {
-        CustomerRepository custRepo = PersistenceContext.repositories().customers();
         List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername);
 
         for (Customer customer : customers) {
-            return match(e -> customer.customerCode().toString().equals(e.jobReference().getcustomerCode()));
+            return match(e -> customer.customerCode().toString().contains(e.jobReference().getcustomerCode()));
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Iterable<JobOpening> getJobOpeningFromUsername(Username username) {
+        List<Customer> customers = custRepo.getCustomersByUsername(username);
+        for (Customer customer : customers) {
+            return match(e -> customer.customerCode().costumerCode().equals(e.jobReference().getcustomerCode()));
         }
         return Collections.emptyList();
     }
@@ -159,5 +168,6 @@ public class InMemoryJobOpeningRepository
         }
         return Collections.emptyList();
     }
+
 
 }

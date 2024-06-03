@@ -154,7 +154,7 @@ public class JpaJobOpeningRepository
                         "    WHERE c.customerManager.username.value = :manager\n" +
                         ")",
                 JobOpening.class);
-        q.setParameter("manager", customerManagerUsername.toString());
+        q.setParameter("manager", customerManagerUsername);
         return q.getResultList();
     }
 
@@ -188,6 +188,22 @@ public class JpaJobOpeningRepository
                         "AND (e.status.statusDescription = 'STARTED' OR e.status.statusDescription = 'NOT_STARTED')",
                 JobOpening.class);
         q.setParameter("manager", customerManagerUsername.toString());
+        return q.getResultList();
+    }
+
+    @Override
+    public Iterable<JobOpening> getJobOpeningFromUsername(Username username) {
+        String query = "SELECT e " +
+                "FROM JobOpening e " +
+                "WHERE e.jobReference.companyCode IN (" +
+                "    SELECT c.code.customerCode " +
+                "    FROM Customer c " +
+                "    WHERE c.customerUser.username = :username)" +
+                "AND e.status.statusDescription = :status ";
+
+        final TypedQuery<JobOpening> q = createQuery(query, JobOpening.class);
+        q.setParameter("username", username);
+        q.setParameter("status", "NOT_STARTED");
         return q.getResultList();
     }
 

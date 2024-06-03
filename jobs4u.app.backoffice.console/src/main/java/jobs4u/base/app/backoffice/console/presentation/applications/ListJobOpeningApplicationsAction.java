@@ -1,4 +1,4 @@
-package jobs4u.base.app.backoffice.console.presentation.listApplications;
+package jobs4u.base.app.backoffice.console.presentation.applications;
 
 import eapli.framework.actions.Action;
 

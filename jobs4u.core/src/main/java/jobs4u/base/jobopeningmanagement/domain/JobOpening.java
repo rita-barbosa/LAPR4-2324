@@ -15,9 +15,9 @@ import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 import jobs4u.base.contracttypemanagement.dto.ContractTypeDTO;
 import jobs4u.base.workmodemanagement.dto.WorkModeDTO;
 import jobs4u.base.workmodemanagement.domain.WorkMode;
-import lombok.Getter;
-import lombok.Setter;
 
+import javax.swing.text.DateFormatter;
+import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -399,14 +399,25 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
 
     @Override
     public JobOpeningDTO toDTO() {
-        if (interviewModel == null) {
-            return new JobOpeningDTO(address.toString(), function.jobFunction(), description.description(), status.getStatusDescription(),
-                    contractType.getDenomination(), workMode.denomination(), numVacancies.getNumVacancies(),
-                    requirementSpecification.requirementName().name(), jobReference.toString(), jobReference.getcustomerCode(), "");
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
+        String activeSinceDate = "";
+
+        if (recruitmentProcess.getRecruitmentPeriod().getStartDate() != null)  {
+            activeSinceDate =  dateFormatter.format(recruitmentProcess.getRecruitmentPeriod().getStartDate().getTime());
         }
-        return new JobOpeningDTO(address.toString(), function.jobFunction(), description.description(), status.getStatusDescription(),
-                contractType.getDenomination(), workMode.denomination(), numVacancies.getNumVacancies(),
-                requirementSpecification.requirementName().name(), jobReference.toString(), jobReference.getcustomerCode(), interviewModel.interviewModelName().name());
+
+        if (interviewModel == null) {
+            return new JobOpeningDTO(address.toString(), function.jobFunction(), description.description(),
+                    status.getStatusDescription(), contractType.getDenomination(), workMode.denomination(),
+                    numVacancies.getNumVacancies(), requirementSpecification.requirementName().name(),
+                    jobReference.toString(), jobReference.getcustomerCode(), "",
+                    applications.size(), activeSinceDate);
+        }
+        return new JobOpeningDTO(address.toString(), function.jobFunction(), description.description(),
+                status.getStatusDescription(), contractType.getDenomination(), workMode.denomination(),
+                numVacancies.getNumVacancies(), requirementSpecification.requirementName().name(),
+                jobReference.toString(), jobReference.getcustomerCode(), interviewModel.interviewModelName().name(),
+                applications.size(), activeSinceDate);
     }
 
     public List<EditableInformation> editableJobOpeningInformation() {

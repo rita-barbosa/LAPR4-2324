@@ -9,7 +9,7 @@ Participant "<<Service>>\nJobOpeningDTOService" as JODTOS
 Database "<<Repository>>\nJobOpeningRepository" as JOREPO
 Participant "<<Domain>>\nJobOpening" as JO
 Participant "<<Domain>>\nApplication" as APP
-Participant "<<Service>>\nThreadService" as TS
+Participant "<<Service>>\nApplicationFilesThreadService" as TS
 Participant "<<Thread>>\nFileWordCountThread" as FWCT
 
 

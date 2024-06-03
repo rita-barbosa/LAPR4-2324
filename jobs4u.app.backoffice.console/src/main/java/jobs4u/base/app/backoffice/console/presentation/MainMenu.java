@@ -24,6 +24,7 @@
 package jobs4u.base.app.backoffice.console.presentation;
 
 import jobs4u.base.Application;
+import jobs4u.base.app.backoffice.console.presentation.applications.AnalyseApplicationFilesAction;
 import jobs4u.base.app.backoffice.console.presentation.authz.AddUserUI;
 import jobs4u.base.app.backoffice.console.presentation.authz.EnableDisableUserAction;
 import jobs4u.base.app.backoffice.console.presentation.authz.ListUsersAction;
@@ -37,7 +38,7 @@ import jobs4u.base.app.backoffice.console.presentation.interviewmodel.SelectInte
 import jobs4u.base.app.backoffice.console.presentation.jobopening.editing.EditJobOpeningAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.listing.ListJobOpeningsAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.registration.RegisterJobOpeningAction;
-import jobs4u.base.app.backoffice.console.presentation.listApplications.ListJobOpeningApplicationsAction;
+import jobs4u.base.app.backoffice.console.presentation.applications.ListJobOpeningApplicationsAction;
 import jobs4u.base.app.backoffice.console.presentation.recruitmentprocess.ChangePhaseStatesAction;
 import jobs4u.base.app.backoffice.console.presentation.requirementTemplate.GenerateRequirementsTemplateFileUI;
 import jobs4u.base.app.backoffice.console.presentation.operator.RegisterJobOpeningApplicationsAction;
@@ -173,6 +174,8 @@ public class MainMenu extends AbstractUI {
             mainMenu.addSubMenu(4, candidateMenu);
             final Menu pluginMenu = buildCustomerManagerPluginMenu();
             mainMenu.addSubMenu(5, pluginMenu);
+            final Menu applicationMenu = buildCustomerManagerApplicationMenu();
+            mainMenu.addSubMenu(6, applicationMenu);
 
         }
         if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.OPERATOR)) {
@@ -191,6 +194,12 @@ public class MainMenu extends AbstractUI {
         mainMenu.addItem(EXIT_OPTION, "Exit", new ExitWithMessageAction("Closing."));
 
         return mainMenu;
+    }
+
+    private Menu buildCustomerManagerApplicationMenu() {
+        final Menu menu = new Menu("Applications >");
+        menu.addItem(1, "See Application TOP 20 Used Words List", new AnalyseApplicationFilesAction());
+        return menu;
     }
 
     private Menu buildCustomerManagerCandidateMenu() {

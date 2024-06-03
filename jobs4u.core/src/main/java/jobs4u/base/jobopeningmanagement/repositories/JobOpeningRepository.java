@@ -7,6 +7,7 @@ import jobs4u.base.customermanagement.domain.Customer;
 import jobs4u.base.customermanagement.domain.CustomerCode;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
+import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,4 +38,6 @@ public interface JobOpeningRepository extends DomainRepository<JobReference, Job
     Iterable<JobOpening> jobOpeningsInScreeingListOfCustomerManager(Username customerManagerUsername);
 
     Iterable<JobOpening> getPlannedJobOpeningListMatchingCustomerManager(Username customerManagerUsername);
+
+    Iterable<JobOpening> getJobOpeningFromUsername(Username username);
 }

@@ -1,20 +1,20 @@
 package jobs4u.base.applicationmanagement.dto;
 
 import jobs4u.base.applicationmanagement.domain.ApplicationFile;
-import jobs4u.base.candidatemanagement.domain.Candidate;
 
-import java.io.File;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
 
-public class ApplicationDTO {
+public class ApplicationDTO implements Serializable {
 
-    private Long id;
-    private Set<ApplicationFile> files;
-    private Date applicationDate;
-    private String applicationStatus;
-    private String candidate;
+    private static final long serialVersionUID = 1L;
+    private final Long id;
+    private final Set<ApplicationFile> files;
+    private final Date applicationDate;
+    private final String applicationStatus;
+    private final String candidate;
 
     public ApplicationDTO(Long id, Set<ApplicationFile> files, Date applicationDate, String applicationStatus, String candidate) {
         this.id = id;

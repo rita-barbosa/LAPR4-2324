@@ -7,7 +7,7 @@ participant "<<application>>\n:XxxController" as CTRL
 participant ":AuthorizationService" as AUTHZ <<service>>
 
 participant "<<service>>\n:FollowUpConnectionService" as ConnSrv
-participant ":MessageDTO" as MessageDTO
+participant ":DataDTO" as DataDTO
 participant ":FollowUpServer" as SERVER
 participant ":ClientConnectionThread" as CLITHREAD
 
@@ -41,9 +41,9 @@ activate CTRL
         activate CLITHREAD
         deactivate SERVER
 
-    ConnSrv -> MessageDTO** : create(username, password)
+    ConnSrv -> DataDTO** : create(username, password)
 
-    ConnSrv -> CLITHREAD : authenticationProtocol(messageDTO)
+    ConnSrv -> CLITHREAD : authenticationProtocol(dataDTO)
     CLITHREAD -> AUTH : authenticate(username, password,\n BaseRoles.CUSTOMER_MANAGER,\n BaseRoles.CUSTOMER,\n BaseRoles.CANDIDATE)
     activate AUTH
 
