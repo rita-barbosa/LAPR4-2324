@@ -92,6 +92,26 @@ to help me analyze the candidates.
 > candidates. Nothing more. The ranking of candidates is recorded in the system through US1013.
 
 
+> **Question:** US1019 - Justification of Interview Grades - In this user story, the interview grades should have the
+> necessary justification?
+>
+>
+> **Answer:** In the section 2.3.4: "The system should provide a justification, such as "A minimum Bachelor degree is
+> required for the job position". A similar approach is used for job interviews, but in this case, the goal is not
+> approve or reject a candidate but to evaluate the answers and calculate a grade for the interview in the range 1-100."
+> Yes, it would be important to present an ordered list by the grades. It should also be possible, for each interview,
+> to know the justification for the grade. As a justification, it could be considered to know, for each question, the grade
+> obtained and the response given by the candidate (for example).
+
+
+> **Question:** US1019 Question Phase Analysis - In this user story, does the expression "to help me analyze candidates"
+> in the description of the user story imply that the job opening must be in the analysis phase?
+>
+>
+> **Answer:** I don't see this as an obligation, but I think it makes more sense in this phase, assuming that only in
+> this phase, assuming that only in this phase it is guaranteed that all interviews have been conducted and all
+> candidates have been "evaluated" through the interviews.
+
 
 ## 3. Analysis
 
