@@ -25,7 +25,7 @@ public class AnalyseApplicationFilesController {
     }
 
     public List<ApplicationDTO> getJobOpeningWithJobReference(String jobReference) {
-        JobOpening jobOpening = jobOpeningManagementService.getJobOpeningWithJobReference(jobReference).get();
+        JobOpening jobOpening = jobOpeningManagementService.getJobOpeningByJobRef(jobReference).get();
 
         List<ApplicationDTO> applicationDTOList = List.of();
 
