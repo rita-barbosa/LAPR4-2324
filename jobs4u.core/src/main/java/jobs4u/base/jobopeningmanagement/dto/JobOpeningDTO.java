@@ -1,12 +1,13 @@
 package jobs4u.base.jobopeningmanagement.dto;
 
 import eapli.framework.validations.Preconditions;
-import jobs4u.base.jobopeningmanagement.domain.*;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class JobOpeningDTO {
+public class JobOpeningDTO implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private final String function;
     private final String description;
     private final String status;
@@ -18,13 +19,17 @@ public class JobOpeningDTO {
     private final String customerCode;
     private final String jobReference;
     private final String address;
+    private final Integer numberApplicants;
+    private final String activeSinceDate;
 
 
     public JobOpeningDTO(String address, String function, String description, String status, String contractType,
                          String workMode, Integer numVacancies, String requirementName,
-                         String jobReference, String customerCode, String interviewModelName) {
+                         String jobReference, String customerCode, String interviewModelName,
+                         Integer numberApplicants, String activeSinceDate) {
 
-        Preconditions.noneNull(address, function, description, status, contractType, workMode, numVacancies, requirementName, jobReference, interviewModelName);
+        Preconditions.noneNull(address, function, description, status, contractType, workMode,
+                numVacancies, requirementName, jobReference, interviewModelName);
 
         this.function = function;
         this.description = description;
@@ -37,6 +42,8 @@ public class JobOpeningDTO {
         this.jobReference = jobReference;
         this.address = address;
         this.interviewModelName = interviewModelName;
+        this.numberApplicants = numberApplicants;
+        this.activeSinceDate = activeSinceDate;
     }
 
 
@@ -84,6 +91,14 @@ public class JobOpeningDTO {
         return interviewModelName;
     }
 
+    public Integer getNumberApplicants() {
+        return numberApplicants;
+    }
+
+    public String getActiveSinceDate() {
+        return activeSinceDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -110,5 +125,6 @@ public class JobOpeningDTO {
                 jobReference, function, contractType, workMode, address,
                 description, numVacancies, customerCode);
     }
+
 
 }

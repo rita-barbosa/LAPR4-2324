@@ -1,10 +1,7 @@
-package jobs4u.base.app.backoffice.console.presentation.listApplications;
+package jobs4u.base.app.backoffice.console.presentation.applications;
 
 import eapli.framework.io.util.Console;
-import eapli.framework.presentation.console.AbstractListUI;
 import eapli.framework.presentation.console.AbstractUI;
-import eapli.framework.visitor.Visitor;
-import jobs4u.base.app.backoffice.console.presentation.jobopening.listing.JobOpeningPrinter;
 import jobs4u.base.applicationmanagement.application.ListJobOpeningApplicationsController;
 import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;

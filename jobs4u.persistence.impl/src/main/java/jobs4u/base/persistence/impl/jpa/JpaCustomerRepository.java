@@ -28,9 +28,9 @@ public class JpaCustomerRepository extends JpaAutoTxRepository<Customer, Long, C
         List<Customer> assignedCustomers = new ArrayList<>();
         Iterable<Customer> entities;
         try{
-            entities = match("e=(SELECT c FROM Customer c WHERE c.customerManager.username=:name)", "name", username);
+            entities = match("e=(SELECT c FROM Customer c WHERE c.customerManager.username.value=:name)", "name", username.toString());
         }catch (HibernateException ex){
-            entities = match("e.customerManager.username=:name", "name", username);
+            entities = match("e.customerManager.username.value=:name", "name", username);
         }
 
         for (Customer Customer : entities) {

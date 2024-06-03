@@ -32,6 +32,8 @@ import eapli.framework.validations.Preconditions;
 import jakarta.persistence.*;
 import jobs4u.base.candidatemanagement.dto.CandidateDTO;
 
+import java.util.Calendar;
+
 @Entity
 @Table(name = "T_CANDIDATE")
 public class Candidate implements AggregateRoot<PhoneNumber> {
@@ -94,4 +96,5 @@ public class Candidate implements AggregateRoot<PhoneNumber> {
     public PhoneNumber identity() {
         return this.phoneNumber;
     }
+
 }

@@ -3,10 +3,12 @@ package jobs4u.base.persistence.impl.jpa;
 import eapli.framework.domain.repositories.TransactionalContext;
 import eapli.framework.infrastructure.authz.domain.model.Username;
 import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
+import jakarta.persistence.TypedQuery;
 import jobs4u.base.Application;
 import jobs4u.base.candidatemanagement.domain.Candidate;
 import jobs4u.base.candidatemanagement.domain.PhoneNumber;
 import jobs4u.base.candidatemanagement.repository.CandidateRepository;
+import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 
 
 import java.util.HashMap;
@@ -53,4 +55,17 @@ public class JpaCandidateRepository extends JpaAutoTxRepository<Candidate, Long,
         return matchOne("e.phoneNumber = :phoneNumber", params).isPresent();
     }
 
+    @Override
+    public Iterable<Candidate> findByActive(boolean b) {
+        final TypedQuery<Candidate> q = createQuery(
+                "SELECT c " +
+                        "FROM Candidate c " +
+                        "INNER JOIN SystemUser s " +
+                        "ON c.systemUser.email = s.email " +
+                        "WHERE s.active = :b",
+                Candidate.class
+        );
+        q.setParameter("b", b);
+        return q.getResultList();
+    }
 }
