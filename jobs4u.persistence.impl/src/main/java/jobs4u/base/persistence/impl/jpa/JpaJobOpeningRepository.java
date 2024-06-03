@@ -198,11 +198,11 @@ public class JpaJobOpeningRepository
                 "WHERE e.jobReference.companyCode IN (" +
                 "    SELECT c.code.customerCode " +
                 "    FROM Customer c " +
-                "    WHERE c.customerUser.username = :username)" +
+                "    WHERE c.customerUser.username.value = :username)" +
                 "AND e.status.statusDescription = :status ";
 
         final TypedQuery<JobOpening> q = createQuery(query, JobOpening.class);
-        q.setParameter("username", username);
+        q.setParameter("username", username.toString());
         q.setParameter("status", "NOT_STARTED");
         return q.getResultList();
     }

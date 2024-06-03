@@ -32,6 +32,8 @@ import eapli.framework.presentation.console.ExitWithMessageAction;
 import eapli.framework.presentation.console.menu.MenuItemRenderer;
 import eapli.framework.presentation.console.menu.MenuRenderer;
 import eapli.framework.presentation.console.menu.VerticalMenuRenderer;
+import jobs4u.base.app.user.console.presentation.jobopeninglist.ListCustomerJobOpeningsAction;
+import jobs4u.base.app.user.console.presentation.sendemail.SendEmailAction;
 
 /**
  * @author Paulo Gandra Sousa
@@ -44,8 +46,6 @@ public class MainMenu extends CustomerUserUI {
 
     // MAIN MENU
     private static final int MY_USER_OPTION = 1;
-
-    private final AuthorizationService authz = AuthzRegistry.authorizationService();
 
     @Override
     public boolean show() {
@@ -68,6 +68,7 @@ public class MainMenu extends CustomerUserUI {
 
         final Menu myUserMenu = new MyUserMenu();
         mainMenu.addSubMenu(MY_USER_OPTION, myUserMenu);
+        mainMenu.addItem(2, "See my job openings", new ListCustomerJobOpeningsAction());
 
         mainMenu.addItem(MenuItem.separator(SEPARATOR_LABEL));
 
