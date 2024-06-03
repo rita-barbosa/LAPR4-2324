@@ -1,7 +1,6 @@
 package jobs4u.base.persistence.impl.jpa;
 
 import eapli.framework.domain.repositories.TransactionalContext;
-import eapli.framework.infrastructure.authz.domain.model.Username;
 import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
 import jobs4u.base.Application;
 import jobs4u.base.customermanagement.domain.Customer;
@@ -24,13 +23,13 @@ public class JpaCustomerRepository extends JpaAutoTxRepository<Customer, Long, C
     }
 
     @Override
-    public List<Customer> getCustomersByUsername(Username username) {
+    public List<Customer> getCustomersByUsername(String username) {
         List<Customer> assignedCustomers = new ArrayList<>();
         Iterable<Customer> entities;
         try{
-            entities = match("e=(SELECT c FROM Customer c WHERE c.customerManager.username=:name)", "name", username);
+            entities = match("e=(SELECT c FROM Customer c WHERE c.customerManager.username.value=:name)", "name", username);
         }catch (HibernateException ex){
-            entities = match("e.customerManager.username=:name", "name", username);
+            entities = match("e.customerManager.username.value=:name", "name", username);
         }
 
         for (Customer Customer : entities) {

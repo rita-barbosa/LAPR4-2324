@@ -13,9 +13,9 @@ public class InMemoryCustomerRepository
         implements CustomerRepository {
 
     @Override
-    public List<Customer> getCustomersByUsername(Username username) {
+    public List<Customer> getCustomersByUsername(String username) {
         List<Customer> assignedCustomers = new ArrayList<>();
-        Iterable<Customer> entities = match(e -> e.customerManager().username().equals(username));
+        Iterable<Customer> entities = match(e -> e.customerManager().username().toString().equals(username));
 
         for (Customer Customer : entities) {
             assignedCustomers.add(Customer);

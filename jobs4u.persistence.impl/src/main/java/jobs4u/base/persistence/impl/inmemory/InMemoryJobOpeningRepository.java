@@ -126,8 +126,8 @@ public class InMemoryJobOpeningRepository
     }
 
     @Override
-    public Iterable<JobOpening> getJobOpeningListMatchingCustomerManager(Username customerManagerUsername) {
-        List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername.toString());
+    public Iterable<JobOpening> getJobOpeningListMatchingCustomerManager(String customerManagerUsername) {
+        List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername);
 
         for (Customer customer : customers) {
             return match(e -> customer.customerCode().toString().contains(e.jobReference().getcustomerCode()));
@@ -145,9 +145,9 @@ public class InMemoryJobOpeningRepository
     }
 
     @Override
-    public Iterable<JobOpening> jobOpeningsInScreeingListOfCustomerManager(Username customerManagerUsername) {
+    public Iterable<JobOpening> jobOpeningsInScreeingListOfCustomerManager(String customerManagerUsername) {
         CustomerRepository custRepo = PersistenceContext.repositories().customers();
-        List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername.toString());
+        List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername);
 
         return match(e -> {
             if (e.getRecruitmentProcess().currentActivePhase().equalsIgnoreCase("screening")) {
@@ -159,14 +159,15 @@ public class InMemoryJobOpeningRepository
 
 
     @Override
-    public Iterable<JobOpening> getPlannedJobOpeningListMatchingCustomerManager(Username customerManagerUsername) {
+    public Iterable<JobOpening> getPlannedJobOpeningListMatchingCustomerManager(String customerManagerUsername) {
         CustomerRepository custRepo = PersistenceContext.repositories().customers();
-        List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername.toString());
+        List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername);
 
         for (Customer customer : customers) {
             return match(e -> customer.customerCode().toString().contains(e.jobReference().getcustomerCode()) && (e.jobOpeningStatus().equals(JobOpeningStatusEnum.NOT_STARTED) || e.jobOpeningStatus().equals(JobOpeningStatusEnum.STARTED)));
         }
         return Collections.emptyList();
     }
+
 
 }
