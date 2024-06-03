@@ -22,10 +22,17 @@ package jobs4u.base.persistence.impl.inmemory;
 
 import eapli.framework.infrastructure.authz.domain.model.Username;
 import eapli.framework.infrastructure.repositories.impl.inmemory.InMemoryDomainRepository;
+import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.candidatemanagement.domain.Candidate;
 import jobs4u.base.candidatemanagement.domain.PhoneNumber;
 import jobs4u.base.candidatemanagement.repository.CandidateRepository;
+import jobs4u.base.customermanagement.domain.Customer;
+import jobs4u.base.customermanagement.repository.CustomerRepository;
+import jobs4u.base.infrastructure.persistence.PersistenceContext;
+import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -53,4 +60,19 @@ public class InMemoryCandidateUserRepository
     public boolean checksIfExits(PhoneNumber number) {
         return matchOne(e -> e.identity().equals(number)).isPresent();
     }
+
+    @Override
+    public Iterable<Candidate> findByActive(boolean b) {
+        CandidateRepository candidateRepository = PersistenceContext.repositories().candidates();
+        List<Candidate> candidatesList= new ArrayList<>();
+        Iterable<Candidate> candidates = candidateRepository.findAll();
+        for (Candidate candidate : candidates) {
+            if (candidate.user().isActive() == b){
+                candidatesList.add(candidate);
+            }
+        }
+        return candidatesList;
+    }
+
+
 }
