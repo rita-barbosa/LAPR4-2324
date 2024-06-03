@@ -15,6 +15,11 @@ public class AnalyseApplicationFilesController {
     JobOpeningManagementService jobOpeningManagementService;
     ApplicationFilesThreadService applicationFilesThreadService;
 
+    public AnalyseApplicationFilesController(){
+        jobOpeningManagementService = new JobOpeningManagementService();
+        applicationFilesThreadService = new ApplicationFilesThreadService();
+    }
+
     public void getAllJobOpenings() {
         //follow shared diagram
     }

@@ -10,13 +10,13 @@ import java.util.Set;
 
 public class ApplicationFilesThreadService {
     public Map<String, Map<String, Integer>> getTop20Words(Set<ApplicationFile> applicationFiles) {
-        List<FileWordCountThread> threads = new ArrayList<FileWordCountThread>();
+        List<Thread> threads = new ArrayList<>();
 
         for (ApplicationFile applicationFile : applicationFiles) {
-            threads.add(new FileWordCountThread());
+            threads.add(new Thread(new FileWordCountThread()));
         }
 
-        for (FileWordCountThread thread : threads) {
+        for (Thread thread : threads) {
             thread.start();
         }
 
