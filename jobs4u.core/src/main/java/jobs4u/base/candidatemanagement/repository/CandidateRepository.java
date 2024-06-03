@@ -16,4 +16,5 @@ public interface CandidateRepository extends DomainRepository<PhoneNumber, Candi
 
     boolean checksIfExits(final PhoneNumber number);
 
+    Iterable<Candidate> findByActive(boolean b);
 }
