@@ -26,14 +26,11 @@ package jobs4u.base.app.user.console.presentation;
 import jobs4u.base.app.common.console.presentation.authz.MyUserMenu;
 import eapli.framework.actions.menu.Menu;
 import eapli.framework.actions.menu.MenuItem;
-import eapli.framework.infrastructure.authz.application.AuthorizationService;
-import eapli.framework.infrastructure.authz.application.AuthzRegistry;
 import eapli.framework.presentation.console.ExitWithMessageAction;
 import eapli.framework.presentation.console.menu.MenuItemRenderer;
 import eapli.framework.presentation.console.menu.MenuRenderer;
 import eapli.framework.presentation.console.menu.VerticalMenuRenderer;
 import jobs4u.base.app.user.console.presentation.jobopeninglist.ListCustomerJobOpeningsAction;
-import jobs4u.base.app.user.console.presentation.sendemail.SendEmailAction;
 
 /**
  * @author Paulo Gandra Sousa
