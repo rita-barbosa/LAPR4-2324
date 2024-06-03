@@ -1,6 +1,7 @@
 package jobs4u.base.persistence.impl.jpa;
 
 import eapli.framework.domain.repositories.TransactionalContext;
+import eapli.framework.infrastructure.authz.domain.model.Username;
 import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
 import eapli.framework.time.domain.model.DateInterval;
 import jakarta.persistence.TemporalType;
@@ -143,7 +144,7 @@ public class JpaJobOpeningRepository
     }
 
     @Override
-    public Iterable<JobOpening> getJobOpeningListMatchingCustomerManager(String customerManagerUsername) {
+    public Iterable<JobOpening> getJobOpeningListMatchingCustomerManager(Username customerManagerUsername) {
         final TypedQuery<JobOpening>
                 q = createQuery("SELECT e \n" +
                         "FROM JobOpening e \n" +
@@ -158,7 +159,7 @@ public class JpaJobOpeningRepository
     }
 
     @Override
-    public Iterable<JobOpening> jobOpeningsInScreeingListOfCustomerManager(String customerManagerUsername) {
+    public Iterable<JobOpening> jobOpeningsInScreeingListOfCustomerManager(Username customerManagerUsername) {
         final TypedQuery<JobOpening>
                 q = createQuery("SELECT e \n" +
                         "FROM JobOpening e \n" +
@@ -170,12 +171,12 @@ public class JpaJobOpeningRepository
                         "    WHERE c.customerManager.username.value = :manager\n" +
                         ")",
                 JobOpening.class);
-        q.setParameter("manager", customerManagerUsername);
+        q.setParameter("manager", customerManagerUsername.toString());
         return q.getResultList();
     }
 
     @Override
-    public Iterable<JobOpening> getPlannedJobOpeningListMatchingCustomerManager(String customerManagerUsername) {
+    public Iterable<JobOpening> getPlannedJobOpeningListMatchingCustomerManager(Username customerManagerUsername) {
         final TypedQuery<JobOpening>
                 q = createQuery("SELECT e \n" +
                         "FROM JobOpening e \n" +
@@ -186,18 +187,18 @@ public class JpaJobOpeningRepository
                         ")\n" +
                         "AND (e.status.statusDescription = 'STARTED' OR e.status.statusDescription = 'NOT_STARTED')",
                 JobOpening.class);
-        q.setParameter("manager", customerManagerUsername);
+        q.setParameter("manager", customerManagerUsername.toString());
         return q.getResultList();
     }
 
     @Override
-    public Iterable<JobOpening> getJobOpeningFromUsername(String username) {
+    public Iterable<JobOpening> getJobOpeningFromUsername(Username username) {
         String query = "SELECT e " +
                 "FROM JobOpening e " +
                 "WHERE e.jobReference.companyCode IN (" +
                 "    SELECT c.code.customerCode " +
                 "    FROM Customer c " +
-                "    WHERE c.customerUser.username.value = :username)" +
+                "    WHERE c.customerUser.username = :username)" +
                 "AND e.status.statusDescription = :status ";
 
         final TypedQuery<JobOpening> q = createQuery(query, JobOpening.class);

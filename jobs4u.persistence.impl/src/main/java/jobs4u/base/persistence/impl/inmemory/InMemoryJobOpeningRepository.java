@@ -126,7 +126,7 @@ public class InMemoryJobOpeningRepository
     }
 
     @Override
-    public Iterable<JobOpening> getJobOpeningListMatchingCustomerManager(String customerManagerUsername) {
+    public Iterable<JobOpening> getJobOpeningListMatchingCustomerManager(Username customerManagerUsername) {
         List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername);
 
         for (Customer customer : customers) {
@@ -136,7 +136,7 @@ public class InMemoryJobOpeningRepository
     }
 
     @Override
-    public Iterable<JobOpening> getJobOpeningFromUsername(String username) {
+    public Iterable<JobOpening> getJobOpeningFromUsername(Username username) {
         List<Customer> customers = custRepo.getCustomersByUsername(username);
         for (Customer customer : customers) {
             return match(e -> customer.customerCode().costumerCode().equals(e.jobReference().getcustomerCode()));
@@ -145,7 +145,7 @@ public class InMemoryJobOpeningRepository
     }
 
     @Override
-    public Iterable<JobOpening> jobOpeningsInScreeingListOfCustomerManager(String customerManagerUsername) {
+    public Iterable<JobOpening> jobOpeningsInScreeingListOfCustomerManager(Username customerManagerUsername) {
         CustomerRepository custRepo = PersistenceContext.repositories().customers();
         List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername);
 
@@ -159,7 +159,7 @@ public class InMemoryJobOpeningRepository
 
 
     @Override
-    public Iterable<JobOpening> getPlannedJobOpeningListMatchingCustomerManager(String customerManagerUsername) {
+    public Iterable<JobOpening> getPlannedJobOpeningListMatchingCustomerManager(Username customerManagerUsername) {
         CustomerRepository custRepo = PersistenceContext.repositories().customers();
         List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername);
 

@@ -152,22 +152,22 @@ public class JobOpeningManagementService {
     }
 
     public Iterable<JobOpeningDTO> jobOpeningsOfCustomerManager(Username customerManagerUsername) {
-        Iterable<JobOpening> list = jobOpeningRepository.getJobOpeningListMatchingCustomerManager(customerManagerUsername.toString());
+        Iterable<JobOpening> list = jobOpeningRepository.getJobOpeningListMatchingCustomerManager(customerManagerUsername);
         return dtoSvc.convertToDTO(list);
     }
 
-    public Iterable<JobOpeningDTO> getJobOpeningFromUsername(String username) {
+    public Iterable<JobOpeningDTO> getJobOpeningFromUsername(Username username) {
         Iterable<JobOpening> list = jobOpeningRepository.getJobOpeningFromUsername(username);
         return dtoSvc.convertToDTO(list);
     }
 
     public Iterable<JobOpeningDTO> plannedJobOpeningsOfCustomerManager(Username customerManagerUsername) {
-        Iterable<JobOpening> list = jobOpeningRepository.getPlannedJobOpeningListMatchingCustomerManager(customerManagerUsername.toString());
+        Iterable<JobOpening> list = jobOpeningRepository.getPlannedJobOpeningListMatchingCustomerManager(customerManagerUsername);
         return dtoSvc.convertToDTO(list);
     }
 
     public Iterable<JobOpeningDTO> jobOpeningsInScreeingListOfCustomerManager(Username customerManagerUsername) {
-        return dtoSvc.convertToDTO(jobOpeningRepository.jobOpeningsInScreeingListOfCustomerManager(customerManagerUsername.toString()));
+        return dtoSvc.convertToDTO(jobOpeningRepository.jobOpeningsInScreeingListOfCustomerManager(customerManagerUsername));
     }
 
 
