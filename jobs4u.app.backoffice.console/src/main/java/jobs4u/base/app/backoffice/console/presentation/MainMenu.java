@@ -202,7 +202,7 @@ public class MainMenu extends AbstractUI {
         final Menu menu = new Menu("Applications >");
         menu.addItem(1, "See Application TOP 20 Used Words List", new AnalyseApplicationFilesAction());
         menu.addItem(2,"Schedule Interview", new ScheduleInterviewAction());
-
+        menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
         return menu;
     }
 
