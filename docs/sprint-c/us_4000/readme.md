@@ -301,6 +301,7 @@ This topic presents the classes with the patterns applied to them along with jus
         assertEquals(map, ApplicationFilesThreadService.getTop20Words(set));
     }
 ````
+
 ````
 @Test
 public void ensureItCountsCorrectly3() {
