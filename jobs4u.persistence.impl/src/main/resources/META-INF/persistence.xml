@@ -35,7 +35,7 @@
         <class>jobs4u.base.recruitmentprocessmanagement.domain.Phase</class>
         <class>jobs4u.base.recruitmentprocessmanagement.domain.PhaseDescription</class>
         <class>jobs4u.base.recruitmentprocessmanagement.domain.PhasePeriod</class>
-        <class>jobs4u.base.recruitmentprocessmanagement.domain.PhaseStatus</class>
+        <class>jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcessStatus</class>
         <class>jobs4u.base.recruitmentprocessmanagement.domain.PhaseType</class>
         <class>jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess</class>
         <class>jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentPeriod</class>
