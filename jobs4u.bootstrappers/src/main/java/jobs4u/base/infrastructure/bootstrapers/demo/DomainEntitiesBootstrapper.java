@@ -517,9 +517,29 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
     private void persistApplications() {
         RequirementAnswer requirementAnswer = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
         RequirementResult requirementResult =  RequirementResult.valueOf(true);
-        ApplicationFile file = new ApplicationFile(new File("example.txt"));
-        Set<ApplicationFile> files = new HashSet<>();
-        files.add(file);
+
+        ApplicationFile file1 = new ApplicationFile(new File("output/candidate1/1-big-file-1.txt"));
+        ApplicationFile file2 = new ApplicationFile(new File("output/candidate1/1-candidate-data.txt"));
+        ApplicationFile file3 = new ApplicationFile(new File("output/candidate1/1-cv.txt"));
+        ApplicationFile file4 = new ApplicationFile(new File("output/candidate1/1-email.txt"));
+        ApplicationFile file5 = new ApplicationFile(new File("output/candidate1/1-report-1.txt"));
+        Set<ApplicationFile> files1 = new HashSet<>();
+        files1.add(file1);
+        files1.add(file2);
+        files1.add(file3);
+        files1.add(file4);
+        files1.add(file5);
+
+        ApplicationFile file6 = new ApplicationFile(new File("output/candidate2/2-letter.txt"));
+        ApplicationFile file7 = new ApplicationFile(new File("output/candidate2/2-candidate-data.txt"));
+        ApplicationFile file8 = new ApplicationFile(new File("output/candidate2/2-cv.txt"));
+        ApplicationFile file9 = new ApplicationFile(new File("output/candidate2/2-email.txt"));
+        Set<ApplicationFile> files2 = new HashSet<>();
+        files2.add(file6);
+        files2.add(file7);
+        files2.add(file8);
+        files2.add(file9);
+
         Date date = new Date(2024 - 1900, Calendar.JANUARY, 5);
         Interview interview = new Interview("interview1", new Date(2024 - 1900, Calendar.MARCH, 2),
                 new InterviewResult("passed", 50, "the grade is above 50"), "plugins-config-file/interview/r-answer-1.txt");
@@ -530,18 +550,12 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
 
         RequirementAnswer requirementAnswer1 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
         RequirementResult requirementResult1 =  RequirementResult.valueOf(true);
-        ApplicationFile file1 = new ApplicationFile(new File("example1.txt"));
-        Set<ApplicationFile> files1 = new HashSet<>();
-        files1.add(file1);
         Date date1 = new Date(2024 - 1900, Calendar.JANUARY, 6);
         Interview interview1 = new Interview("interview1", new Date(2024 - 1900, Calendar.MARCH, 3),
                 new InterviewResult("passed", 60, "the grade is above 50"), "plugins-config-file/interview/r-answer-1.txt");
 
         RequirementAnswer requirementAnswer2 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
         RequirementResult requirementResult2 =  RequirementResult.valueOf(true);
-        ApplicationFile file2 = new ApplicationFile(new File("example2.txt"));
-        Set<ApplicationFile> files2 = new HashSet<>();
-        files2.add(file2);
         Date date2 = new Date(2024 - 1900, Calendar.JANUARY, 8);
         Interview interview2 = new Interview("interview2", new Date(2024 - 1900, Calendar.MARCH, 4),
                 new InterviewResult("passed", 80, "the grade is above 50"), "plugins-config-file/interview/r-answer-1.txt");
@@ -549,37 +563,40 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
 
         RequirementAnswer requirementAnswer3 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
         RequirementResult requirementResult3 =  RequirementResult.valueOf(true);
-        ApplicationFile file3 = new ApplicationFile(new File("example3.txt"));
+        ApplicationFile file10 = new ApplicationFile(new File("example3.txt"));
         Set<ApplicationFile> files3 = new HashSet<>();
-        files3.add(file3);
+        files3.add(file10);
         Date date3 = new Date(2024 - 1900, Calendar.JANUARY, 10);
         Interview interview3 = new Interview("interview3", new Date(2024 - 1900, Calendar.MARCH, 5),
                 new InterviewResult("failed", 20, "the grade is below 50"), "plugins-config-file/interview/r-answer-1.txt");
 
         RequirementAnswer requirementAnswer4 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
         RequirementResult requirementResult4 =  RequirementResult.valueOf(true);
-        ApplicationFile file4 = new ApplicationFile(new File("example4.txt"));
+        ApplicationFile file11 = new ApplicationFile(new File("example4.txt"));
         Set<ApplicationFile> files4 = new HashSet<>();
-        files4.add(file4);
+        files4.add(file11);
         Date date4 = new Date(2024 - 1900, Calendar.JANUARY, 12);
         Interview interview4 = new Interview("interview4", new Date(2024 - 1900, Calendar.MARCH, 6),
                 new InterviewResult("passed", 88, "the grade is above 50"), "plugins-config-file/interview/r-answer-1.txt");
 
+        ApplicationFile file12 = new ApplicationFile(new File("example5.txt"));
+        Set<ApplicationFile> files5 = new HashSet<>();
+        files5.add(file12);
 
         Application application, application1, application2, application3, application4;
         if (opCandidate.isPresent()) {
             Candidate candidate = opCandidate.get();
-            application = new Application(requirementAnswer, requirementResult, files, date, candidate, interview);
-            application1 = new Application(requirementAnswer1, requirementResult1, files1, date1, candidate, interview1);
-            application2 = new Application(requirementAnswer2, requirementResult2, files2, date2, candidate, interview2);
-            application3 = new Application(requirementAnswer3, requirementResult3, files3, date3, candidate, interview3);
-            application4 = new Application(requirementAnswer4, requirementResult4, files4, date4, candidate, interview4);
+            application = new Application(requirementAnswer, requirementResult, files1, date, candidate, interview);
+            application1 = new Application(requirementAnswer1, requirementResult1, files2, date1, candidate, interview1);
+            application2 = new Application(requirementAnswer2, requirementResult2, files3, date2, candidate, interview2);
+            application3 = new Application(requirementAnswer3, requirementResult3, files4, date3, candidate, interview3);
+            application4 = new Application(requirementAnswer4, requirementResult4, files5, date4, candidate, interview4);
         } else {
-            application = new Application(requirementAnswer, requirementResult, files, date, interview);
-            application1 = new Application(requirementAnswer1, requirementResult1, files1, date1, interview1);
-            application2 = new Application(requirementAnswer2, requirementResult2, files2, date2, interview2);
-            application3 = new Application(requirementAnswer3, requirementResult3, files3, date3, interview3);
-            application4 = new Application(requirementAnswer4, requirementResult4, files4, date4, interview4);
+            application = new Application(requirementAnswer, requirementResult, files1, date, interview);
+            application1 = new Application(requirementAnswer1, requirementResult1, files2, date1, interview1);
+            application2 = new Application(requirementAnswer2, requirementResult2, files3, date2, interview2);
+            application3 = new Application(requirementAnswer3, requirementResult3, files4, date3, interview3);
+            application4 = new Application(requirementAnswer4, requirementResult4, files5, date4, interview4);
         }
 
 
