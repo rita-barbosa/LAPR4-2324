@@ -346,11 +346,336 @@ public void ensureItCountsCorrectly3() {
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+### AnalyzeApplicationFilesUI
+````
+package jobs4u.base.app.backoffice.console.presentation.applications;
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+import eapli.framework.presentation.console.AbstractUI;
+import eapli.framework.presentation.console.SelectWidget;
+import jobs4u.base.applicationmanagement.application.AnalyseApplicationFilesController;
+import jobs4u.base.applicationmanagement.domain.ApplicationFile;
+import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
+import jobs4u.base.candidatemanagement.dto.CandidateDTO;
+import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.List;
+import java.util.Map;
+
+public class AnalyseApplicationFilesUI extends AbstractUI {
+
+    AnalyseApplicationFilesController controller = new AnalyseApplicationFilesController();
+
+    @Override
+    protected boolean doShow() {
+        CandidateDTO candidateDTO = showAndSelectCandidate();
+
+        System.out.println("----------------------- INFO FROM CANDIDATE -----------------------");
+        System.out.println("NAME : "+candidateDTO.getCandidateName());
+        System.out.println("PHONE NUMBER : "+candidateDTO.getCandidatePhoneNumber());
+        System.out.println("EMAIL : "+candidateDTO.getCandidateEmail());
+        System.out.println("--------------------------- APPLICATIONS ---------------------------");
+
+        Iterable<ApplicationDTO> list = controller.getAllApplicationsDTOByCandidate(candidateDTO.getCandidatePhoneNumber());
+        int i = 0;
+
+        for (ApplicationDTO applicationDTO : list){
+            System.out.printf("--------------------------------- %d ---------------------------------\n", i+1);
+            System.out.println("ID : "+applicationDTO.getId());
+            System.out.println("CANDIDATE : "+applicationDTO.getCandidate());
+            System.out.println("STATUS : "+applicationDTO.getApplicationStatus());
+            System.out.printf("FILES : ");
+            for (ApplicationFile applicationFile : applicationDTO.getApplicationFiles()){
+                System.out.printf(applicationFile.getApplicationFile()+" | ");
+            }
+            System.out.println();
+            Map<String, Pair<Integer, List<String>>> top20words = controller.analyzeFilesFromApplication(applicationDTO);
+            displayTop20(top20words);
+            i++;
+        }
+
+        return true;
+    }
+
+    private void displayTop20(Map<String, Pair<Integer, List<String>>> top20words) {
+        int orderNumber = 1;
+
+        System.out.println("--------------------------- TOP 20 WORDS ---------------------------");
+        for (Map.Entry<String, Pair<Integer, List<String>>> entry : top20words.entrySet()) {
+            System.out.printf("#%d [WORD] '%s'", orderNumber, entry.getKey());
+            System.out.printf(" > [WORD COUNT] %d\n  -> [FILES] ", entry.getValue().getKey());
+            for (String filename : entry.getValue().getRight()) {
+                System.out.printf("%s | ", filename);
+            }
+            System.out.println("\n--------------------------------------------------------------------");
+            ++orderNumber;
+        }
+    }
+
+    private CandidateDTO showAndSelectCandidate() {
+        SelectWidget<CandidateDTO> candidateDTOSelectWidget = new SelectWidget<>("Select a Candidate",
+                controller.getAllCandidatesDTO());
+        candidateDTOSelectWidget.show();
+        return candidateDTOSelectWidget.selectedElement();
+    }
+
+    @Override
+    public String headline() {
+        return "Top 20 Used Words";
+    }
+
+}
+````
+
+### AnalyzeApplicationFilesController
+````
+package jobs4u.base.applicationmanagement.application;
+
+import eapli.framework.infrastructure.authz.application.AuthorizationService;
+import eapli.framework.infrastructure.authz.application.AuthzRegistry;
+import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
+import jobs4u.base.candidatemanagement.application.CandidateManagementService;
+import jobs4u.base.candidatemanagement.dto.CandidateDTO;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.*;
+
+public class AnalyseApplicationFilesController {
+
+    AuthorizationService authorizationService;
+    ApplicationManagementService applicationManagementService;
+    ApplicationFilesThreadService applicationFilesThreadService;
+    CandidateManagementService candidateManagementService;
+
+    public AnalyseApplicationFilesController() {
+        candidateManagementService = new CandidateManagementService();
+        applicationFilesThreadService = new ApplicationFilesThreadService();
+        authorizationService = AuthzRegistry.authorizationService();
+        applicationManagementService = new ApplicationManagementService();
+    }
+
+
+    public Map<String, Pair<Integer, List<String>>> analyzeFilesFromApplication(ApplicationDTO application) {
+        return applicationFilesThreadService.getTop20Words(applicationManagementService.getApplicationWithId(application.getId()).get().allFiles());
+    }
+
+    public Iterable<CandidateDTO> getAllCandidatesDTO() {
+        return candidateManagementService.getCandidatesListDTO();
+    }
+
+    public Iterable<ApplicationDTO> getAllApplicationsDTOByCandidate(String candidatePhoneNumber) {
+        return applicationManagementService.getAllApplicationsThatHaveCandidate(candidatePhoneNumber);
+    }
+}
+````
+
+### ApplicationFilesThreadService
+````
+package jobs4u.base.applicationmanagement.application;
+
+import jobs4u.base.applicationmanagement.domain.Application;
+import jobs4u.base.applicationmanagement.domain.ApplicationFile;
+import jobs4u.base.applicationmanagement.domain.FileWordCountThread;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.*;
+
+//TODO CHANGE PRINT STACKTRACE
+public class ApplicationFilesThreadService {
+
+    static Map<String, Map<String, Integer>> map = new TreeMap<>();
+
+    public static Map<String, Pair<Integer, List<String>>> getTop20Words(Set<ApplicationFile> applicationFiles) {
+        map.clear();
+        List<Thread> threads = new ArrayList<>();
+
+        for (ApplicationFile applicationFile : applicationFiles) {
+            threads.add(new Thread(new FileWordCountThread(applicationFile)));
+        }
+
+        for (Thread thread : threads) {
+            thread.start();
+        }
+
+        try {
+            for (Thread thread : threads) {
+                thread.join();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Map<String, Map<String, Integer>> newMap = map;
+        return sortDescendingTop20Words(newMap);
+    }
+
+    private static Map<String, Pair<Integer, List<String>>> sortDescendingTop20Words(Map<String, Map<String, Integer>> top20Words) {
+        Map<String, Pair<Integer, List<String>>> processedWords = processResult(top20Words);
+
+        List<Map.Entry<String, Pair<Integer, List<String>>>> entryList = new ArrayList<>(processedWords.entrySet());
+        entryList.sort((e1, e2) -> e2.getValue().getLeft().compareTo(e1.getValue().getLeft()));
+
+        Map<String, Pair<Integer, List<String>>> sortedTop20Words = new LinkedHashMap<>();
+
+        //if there's less than 20 entries that it only shows that
+        int limit = Math.min(entryList.size(), 20);
+        for (int i = 0; i < limit; i++) {
+            Map.Entry<String, Pair<Integer, List<String>>> entry = entryList.get(i);
+            sortedTop20Words.put(entry.getKey(), entry.getValue());
+        }
+
+        return sortedTop20Words;
+    }
+
+    private static Map<String, Pair<Integer, List<String>>> processResult(Map<String, Map<String, Integer>> top20Words) {
+        Map<String, Pair<Integer, List<String>>> processedWords = new HashMap<>();
+        int wordCount;
+
+        for (Map.Entry<String, Map<String, Integer>> entry : top20Words.entrySet()) {
+            wordCount = 0;
+            Map<String, Integer> entryMap = entry.getValue();
+            List<String> filenames = new ArrayList<>();
+            for (Map.Entry<String, Integer> word : entryMap.entrySet()) {
+                wordCount += word.getValue();
+                filenames.add(word.getKey());
+            }
+            processedWords.put(entry.getKey(), Pair.of(wordCount, filenames));
+
+
+        }
+        return processedWords;
+    }
+
+    public synchronized static void addEntry(Map<String, Map<String, Integer>> map1) {
+        for (String file : map1.keySet()) {
+            for (String word : map1.get(file).keySet()) {
+                if(!map.keySet().contains(word)) {
+                    Map<String, Integer> map2 = new HashMap<>();
+                    map2.put(file, map1.get(file).get(word));
+                    map.put(word, map2);
+                }else{
+                    map.get(word).put(file, map1.get(file).get(word));
+                }
+            }
+        }
+
+    }
+}
+````
+
+### FileWordCountThread
+````
+package jobs4u.base.applicationmanagement.domain;
+
+import jobs4u.base.applicationmanagement.application.ApplicationFilesThreadService;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.*;
+
+public class FileWordCountThread implements Runnable {
+    //----------------------------------------------------------
+    //---------------------- ATTRIBUTES ------------------------
+    private File file;
+    private List<String> unwantedCharacters = new ArrayList<>();
+
+
+    //----------------------------------------------------------
+    //--------------------- CONSTRUCTOR ------------------------
+    public FileWordCountThread(ApplicationFile applicationFile) {
+        this.file = applicationFile.getApplicationFile();
+    }
+
+    //----------------------------------------------------------
+    //------------------------- RUN ----------------------------
+    @Override
+    public void run() {
+        try {
+            //------------------------------------------------------
+            //---------------- HELPFUL VARIABLES -------------------
+
+            //   FILE        WORD    NUMBER OF TIMES IT APPEARED
+            Map<String, Map<String, Integer>> map = new TreeMap<>();
+
+            //  WORD     NUMBER OF TIMES IT APPEARED
+            Map<String, Integer> map1 = new HashMap<>();
+
+            //USED TO MANIPULATE THE FILE (READ)
+            Scanner Reader = new Scanner(file);
+
+            //ALL UNWANTED CHARACTERS THAT WILL BE TAKEN OUT TO GET ONLY WORDS
+            String unwantedCharacter1 = "\n";
+            unwantedCharacters.add(unwantedCharacter1);
+            String unwantedCharacter2 = ",";
+            unwantedCharacters.add(unwantedCharacter2);
+            String unwantedCharacter3 = "!";
+            unwantedCharacters.add(unwantedCharacter3);
+            String unwantedCharacter4 = ".";
+            unwantedCharacters.add(unwantedCharacter4);
+            String unwantedCharacter5 = "\"";
+            unwantedCharacters.add(unwantedCharacter5);
+            String unwantedCharacter6 = "*";
+            unwantedCharacters.add(unwantedCharacter6);
+            String unwantedCharacter7 = "-";
+            unwantedCharacters.add(unwantedCharacter7);
+            String unwantedCharacter8 = "\r";
+            unwantedCharacters.add(unwantedCharacter8);
+            String unwantedCharacter9 = "\t";
+            unwantedCharacters.add(unwantedCharacter9);
+
+            //------------------------------------------------------
+            //---------------- READING THE FILE --------------------
+            while (Reader.hasNextLine()) {
+                String data = Reader.nextLine();
+
+                //IF THE LINE IS EMPTY, SKIP IT
+                if (data.isBlank()) {
+                    continue;
+                }
+
+                //TAKE ALL UNWANTED CHARACTERS AND LEAVE ONLY THE ACTUAL WORDS
+                for (String unwantedCharacter : unwantedCharacters) {
+                    if (data.contains(unwantedCharacter)) {
+                        data = data.replace(unwantedCharacter, "");
+                    }
+                }
+
+                //SPLIT THE STRING INTO ONLY WORDS
+                String[] data1 = data.split(" ");
+
+                //FOR EVERY WORD IN DATA CHECKS IF IT ALREADY EXISTS IN THE MAP
+                //  IF IT EXISTS, UPS THE NUMBER OF TIMES IT APPEARS
+                //  IF IT DOESN'T, ADDS THE ENTRY TO THE MAP
+                for (String word : data1) {
+                    if(!word.equals("")) {
+                        if (map1.keySet().contains(word.toLowerCase())) {
+                            map1.replace(word.toLowerCase(), map1.get(word.toLowerCase()), map1.get(word.toLowerCase()) + 1);
+                        } else {
+                            map1.put(word.toLowerCase(), 1);
+                        }
+                    }
+                }
+
+            }
+
+            //PUTS THE ENTRY IN THE MAP RELATED TO THE FILE BEING WORKED ON BY THIS THREAD
+            map.put(file.getName(), map1);
+
+            //ADDS THE ENTRY TO THE SHARED MAP
+            ApplicationFilesThreadService.addEntry(map);
+
+            //CLOSES THE FILE
+            Reader.close();
+        } catch (
+                FileNotFoundException e) {
+            System.out.println("An error has occurred.");
+            e.printStackTrace();
+        }
+
+
+    }
+}
+````
 
 ## 6. Integration/Demonstration
 
