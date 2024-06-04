@@ -45,6 +45,7 @@ import jobs4u.base.app.backoffice.console.presentation.operator.RegisterJobOpeni
 import jobs4u.base.app.backoffice.console.presentation.recruitmentprocess.SetupRecruitmentProcessAction;
 import jobs4u.base.app.backoffice.console.presentation.requirementspecification.SelectRequirementSpecificationAction;
 import jobs4u.base.app.backoffice.console.presentation.languageengineer.RegisterPluginAction;
+import jobs4u.base.app.backoffice.console.presentation.requirementspecification.UploadRequirementAnswersUI;
 import jobs4u.base.app.backoffice.console.presentation.requirementspecification.VerifyRequirementAction;
 import jobs4u.base.app.common.console.presentation.authz.MyUserMenu;
 import jobs4u.base.usermanagement.domain.BaseRoles;
@@ -211,6 +212,7 @@ public class MainMenu extends AbstractUI {
     private Menu buildOperatorPluginMenu() {
         final Menu menu = new Menu("Plugins >");
         menu.addItem(1, "Generate and export Requirement Specification Template", new GenerateRequirementsTemplateFileUI()::show);
+        menu.addItem(2, "Import Requirement Answer Files", new UploadRequirementAnswersUI()::show);
         return menu;
     }
 

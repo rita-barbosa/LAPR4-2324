@@ -427,6 +427,9 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
             recruitmentProcessRepository.save(recruitmentProcessList.get(i));
         }
 
+        JobOpening jobOpening = jobOpenings.get(1);
+        jobOpening.updateStatusToStarted();
+        jobOpeningRepository.save(jobOpening);
 
         for (int j = 3; j < 6; j++) {
             jobOpenings.get(j).addRecruitmentProcess(recruitmentProcessList.get(j));
@@ -559,16 +562,17 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         Date date2 = new Date(2024 - 1900, Calendar.JANUARY, 8);
         Interview interview2 = new Interview("interview2", new Date(2024 - 1900, Calendar.MARCH, 4),
                 new InterviewResult("passed", 80, "the grade is above 50"), "plugins-config-file/interview/r-answer-1.txt");
-
-
         RequirementAnswer requirementAnswer3 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
         RequirementResult requirementResult3 =  RequirementResult.valueOf(true);
         ApplicationFile file10 = new ApplicationFile(new File("example3.txt"));
         Set<ApplicationFile> files3 = new HashSet<>();
         files3.add(file10);
+
+
         Date date3 = new Date(2024 - 1900, Calendar.JANUARY, 10);
         Interview interview3 = new Interview("interview3", new Date(2024 - 1900, Calendar.MARCH, 5),
                 new InterviewResult("failed", 20, "the grade is below 50"), "plugins-config-file/interview/r-answer-1.txt");
+
 
         RequirementAnswer requirementAnswer4 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
         RequirementResult requirementResult4 =  RequirementResult.valueOf(true);
@@ -578,12 +582,22 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         Date date4 = new Date(2024 - 1900, Calendar.JANUARY, 12);
         Interview interview4 = new Interview("interview4", new Date(2024 - 1900, Calendar.MARCH, 6),
                 new InterviewResult("passed", 88, "the grade is above 50"), "plugins-config-file/interview/r-answer-1.txt");
-
         ApplicationFile file12 = new ApplicationFile(new File("example5.txt"));
         Set<ApplicationFile> files5 = new HashSet<>();
         files5.add(file12);
 
-        Application application, application1, application2, application3, application4;
+
+        RequirementAnswer requirementAnswer5 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
+        RequirementResult requirementResult5 =  RequirementResult.valueOf(true);
+        ApplicationFile file13 = new ApplicationFile(new File("example5.txt"));
+        Set<ApplicationFile> files6 = new HashSet<>();
+        files6.add(file13);
+        Date date5 = new Date(2024 - 1900, Calendar.JANUARY, 12);
+        Interview interview5 = new Interview("interview5", new Date(2024 - 1900, Calendar.MARCH, 6),
+                new InterviewResult("passed", 75, "the grade is above 50"), "plugins-config-file/interview/r-answer-1.txt");
+
+
+        Application application, application1, application2, application3, application4, application5;
         if (opCandidate.isPresent()) {
             Candidate candidate = opCandidate.get();
             application = new Application(requirementAnswer, requirementResult, files1, date, candidate, interview);
@@ -591,12 +605,14 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
             application2 = new Application(requirementAnswer2, requirementResult2, files3, date2, candidate, interview2);
             application3 = new Application(requirementAnswer3, requirementResult3, files4, date3, candidate, interview3);
             application4 = new Application(requirementAnswer4, requirementResult4, files5, date4, candidate, interview4);
+            application5 = new Application(requirementAnswer5, requirementResult5, files6, date5, candidate, interview5);
         } else {
             application = new Application(requirementAnswer, requirementResult, files1, date, interview);
             application1 = new Application(requirementAnswer1, requirementResult1, files2, date1, interview1);
             application2 = new Application(requirementAnswer2, requirementResult2, files3, date2, interview2);
             application3 = new Application(requirementAnswer3, requirementResult3, files4, date3, interview3);
             application4 = new Application(requirementAnswer4, requirementResult4, files5, date4, interview4);
+            application5 = new Application(requirementAnswer5, requirementResult5, files6, date5, interview5);
         }
 
 
@@ -618,6 +634,10 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         application4.applicationStatus().updateStatusDescriptionAsACCEPTED();
         applicationsSet3.add(application4);
 
+        Set<Application> applicationsSet4 = new HashSet<>();
+        application5.applicationStatus().updateStatusDescriptionAsACCEPTED();
+        applicationsSet4.add(application5);
+
 
         List<JobOpening> jobs = new ArrayList<>();
         for (JobOpening job : jobOpeningRepository.findAll()) {
@@ -626,6 +646,9 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
 
         jobs.get(0).setApplications(applicationsSet);
         jobOpeningRepository.save(jobs.get(0));
+
+        jobs.get(1).setApplications(applicationsSet4);
+        jobOpeningRepository.save(jobs.get(1));
 
         jobs.get(2).setApplications(applicationsSet1);
         jobOpeningRepository.save(jobs.get(2));

@@ -56,6 +56,18 @@ public class JpaApplicationRepository
         return q.getResultList();
     }
 
+
+    @Override
+    public Application getApplicationFromDTO(ApplicationDTO applicationDTO) {
+        TypedQuery<Application>
+                q = createQuery("SELECT a \n" +
+                        "FROM Application a \n" +
+                        "WHERE a.id = :dtoId",
+                Application.class);
+        q.setParameter("dtoId", applicationDTO.getId());
+        return q.getSingleResult();
+    }
+
     @Override
     public Iterable<Application> applicationsFromCandidate(String phoneNumber) {
         PhoneNumber number = new PhoneNumber("+351", phoneNumber);

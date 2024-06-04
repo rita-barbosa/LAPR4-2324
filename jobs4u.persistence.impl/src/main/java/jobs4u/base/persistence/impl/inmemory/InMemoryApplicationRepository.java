@@ -3,9 +3,8 @@ package jobs4u.base.persistence.impl.inmemory;
 
 import eapli.framework.infrastructure.repositories.impl.inmemory.InMemoryDomainRepository;
 import jobs4u.base.applicationmanagement.domain.Application;
+import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
 import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
-import jobs4u.base.customermanagement.domain.Customer;
-import jobs4u.base.customermanagement.repository.CustomerRepository;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatus;
@@ -13,10 +12,7 @@ import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatusEnum;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class InMemoryApplicationRepository
         extends InMemoryDomainRepository<Application, Long>
@@ -47,5 +43,14 @@ public class InMemoryApplicationRepository
     @Override
     public Iterable<Application> applicationsFromCandidate(String phoneNumber) {
         return match(e -> e.candidate().phoneNumber().number().equals(phoneNumber));
+    }
+
+    @Override
+    public Application getApplicationFromDTO(ApplicationDTO applicationDTO) {
+        Optional<Application> optionalApplication = matchOne(e -> e.identity().equals(applicationDTO.getId()));
+        if (optionalApplication.isPresent()) {
+            return optionalApplication.get();
+        }
+        throw new NoSuchElementException("No application with id " + applicationDTO.getId() + " found");
     }
 }
