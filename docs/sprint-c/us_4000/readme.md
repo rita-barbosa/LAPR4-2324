@@ -675,6 +675,7 @@ public class FileWordCountThread implements Runnable {
 
     }
 }
+
 ````
 
 ## 6. Integration/Demonstration
