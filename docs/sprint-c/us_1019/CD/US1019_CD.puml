@@ -107,17 +107,17 @@ class CandidateDTOService <<Service>> {
 '}
 
 ' Associations
-CustomerManager ..> ListCandidatesController
-ListCandidatesUI ..> ListCandidatesController
-ListCandidatesController ..> JobOpeningRepository
-ListCandidatesController ..> ApplicationRepository
-ListCandidatesController ..> CandidateRepository
-ListCandidatesController ..> ApplicationManagementService
-ListCandidatesController ..> JobOpeningManagementService
-ListCandidatesController ..> JobOpeningDTOService
-ListCandidatesController ..> ApplicationDTOService
-ListCandidatesController ..> CandidateManagementService
-ListCandidatesController ..> CandidateDTOService
+CustomerManager ..> ListOrderedCandidatesController
+ListOrderedCandidatesUI ..> ListOrderedCandidatesController
+ListOrderedCandidatesController ..> JobOpeningRepository
+ListOrderedCandidatesController ..> ApplicationRepository
+ListOrderedCandidatesController ..> CandidateRepository
+ListOrderedCandidatesController ..> ApplicationManagementService
+ListOrderedCandidatesController ..> JobOpeningManagementService
+ListOrderedCandidatesController ..> JobOpeningDTOService
+ListOrderedCandidatesController ..> ApplicationDTOService
+ListOrderedCandidatesController ..> CandidateManagementService
+ListOrderedCandidatesController ..> CandidateDTOService
 
 ' Domain Layer
 Interview "0..1" --> "*" Application : characterizes
@@ -141,6 +141,6 @@ CandidateRepository <.. Candidate : persisted by
 
 
 ' Authentication
-AuthenticationService ..> ListCandidatesController
+AuthenticationService ..> ListOrderedCandidatesController
 
 @enduml
