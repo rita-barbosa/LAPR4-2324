@@ -2,6 +2,7 @@ package jobs4u.base.persistence.impl.jpa;
 
 import eapli.framework.domain.repositories.TransactionalContext;
 import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
+
 import jakarta.persistence.TypedQuery;
 import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
