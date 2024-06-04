@@ -25,6 +25,7 @@ package jobs4u.base.app.backoffice.console.presentation;
 
 import jobs4u.base.Application;
 import jobs4u.base.app.backoffice.console.presentation.applications.AnalyseApplicationFilesAction;
+import jobs4u.base.app.backoffice.console.presentation.applications.ScheduleInterviewAction;
 import jobs4u.base.app.backoffice.console.presentation.authz.AddUserUI;
 import jobs4u.base.app.backoffice.console.presentation.authz.EnableDisableUserAction;
 import jobs4u.base.app.backoffice.console.presentation.authz.ListUsersAction;
@@ -200,6 +201,8 @@ public class MainMenu extends AbstractUI {
     private Menu buildCustomerManagerApplicationMenu() {
         final Menu menu = new Menu("Applications >");
         menu.addItem(1, "See Application TOP 20 Used Words List", new AnalyseApplicationFilesAction());
+        menu.addItem(2,"Schedule Interview", new ScheduleInterviewAction());
+
         return menu;
     }
 
