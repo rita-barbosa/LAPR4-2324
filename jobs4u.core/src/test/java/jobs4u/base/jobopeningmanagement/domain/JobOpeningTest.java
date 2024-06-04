@@ -1,6 +1,7 @@
 package jobs4u.base.jobopeningmanagement.domain;
 
 import eapli.framework.time.util.Calendars;
+import jobs4u.base.applicationmanagement.domain.*;
 import jobs4u.base.contracttypemanagement.dto.ContractTypeDTO;
 import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
 import jobs4u.base.recruitmentprocessmanagement.domain.Phase;
@@ -11,11 +12,10 @@ import jobs4u.base.workmodemanagement.dto.WorkModeDTO;
 import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 import org.junit.Test;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,6 +31,16 @@ public class JobOpeningTest {
     String streetNumber = "14th";
     String zipcode = "1234-234";
     Address address = new Address(streetName, city, district, streetNumber, zipcode);
+
+    RequirementAnswer requirementAnswer = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
+    RequirementResult requirementResult =  RequirementResult.valueOf(true);
+    ApplicationFile file = new ApplicationFile(new File("example.txt"));
+    Set<ApplicationFile> files = new HashSet<>();
+
+    Date date = new Date(2024 - 1900, Calendar.JANUARY, 12);
+    Interview interview = new Interview("interview", new Date(2024 - 1900, Calendar.MARCH, 6),
+            new InterviewResult("passed", 88, "the grade is above 50"), "plugins-config-file/interview/r-answer-1.txt");
+
 
     public RequirementSpecification jobOpeningRequirement() {
         String name = "Senior Developer";
@@ -192,5 +202,25 @@ public class JobOpeningTest {
         opening.addRecruitmentProcess(recruitmentProcess);
 
         opening.changeInterviewModel(new InterviewModel("Test.jar", "Test", "test.new.plugin.Classe", "plugins-config-file/requirement/r-config-1.txt","test.new.Classe"));
+    }
+
+    @Test
+    public void ensureJobOpeningHasInterview(){
+        files.add(file);
+        Application application = new Application(requirementAnswer, requirementResult, files, date, interview);
+
+        JobOpening opening = new JobOpening("Senior Dev", contractType, workMode, address, 15,
+                "description", jobOpeningRequirement(), jobReference);
+
+        Set<Application> applicationsSet = new HashSet<>();
+        application.applicationStatus().updateStatusDescriptionAsACCEPTED();
+        applicationsSet.add(application);
+
+        opening.setApplications(applicationsSet);
+
+        for (Application a : opening.getApplications()) {
+            assertEquals(a.interview(), interview);
+        }
+
     }
 }
