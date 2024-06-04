@@ -17,6 +17,7 @@ public class RequirementAnswer implements ValueObject {
 
     protected RequirementAnswer(String requirementAnswerFile) {
         Preconditions.noneNull(requirementAnswerFile);
+        Preconditions.nonEmpty(requirementAnswerFile);
         Preconditions.matches(Pattern.compile("([a-zA-Z]:)?(\\\\\\\\[a-zA-Z0-9_.-]+)*(\\\\\\\\[a-zA-Z0-9_.-]+)?"), requirementAnswerFile, "The provided filepath is not correct.");
 
         File uploaded = new File(requirementAnswerFile);
@@ -32,11 +33,11 @@ public class RequirementAnswer implements ValueObject {
         return requirementAnswerFile;
     }
 
-    public String name(){
+    public String name() {
         return filename;
     }
 
-    public String filepath(){
+    public String filepath() {
         return this.filepath;
     }
 
