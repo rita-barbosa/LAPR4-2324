@@ -402,7 +402,7 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
         String activeSinceDate = "";
 
-        if (recruitmentProcess.getRecruitmentPeriod().getStartDate() != null)  {
+        if (recruitmentProcess != null)  {
             activeSinceDate =  dateFormatter.format(recruitmentProcess.getRecruitmentPeriod().getStartDate().getTime());
         }
 

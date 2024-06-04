@@ -9,8 +9,6 @@ import java.util.List;
 
 public class JobOpeningDTOService {
 
-
-
     public Iterable<JobOpeningDTO> convertToDTO(Iterable<JobOpening> jobOpenings) {
         Preconditions.noneNull(jobOpenings);
 
