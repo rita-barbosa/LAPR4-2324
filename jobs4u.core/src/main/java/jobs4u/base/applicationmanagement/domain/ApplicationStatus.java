@@ -18,14 +18,14 @@ public class ApplicationStatus implements ValueObject {
         this.statusDescription = String.valueOf(enumVal);
     }
 
-    public void setStatusDescriptionAsNOT_CHECKED(){
+    public void updateStatusDescriptionAsNOT_CHECKED(){
         this.statusDescription = String.valueOf(ApplicationStatusEnum.NOT_CHECKED);
     }
-    public void setStatusDescriptionAsACCEPTED(){
+    public void updateStatusDescriptionAsACCEPTED(){
         this.statusDescription = String.valueOf(ApplicationStatusEnum.ACCEPTED);
     }
 
-    public void setStatusDescriptionAsREJECTED(){
+    public void updateStatusDescriptionAsREJECTED(){
         this.statusDescription = String.valueOf(ApplicationStatusEnum.REJECTED);
     }
 

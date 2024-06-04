@@ -1,16 +1,14 @@
 package jobs4u.base.applicationmanagement.application;
 
+import eapli.framework.infrastructure.authz.domain.model.Username;
 import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.applicationmanagement.domain.ApplicationFile;
-import jobs4u.base.applicationmanagement.domain.RequirementAnswer;
-import jobs4u.base.applicationmanagement.domain.RequirementResult;
 import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
 import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
 import jobs4u.base.candidatemanagement.domain.Candidate;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,16 +22,13 @@ public class ApplicationManagementService {
 
     public Application registerApplication(Set<ApplicationFile> files,
                                            Date applicationDate, Candidate candidate){
-        Application application = new Application(files, applicationDate, candidate);
-
-        return application;
+        return new Application(files, applicationDate, candidate);
     }
 
     public Application registerApplicationWithoutCandidate(Set<ApplicationFile> files,
                                            Date applicationDate){
-        Application application = new Application(files, applicationDate);
 
-        return application;
+        return new Application(files, applicationDate);
     }
 
     public List<ApplicationDTO> getAllApplicationsThatHaveCandidate(Candidate candidate){
@@ -56,4 +51,7 @@ public class ApplicationManagementService {
         return applicationDTO;
     }
 
+    public List<ApplicationDTO> getApplicationsListByUsername(Username username) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
