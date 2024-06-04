@@ -50,8 +50,6 @@ void copy_files(int n, char *input_directory, char *output_directory)
                 perror("execlp");
                 exit(EXIT_FAILURE);
             }
-
-            printf("«----» [ File %s copied to %s ] «----»\n", entry->d_name, subdirectory);
         }
     }
 
