@@ -28,7 +28,6 @@ end box
 
 box Plugin #LightPink
     participant "Main" as Plugin
-    participant "EvaluationService" as Eval
 end box
 
 
@@ -123,20 +122,12 @@ end note
 CTRL -> ReqSrv : checkAnswersFileIsValid(requirementName, filepath)
 activate ReqSrv
 
-ReqSrv -> ReqRepo : getPluginFromRequirementName(requirementName)
+ReqSrv -> ReqRepo : requirementSpecificationByRequirementName(requirementName)
 activate ReqRepo
 deactivate ReqRepo
 
-ReqSrv -> Plugin : checkFileSyntaxIsValid(args)
-note left
-args has "-evaluate",
-"-requirement" and filepath
-end note
+ReqSrv -> Plugin : checkFileFormat(filepath)
 activate Plugin
-
-Plugin -> Eval : evaluateTextFile(filepath)
-activate Eval
-deactivate Eval
 
 Plugin --> ReqSrv : true
 deactivate Plugin
@@ -165,7 +156,6 @@ deactivate App
 AppSrv -> AppRepo : save(application)
 activate AppRepo
 deactivate AppRepo
-AppSrv --> CTRL : true
 deactivate AppSrv
 
 CTRL --> UI : success importing
