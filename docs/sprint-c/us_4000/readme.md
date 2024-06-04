@@ -680,17 +680,10 @@ public class FileWordCountThread implements Runnable {
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
-
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
+To activate this feature, you'll need to run the script named `run-backoffice-app` and log in with Customer Manager
+permissions. Then, navigate to the "Applications" menu and select option 1 - `Top 20 words` - to access this
+feature.
 
 ## 7. Observations
 
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
+During the Design phase of this US we thought about making a thread to analyze all files, one thread per application, however, after a discussion with all the members it was agreed that it should instead be a loop for all the applications, having a thread PER FILE of application, make them do the functionality, share the results, present the results and repeat this process for each application of the candidate chosen.
