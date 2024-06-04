@@ -200,12 +200,14 @@ public class MainMenu extends AbstractUI {
     private Menu buildCustomerManagerApplicationMenu() {
         final Menu menu = new Menu("Applications >");
         menu.addItem(1, "See Application TOP 20 Used Words List", new AnalyseApplicationFilesAction());
+        menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
         return menu;
     }
 
     private Menu buildCustomerManagerCandidateMenu() {
         final Menu menu = new Menu("Candidates >");
         menu.addItem(1, "See all data of a candidate", new ListCandidateDataAction());
+        menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
         return menu;
     }
 
@@ -213,18 +215,21 @@ public class MainMenu extends AbstractUI {
         final Menu menu = new Menu("Plugins >");
         menu.addItem(1, "Generate and export Requirement Specification Template", new GenerateRequirementsTemplateFileUI()::show);
         menu.addItem(2, "Import Requirement Answer Files", new UploadRequirementAnswersUI()::show);
+        menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
         return menu;
     }
 
     private Menu buildCustomerManagerPluginMenu() {
         final Menu menu = new Menu("Plugins >");
         menu.addItem(1, "Generate and export Interview Model Template", new GenerateInterviewModelTemplateFileUI()::show);
+        menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
         return menu;
     }
 
     private Menu buildLanguageEngineerSettingsMenu() {
         final Menu menu = new Menu("Language Engineer >");
         menu.addItem(1, "Register a new plugin", new RegisterPluginAction());
+        menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
         return menu;
     }
 
@@ -233,12 +238,14 @@ public class MainMenu extends AbstractUI {
         menu.addItem(1, "Register a New Candidate", new RegisterCandidateAction());
         menu.addItem(2, "List All Candidates", new ListAllCandidatesAction());
         menu.addItem(3, "Activate/Deactivate a Candidate", new EnableDisableCandidateAction());
+        menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
         return menu;
     }
 
     private Menu buildOperatorApplicationMenu() {
         final Menu menu = new Menu("Applications >");
         menu.addItem(1, "Register Job Opening Applications", new RegisterJobOpeningApplicationsAction());
+        menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
         return menu;
     }
 
