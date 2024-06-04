@@ -4,7 +4,9 @@ import eapli.framework.domain.repositories.TransactionalContext;
 import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
 import jakarta.persistence.TypedQuery;
 import jobs4u.base.applicationmanagement.domain.Application;
+import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
 import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
+import jobs4u.base.candidatemanagement.domain.PhoneNumber;
 
 
 import java.util.ArrayList;
@@ -53,5 +55,18 @@ public class JpaApplicationRepository
         q.setParameter("sequentialCode", f[1]);
         return q.getResultList();
     }
+
+    @Override
+    public Iterable<Application> applicationsFromCandidate(String phoneNumber) {
+        PhoneNumber number = new PhoneNumber("+351", phoneNumber);
+        final TypedQuery<Application>
+                q = createQuery("SELECT a \n" +
+                        "FROM Application a \n" +
+                        "WHERE a.candidate.phoneNumber = :phone\n",
+                Application.class);
+        q.setParameter("phone", number);
+        return q.getResultList();
+    }
+
 
 }

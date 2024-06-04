@@ -8,6 +8,8 @@ import jobs4u.base.customermanagement.domain.Customer;
 import jobs4u.base.customermanagement.repository.CustomerRepository;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
+import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatus;
+import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatusEnum;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 
@@ -40,5 +42,10 @@ public class InMemoryApplicationRepository
         Optional<JobOpening> jos = jobOpeningRepository.getJobOpeningByJobReference(new JobReference(jobReference));
         jos.ifPresent(jobOpening -> match(e -> e.requirementAnswerFilePath() != null && jobOpening.getApplications().contains(e)));
         return Collections.emptyList();
+    }
+
+    @Override
+    public Iterable<Application> applicationsFromCandidate(String phoneNumber) {
+        return match(e -> e.candidate().phoneNumber().number().equals(phoneNumber));
     }
 }
