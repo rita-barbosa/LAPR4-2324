@@ -60,9 +60,6 @@ public class ApplicationTest {
         ApplicationStatus status = new ApplicationStatus(ApplicationStatusEnum.NOT_CHECKED);
 
         assertEquals(application.applicationStatus(), status);
-
-
-
     }
 
 }
