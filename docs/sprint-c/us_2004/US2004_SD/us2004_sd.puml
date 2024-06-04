@@ -75,16 +75,13 @@ RecruitSrv -> RecruitmentProcessRepository : getRecruitmentProcessByJobReference
 activate RecruitmentProcessRepository
 deactivate RecruitmentProcessRepository
 
-RecruitSrv -> RecruitmentProcess : indicatePhaseByDate(currentDate)
-note right
-currentDate = LocalDate.now()
-end note
+RecruitSrv -> RecruitmentProcess : currentActivePhase()
 activate RecruitmentProcess
 
-RecruitmentProcess --> RecruitSrv : phase
+RecruitmentProcess --> RecruitSrv : phaseDenomination
 deactivate RecruitmentProcess
 
-alt phase.phaseType == APPLICATION || phase.phaseType == SCREENING
+alt phaseDenomination == APPLICATION || phaseDenomination == SCREENING
 RecruitSrv --> CTRL : true
 end alt
 deactivate RecruitSrv

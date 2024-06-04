@@ -34,7 +34,7 @@ class RecruitmentProcessRepository {
 }
 
 class RecruitmentProcess {
-+ indicatePhaseByDate(LocalDate currentDate)
++ currentActivePhase()
 }
 
 
