@@ -84,4 +84,15 @@ public class ApplicationManagementService {
         return applicationDTOService.convertToDTO(applicationRepository.applicationsFromCandidate(phoneNumber));
     }
 
+    public Application getApplication(ApplicationDTO applicationDto) {
+        Long applicationId = applicationDto.getId();
+        Application application = null;
+
+        for (Application application1  : applicationRepository.applications()) {
+            if (application1.identity().toString().equals(applicationId.toString())) {
+                application =application1;
+            }
+        }
+        return application;
+    }
 }
