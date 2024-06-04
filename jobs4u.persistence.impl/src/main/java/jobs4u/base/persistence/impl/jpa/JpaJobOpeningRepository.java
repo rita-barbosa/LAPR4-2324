@@ -208,4 +208,15 @@ public class JpaJobOpeningRepository
         return q.getResultList();
     }
 
+    @Override
+    public Iterable<JobOpening> getSTARTEDJobOpeningList() {
+        String status = new JobOpeningStatus(JobOpeningStatusEnum.STARTED).getStatusDescription();
+        try {
+            return match("e.status.statusDescription = :status", "status", status);
+        } catch (HibernateException ex) {
+            return match("e=(SELECT c FROM JobOpening c WHERE c.status.statusDescription = :status)",
+                    "status", status);
+        }
+    }
+
 }
