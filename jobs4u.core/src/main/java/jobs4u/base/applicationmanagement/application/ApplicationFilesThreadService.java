@@ -1,5 +1,6 @@
 package jobs4u.base.applicationmanagement.application;
 
+import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.applicationmanagement.domain.ApplicationFile;
 import jobs4u.base.applicationmanagement.domain.FileWordCountThread;
 import org.apache.commons.lang3.tuple.Pair;
@@ -9,8 +10,10 @@ import java.util.*;
 //TODO CHANGE PRINT STACKTRACE
 public class ApplicationFilesThreadService {
 
-    public Map<String, Pair<Integer, List<String>>> getTop20Words(Set<ApplicationFile> applicationFiles) {
-        Map<String, Map<String, Integer>> top20Words = new HashMap<>();
+    static Map<String, Map<String, Integer>> map = new TreeMap<>();
+
+    public static Map<String, Pair<Integer, List<String>>> getTop20Words(Set<ApplicationFile> applicationFiles) {
+        map.clear();
         List<Thread> threads = new ArrayList<>();
 
         for (ApplicationFile applicationFile : applicationFiles) {
@@ -29,10 +32,11 @@ public class ApplicationFilesThreadService {
             e.printStackTrace();
         }
 
-        return sortDescendingTop20Words(top20Words);
+        Map<String, Map<String, Integer>> newMap = map;
+        return sortDescendingTop20Words(newMap);
     }
 
-    private Map<String, Pair<Integer, List<String>>> sortDescendingTop20Words(Map<String, Map<String, Integer>> top20Words) {
+    private static Map<String, Pair<Integer, List<String>>> sortDescendingTop20Words(Map<String, Map<String, Integer>> top20Words) {
         Map<String, Pair<Integer, List<String>>> processedWords = processResult(top20Words);
 
         List<Map.Entry<String, Pair<Integer, List<String>>>> entryList = new ArrayList<>(processedWords.entrySet());
@@ -50,23 +54,37 @@ public class ApplicationFilesThreadService {
         return sortedTop20Words;
     }
 
-    private Map<String, Pair<Integer, List<String>>> processResult(Map<String, Map<String, Integer>> top20Words) {
+    private static Map<String, Pair<Integer, List<String>>> processResult(Map<String, Map<String, Integer>> top20Words) {
         Map<String, Pair<Integer, List<String>>> processedWords = new HashMap<>();
-        Map<String, Integer> entryMap;
-        List<String> filenames = new ArrayList<>();
         int wordCount;
 
         for (Map.Entry<String, Map<String, Integer>> entry : top20Words.entrySet()) {
             wordCount = 0;
-            entryMap = entry.getValue();
+            Map<String, Integer> entryMap = entry.getValue();
+            List<String> filenames = new ArrayList<>();
             for (Map.Entry<String, Integer> word : entryMap.entrySet()) {
                 wordCount += word.getValue();
-                filenames.add(entry.getKey());
+                filenames.add(word.getKey());
             }
             processedWords.put(entry.getKey(), Pair.of(wordCount, filenames));
 
-            filenames.clear();
+
         }
         return processedWords;
+    }
+
+    public synchronized static void addEntry(Map<String, Map<String, Integer>> map1) {
+        for (String file : map1.keySet()) {
+            for (String word : map1.get(file).keySet()) {
+                if(!map.keySet().contains(word)) {
+                    Map<String, Integer> map2 = new HashMap<>();
+                    map2.put(file, map1.get(file).get(word));
+                    map.put(word, map2);
+                }else{
+                    map.get(word).put(file, map1.get(file).get(word));
+                }
+            }
+        }
+
     }
 }
