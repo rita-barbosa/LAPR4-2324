@@ -154,7 +154,7 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
         return interview;
     }
     public String requirementAnswerFilePath() {
-        return this.requirementAnswer.requirementAnswer();
+        return this.requirementAnswer.filepath();
     }
 
     @Override
@@ -198,6 +198,11 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
     public ApplicationDTO toDTO() {
         return new ApplicationDTO(id, files, applicationDate,
                 applicationStatus.getStatusDescription(), candidate.user().username().toString());
+    }
+
+    public void updateRequirementAnswer(String filepath) {
+        Preconditions.noneNull(filepath);
+        this.requirementAnswer = RequirementAnswer.valueOf(filepath);
     }
 
     public void updateRequirementResult(Pair<Boolean, String> result) {
