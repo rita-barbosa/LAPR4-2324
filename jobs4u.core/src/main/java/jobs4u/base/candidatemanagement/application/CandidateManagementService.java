@@ -5,18 +5,16 @@ import eapli.framework.infrastructure.authz.application.AuthzRegistry;
 import eapli.framework.infrastructure.authz.application.UserManagementService;
 import eapli.framework.infrastructure.authz.domain.model.Role;
 import eapli.framework.infrastructure.authz.domain.model.SystemUser;
-import eapli.framework.infrastructure.authz.domain.model.Username;
 import eapli.framework.infrastructure.pubsub.EventPublisher;
 import eapli.framework.infrastructure.pubsub.impl.inprocess.service.InProcessPubSub;
-import eapli.framework.time.util.CurrentTimeCalendars;
 import jobs4u.base.candidatemanagement.domain.Candidate;
 import jobs4u.base.candidatemanagement.domain.PhoneNumber;
 import jobs4u.base.candidatemanagement.domain.events.NewCandidateUserRegisteredEvent;
+import jobs4u.base.candidatemanagement.dto.CandidateDTO;
 import jobs4u.base.candidatemanagement.repository.CandidateRepository;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.usermanagement.application.GeneratePasswordService;
 import jobs4u.base.usermanagement.domain.BaseRoles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,7 +24,7 @@ public class CandidateManagementService {
     private final GeneratePasswordService passwordService = new GeneratePasswordService();
     private final CandidateRepository candidateRepository= PersistenceContext.repositories().candidates();
     private final UserManagementService userManagementService = AuthzRegistry.userService();
-
+    private final CandidateDTOService candidateDTOService = new CandidateDTOService();
     private final EventPublisher dispatcher = InProcessPubSub.publisher();
 
     public void registerCandidate(String name, String email, PhoneNumber phoneNumber) {
@@ -50,6 +48,11 @@ public class CandidateManagementService {
         return candidatesListOrdered;
     }
 
+    public Iterable<CandidateDTO> getCandidatesListDTO() {
+        Iterable<Candidate> candidatesList = candidateRepository.findAll();
+        return candidateDTOService.convertToDTO(candidatesList);
+    }
+
     public boolean alreadyExits(String phoneNumber){
         return candidateRepository.checksIfExits(new PhoneNumber("+351", phoneNumber));
     }
@@ -65,4 +68,7 @@ public class CandidateManagementService {
         return this.candidateRepository.findByActive(false);
     }
 
+    public Iterable<CandidateDTO> activeCandidatesDTO() {
+        return this.candidateDTOService.convertToDTO(this.candidateRepository.findByActive(true));
+    }
 }
