@@ -13,11 +13,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.io.File;
+import java.util.*;
 
 public class ApplicationManagementService {
 
     private final ApplicationRepository applicationRepository = PersistenceContext.
             repositories().applications();
+
+    private final ApplicationDTOService applicationDTOService = new ApplicationDTOService();
 
 
     public Application registerApplication(Set<ApplicationFile> files,
@@ -41,6 +45,7 @@ public class ApplicationManagementService {
         return list;
     }
 
+
     public List<ApplicationDTO> getApplicationsList(JobOpening jobOpening){
         List<ApplicationDTO> applicationDTO = new ArrayList<>();
 
@@ -54,4 +59,12 @@ public class ApplicationManagementService {
     public List<ApplicationDTO> getApplicationsListByUsername(Username username) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+    public Optional<Application> getApplicationWithId(Long id){
+        return applicationRepository.ofIdentity(id);
+    }
+
+    public Iterable<ApplicationDTO> getAllApplicationsThatHaveCandidate(String phoneNumber){
+        return applicationDTOService.convertToDTO(applicationRepository.applicationsFromCandidate(phoneNumber));
+    }
+
 }
