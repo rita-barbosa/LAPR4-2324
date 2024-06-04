@@ -68,7 +68,7 @@ note right
 end note
 
 
-CTRL -> RecruitSrv : checkIfRecruitmentProcessIsInAnalysisPhase(jobReference)
+CTRL -> RecruitSrv : checkIfRecruitmentProcessIsInScreeningPhase(jobReference)
 activate RecruitSrv
 
 RecruitSrv -> RecruitmentProcessRepository : getRecruitmentProcessByJobReference(jobReference)
@@ -81,7 +81,7 @@ activate RecruitmentProcess
 RecruitmentProcess --> RecruitSrv : phaseDenomination
 deactivate RecruitmentProcess
 
-alt phaseDenomination == APPLICATION || phaseDenomination == SCREENING
+alt phaseDenomination == SCREENING
 RecruitSrv --> CTRL : true
 end alt
 deactivate RecruitSrv
