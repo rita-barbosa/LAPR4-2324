@@ -173,6 +173,10 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
         return applicationStatus;
     }
 
+    public Set<ApplicationFile> allFiles(){
+        return this.files;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
