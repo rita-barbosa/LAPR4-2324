@@ -43,4 +43,8 @@ public class Interview implements ValueObject {
     public int hashCode() {
         return Objects.hash(interviewTypeDenomination, schedule, interviewResult, interviewAnswer);
     }
+    public void updateSchedule(Date schedule) {
+        this.schedule = schedule;
+    }
+
 }
