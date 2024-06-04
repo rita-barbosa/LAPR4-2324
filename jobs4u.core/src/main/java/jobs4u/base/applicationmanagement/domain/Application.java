@@ -8,6 +8,8 @@ import eapli.framework.validations.Preconditions;
 import jakarta.persistence.*;
 import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
 import jobs4u.base.candidatemanagement.domain.Candidate;
+import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
+import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatusEnum;
 
 import java.io.File;
 import java.io.IOException;
@@ -225,5 +227,9 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
         } else {
             throw new IllegalArgumentException("No valid requirement answer file.");
         }
+    }
+    public void updateApplicationSchedule(Date newSchedule) {
+        Preconditions.noneNull(newSchedule);
+        this.interview.updateSchedule(newSchedule);
     }
 }
