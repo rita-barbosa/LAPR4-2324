@@ -51,7 +51,7 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
         this.files = files;
         this.applicationDate = applicationDate;
         this.applicationStatus = new ApplicationStatus();
-        this.applicationStatus.setStatusDescriptionAsNOT_CHECKED();
+        this.applicationStatus.updateStatusDescriptionAsNOT_CHECKED();
         this.interview = interview;
     }
 
@@ -64,7 +64,7 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
         this.files = files;
         this.applicationDate = applicationDate;
         this.applicationStatus = new ApplicationStatus();
-        this.applicationStatus.setStatusDescriptionAsNOT_CHECKED();
+        this.applicationStatus.updateStatusDescriptionAsNOT_CHECKED();
         this.candidate = candidate;
     }
 
@@ -75,7 +75,7 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
         this.files = files;
         this.applicationDate = applicationDate;
         this.applicationStatus = new ApplicationStatus();
-        this.applicationStatus.setStatusDescriptionAsNOT_CHECKED();
+        this.applicationStatus.updateStatusDescriptionAsNOT_CHECKED();
         this.candidate = candidate;
     }
 
@@ -86,7 +86,7 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
         this.files = files;
         this.applicationDate = applicationDate;
         this.applicationStatus = new ApplicationStatus();
-        this.applicationStatus.setStatusDescriptionAsNOT_CHECKED();
+        this.applicationStatus.updateStatusDescriptionAsNOT_CHECKED();
     }
 
 
@@ -99,7 +99,7 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
         this.files = files;
         this.applicationDate = applicationDate;
         this.applicationStatus = new ApplicationStatus();
-        this.applicationStatus.setStatusDescriptionAsNOT_CHECKED();
+        this.applicationStatus.updateStatusDescriptionAsNOT_CHECKED();
         this.candidate = candidate;
         this.interview = interview;
     }
@@ -113,7 +113,7 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
         this.files = files;
         this.applicationDate = applicationDate;
         this.applicationStatus = new ApplicationStatus();
-        this.applicationStatus.setStatusDescriptionAsNOT_CHECKED();
+        this.applicationStatus.updateStatusDescriptionAsNOT_CHECKED();
         this.candidate = candidate;
         this.interview = interview;
     }
@@ -127,7 +127,7 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
         this.files = files;
         this.applicationDate = applicationDate;
         this.applicationStatus = new ApplicationStatus();
-        this.applicationStatus.setStatusDescriptionAsNOT_CHECKED();
+        this.applicationStatus.updateStatusDescriptionAsNOT_CHECKED();
     }
 
 
@@ -139,7 +139,7 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
         this.files = files;
         this.applicationDate = applicationDate;
         this.applicationStatus = new ApplicationStatus();
-        this.applicationStatus.setStatusDescriptionAsNOT_CHECKED();
+        this.applicationStatus.updateStatusDescriptionAsNOT_CHECKED();
     }
 
     protected Application() {
@@ -167,6 +167,10 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
     @Override
     public Long identity() {
         return this.id;
+    }
+
+    public ApplicationStatus applicationStatus(){
+        return applicationStatus;
     }
 
     @Override
