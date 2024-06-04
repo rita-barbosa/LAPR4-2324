@@ -51,16 +51,16 @@ public class ApplicationManagementService {
 
 
     public List<ApplicationDTO> getApplicationsList(JobOpening jobOpening){
-        List<ApplicationDTO> applicationDTO = new ArrayList<>();
+        Set<Application> applicationList = jobOpening.getApplications();
 
-            for (Application application : jobOpening.getApplications()) {
-                applicationDTO.add(application.toDTO());
-            }
-
-        return applicationDTO;
+        return (List<ApplicationDTO>) applicationDTOService.convertToDTO(applicationList);
     }
 
-    //TODO ANA GUTERRES - LIST APPLICATIONS METHOD - CLASS LISTINGREQUESTTHREAD
+    public Set<Application> getApplications(JobOpening jobOpening){
+        return jobOpening.getApplications();
+    }
+
+
     public List<ApplicationDTO> getApplicationsListByUsername(Username username) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
