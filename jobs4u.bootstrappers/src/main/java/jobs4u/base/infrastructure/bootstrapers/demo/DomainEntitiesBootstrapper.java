@@ -98,6 +98,9 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         DateInterval dateInterval1 = null;
         DateInterval dateInterval2 = null;
         DateInterval dateInterval3 = null;
+        DateInterval dateInterval4 = null;
+        DateInterval dateInterval5 = null;
+        DateInterval dateInterval6 = null;
         Calendar start1 = null;
         Calendar end1 = null;
         Calendar start2 = null;
@@ -128,6 +131,36 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         Calendar end14 = null;
         Calendar start15 = null;
         Calendar end15 = null;
+        Calendar start16 = null;
+        Calendar end16 = null;
+        Calendar start17 = null;
+        Calendar end17 = null;
+        Calendar start18 = null;
+        Calendar end18 = null;
+        Calendar start19 = null;
+        Calendar end19 = null;
+        Calendar start20 = null;
+        Calendar end20 = null;
+        Calendar start21 = null;
+        Calendar end21 = null;
+        Calendar start22 = null;
+        Calendar end22 = null;
+        Calendar start23 = null;
+        Calendar end23 = null;
+        Calendar start24 = null;
+        Calendar end24 = null;
+        Calendar start25 = null;
+        Calendar end25 = null;
+        Calendar start26 = null;
+        Calendar end26 = null;
+        Calendar start27 = null;
+        Calendar end27 = null;
+        Calendar start28 = null;
+        Calendar end28 = null;
+        Calendar start29 = null;
+        Calendar end29 = null;
+        Calendar start30 = null;
+        Calendar end30 = null;
 
         try {
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
@@ -167,15 +200,52 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
             start15 = Calendars.fromDate(df.parse("25-02-2024"));
             end15 = Calendars.fromDate(df.parse("30-02-2024"));
             dateInterval3 = new DateInterval(start11, end15);
+
+            start16 = Calendars.fromDate(df.parse("11-03-2024"));
+            end16 = Calendars.fromDate(df.parse("14-03-2024"));
+            start17 = Calendars.fromDate(df.parse("15-03-2024"));
+            end17 = Calendars.fromDate(df.parse("18-03-2024"));
+            start18 = Calendars.fromDate(df.parse("20-03-2024"));
+            end18 = Calendars.fromDate(df.parse("22-03-2024"));
+            start19 = Calendars.fromDate(df.parse("23-03-2024"));
+            end19 = Calendars.fromDate(df.parse("26-03-2024"));
+            start20 = Calendars.fromDate(df.parse("27-03-2024"));
+            end20 = Calendars.fromDate(df.parse("28-03-2024"));
+            dateInterval4 = new DateInterval(start16, end20);
+
+            start21 = Calendars.fromDate(df.parse("12-03-2024"));
+            end21 = Calendars.fromDate(df.parse("13-03-2024"));
+            start22 = Calendars.fromDate(df.parse("16-03-2024"));
+            end22 = Calendars.fromDate(df.parse("18-03-2024"));
+            start23 = Calendars.fromDate(df.parse("21-03-2024"));
+            end23 = Calendars.fromDate(df.parse("22-03-2024"));
+            start24 = Calendars.fromDate(df.parse("25-03-2024"));
+            end24 = Calendars.fromDate(df.parse("26-03-2024"));
+            start25 = Calendars.fromDate(df.parse("27-03-2024"));
+            end25 = Calendars.fromDate(df.parse("28-03-2024"));
+            dateInterval5 = new DateInterval(start21, end25);
+
+            start26 = Calendars.fromDate(df.parse("10-03-2024"));
+            end26 = Calendars.fromDate(df.parse("11-03-2024"));
+            start27 = Calendars.fromDate(df.parse("12-03-2024"));
+            end27 = Calendars.fromDate(df.parse("18-03-2024"));
+            start28 = Calendars.fromDate(df.parse("21-03-2024"));
+            end28 = Calendars.fromDate(df.parse("23-03-2024"));
+            start29 = Calendars.fromDate(df.parse("24-03-2024"));
+            end29 = Calendars.fromDate(df.parse("25-03-2024"));
+            start30 = Calendars.fromDate(df.parse("26-03-2024"));
+            end30 = Calendars.fromDate(df.parse("27-03-2024"));
+            dateInterval6 = new DateInterval(start26, end30);
         }catch (ParseException e){
             System.out.println(e.getMessage());
         }
 
         List<Phase> phases1 = new ArrayList<>();
-
         List<Phase> phases2 = new ArrayList<>();
-
         List<Phase> phases3 = new ArrayList<>();
+        List<Phase> phases4 = new ArrayList<>();
+        List<Phase> phases5 = new ArrayList<>();
+        List<Phase> phases6 = new ArrayList<>();
 
         Phase application1 = new Phase(String.valueOf(PhaseTypeEnum.APPLICATION), "Candidates send applications.", start1, end1);
         Phase screening1 = new Phase(String.valueOf(PhaseTypeEnum.SCREENING), "Candidates screening.",  start2, end2);
@@ -196,6 +266,24 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         Phase interview3 = new Phase(String.valueOf(PhaseTypeEnum.INTERVIEW), "Candidates get interviewed.", start14, end14);
         Phase result3 = new Phase(String.valueOf(PhaseTypeEnum.RESULTS), "Candidates get results.", start15, end15);
 
+        Phase application4 = new Phase(String.valueOf(PhaseTypeEnum.APPLICATION),"Candidates send applications.", start16, end16);
+        Phase screening4 = new Phase(String.valueOf(PhaseTypeEnum.SCREENING), "Candidates screening.", start17, end17);
+        Phase analysis4 = new Phase(String.valueOf(PhaseTypeEnum.ANALYSIS), "Candidates analysis.", start18, end18);
+        Phase interview4 = new Phase(String.valueOf(PhaseTypeEnum.INTERVIEW), "Candidates get interviewed.", start19, end19);
+        Phase result4 = new Phase(String.valueOf(PhaseTypeEnum.RESULTS), "Candidates get results.", start20, end20);
+
+        Phase application5 = new Phase(String.valueOf(PhaseTypeEnum.APPLICATION),"Candidates send applications.", start21, end21);
+        Phase screening5 = new Phase(String.valueOf(PhaseTypeEnum.SCREENING), "Candidates screening.", start22, end22);
+        Phase analysis5 = new Phase(String.valueOf(PhaseTypeEnum.ANALYSIS), "Candidates analysis.", start23, end23);
+        Phase interview5 = new Phase(String.valueOf(PhaseTypeEnum.INTERVIEW), "Candidates get interviewed.", start24, end24);
+        Phase result5 = new Phase(String.valueOf(PhaseTypeEnum.RESULTS), "Candidates get results.", start25, end25);
+
+        Phase application6 = new Phase(String.valueOf(PhaseTypeEnum.APPLICATION),"Candidates send applications.", start26, end26);
+        Phase screening6 = new Phase(String.valueOf(PhaseTypeEnum.SCREENING), "Candidates screening.", start27, end27);
+        Phase analysis6 = new Phase(String.valueOf(PhaseTypeEnum.ANALYSIS), "Candidates analysis.", start28, end28);
+        Phase interview6 = new Phase(String.valueOf(PhaseTypeEnum.INTERVIEW), "Candidates get interviewed.", start29, end29);
+        Phase result6 = new Phase(String.valueOf(PhaseTypeEnum.RESULTS), "Candidates get results.", start30, end30);
+
 
         phases1.add(application1);
         phases1.add(screening1);
@@ -215,19 +303,49 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         phases3.add(analysis3);
         phases3.add(result3);
 
+        phases4.add(application4);
+        phases4.add(screening4);
+        phases4.add(interview4);
+        phases4.add(analysis4);
+        phases4.add(result4);
+
+        phases5.add(application5);
+        phases5.add(screening5);
+        phases5.add(interview5);
+        phases5.add(analysis5);
+        phases5.add(result5);
+
+        phases6.add(application6);
+        phases6.add(screening6);
+        phases6.add(interview6);
+        phases6.add(analysis6);
+        phases6.add(result6);
+
         RecruitmentProcess recruitmentProcess1 = new RecruitmentProcess(dateInterval1.start(), dateInterval1.end(), phases1, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.PLANNED)));
 
         RecruitmentProcess recruitmentProcess2 = new RecruitmentProcess(dateInterval2.start(), dateInterval2.end(), phases2, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.SCREENING)));
 
         RecruitmentProcess recruitmentProcess3 = new RecruitmentProcess(dateInterval3.start(), dateInterval3.end(), phases3, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.PLANNED)));
 
+        RecruitmentProcess recruitmentProcess4 = new RecruitmentProcess(dateInterval4.start(), dateInterval4.end(), phases4, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.RESULTS)));
+
+        RecruitmentProcess recruitmentProcess5 = new RecruitmentProcess(dateInterval5.start(), dateInterval5.end(), phases5, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.RESULTS)));
+
+        RecruitmentProcess recruitmentProcess6 = new RecruitmentProcess(dateInterval6.start(), dateInterval6.end(), phases6, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.RESULTS)));
+
         recruitmentProcess1 = recruitmentProcessRepository.save(recruitmentProcess1);
         recruitmentProcess2 = recruitmentProcessRepository.save(recruitmentProcess2);
         recruitmentProcess3 = recruitmentProcessRepository.save(recruitmentProcess3);
+        recruitmentProcess4 = recruitmentProcessRepository.save(recruitmentProcess4);
+        recruitmentProcess5 = recruitmentProcessRepository.save(recruitmentProcess5);
+        recruitmentProcess6 = recruitmentProcessRepository.save(recruitmentProcess6);
 
         recruitmentProcessList.add(recruitmentProcess1);
         recruitmentProcessList.add(recruitmentProcess2);
         recruitmentProcessList.add(recruitmentProcess3);
+        recruitmentProcessList.add(recruitmentProcess4);
+        recruitmentProcessList.add(recruitmentProcess5);
+        recruitmentProcessList.add(recruitmentProcess6);
     }
 
 
@@ -240,6 +358,10 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         JobReference jobReference1 = new JobReference("ISEP", 1);
         JobReference jobReference2 = new JobReference("ISEP", 2);
         JobReference jobReference3 = new JobReference("ISEP", 4);
+        JobReference jobReference4 = new JobReference("ISEP", 5);
+        JobReference jobReference5 = new JobReference("ISEP", 6);
+        JobReference jobReference6 = new JobReference("ISEP", 7);
+
 
         JobOpening jobOpening1 = new JobOpening("Front End Junior Developer", contract, mode, "123 Main Street",
                 "Flagtown", "Star District", "USA", "4500-900", 10, description,
@@ -254,23 +376,48 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
                 requirementSpecificationsList.get(0), interviewModelsList.get(0), jobReference2);
 
         JobOpening jobOpening4 = new JobOpening("Night Guard", contract, mode, "Freddy fazbear Street",
-                "Chica Town", "Foxy District", "MMM", "4500-900", 8, description,
+                "Chica Town", "Foxy District", "MMM", "4500-900", 7, description,
                 requirementSpecificationsList.get(0), interviewModelsList.get(0), jobReference3);
+
+        JobOpening jobOpening5 = new JobOpening("Front End Senior Developer", contract, mode, "Test Street",
+                "Test Town", "Test District", "Portugal", "4500-900", 4, description,
+                requirementSpecificationsList.get(1), interviewModelsList.get(1), jobReference4);
+
+        JobOpening jobOpening6 = new JobOpening("Front End Junior Developer", contract, mode, "Second Street",
+                "Second Town", "Second District", "Second", "4500-910", 9, description,
+                requirementSpecificationsList.get(1), interviewModelsList.get(1), jobReference5);
+
+        JobOpening jobOpening7 = new JobOpening("Back End Senior Developer", contract, mode, "Third Street",
+                "Third Town", "Third District", "Third", "4510-910", 6, description,
+                requirementSpecificationsList.get(0), interviewModelsList.get(0), jobReference6);
+
+
 
         jobOpening1.updateStatusToNotStarted();
         jobOpening2.updateStatusToNotStarted();
         jobOpening3.updateStatusToNotStarted();
+        jobOpening5.updateStatusToNotStarted();
+        jobOpening6.updateStatusToNotStarted();
+        jobOpening7.updateStatusToNotStarted();
 
-        jobOpeningRepository.save(jobOpening4);
+
         jobOpening1 = jobOpeningRepository.save(jobOpening1);
         jobOpening2 = jobOpeningRepository.save(jobOpening2);
         jobOpening3 = jobOpeningRepository.save(jobOpening3);
+        jobOpeningRepository.save(jobOpening4);
+        jobOpening5 = jobOpeningRepository.save(jobOpening5);
+        jobOpening6 = jobOpeningRepository.save(jobOpening6);
+        jobOpening7 = jobOpeningRepository.save(jobOpening7);
+
 
         List<JobOpening> jobOpenings = new ArrayList<>();
 
         jobOpenings.add(jobOpening1);
         jobOpenings.add(jobOpening2);
         jobOpenings.add(jobOpening3);
+        jobOpenings.add(jobOpening5);
+        jobOpenings.add(jobOpening6);
+        jobOpenings.add(jobOpening7);
 
         for (int i = 0; i < 3; i++) {
             jobOpenings.get(i).addRecruitmentProcess(recruitmentProcessList.get(i));
@@ -278,6 +425,17 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
             recruitmentProcessList.get(i).referToJobOpening(jobOpenings.get(i));
             jobOpeningRepository.save(jobOpenings.get(i));
             recruitmentProcessRepository.save(recruitmentProcessList.get(i));
+        }
+
+
+        for (int j = 3; j < 6; j++) {
+            jobOpenings.get(j).addRecruitmentProcess(recruitmentProcessList.get(j));
+            jobOpenings.get(j).updateStatusToNotStarted();
+            recruitmentProcessList.get(j).referToJobOpening(jobOpenings.get(j));
+            jobOpeningRepository.save(jobOpenings.get(j));
+            recruitmentProcessRepository.save(recruitmentProcessList.get(j));
+            jobOpenings.get(j).updateStatusToStarted();
+            jobOpeningRepository.save(jobOpenings.get(j));
         }
 
     }
@@ -364,7 +522,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         files.add(file);
         Date date = new Date(2024 - 1900, Calendar.JANUARY, 5);
         Interview interview = new Interview("interview1", new Date(2024 - 1900, Calendar.MARCH, 2),
-                new InterviewResult("passed", 50, "the grade is above 50"), "accepted");
+                new InterviewResult("passed", 50, "the grade is above 50"), "plugins-config-file/interview/r-answer-1.txt");
 
         PhoneNumber phone = new PhoneNumber("+351", "910000034");
 
@@ -377,24 +535,72 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         files1.add(file1);
         Date date1 = new Date(2024 - 1900, Calendar.JANUARY, 6);
         Interview interview1 = new Interview("interview1", new Date(2024 - 1900, Calendar.MARCH, 3),
-                new InterviewResult("passed", 60, "the grade is above 50"), "accepted");
+                new InterviewResult("passed", 60, "the grade is above 50"), "plugins-config-file/interview/r-answer-1.txt");
 
-        Application application, application1;
+        RequirementAnswer requirementAnswer2 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
+        RequirementResult requirementResult2 =  RequirementResult.valueOf(true);
+        ApplicationFile file2 = new ApplicationFile(new File("example2.txt"));
+        Set<ApplicationFile> files2 = new HashSet<>();
+        files2.add(file2);
+        Date date2 = new Date(2024 - 1900, Calendar.JANUARY, 8);
+        Interview interview2 = new Interview("interview2", new Date(2024 - 1900, Calendar.MARCH, 4),
+                new InterviewResult("passed", 80, "the grade is above 50"), "plugins-config-file/interview/r-answer-1.txt");
+
+
+        RequirementAnswer requirementAnswer3 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
+        RequirementResult requirementResult3 =  RequirementResult.valueOf(true);
+        ApplicationFile file3 = new ApplicationFile(new File("example3.txt"));
+        Set<ApplicationFile> files3 = new HashSet<>();
+        files3.add(file3);
+        Date date3 = new Date(2024 - 1900, Calendar.JANUARY, 10);
+        Interview interview3 = new Interview("interview3", new Date(2024 - 1900, Calendar.MARCH, 5),
+                new InterviewResult("failed", 20, "the grade is below 50"), "plugins-config-file/interview/r-answer-1.txt");
+
+        RequirementAnswer requirementAnswer4 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
+        RequirementResult requirementResult4 =  RequirementResult.valueOf(true);
+        ApplicationFile file4 = new ApplicationFile(new File("example4.txt"));
+        Set<ApplicationFile> files4 = new HashSet<>();
+        files4.add(file4);
+        Date date4 = new Date(2024 - 1900, Calendar.JANUARY, 12);
+        Interview interview4 = new Interview("interview4", new Date(2024 - 1900, Calendar.MARCH, 6),
+                new InterviewResult("passed", 88, "the grade is above 50"), "plugins-config-file/interview/r-answer-1.txt");
+
+
+        Application application, application1, application2, application3, application4;
         if (opCandidate.isPresent()) {
             Candidate candidate = opCandidate.get();
             application = new Application(requirementAnswer, requirementResult, files, date, candidate, interview);
             application1 = new Application(requirementAnswer1, requirementResult1, files1, date1, candidate, interview1);
+            application2 = new Application(requirementAnswer2, requirementResult2, files2, date2, candidate, interview2);
+            application3 = new Application(requirementAnswer3, requirementResult3, files3, date3, candidate, interview3);
+            application4 = new Application(requirementAnswer4, requirementResult4, files4, date4, candidate, interview4);
         } else {
             application = new Application(requirementAnswer, requirementResult, files, date, interview);
             application1 = new Application(requirementAnswer1, requirementResult1, files1, date1, interview1);
+            application2 = new Application(requirementAnswer2, requirementResult2, files2, date2, interview2);
+            application3 = new Application(requirementAnswer3, requirementResult3, files3, date3, interview3);
+            application4 = new Application(requirementAnswer4, requirementResult4, files4, date4, interview4);
         }
 
 
         Set<Application> applicationsSet = new HashSet<>();
+        application.applicationStatus().updateStatusDescriptionAsACCEPTED();
         applicationsSet.add(application);
 
         Set<Application> applicationsSet1 = new HashSet<>();
+        application1.applicationStatus().updateStatusDescriptionAsACCEPTED();
         applicationsSet1.add(application1);
+
+        Set<Application> applicationsSet2 = new HashSet<>();
+        application2.applicationStatus().updateStatusDescriptionAsACCEPTED();
+        applicationsSet2.add(application2);
+
+        Set<Application> applicationsSet3 = new HashSet<>();
+        application3.applicationStatus().updateStatusDescriptionAsREJECTED();
+        applicationsSet3.add(application3);
+        application4.applicationStatus().updateStatusDescriptionAsACCEPTED();
+        applicationsSet3.add(application4);
+
 
         List<JobOpening> jobs = new ArrayList<>();
         for (JobOpening job : jobOpeningRepository.findAll()) {
@@ -406,5 +612,11 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
 
         jobs.get(2).setApplications(applicationsSet1);
         jobOpeningRepository.save(jobs.get(2));
+
+        jobs.get(4).setApplications(applicationsSet2);
+        jobOpeningRepository.save(jobs.get(4));
+
+        jobs.get(5).setApplications(applicationsSet3);
+        jobOpeningRepository.save(jobs.get(5));
     }
 }
