@@ -1,4 +1,4 @@
-package jobs4u.base.jobopeningmanagement.domain.rank;
+package jobs4u.base.rankmanagement.domain;
 
 
 import eapli.framework.domain.model.AggregateRoot;
@@ -17,7 +17,7 @@ public class Rank implements AggregateRoot<JobReference> {
     private JobReference jobOpeningAssociated;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private final List<RankEntry> entries = new ArrayList<>();
+    private final List<RankOrder> entries = new ArrayList<>();
 
     public Rank() {
         //for ORM
@@ -37,7 +37,7 @@ public class Rank implements AggregateRoot<JobReference> {
         return DomainEntities.areEqual(this, other);
     }
 
-    public List<RankEntry> rankEntries(){
+    public List<RankOrder> rankEntries(){
         return this.entries;
     }
 

@@ -15,7 +15,6 @@ import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 
 import java.util.*;
 
-//TODO CHECK JOB OPENING BY USERNAME QUERY
 public class InMemoryJobOpeningRepository
         extends InMemoryDomainRepository<JobOpening, JobReference>
         implements JobOpeningRepository {

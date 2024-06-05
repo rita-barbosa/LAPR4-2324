@@ -1,4 +1,4 @@
-package jobs4u.base.jobopeningmanagement.domain.rank;
+package jobs4u.base.rankmanagement.domain;
 
 import eapli.framework.domain.model.ValueObject;
 import jakarta.persistence.*;
@@ -6,7 +6,7 @@ import jobs4u.base.candidatemanagement.domain.Candidate;
 
 @Entity
 @Table(name = "T_RANK_ENTRIES")
-public class RankEntry implements ValueObject {
+public class RankOrder implements ValueObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -17,11 +17,11 @@ public class RankEntry implements ValueObject {
 
     private Integer numberRanked;
 
-    protected RankEntry() {
+    protected RankOrder() {
         //for ORM
     }
 
-    public RankEntry(Candidate candidate, Integer numberRanked) {
+    public RankOrder(Candidate candidate, Integer numberRanked) {
         this.candidate = candidate;
         this.numberRanked = numberRanked;
     }
