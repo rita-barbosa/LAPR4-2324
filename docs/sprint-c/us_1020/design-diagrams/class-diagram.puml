@@ -36,7 +36,7 @@ interface  RankRepository {
 }
 
 class Rank {
-+ publishResults(numVacancies,customerManagerEmail)
+- JobReference jobOpeningAssociated
 }
 
 class AuthorizationService {
@@ -80,7 +80,8 @@ class JobOpeningResultsPublishedEvent{
 }
 class SendEmailOnJobOpeningResultsPublishedController{
 + sendEmail(jobOpeningResultsPublishedEvent)
-- connectToServer()
+- getSessionCredentials()
+- establishConnection(username, password)
 }
 class CustomerRepository{
 + customerEmailOfCustomer(companyCode)
@@ -94,6 +95,8 @@ class ApplicationStatusChangedEvent{
 }
 class NotifyCandidateOnApplicationStatusChangedController{
 + notifyCandidateOfChangedStatus(applicationStatusChangedEvent)
+- getSessionCredentials()
+- establishConnection(username, password)
 }
 class NotificationRepository{
 }
@@ -112,10 +115,13 @@ class ApplicationAcceptedEvent{
 }
 class SendEmailOnApplicationAcceptedController{
 + sendEmail(applicationAcceptedEvent)
-- connectToServer()
+- getSessionCredentials()
+- establishConnection(username, password)
 }
 class FollowUpConnectionService{
 + sendEmail(customerManagerEmail, receiverEmail,topic,emailBody)
++ closeConnection()
++ establishConnection(username, password)
 }
 class RankOrder <<(V,#FF8B40) value object>> {
 - orderValue
