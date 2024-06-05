@@ -16,7 +16,6 @@ import java.util.Optional;
 public class SendEmailOnApplicationAcceptedController {
     private static final FollowUpConnectionService connectionService = new FollowUpConnectionService();
     private static final AuthorizationService authz = AuthzRegistry.authorizationService();
-    private static final int PORT_NUMBER = 6666;
 
     private Username getSessionCredentials() {
         Optional<UserSession> session = authz.session();
@@ -27,14 +26,14 @@ public class SendEmailOnApplicationAcceptedController {
         throw new NoSuchElementException("No session found");
     }
 
-    private Pair<Boolean, String> establishConnection(Username username, String password, int portNumber) {
-        return connectionService.establishConnection(username, password, portNumber);
+    private Pair<Boolean, String> establishConnection(Username username, String password) {
+        return connectionService.establishConnection(username, password);
     }
 
     public void sendEmail(ApplicationAcceptedEvent event) {
         try {
             Username user = getSessionCredentials();
-            Pair<Boolean, String> connection = establishConnection(user, event.userPassword(), PORT_NUMBER);
+            Pair<Boolean, String> connection = establishConnection(user, event.userPassword());
             if (!connection.getKey()) {
                 throw new IllegalArgumentException("Error: Could not establish connection" + connection.getValue());
             }
