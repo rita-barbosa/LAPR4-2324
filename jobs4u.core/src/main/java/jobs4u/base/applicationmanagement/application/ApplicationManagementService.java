@@ -8,7 +8,9 @@ import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
 import jobs4u.base.candidatemanagement.domain.Candidate;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
+import jobs4u.base.requirementsmanagement.application.ApplicationListDTOService;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +24,8 @@ public class ApplicationManagementService {
             repositories().applications();
 
     private final ApplicationDTOService applicationDTOService = new ApplicationDTOService();
+
+    private final ApplicationListDTOService applicationListDTOService = new ApplicationListDTOService();
 
 
     public Application registerApplication(Set<ApplicationFile> files,
@@ -47,18 +51,31 @@ public class ApplicationManagementService {
 
 
     public List<ApplicationDTO> getApplicationsList(JobOpening jobOpening){
-        List<ApplicationDTO> applicationDTO = new ArrayList<>();
+        Set<Application> applicationList = jobOpening.getApplications();
 
-            for (Application application : jobOpening.getApplications()) {
-                applicationDTO.add(application.toDTO());
-            }
-
-        return applicationDTO;
+        return (List<ApplicationDTO>) applicationDTOService.convertToDTO(applicationList);
     }
+
+    public Set<Application> getApplications(JobOpening jobOpening){
+        return jobOpening.getApplications();
+    }
+
 
     public List<ApplicationDTO> getApplicationsListByUsername(Username username) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public List<ApplicationDTO> getApplicationsFromJobReference(String jobReference) {
+        Iterable<Application> applications = applicationRepository.applicationsForJobOpeningWithRequirements(jobReference);
+        return applicationListDTOService.convertApplicationsToDTO(applications);
+    }
+
+    public void uploadAnswersFile(ApplicationDTO applicationDTO, String filepath) {
+        Application application = applicationRepository.getApplicationFromDTO(applicationDTO);
+        application.updateRequirementAnswer(filepath);
+        applicationRepository.save(application);
+    }
+
     public Optional<Application> getApplicationWithId(Long id){
         return applicationRepository.ofIdentity(id);
     }
@@ -67,4 +84,15 @@ public class ApplicationManagementService {
         return applicationDTOService.convertToDTO(applicationRepository.applicationsFromCandidate(phoneNumber));
     }
 
+    public Application getApplication(ApplicationDTO applicationDto) {
+        Long applicationId = applicationDto.getId();
+        Application application = null;
+
+        for (Application application1  : applicationRepository.applications()) {
+            if (application1.identity().toString().equals(applicationId.toString())) {
+                application =application1;
+            }
+        }
+        return application;
+    }
 }

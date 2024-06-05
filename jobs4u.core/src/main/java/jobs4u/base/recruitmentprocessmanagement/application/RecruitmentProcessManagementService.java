@@ -4,10 +4,7 @@ import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.application.JobOpeningManagementService;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
-import jobs4u.base.recruitmentprocessmanagement.domain.Phase;
-import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
-import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcessStatus;
-import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcessStatusEnum;
+import jobs4u.base.recruitmentprocessmanagement.domain.*;
 import jobs4u.base.recruitmentprocessmanagement.dto.AllPhasesDTO;
 import jobs4u.base.recruitmentprocessmanagement.dto.PhaseDTO;
 import jobs4u.base.recruitmentprocessmanagement.dto.RecruitmentProcessDTO;
@@ -109,5 +106,14 @@ public class RecruitmentProcessManagementService {
             return false;
         }
         return true;
+    }
+
+    public boolean checkIfRecruitmentProcessIsInScreeningPhase(String jobReference) {
+        Optional<RecruitmentProcess> recruitmentProcess = recruitmentProcessRepository.getRecruitmentProcessByJobReference(new JobReference(jobReference));
+        if(recruitmentProcess.isPresent()){
+            String phase = recruitmentProcess.get().currentActivePhase();
+            return phase.equals("Screening Phase");
+        }
+        return false;
     }
 }

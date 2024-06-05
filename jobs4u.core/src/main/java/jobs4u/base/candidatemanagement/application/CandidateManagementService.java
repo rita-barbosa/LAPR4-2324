@@ -7,12 +7,16 @@ import eapli.framework.infrastructure.authz.domain.model.Role;
 import eapli.framework.infrastructure.authz.domain.model.SystemUser;
 import eapli.framework.infrastructure.pubsub.EventPublisher;
 import eapli.framework.infrastructure.pubsub.impl.inprocess.service.InProcessPubSub;
+import eapli.framework.time.util.CurrentTimeCalendars;
+import jobs4u.base.applicationmanagement.domain.Application;
+import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
 import jobs4u.base.candidatemanagement.domain.Candidate;
 import jobs4u.base.candidatemanagement.domain.PhoneNumber;
 import jobs4u.base.candidatemanagement.domain.events.NewCandidateUserRegisteredEvent;
 import jobs4u.base.candidatemanagement.dto.CandidateDTO;
 import jobs4u.base.candidatemanagement.repository.CandidateRepository;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
+import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.usermanagement.application.GeneratePasswordService;
 import jobs4u.base.usermanagement.domain.BaseRoles;
 
@@ -24,6 +28,7 @@ public class CandidateManagementService {
     private final GeneratePasswordService passwordService = new GeneratePasswordService();
     private final CandidateRepository candidateRepository= PersistenceContext.repositories().candidates();
     private final UserManagementService userManagementService = AuthzRegistry.userService();
+    private final ListCandidatesDTOService listCandidatesDTOService = new ListCandidatesDTOService();
     private final CandidateDTOService candidateDTOService = new CandidateDTOService();
     private final EventPublisher dispatcher = InProcessPubSub.publisher();
 
@@ -71,4 +76,15 @@ public class CandidateManagementService {
     public Iterable<CandidateDTO> activeCandidatesDTO() {
         return this.candidateDTOService.convertToDTO(this.candidateRepository.findByActive(true));
     }
+
+    public List<CandidateDTO> getCandidatesFromApplications(Set<Application> applicationList) {
+        List <Candidate> candidateList = new ArrayList<>();
+
+        for (Application a : applicationList) {
+            candidateList.add(a.candidate());
+        }
+
+        return listCandidatesDTOService.toDTO(candidateList);
+    }
+
 }

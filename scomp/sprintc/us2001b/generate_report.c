@@ -61,6 +61,7 @@ void generate_candidate_report(FILE *reportFile, char *candidateName, char *cand
 
 void generate_report(int lastCandidate, char *output_directory)
 {
+    int candidateNumber = 0;
     FILE *reportFile = open_report_file(output_directory);
     if (reportFile == NULL)
     {
@@ -79,7 +80,7 @@ void generate_report(int lastCandidate, char *output_directory)
     {
         if (entry->d_type == DT_DIR && strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
         {
-            int candidateNumber = atoi(entry->d_name + strlen("candidate"));
+            candidateNumber = atoi(entry->d_name + strlen("candidate"));
             if (candidateNumber > lastCandidate)
             {
                 char candidateFolderPath[300];
@@ -88,6 +89,7 @@ void generate_report(int lastCandidate, char *output_directory)
             }
         }
     }
+    lastCandidate = candidateNumber;
 
     closedir(outputDir);
     fclose(reportFile);

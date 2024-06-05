@@ -48,6 +48,6 @@ public class Phase implements ValueObject, DTOable<PhaseDTO> {
 
     @Override
     public PhaseDTO toDTO() {
-        return new PhaseDTO(phaseType.getTypeDenomination().toString(), description.getDescriptionText(), period.getPhasePeriod());
+        return new PhaseDTO(phaseType.getTypeDenomination(), description.getDescriptionText(), period.getPhasePeriod());
     }
 }

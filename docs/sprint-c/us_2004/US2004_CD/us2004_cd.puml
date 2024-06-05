@@ -26,7 +26,7 @@ class JobOpeningManagementService {
 }
 
 class RecruitmentProcessManagementService {
-+ checkIfRecruitmentProcessIsInAnalysisPhase(String jobReference)
++ checkIfRecruitmentProcessIsInScreeningPhase(String jobReference)
 }
 
 class RecruitmentProcessRepository {
@@ -34,7 +34,7 @@ class RecruitmentProcessRepository {
 }
 
 class RecruitmentProcess {
-+ indicatePhaseByDate(LocalDate currentDate)
++ currentActivePhase()
 }
 
 
@@ -79,21 +79,14 @@ class RequirementSpecificationManagementService {
 }
 
 class RequirementSpecificationRepository {
-+ getPluginFromRequirementName(String requirementName)
++ requirementSpecificationByRequirementName(String requirementName)
 }
 
 package "Plugin" {
     class Main {
-    + checkFileSyntaxIsValid(String[] args)
+    + checkFileFormat(String filepath)
     }
-    note right of Main
-    args has "-evaluate",
-    "-requirement" and filepath
-    end note
 
-    class EvaluationService {
-    + evaluateTextFile(String filepath)
-    }
 }
 
 
@@ -129,9 +122,6 @@ RecruitmentProcessManagementService ..> RecruitmentProcess
 
 RequirementSpecificationManagementService ..> RequirementSpecificationRepository
 RequirementSpecificationManagementService ...> Main
-
-Main --> EvaluationService
-
 
 
 @enduml

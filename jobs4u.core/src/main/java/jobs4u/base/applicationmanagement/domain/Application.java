@@ -8,6 +8,8 @@ import eapli.framework.validations.Preconditions;
 import jakarta.persistence.*;
 import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
 import jobs4u.base.candidatemanagement.domain.Candidate;
+import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
+import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatusEnum;
 
 import java.io.File;
 import java.io.IOException;
@@ -154,7 +156,7 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
         return interview;
     }
     public String requirementAnswerFilePath() {
-        return this.requirementAnswer.requirementAnswer();
+        return this.requirementAnswer.filepath();
     }
 
     @Override
@@ -200,6 +202,11 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
                 applicationStatus.getStatusDescription(), candidate.user().username().toString());
     }
 
+    public void updateRequirementAnswer(String filepath) {
+        Preconditions.noneNull(filepath);
+        this.requirementAnswer = RequirementAnswer.valueOf(filepath);
+    }
+
     public void updateRequirementResult(Pair<Boolean, String> result) {
         Preconditions.nonEmpty(requirementAnswerFilePath());
         File requirementFile = new File(requirementAnswerFilePath());
@@ -220,5 +227,9 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
         } else {
             throw new IllegalArgumentException("No valid requirement answer file.");
         }
+    }
+    public void updateApplicationSchedule(Date newSchedule) {
+        Preconditions.noneNull(newSchedule);
+        this.interview.updateSchedule(newSchedule);
     }
 }

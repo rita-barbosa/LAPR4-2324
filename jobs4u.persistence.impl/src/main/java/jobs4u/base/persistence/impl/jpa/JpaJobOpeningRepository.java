@@ -91,13 +91,14 @@ public class JpaJobOpeningRepository
     }
 
     @Override
-    public List<JobOpening> getJobOpeningListMatchingStatus(String started) {
-        try {
-            return match("e.status.statusDescription = :status", "status", started);
-        } catch (HibernateException ex) {
-            return match("e=(SELECT c FROM JobOpening c WHERE c.status.statusDescription = :status)",
-                    "status", started);
-        }
+    public List<JobOpening> getJobOpeningListMatchingStatus(String status) {
+        final TypedQuery<JobOpening>
+                q = createQuery("SELECT c" +
+                        " FROM JobOpening c" +
+                        " WHERE c.status.statusDescription = :status",
+                JobOpening.class);
+        q.setParameter("status", status);
+        return q.getResultList();
     }
 
     @Override
@@ -205,6 +206,17 @@ public class JpaJobOpeningRepository
         q.setParameter("username", username.toString());
         q.setParameter("status", "NOT_STARTED");
         return q.getResultList();
+    }
+
+    @Override
+    public Iterable<JobOpening> getSTARTEDJobOpeningList() {
+        String status = new JobOpeningStatus(JobOpeningStatusEnum.STARTED).getStatusDescription();
+        try {
+            return match("e.status.statusDescription = :status", "status", status);
+        } catch (HibernateException ex) {
+            return match("e=(SELECT c FROM JobOpening c WHERE c.status.statusDescription = :status)",
+                    "status", status);
+        }
     }
 
 }

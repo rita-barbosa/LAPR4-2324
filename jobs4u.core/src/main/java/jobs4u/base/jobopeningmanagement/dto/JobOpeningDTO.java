@@ -115,8 +115,8 @@ public class JobOpeningDTO implements Serializable {
     @Override
     public String toString() {
         return String.format("»» Job Reference: %s\n" +
-                        " » Function: %s |" +
-                        " » Contract Type: %s |" +
+                        " » Function: %s\n" +
+                        " » Contract Type: %s\n" +
                         " » Work Mode: %s\n" +
                         " » Address: %s\n" +
                         " » Description: %s\n" +

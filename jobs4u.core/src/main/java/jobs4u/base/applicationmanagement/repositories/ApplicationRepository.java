@@ -4,8 +4,6 @@ import eapli.framework.domain.repositories.DomainRepository;
 import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
 
-import java.util.List;
-
 public interface ApplicationRepository extends DomainRepository<Long, Application> {
 
     Iterable<Application> applications();
@@ -14,5 +12,5 @@ public interface ApplicationRepository extends DomainRepository<Long, Applicatio
 
     Iterable<Application> applicationsFromCandidate(String phoneNumber);
 
-
+    Application getApplicationFromDTO(ApplicationDTO applicationDTO);
 }

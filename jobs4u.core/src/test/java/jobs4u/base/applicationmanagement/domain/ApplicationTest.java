@@ -54,4 +54,12 @@ public class ApplicationTest {
         a.updateRequirementResult(Pair.of(true, ""));
     }
 
+    @Test
+    public void ensureMustHaveStatus() {
+        Application application = new Application(requirementAnswer, requirementResult, files, date, interview);
+        ApplicationStatus status = new ApplicationStatus(ApplicationStatusEnum.NOT_CHECKED);
+
+        assertEquals(application.applicationStatus(), status);
+    }
+
 }

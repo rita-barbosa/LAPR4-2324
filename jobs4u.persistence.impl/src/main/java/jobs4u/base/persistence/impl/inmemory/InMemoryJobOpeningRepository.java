@@ -169,5 +169,15 @@ public class InMemoryJobOpeningRepository
         return Collections.emptyList();
     }
 
+    @Override
+    public Iterable<JobOpening> getSTARTEDJobOpeningList() {
+        String status = new JobOpeningStatus(JobOpeningStatusEnum.STARTED).getStatusDescription();
+        List<JobOpening> jobOpeningArrayList = new ArrayList<>();
+        Iterable<JobOpening> jobOpenings = match(e -> e.currentStatus().toString().equals(status));
+        for (JobOpening element : jobOpenings) {
+            jobOpeningArrayList.add(element);
+        }
+        return jobOpeningArrayList;
+    }
 
 }

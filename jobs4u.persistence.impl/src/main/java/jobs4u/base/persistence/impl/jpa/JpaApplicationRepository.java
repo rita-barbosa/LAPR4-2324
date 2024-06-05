@@ -2,6 +2,7 @@ package jobs4u.base.persistence.impl.jpa;
 
 import eapli.framework.domain.repositories.TransactionalContext;
 import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
+
 import jakarta.persistence.TypedQuery;
 import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
@@ -54,6 +55,18 @@ public class JpaApplicationRepository
         q.setParameter("companyCode", f[0]);
         q.setParameter("sequentialCode", f[1]);
         return q.getResultList();
+    }
+
+
+    @Override
+    public Application getApplicationFromDTO(ApplicationDTO applicationDTO) {
+        TypedQuery<Application>
+                q = createQuery("SELECT a \n" +
+                        "FROM Application a \n" +
+                        "WHERE a.id = :dtoId",
+                Application.class);
+        q.setParameter("dtoId", applicationDTO.getId());
+        return q.getSingleResult();
     }
 
     @Override

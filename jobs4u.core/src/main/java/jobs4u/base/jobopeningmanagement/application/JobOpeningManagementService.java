@@ -6,6 +6,7 @@ import jobs4u.base.customermanagement.application.CustomerManagementService;
 import jobs4u.base.customermanagement.domain.Customer;
 import jobs4u.base.customermanagement.domain.CustomerCode;
 import jobs4u.base.customermanagement.dto.CustomerDTO;
+import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatusEnum;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.recruitmentprocessmanagement.application.RecruitmentProcessManagementService;
 import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
@@ -170,5 +171,17 @@ public class JobOpeningManagementService {
         return dtoSvc.convertToDTO(jobOpeningRepository.jobOpeningsInScreeingListOfCustomerManager(customerManagerUsername));
     }
 
+    public Iterable<JobOpeningDTO> getSTARTEDJobOpenings(){
+        Iterable<JobOpening> jobs = jobOpeningRepository.getSTARTEDJobOpeningList();
+        return dtoSvc.convertToDTO(jobs);
+    }
 
+    public List<JobOpeningDTO> getOnGoingJobOpenings() {
+        List<JobOpening> jobOpenings = jobOpeningRepository.getJobOpeningListMatchingStatus(String.valueOf(JobOpeningStatusEnum.STARTED));
+        List<JobOpeningDTO> jobOpeningDTOs = new ArrayList<>();
+        for (JobOpening jobOpening : jobOpenings) {
+            jobOpeningDTOs.add(jobOpening.toDTO());
+        }
+        return jobOpeningDTOs;
+    }
 }

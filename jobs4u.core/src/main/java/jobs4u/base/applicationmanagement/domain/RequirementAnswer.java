@@ -4,27 +4,68 @@ import eapli.framework.domain.model.ValueObject;
 import eapli.framework.validations.Preconditions;
 import jakarta.persistence.Embeddable;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Embeddable
 public class RequirementAnswer implements ValueObject {
 
-    private String requirementAnswer;
+    private File requirementAnswerFile;
+    private String filename;
+    private String filepath;
 
-    protected RequirementAnswer(String answer) {
-        Preconditions.noneNull(answer);
-        Preconditions.nonEmpty(answer);
-        Preconditions.matches(Pattern.compile("([a-zA-Z]:)?(\\\\\\\\[a-zA-Z0-9_.-]+)*(\\\\\\\\[a-zA-Z0-9_.-]+)?"), answer, "The provided filepath is not correct.");
+    protected RequirementAnswer(String requirementAnswerFile) {
+        Preconditions.noneNull(requirementAnswerFile);
+        Preconditions.nonEmpty(requirementAnswerFile);
+        Preconditions.matches(
+                Pattern.compile("([a-zA-Z]:)?(\\\\\\\\[a-zA-Z0-9_.-]+)*(\\\\\\\\[a-zA-Z0-9_.-]+)?"),
+                requirementAnswerFile,
+                "The provided filepath is not correct."
+        );
 
-        this.requirementAnswer = answer;
+        Path uploadedPath = Paths.get(requirementAnswerFile);
+
+        if (!Files.isRegularFile(uploadedPath)) {
+            throw new IllegalArgumentException("The provided path is not a file.");
+        }
+
+        File uploaded = new File(requirementAnswerFile);
+        Path targetDirectory = Paths.get("../requirementAnswers");
+        Path targetPath = targetDirectory.resolve(uploaded.getName());
+
+        try {
+            if (!Files.exists(targetDirectory)) {
+                Files.createDirectories(targetDirectory);
+            }
+
+            Files.copy(uploaded.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+            this.requirementAnswerFile = targetPath.toFile();
+            this.filename = targetPath.getFileName().toString();
+            this.filepath = targetPath.toString();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to copy the file to the requirementAnswers directory.", e);
+        }
     }
 
     protected RequirementAnswer() {
     }
 
-    public String requirementAnswer() {
-        return requirementAnswer;
+    public File requirementAnswerFile() {
+        return requirementAnswerFile;
+    }
+
+    public String name() {
+        return filename;
+    }
+
+    public String filepath() {
+        return this.filepath;
     }
 
     public static RequirementAnswer valueOf(final String answer) {
@@ -36,11 +77,11 @@ public class RequirementAnswer implements ValueObject {
         if (this == o) return true;
         if (!(o instanceof RequirementAnswer)) return false;
         RequirementAnswer that = (RequirementAnswer) o;
-        return Objects.equals(requirementAnswer, that.requirementAnswer);
+        return Objects.equals(requirementAnswerFile, that.requirementAnswerFile);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(requirementAnswer);
+        return Objects.hash(requirementAnswerFile);
     }
 }
