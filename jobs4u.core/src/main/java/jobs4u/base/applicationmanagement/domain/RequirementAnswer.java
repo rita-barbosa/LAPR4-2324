@@ -29,6 +29,12 @@ public class RequirementAnswer implements ValueObject {
                 "The provided filepath is not correct."
         );
 
+        Path uploadedPath = Paths.get(requirementAnswerFile);
+
+        if (!Files.isRegularFile(uploadedPath)) {
+            throw new IllegalArgumentException("The provided path is not a file.");
+        }
+
         File uploaded = new File(requirementAnswerFile);
         Path targetDirectory = Paths.get("../requirementAnswers");
         Path targetPath = targetDirectory.resolve(uploaded.getName());
