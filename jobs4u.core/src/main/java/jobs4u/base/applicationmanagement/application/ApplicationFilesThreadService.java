@@ -1,6 +1,5 @@
 package jobs4u.base.applicationmanagement.application;
 
-import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.applicationmanagement.domain.ApplicationFile;
 import jobs4u.base.applicationmanagement.domain.FileWordCountThread;
 import org.apache.commons.lang3.tuple.Pair;
@@ -12,7 +11,7 @@ public class ApplicationFilesThreadService {
 
     static Map<String, Map<String, Integer>> map = new TreeMap<>();
 
-    public static Map<String, Pair<Integer, List<String>>> getTop20Words(Set<ApplicationFile> applicationFiles) {
+    public Map<String, Pair<Integer, List<String>>> getTop20Words(Set<ApplicationFile> applicationFiles) {
         map.clear();
         List<Thread> threads = new ArrayList<>();
 
@@ -76,7 +75,7 @@ public class ApplicationFilesThreadService {
     public synchronized static void addEntry(Map<String, Map<String, Integer>> map1) {
         for (String file : map1.keySet()) {
             for (String word : map1.get(file).keySet()) {
-                if(!map.keySet().contains(word)) {
+                if(!map.containsKey(word)) {
                     Map<String, Integer> map2 = new HashMap<>();
                     map2.put(file, map1.get(file).get(word));
                     map.put(word, map2);

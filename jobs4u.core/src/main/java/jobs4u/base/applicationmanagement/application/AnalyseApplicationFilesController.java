@@ -2,6 +2,7 @@ package jobs4u.base.applicationmanagement.application;
 
 import eapli.framework.infrastructure.authz.application.AuthorizationService;
 import eapli.framework.infrastructure.authz.application.AuthzRegistry;
+import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
 import jobs4u.base.candidatemanagement.application.CandidateManagementService;
 import jobs4u.base.candidatemanagement.dto.CandidateDTO;
@@ -24,8 +25,12 @@ public class AnalyseApplicationFilesController {
     }
 
 
-    public Map<String, Pair<Integer, List<String>>> analyzeFilesFromApplication(ApplicationDTO application) {
-        return applicationFilesThreadService.getTop20Words(applicationManagementService.getApplicationWithId(application.getId()).get().allFiles());
+    public Map<String, Pair<Integer, List<String>>> analyzeFilesFromApplication(ApplicationDTO applicationDTO) {
+        Optional<Application> application = applicationManagementService.getApplicationWithId(applicationDTO.getId());
+        if (application.isPresent()) {
+            return applicationFilesThreadService.getTop20Words(application.get().allFiles());
+        }
+        throw new NoSuchElementException("Application not found");
     }
 
     public Iterable<CandidateDTO> getAllCandidatesDTO() {
