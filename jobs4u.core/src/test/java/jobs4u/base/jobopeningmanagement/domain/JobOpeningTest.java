@@ -32,7 +32,7 @@ public class JobOpeningTest {
     String zipcode = "1234-234";
     Address address = new Address(streetName, city, district, streetNumber, zipcode);
 
-    RequirementAnswer requirementAnswer = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
+    RequirementAnswer requirementAnswer = RequirementAnswer.valueOf("../plugins-config-file/requirement/r-answer-1.txt");
     RequirementResult requirementResult =  RequirementResult.valueOf(true);
     ApplicationFile file = new ApplicationFile(new File("example.txt"));
     Set<ApplicationFile> files = new HashSet<>();
