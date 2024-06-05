@@ -30,7 +30,7 @@ public class RequirementAnswer implements ValueObject {
         );
 
         File uploaded = new File(requirementAnswerFile);
-        Path targetDirectory = Paths.get("requirementAnswers");
+        Path targetDirectory = Paths.get("../requirementAnswers");
         Path targetPath = targetDirectory.resolve(uploaded.getName());
 
         try {
