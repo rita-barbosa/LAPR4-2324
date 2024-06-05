@@ -184,4 +184,8 @@ public class JobOpeningManagementService {
         }
         return jobOpeningDTOs;
     }
+
+    public Iterable<JobOpeningDTO> jobOpeningsInResultListOfCustomerManager(Username customerManagerUsername) {
+        return dtoSvc.convertToDTO(jobOpeningRepository.jobOpeningsInResultListOfCustomerManager(customerManagerUsername));
+    }
 }

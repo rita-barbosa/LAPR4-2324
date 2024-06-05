@@ -179,4 +179,17 @@ public class InMemoryJobOpeningRepository
         return jobOpeningArrayList;
     }
 
+    @Override
+    public Iterable<JobOpening> jobOpeningsInResultListOfCustomerManager(Username customerManagerUsername) {
+        CustomerRepository custRepo = PersistenceContext.repositories().customers();
+        List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername);
+
+        return match(e -> {
+            if (e.getRecruitmentProcess().currentActivePhase().equalsIgnoreCase("result")) {
+                return customers.stream().anyMatch(customer -> customer.customerCode().toString().equals(e.jobReference().getcustomerCode()));
+            }
+            return false;
+        });
+    }
+
 }
