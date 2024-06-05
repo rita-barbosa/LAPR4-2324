@@ -1,5 +1,9 @@
 package jobs4u.base.app.user.console.presentation.jobopeninglist;
 
+import eapli.framework.infrastructure.authz.application.AuthorizationService;
+import eapli.framework.infrastructure.authz.application.AuthzRegistry;
+import eapli.framework.infrastructure.authz.application.UserSession;
+import eapli.framework.infrastructure.authz.domain.model.SystemUser;
 import eapli.framework.infrastructure.authz.domain.model.Username;
 import eapli.framework.io.util.Console;
 import eapli.framework.presentation.console.AbstractListUI;
@@ -8,30 +12,43 @@ import jobs4u.base.jobopeningmanagement.application.ListCustomerJobOpeningsContr
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 //TODO CHECK PORT NUMBER
 public class ListCustomerJobOpeningsUI extends AbstractListUI<JobOpeningDTO> {
 
-    private final ListCustomerJobOpeningsController controller = new ListCustomerJobOpeningsController();
+    AuthorizationService authorizationService = AuthzRegistry.authorizationService();
+
+    private ListCustomerJobOpeningsController controller;
 
     private Username username;
 
     @Override
     public boolean show() {
-        int PORT_NUMBER = 6666;
+        SystemUser user;
 
-        username = controller.getSessionCredentials();
+        try {
+            Optional<UserSession> session = authorizationService.session();
+            if (session.isPresent()) {
+                user = session.get().authenticatedUser();
+            } else {
+                throw new NoSuchElementException("No session found");
+            }
+        } catch (NoSuchElementException e) {
+            return false;
+        }
+
+        assert user != null;
+        username = user.username();
         String password = Console.readLine("Please provide your password again:");
 
-        //establish connection
-        Pair<Boolean, String> pair = controller.establishConnection(username, password, PORT_NUMBER);
-        boolean connectionEstablished = pair.getKey();
+        controller = new ListCustomerJobOpeningsController(username, password);
 
-        System.out.println(pair.getValue());
-        if (connectionEstablished) {
-            super.show();
-            Pair<Boolean, String> response = controller.closeConnection();
-            System.out.println(response.getValue());
-        }
+        System.out.println("Connection successfully established.");
+        super.show();
+        Pair<Boolean, String> response = controller.closeConnection();
+        System.out.println(response.getValue());
 
         return false;
     }

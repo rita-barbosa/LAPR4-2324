@@ -564,7 +564,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
                 new InterviewResult("passed", 80, "the grade is above 50"), "plugins-config-file/interview/r-answer-1.txt");
         RequirementAnswer requirementAnswer3 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
         RequirementResult requirementResult3 =  RequirementResult.valueOf(true);
-        ApplicationFile file10 = new ApplicationFile(new File("example3.txt"));
+        ApplicationFile file10 = new ApplicationFile(new File("output/candidate3/example3.txt"));
         Set<ApplicationFile> files3 = new HashSet<>();
         files3.add(file10);
 
@@ -576,20 +576,19 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
 
         RequirementAnswer requirementAnswer4 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
         RequirementResult requirementResult4 =  RequirementResult.valueOf(true);
-        ApplicationFile file11 = new ApplicationFile(new File("example4.txt"));
+        ApplicationFile file11 = new ApplicationFile(new File("output/candidate4/example4.txt"));
         Set<ApplicationFile> files4 = new HashSet<>();
         files4.add(file11);
         Date date4 = new Date(2024 - 1900, Calendar.JANUARY, 12);
         Interview interview4 = new Interview("interview4", new Date(2024 - 1900, Calendar.MARCH, 6),
                 new InterviewResult("passed", 88, "the grade is above 50"), "plugins-config-file/interview/r-answer-1.txt");
-        ApplicationFile file12 = new ApplicationFile(new File("example5.txt"));
+        ApplicationFile file12 = new ApplicationFile(new File("output/candidate5/example5.txt"));
         Set<ApplicationFile> files5 = new HashSet<>();
         files5.add(file12);
 
-
         RequirementAnswer requirementAnswer5 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
         RequirementResult requirementResult5 =  RequirementResult.valueOf(true);
-        ApplicationFile file13 = new ApplicationFile(new File("example5.txt"));
+        ApplicationFile file13 = new ApplicationFile(new File("output/candidate6/example6.txt"));
         Set<ApplicationFile> files6 = new HashSet<>();
         files6.add(file13);
         Date date5 = new Date(2024 - 1900, Calendar.JANUARY, 12);

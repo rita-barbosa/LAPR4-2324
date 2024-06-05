@@ -9,8 +9,8 @@ import java.util.*;
 public class FileWordCountThread implements Runnable {
     //----------------------------------------------------------
     //---------------------- ATTRIBUTES ------------------------
-    private File file;
-    private List<String> unwantedCharacters = new ArrayList<>();
+    private final File file;
+    private final List<String> unwantedCharacters = new ArrayList<>();
 
 
     //----------------------------------------------------------
@@ -37,24 +37,7 @@ public class FileWordCountThread implements Runnable {
             Scanner Reader = new Scanner(file);
 
             //ALL UNWANTED CHARACTERS THAT WILL BE TAKEN OUT TO GET ONLY WORDS
-            String unwantedCharacter1 = "\n";
-            unwantedCharacters.add(unwantedCharacter1);
-            String unwantedCharacter2 = ",";
-            unwantedCharacters.add(unwantedCharacter2);
-            String unwantedCharacter3 = "!";
-            unwantedCharacters.add(unwantedCharacter3);
-            String unwantedCharacter4 = ".";
-            unwantedCharacters.add(unwantedCharacter4);
-            String unwantedCharacter5 = "\"";
-            unwantedCharacters.add(unwantedCharacter5);
-            String unwantedCharacter6 = "*";
-            unwantedCharacters.add(unwantedCharacter6);
-            String unwantedCharacter7 = "-";
-            unwantedCharacters.add(unwantedCharacter7);
-            String unwantedCharacter8 = "\r";
-            unwantedCharacters.add(unwantedCharacter8);
-            String unwantedCharacter9 = "\t";
-            unwantedCharacters.add(unwantedCharacter9);
+            defineUnwantedCharacters();
 
             //------------------------------------------------------
             //---------------- READING THE FILE --------------------
@@ -80,8 +63,8 @@ public class FileWordCountThread implements Runnable {
                 //  IF IT EXISTS, UPS THE NUMBER OF TIMES IT APPEARS
                 //  IF IT DOESN'T, ADDS THE ENTRY TO THE MAP
                 for (String word : data1) {
-                    if(!word.equals("")) {
-                        if (map1.keySet().contains(word.toLowerCase())) {
+                    if (!word.isEmpty()) {
+                        if (map1.containsKey(word.toLowerCase())) {
                             map1.replace(word.toLowerCase(), map1.get(word.toLowerCase()), map1.get(word.toLowerCase()) + 1);
                         } else {
                             map1.put(word.toLowerCase(), 1);
@@ -99,12 +82,46 @@ public class FileWordCountThread implements Runnable {
 
             //CLOSES THE FILE
             Reader.close();
-        } catch (
-                FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             System.out.println("An error has occurred.");
             e.printStackTrace();
         }
 
 
+    }
+
+    private void defineUnwantedCharacters() {
+        String unwantedCharacter1 = "\n";
+        unwantedCharacters.add(unwantedCharacter1);
+        String unwantedCharacter2 = ",";
+        unwantedCharacters.add(unwantedCharacter2);
+        String unwantedCharacter3 = "!";
+        unwantedCharacters.add(unwantedCharacter3);
+        String unwantedCharacter4 = ".";
+        unwantedCharacters.add(unwantedCharacter4);
+        String unwantedCharacter5 = "\"";
+        unwantedCharacters.add(unwantedCharacter5);
+        String unwantedCharacter6 = "*";
+        unwantedCharacters.add(unwantedCharacter6);
+        String unwantedCharacter7 = "-";
+        unwantedCharacters.add(unwantedCharacter7);
+        String unwantedCharacter8 = "\r";
+        unwantedCharacters.add(unwantedCharacter8);
+        String unwantedCharacter9 = "\t";
+        unwantedCharacters.add(unwantedCharacter9);
+        String unwantedCharacter10 = ")";
+        unwantedCharacters.add(unwantedCharacter10);
+        String unwantedCharacter11 = "(";
+        unwantedCharacters.add(unwantedCharacter11);
+        String unwantedCharacter12 = "]";
+        unwantedCharacters.add(unwantedCharacter12);
+        String unwantedCharacter13 = "[";
+        unwantedCharacters.add(unwantedCharacter13);
+        String unwantedCharacter14 = "{";
+        unwantedCharacters.add(unwantedCharacter14);
+        String unwantedCharacter15 = "}";
+        unwantedCharacters.add(unwantedCharacter15);
+        String unwantedCharacter16 = ";";
+        unwantedCharacters.add(unwantedCharacter16);
     }
 }
