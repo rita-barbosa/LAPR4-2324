@@ -24,6 +24,7 @@
 package jobs4u.base.app.candidate.console.presentation;
 
 import jobs4u.base.Application;
+import jobs4u.base.app.candidate.console.presentation.notifications.NotificationInboxCandidateAction;
 import jobs4u.base.app.common.console.presentation.authz.MyUserMenu;
 import jobs4u.base.usermanagement.domain.BaseRoles;
 import eapli.framework.actions.Actions;
@@ -51,7 +52,8 @@ public class MainMenu extends AbstractUI {
 
     // MAIN MENU
     private static final int MY_USER_OPTION = 1;
-    private static final int APPLICATION_OPTION = 7;
+    private static final int NOTIFICATION_OPTION = 2;
+    private static final int APPLICATION_OPTION = 3;
 
     private final AuthorizationService authz = AuthzRegistry.authorizationService();
 
@@ -104,6 +106,8 @@ public class MainMenu extends AbstractUI {
         if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.CANDIDATE_USER)) {
             final Menu cashierMenu = buildCandidateMenu();
             mainMenu.addSubMenu(APPLICATION_OPTION, cashierMenu);
+            final Menu notificationMenu = buildCandidateNotificationInboxMenu();
+            mainMenu.addSubMenu(NOTIFICATION_OPTION, notificationMenu);
         }
 
         if (!Application.settings().isMenuLayoutHorizontal()) {
@@ -115,9 +119,16 @@ public class MainMenu extends AbstractUI {
         return mainMenu;
     }
 
-    private Menu buildCandidateMenu() {
-        final Menu cashierMenu = new Menu("Applications  >");
+    private Menu buildCandidateNotificationInboxMenu() {
+        final Menu menu = new Menu("> Notifications");
+        menu.addItem(1, "Notification inbox", new NotificationInboxCandidateAction());
+        menu.addItem(EXIT_OPTION, "Return", Actions.SUCCESS);
 
+        return menu;
+    }
+
+    private Menu buildCandidateMenu() {
+        final Menu cashierMenu = new Menu("> Applications");
         cashierMenu.addItem(EXIT_OPTION, "Return", Actions.SUCCESS);
 
         return cashierMenu;
