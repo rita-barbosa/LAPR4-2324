@@ -46,5 +46,7 @@ public class Interview implements ValueObject {
     public void updateSchedule(Date schedule) {
         this.schedule = schedule;
     }
-
+    public String interviewAnswer() {
+        return interviewAnswer;
+    }
 }
