@@ -5,6 +5,11 @@ import eapli.framework.validations.Preconditions;
 import jakarta.persistence.Embeddable;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -18,12 +23,34 @@ public class RequirementAnswer implements ValueObject {
     protected RequirementAnswer(String requirementAnswerFile) {
         Preconditions.noneNull(requirementAnswerFile);
         Preconditions.nonEmpty(requirementAnswerFile);
-        Preconditions.matches(Pattern.compile("([a-zA-Z]:)?(\\\\\\\\[a-zA-Z0-9_.-]+)*(\\\\\\\\[a-zA-Z0-9_.-]+)?"), requirementAnswerFile, "The provided filepath is not correct.");
+        Preconditions.matches(
+                Pattern.compile("([a-zA-Z]:)?(\\\\\\\\[a-zA-Z0-9_.-]+)*(\\\\\\\\[a-zA-Z0-9_.-]+)?"),
+                requirementAnswerFile,
+                "The provided filepath is not correct."
+        );
+
+        Path uploadedPath = Paths.get(requirementAnswerFile);
+
+        if (!Files.isRegularFile(uploadedPath)) {
+            throw new IllegalArgumentException("The provided path is not a file.");
+        }
 
         File uploaded = new File(requirementAnswerFile);
-        this.requirementAnswerFile = uploaded;
-        this.filename = uploaded.getName();
-        this.filepath = uploaded.getPath();
+        Path targetDirectory = Paths.get("../requirementAnswers");
+        Path targetPath = targetDirectory.resolve(uploaded.getName());
+
+        try {
+            if (!Files.exists(targetDirectory)) {
+                Files.createDirectories(targetDirectory);
+            }
+
+            Files.copy(uploaded.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+            this.requirementAnswerFile = targetPath.toFile();
+            this.filename = targetPath.getFileName().toString();
+            this.filepath = targetPath.toString();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to copy the file to the requirementAnswers directory.", e);
+        }
     }
 
     protected RequirementAnswer() {

@@ -2,8 +2,6 @@ package jobs4u.base.jobopeningmanagement.application;
 
 import eapli.framework.infrastructure.authz.application.AuthorizationService;
 import eapli.framework.infrastructure.authz.application.AuthzRegistry;
-import eapli.framework.infrastructure.authz.application.UserSession;
-import eapli.framework.infrastructure.authz.domain.model.SystemUser;
 import eapli.framework.infrastructure.authz.domain.model.Username;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.network.ConnectionRelatedController;
@@ -12,7 +10,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 
 public class ListCustomerJobOpeningsController implements ConnectionRelatedController {
@@ -20,22 +17,17 @@ public class ListCustomerJobOpeningsController implements ConnectionRelatedContr
     FollowUpConnectionService connectionService;
     AuthorizationService authorizationService;
 
-    public ListCustomerJobOpeningsController() {
+    public ListCustomerJobOpeningsController(Username username, String password) {
         this.connectionService = new FollowUpConnectionService();
         this.authorizationService = AuthzRegistry.authorizationService();
-    }
-
-    public Username getSessionCredentials() {
-        Optional<UserSession> session = authorizationService.session();
-        if (session.isPresent()) {
-            SystemUser user = session.get().authenticatedUser();
-            return user.identity();
+        Pair <Boolean, String> pair = establishConnection(username, password);
+        if (!pair.getLeft()) {
+            throw new NoSuchElementException(pair.getRight());
         }
-        throw new NoSuchElementException("No session found");
     }
 
-    public Pair<Boolean, String> establishConnection(Username username, String password, int portNumber) {
-       return connectionService.establishConnection(username, password, portNumber);
+    public Pair<Boolean, String> establishConnection(Username username, String password) {
+       return connectionService.establishConnection(username, password);
     }
 
     public List<JobOpeningDTO> jobOpeningsDataList(Username username){

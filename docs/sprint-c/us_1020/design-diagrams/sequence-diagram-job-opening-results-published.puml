@@ -36,7 +36,7 @@ deactivate CTRL_EVENT
 WD -> CTRL_EVENT: sendEmail(jobOpeningResultsPublishedEvent)
 activate CTRL_EVENT
 
-CTRL_EVENT -> C_REPO: customerEmailOfCustomer(companyCode)
+CTRL_EVENT -> C_REPO: getCustomerByCustomerCode(companyCode)
 activate C_REPO
 deactivate C_REPO
 

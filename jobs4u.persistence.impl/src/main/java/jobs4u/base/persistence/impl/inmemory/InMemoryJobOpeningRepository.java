@@ -15,7 +15,6 @@ import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 
 import java.util.*;
 
-//TODO CHECK JOB OPENING BY USERNAME QUERY
 public class InMemoryJobOpeningRepository
         extends InMemoryDomainRepository<JobOpening, JobReference>
         implements JobOpeningRepository {
@@ -169,5 +168,28 @@ public class InMemoryJobOpeningRepository
         return Collections.emptyList();
     }
 
+    @Override
+    public Iterable<JobOpening> getSTARTEDJobOpeningList() {
+        String status = new JobOpeningStatus(JobOpeningStatusEnum.STARTED).getStatusDescription();
+        List<JobOpening> jobOpeningArrayList = new ArrayList<>();
+        Iterable<JobOpening> jobOpenings = match(e -> e.currentStatus().toString().equals(status));
+        for (JobOpening element : jobOpenings) {
+            jobOpeningArrayList.add(element);
+        }
+        return jobOpeningArrayList;
+    }
+
+    @Override
+    public Iterable<JobOpening> jobOpeningsInResultListOfCustomerManager(Username customerManagerUsername) {
+        CustomerRepository custRepo = PersistenceContext.repositories().customers();
+        List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername);
+
+        return match(e -> {
+            if (e.getRecruitmentProcess().currentActivePhase().equalsIgnoreCase("result")) {
+                return customers.stream().anyMatch(customer -> customer.customerCode().toString().equals(e.jobReference().getcustomerCode()));
+            }
+            return false;
+        });
+    }
 
 }

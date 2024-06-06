@@ -12,6 +12,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ApplicationFilesThreadServiceTest {
 
+    ApplicationFilesThreadService service = new ApplicationFilesThreadService();
+
+
     @Test
     public void ensureItCountsCorrectly1() {
 
@@ -52,7 +55,7 @@ public class ApplicationFilesThreadServiceTest {
 
         set.add(file);
 
-        assertEquals(map, ApplicationFilesThreadService.getTop20Words(set));
+        assertEquals(map, service.getTop20Words(set));
     }
 
     @Test
@@ -95,7 +98,7 @@ public class ApplicationFilesThreadServiceTest {
 
         set.add(file);
 
-        assertEquals(map, ApplicationFilesThreadService.getTop20Words(set));
+        assertEquals(map, service.getTop20Words(set));
     }
 
     @Test
@@ -135,7 +138,7 @@ public class ApplicationFilesThreadServiceTest {
 
         set.add(file);
 
-        assertEquals(map, ApplicationFilesThreadService.getTop20Words(set));
+        assertEquals(map, service.getTop20Words(set));
     }
 
 }

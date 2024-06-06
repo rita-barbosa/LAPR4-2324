@@ -32,14 +32,16 @@ public class JobOpeningTest {
     String zipcode = "1234-234";
     Address address = new Address(streetName, city, district, streetNumber, zipcode);
 
-    RequirementAnswer requirementAnswer = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
+    RequirementAnswer requirementAnswer = RequirementAnswer.valueOf("../plugins-config-file/requirement/r-answer-1.txt");
     RequirementResult requirementResult =  RequirementResult.valueOf(true);
     ApplicationFile file = new ApplicationFile(new File("example.txt"));
     Set<ApplicationFile> files = new HashSet<>();
 
     Date date = new Date(2024 - 1900, Calendar.JANUARY, 12);
+
+    InterviewAnswer interviewAnswer = InterviewAnswer.valueOf("../plugins-config-file/interview/i-answer-1.txt");
     Interview interview = new Interview("interview", new Date(2024 - 1900, Calendar.MARCH, 6),
-            new InterviewResult("passed", 88, "the grade is above 50"), "plugins-config-file/interview/r-answer-1.txt");
+            new InterviewResult("passed", 88, "the grade is above 50"), interviewAnswer);
 
 
     public RequirementSpecification jobOpeningRequirement() {

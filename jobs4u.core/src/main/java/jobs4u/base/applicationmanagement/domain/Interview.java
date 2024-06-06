@@ -13,13 +13,13 @@ public class Interview implements ValueObject {
     private String interviewTypeDenomination;
     private Date schedule;
     private InterviewResult interviewResult;
-    private String interviewAnswer;
+    private InterviewAnswer interviewAnswer;
 
 
-    public Interview(String interviewTypeDenomination, Date schedule, InterviewResult interviewResult, String interviewAnswer) {
+    public Interview(String interviewTypeDenomination, Date schedule, InterviewResult interviewResult, InterviewAnswer interviewAnswer) {
         Preconditions.noneNull(interviewAnswer, schedule, interviewResult, interviewAnswer);
         Preconditions.nonEmpty(interviewTypeDenomination);
-        Preconditions.nonEmpty(interviewAnswer);
+//        Preconditions.nonEmpty(interviewAnswer);
 
         this.interviewTypeDenomination = interviewTypeDenomination;
         this.schedule = schedule;
@@ -46,7 +46,10 @@ public class Interview implements ValueObject {
     public void updateSchedule(Date schedule) {
         this.schedule = schedule;
     }
-    public String interviewAnswer() {
-        return interviewAnswer;
+
+    public void updateInterviewAnswer(String filepath){
+        Preconditions.noneNull(filepath);
+        this.interviewAnswer = InterviewAnswer.valueOf(filepath);
     }
+
 }

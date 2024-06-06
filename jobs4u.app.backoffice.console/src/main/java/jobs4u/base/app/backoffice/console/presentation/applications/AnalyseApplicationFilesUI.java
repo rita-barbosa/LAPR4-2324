@@ -11,6 +11,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class AnalyseApplicationFilesUI extends AbstractUI {
 
@@ -34,14 +35,20 @@ public class AnalyseApplicationFilesUI extends AbstractUI {
             System.out.println("ID : "+applicationDTO.getId());
             System.out.println("CANDIDATE : "+applicationDTO.getCandidate());
             System.out.println("STATUS : "+applicationDTO.getApplicationStatus());
-            System.out.printf("FILES : ");
+            System.out.print("FILES : ");
             for (ApplicationFile applicationFile : applicationDTO.getApplicationFiles()){
                 System.out.printf(applicationFile.getApplicationFile()+" | ");
             }
             System.out.println();
-            Map<String, Pair<Integer, List<String>>> top20words = controller.analyzeFilesFromApplication(applicationDTO);
-            displayTop20(top20words);
-            i++;
+            try {
+                Map<String, Pair<Integer, List<String>>> top20words = controller.analyzeFilesFromApplication(applicationDTO);
+                displayTop20(top20words);
+                i++;
+            }catch (NoSuchElementException e){
+                System.out.println(e.getMessage());
+                break;
+            }
+
         }
 
         return true;

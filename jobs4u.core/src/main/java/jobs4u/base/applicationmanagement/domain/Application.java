@@ -152,9 +152,10 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
         return candidate;
     }
 
-    public Interview interview(){
+    public Interview interview() {
         return interview;
     }
+
     public String requirementAnswerFilePath() {
         return this.requirementAnswer.filepath();
     }
@@ -174,11 +175,11 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
         return this.id;
     }
 
-    public ApplicationStatus applicationStatus(){
+    public ApplicationStatus applicationStatus() {
         return applicationStatus;
     }
 
-    public Set<ApplicationFile> allFiles(){
+    public Set<ApplicationFile> allFiles() {
         return this.files;
     }
 
@@ -228,8 +229,17 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
             throw new IllegalArgumentException("No valid requirement answer file.");
         }
     }
+
     public void updateApplicationSchedule(Date newSchedule) {
         Preconditions.noneNull(newSchedule);
         this.interview.updateSchedule(newSchedule);
+    }
+
+    public void acceptApplication() {
+        this.applicationStatus = ApplicationStatus.valueOf(ApplicationStatusEnum.ACCEPTED);
+    }
+
+    public void rejectApplication() {
+        this.applicationStatus = ApplicationStatus.valueOf(ApplicationStatusEnum.REJECTED);
     }
 }

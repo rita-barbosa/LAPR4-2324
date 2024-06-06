@@ -7,7 +7,7 @@ import eapli.framework.validations.Preconditions;
 import jakarta.persistence.*;
 import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.contracttypemanagement.domain.ContractType;
-import jobs4u.base.jobopeningmanagement.domain.rank.Rank;
+import jobs4u.base.rankmanagement.domain.Rank;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
 import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
@@ -16,7 +16,6 @@ import jobs4u.base.contracttypemanagement.dto.ContractTypeDTO;
 import jobs4u.base.workmodemanagement.dto.WorkModeDTO;
 import jobs4u.base.workmodemanagement.domain.WorkMode;
 
-import javax.swing.text.DateFormatter;
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.List;

@@ -208,4 +208,32 @@ public class JpaJobOpeningRepository
         return q.getResultList();
     }
 
+    @Override
+    public Iterable<JobOpening> getSTARTEDJobOpeningList() {
+        String status = new JobOpeningStatus(JobOpeningStatusEnum.STARTED).getStatusDescription();
+        try {
+            return match("e.status.statusDescription = :status", "status", status);
+        } catch (HibernateException ex) {
+            return match("e=(SELECT c FROM JobOpening c WHERE c.status.statusDescription = :status)",
+                    "status", status);
+        }
+    }
+
+    @Override
+    public Iterable<JobOpening> jobOpeningsInResultListOfCustomerManager(Username customerManagerUsername) {
+        final TypedQuery<JobOpening>
+                q = createQuery("SELECT e \n" +
+                        "FROM JobOpening e \n" +
+                        "JOIN RecruitmentProcess rp ON e.jobReference = rp.jobOpening.jobReference\n" +
+                        "WHERE rp.recruitmentProcessStatus.statusDescription = 'RESULT'\n" +
+                        "AND e.jobReference.companyCode IN (\n" +
+                        "    SELECT code.customerCode \n" +
+                        "    FROM Customer c \n" +
+                        "    WHERE c.customerManager.username.value = :manager\n" +
+                        ")",
+                JobOpening.class);
+        q.setParameter("manager", customerManagerUsername.toString());
+        return q.getResultList();
+    }
+
 }

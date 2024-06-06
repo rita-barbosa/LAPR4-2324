@@ -30,11 +30,12 @@ public class FollowUpConnectionService {
     private static DataOutputStream sOut;
     private static DataInputStream sIn;
     private InetAddress serverIp;
+    public static int PORT_NUMBER = 6666;
 
     public FollowUpConnectionService() {
     }
 
-    public Pair<Boolean, String> establishConnection(Username username, String password, Integer PORT_NUMBER) {
+    public Pair<Boolean, String> establishConnection(Username username, String password) {
         try {
             if (!defineServerIpAddress()) {
                 return Pair.of(false, "Server IP Address not válid (" + serverIp + ").");
