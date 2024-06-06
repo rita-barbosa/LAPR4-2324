@@ -3,7 +3,7 @@ package jobs4u.base.network.responseprocessors;
 import jobs4u.base.network.SerializationUtil;
 import jobs4u.base.network.data.DataBlock;
 import jobs4u.base.network.data.DataDTO;
-import jobs4u.base.notificationmanagement.NotificationDTO;
+import jobs4u.base.notificationmanagement.dto.NotificationDTO;
 
 import java.util.ArrayList;
 import java.util.List;

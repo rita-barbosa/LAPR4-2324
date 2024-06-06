@@ -1,12 +1,21 @@
 package followup.server.threads;
 
+import eapli.framework.time.util.Calendars;
+import jobs4u.base.network.FollowUpRequestCodes;
 import jobs4u.base.network.SerializationUtil;
 import jobs4u.base.network.data.DataDTO;
-import jobs4u.base.notificationmanagement.NotificationDTO;
-import jobs4u.base.notificationmanagement.NotificationManagementService;
+import jobs4u.base.notificationmanagement.dto.NotificationDTO;
+import jobs4u.base.notificationmanagement.application.NotificationManagementService;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 //TODO ADD LOGGER COMMENTS
@@ -24,12 +33,41 @@ public class NotificationRequestThread implements Runnable {
     public void run() {
         // get the notificationManagementService
         NotificationManagementService notificationManagementService = new NotificationManagementService();
-        String username = (String) SerializationUtil.deserialize(data.dataBlockList().get(0).data());
+        Iterable<NotificationDTO> notificationsDTO = null;
+        DataDTO dataDTO = null;
 
-        //get notificationDTO list
-        //convert to dataDTO
-        List<NotificationDTO> notificationsDTO = notificationManagementService.getNotificationsByUsername(username);
-        DataDTO dataDTO = DataDTO.turnListIntoDataDTO(data.code(), notificationsDTO);
+        if(data.code() == FollowUpRequestCodes.UNSEENNOTIFLIST.getCode()) {
+            String username = (String) SerializationUtil.deserialize(data.dataBlockList().get(0).data());
+
+            //get notificationDTO list
+            //convert to dataDTO
+            notificationsDTO = notificationManagementService.getUnseenNotificationsByUsername(username);
+            dataDTO = DataDTO.turnListIntoDataDTO(data.code(), notificationsDTO);
+        } else if(data.code() == FollowUpRequestCodes.SEENNOTIFLIST.getCode()) {
+            String username = (String) SerializationUtil.deserialize(data.dataBlockList().get(0).data());
+
+            String date = (String) SerializationUtil.deserialize(data.dataBlockList().get(1).data());
+
+            Calendar newDate = null;
+
+            try {
+                newDate = Calendars.parse(date, "dd-MM-yyyy");
+            } catch (DateTimeParseException e) {
+                e.printStackTrace();
+            }
+            //get notificationDTO list
+            //convert to dataDTO
+            notificationsDTO = notificationManagementService.getSeenNotificationsByUsernameAndDate(username, newDate);
+            dataDTO = DataDTO.turnListIntoDataDTO(data.code(), notificationsDTO);
+        } else if(data.code() == FollowUpRequestCodes.CHECKNOTIF.getCode()) {
+            String username = (String) SerializationUtil.deserialize(data.dataBlockList().get(0).data());
+
+            boolean answer = notificationManagementService.checkForUnseenNotificationsByUsername(username);
+            dataDTO = new DataDTO(data.code());
+            byte[] stringBytes = SerializationUtil.serialize(String.valueOf(answer));
+            dataDTO.addDataBlock(stringBytes.length, stringBytes);
+        }
+
 
         //send response
         try {
