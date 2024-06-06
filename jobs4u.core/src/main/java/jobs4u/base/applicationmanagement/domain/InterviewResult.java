@@ -4,6 +4,7 @@ import eapli.framework.domain.model.ValueObject;
 import eapli.framework.validations.Preconditions;
 import jakarta.persistence.Embeddable;
 
+import java.util.Date;
 import java.util.Objects;
 
 @Embeddable
@@ -39,5 +40,8 @@ public class InterviewResult  implements ValueObject {
     @Override
     public int hashCode() {
         return Objects.hash(interviewResult, interviewGrade, justification);
+    }
+    public void updateInterviewGrade(int interviewGrade) {
+        this.interviewGrade = interviewGrade;
     }
 }
