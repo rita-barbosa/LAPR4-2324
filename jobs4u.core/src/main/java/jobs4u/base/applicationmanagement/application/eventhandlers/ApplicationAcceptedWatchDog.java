@@ -12,8 +12,12 @@ public class ApplicationAcceptedWatchDog implements EventHandler {
 
         final ApplicationAcceptedEvent event = (ApplicationAcceptedEvent) domainevent;
 
-        final SendEmailOnApplicationAcceptedController
-                controller = new SendEmailOnApplicationAcceptedController();
-        controller.sendEmail(event);
+        final SendEmailOnApplicationAcceptedController controller1 = new SendEmailOnApplicationAcceptedController();
+        controller1.sendEmail(event);
+
+        final NotifyCandidateOnApplicationStatusChangedController
+                controller = new NotifyCandidateOnApplicationStatusChangedController();
+        controller.notifyCandidateOfAcceptedApplication(event);
+
     }
 }

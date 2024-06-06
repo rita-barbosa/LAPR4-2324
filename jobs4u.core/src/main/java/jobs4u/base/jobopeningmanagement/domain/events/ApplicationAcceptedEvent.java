@@ -30,6 +30,10 @@ public class ApplicationAcceptedEvent extends DomainEventBase implements DomainE
         return receiverEmail.toString();
     }
 
+    public JobReference jobReference() {
+        return jobReference;
+    }
+
     public String topic() {
         return "Application Accepted";
     }
