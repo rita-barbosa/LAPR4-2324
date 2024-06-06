@@ -33,6 +33,7 @@ import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
 import jobs4u.base.contracttypemanagement.repository.ContractTypeRepository;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.rankmanagement.persistence.RankRepository;
+import jobs4u.base.notificationmanagement.repositories.NotificationRepository;
 import jobs4u.base.workmodemanagement.repository.WorkModeRepository;
 import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
 import jobs4u.base.interviewmodelmanagement.repositories.InterviewModelRepository;
@@ -163,6 +164,16 @@ public class JpaRepositoryFactory implements RepositoryFactory {
     @Override
     public RankRepository ranks() {
         return new JpaRankRepository(Application.settings().getPersistenceUnitName());
+    }
+
+    @Override
+    public NotificationRepository notifications(TransactionalContext autoTx) {
+        return new JpaNotificationRepository(autoTx);
+    }
+
+    @Override
+    public NotificationRepository notifications() {
+        return new JpaNotificationRepository(Application.settings().getPersistenceUnitName());
     }
 
     @Override

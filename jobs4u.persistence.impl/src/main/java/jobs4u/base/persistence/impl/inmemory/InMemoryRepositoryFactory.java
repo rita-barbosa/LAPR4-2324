@@ -32,6 +32,7 @@ import eapli.framework.infrastructure.authz.repositories.impl.inmemory.InMemoryU
 import jobs4u.base.contracttypemanagement.repository.ContractTypeRepository;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.rankmanagement.persistence.RankRepository;
+import jobs4u.base.notificationmanagement.repositories.NotificationRepository;
 import jobs4u.base.workmodemanagement.repository.WorkModeRepository;
 import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRepository;
 import jobs4u.base.interviewmodelmanagement.repositories.InterviewModelRepository;
@@ -126,6 +127,16 @@ public class InMemoryRepositoryFactory implements RepositoryFactory {
     @Override
     public RecruitmentProcessRepository recruitmentProcesses() {
         return recruitmentProcesses(null);
+    }
+
+    @Override
+    public NotificationRepository notifications(TransactionalContext autoTx) {
+        return new InMemoryNotificationRepository();
+    }
+
+    @Override
+    public NotificationRepository notifications() {
+        return notifications(null);
     }
 
     @Override
