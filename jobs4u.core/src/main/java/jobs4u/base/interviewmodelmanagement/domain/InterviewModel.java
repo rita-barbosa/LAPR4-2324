@@ -9,12 +9,16 @@ import jakarta.persistence.Table;
 import jobs4u.base.interviewmodelmanagement.dto.InterviewModelDTO;
 import jobs4u.base.pluginmanagement.domain.ConfigFileName;
 import jobs4u.base.pluginmanagement.domain.FullClassName;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Objects;
 
 @Entity
 @Table(name = "T_INTERVIEWMODEL")
 public class InterviewModel implements AggregateRoot<InterviewModelName> {
+
+    private static final Logger LOGGER = LogManager.getLogger(InterviewModel.class);
 
     @EmbeddedId
     private InterviewModelName interviewModelName;
@@ -59,6 +63,14 @@ public class InterviewModel implements AggregateRoot<InterviewModelName> {
 
     public String className() {
         return plugin.mainClass();
+    }
+
+    public String dataImporter(){
+        return this.plugin.dataImporter();
+    }
+
+    public ConfigFileName configurationFile(){
+        return this.configFile;
     }
 
     public String nameString() {

@@ -116,4 +116,13 @@ public class RecruitmentProcessManagementService {
         }
         return false;
     }
+
+    public boolean checkIfRecruitmentProcessIsInInterviewPhase(String jobReference){
+        Optional<RecruitmentProcess> recruitmentProcess = recruitmentProcessRepository.getRecruitmentProcessByJobReference(new JobReference(jobReference));
+        if (recruitmentProcess.isPresent()){
+            String phase = recruitmentProcess.get().currentActivePhase();
+            return phase.equals("Interview Phase");
+        }
+        return false;
+    }
 }
