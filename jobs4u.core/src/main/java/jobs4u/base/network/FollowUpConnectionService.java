@@ -179,6 +179,30 @@ public class FollowUpConnectionService {
         }
     }
 
+    public List<NotificationDTO> receiveSeenNotificationList(String username, String date) {
+        //send client user notifications request with dataDTO
+        try {
+            DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.SEENNOTIFLIST.getCode());
+            List<String> params = new ArrayList<>();
+            params.add(username);
+            params.add(date);
+
+            for (String parameter : params){
+                byte[] serialized = SerializationUtil.serialize(parameter);
+                dataDTO.addDataBlock(serialized.length, serialized);
+            }
+
+            byte[] message = dataDTO.toByteArray();
+            sOut.writeInt(message.length);
+            sOut.write(message);
+            sOut.flush();
+            return processListResponse(new NotificationListResponseProcessor());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e + "\n Unable to send notification list request.\n");
+        }
+    }
+
     private <T> List<T> processListResponse(ResponseProcessor<T> processor) {
         try {
             int byteLength = sIn.readInt();
