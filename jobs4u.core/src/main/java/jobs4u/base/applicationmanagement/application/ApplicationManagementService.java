@@ -76,6 +76,12 @@ public class ApplicationManagementService {
         applicationRepository.save(application);
     }
 
+    public void uploadInterviewAnswerFile(ApplicationDTO applicationDTO, String filepath){
+        Application application = applicationRepository.getApplicationFromDTO(applicationDTO);
+        application.interview().updateInterviewAnswer(filepath);
+        applicationRepository.save(application);
+    }
+
     public Optional<Application> getApplicationWithId(Long id){
         return applicationRepository.ofIdentity(id);
     }
