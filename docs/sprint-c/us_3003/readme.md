@@ -141,7 +141,7 @@ This topic presents the classes with the patterns applied to them along with jus
 
 ### 4.4. Tests
 
-
+No new tests were made regarding the domain entities within this functionality.
 
 ## 5. Implementation
 
