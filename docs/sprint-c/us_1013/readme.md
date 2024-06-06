@@ -128,6 +128,13 @@ Customer Manager can evaluate them and rank the candidates.
 >
 > **Answer:** No, ties should not be allowed. It must be clear what candidates are selected to the vacancies.
 
+
+> **Question:** In US1013, it is supposed to classify the candidates, but a question arose: after the conclusion of this
+> US, should it advance to the job opening phase, that is, move from the analysis phase to the result phase?
+>
+> **Answer:**  A241. In principle, the phase change should be done only within the scope of the respective US.
+
+
 ## 3. Analysis
 
 As clarified by the client, there is no criteria to rank the candidates. The ranking is done manually by the Customer

@@ -98,3 +98,11 @@ The following diagram pertains to the design adopted by the team for obtaining t
 story requires retrieving job openings related to the logged-in Customer Manager.
 
 ![Getting Job Openings](shared-sequence-diagram/sequence-diagram-get-job-openings.svg)
+
+
+#### FollowUp Server - TCP Connection
+
+The diagram below illustrates the design approach adopted by the team for establishing a connection with the FollowUp
+Server when a user story involves requesting data from the database or sending emails.
+
+![TCP Connection](shared-sequence-diagram/sequence-diagram-tcp-connection.svg)
