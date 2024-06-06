@@ -17,8 +17,8 @@ import java.util.regex.Pattern;
 public class InterviewAnswer implements ValueObject {
 
     private File interviewAnswerFile;
-    private String filename;
-    private String filepath;
+    private String filenameInterview;
+    private String filepathInterview;
 
     protected InterviewAnswer(String interviewAnswerFile){
         Preconditions.noneNull(interviewAnswerFile);
@@ -46,8 +46,8 @@ public class InterviewAnswer implements ValueObject {
 
             Files.copy(uploaded.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
             this.interviewAnswerFile = targetPath.toFile();
-            this.filename = targetPath.getFileName().toString();
-            this.filepath = targetPath.toString();
+            this.filenameInterview = targetPath.getFileName().toString();
+            this.filepathInterview = targetPath.toString();
         } catch (IOException e) {
             throw new RuntimeException("Failed to copy the file to the interviewAnswers directory.", e);
         }
@@ -61,11 +61,11 @@ public class InterviewAnswer implements ValueObject {
     }
 
     public String name(){
-        return filename;
+        return filenameInterview;
     }
 
     public String filepath(){
-        return this.filepath;
+        return this.filepathInterview;
     }
 
     public static InterviewAnswer valueOf(final String answer){
