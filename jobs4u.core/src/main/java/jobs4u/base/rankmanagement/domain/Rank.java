@@ -13,18 +13,22 @@ import java.util.List;
 @Table(name = "T_RANK")
 public class Rank implements AggregateRoot<JobReference> {
 
-    @Id
-    private JobReference jobOpeningAssociated;
+    @EmbeddedId
+    private JobReference jobReference;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private final List<RankOrder> entries = new ArrayList<>();
+    private List<RankOrder> entries = new ArrayList<>();
 
     public Rank() {
         //for ORM
     }
 
+    public Rank(JobReference jobOpeningAssociated, List<RankOrder> rankOrders) {
+        this.jobReference = jobOpeningAssociated;
+        this.entries = rankOrders;
+    }
     public Rank(JobReference jobOpeningAssociated) {
-        this.jobOpeningAssociated = jobOpeningAssociated;
+        this.jobReference = jobOpeningAssociated;
     }
 
     @Override
@@ -37,12 +41,12 @@ public class Rank implements AggregateRoot<JobReference> {
         return DomainEntities.areEqual(this, other);
     }
 
-    public List<RankOrder> rankEntries(){
+    public List<RankOrder> rankEntries() {
         return this.entries;
     }
 
     @Override
     public JobReference identity() {
-        return this.jobOpeningAssociated;
+        return this.jobReference;
     }
 }
