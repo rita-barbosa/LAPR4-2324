@@ -11,10 +11,21 @@ public class ApplicationStatusChangedEvent  extends DomainEventBase implements D
     private JobReference jobReference;
     private String newStatus;
 
-
     public ApplicationStatusChangedEvent(EmailAddress emailAddress, JobReference jobReference, String newStatus) {
         this.emailAddress = emailAddress;
         this.jobReference = jobReference;
         this.newStatus = newStatus;
+    }
+
+    public EmailAddress getEmailAddress() {
+        return emailAddress;
+    }
+
+    public JobReference getJobReference() {
+        return jobReference;
+    }
+
+    public String getNewStatus() {
+        return newStatus;
     }
 }
