@@ -29,10 +29,7 @@ import jobs4u.base.app.backoffice.console.presentation.applications.ScheduleInte
 import jobs4u.base.app.backoffice.console.presentation.authz.AddUserUI;
 import jobs4u.base.app.backoffice.console.presentation.authz.EnableDisableUserAction;
 import jobs4u.base.app.backoffice.console.presentation.authz.ListUsersAction;
-import jobs4u.base.app.backoffice.console.presentation.candidate.EnableDisableCandidateAction;
-import jobs4u.base.app.backoffice.console.presentation.candidate.ListAllCandidatesAction;
-import jobs4u.base.app.backoffice.console.presentation.candidate.ListCandidateDataAction;
-import jobs4u.base.app.backoffice.console.presentation.candidate.RegisterCandidateAction;
+import jobs4u.base.app.backoffice.console.presentation.candidate.*;
 import jobs4u.base.app.backoffice.console.presentation.customer.RegisterCustomerAction;
 import jobs4u.base.app.backoffice.console.presentation.interviewTemplate.GenerateInterviewModelTemplateFileUI;
 import jobs4u.base.app.backoffice.console.presentation.interviewmodel.SelectInterviewModelAction;
@@ -273,6 +270,7 @@ public class MainMenu extends AbstractUI {
         menu.addItem(7, "Edit a job opening", new EditJobOpeningAction());
         menu.addItem(8, "Opening / Closing phases", new ChangePhaseStatesAction());
         menu.addItem(9, "Verify Requirement Specifitions of applications", new VerifyRequirementAction());
+        menu.addItem(10,"Send Notification Email with Requirement Specification result", new SendNotificationEmailAction());
         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
 
         return menu;
