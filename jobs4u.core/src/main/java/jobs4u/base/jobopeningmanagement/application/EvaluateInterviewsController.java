@@ -10,7 +10,6 @@ import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.usermanagement.domain.BaseRoles;
-import jobs4u.plugin.core.adapter.InterviewPluginAdapter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

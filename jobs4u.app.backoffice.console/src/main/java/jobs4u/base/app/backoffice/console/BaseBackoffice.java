@@ -32,6 +32,12 @@ import jobs4u.base.customermanagement.application.eventhandlers.NewCustomerUserR
 import jobs4u.base.customermanagement.domain.events.NewCustomerUserRegisteredEvent;
 import jobs4u.base.infrastructure.authz.AuthenticationCredentialHandler;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
+import jobs4u.base.jobopeningmanagement.application.eventhandlers.ApplicationAcceptedWatchDog;
+import jobs4u.base.jobopeningmanagement.application.eventhandlers.ApplicationStatusChangedWatchDog;
+import jobs4u.base.jobopeningmanagement.application.eventhandlers.JobOpeningResultsPublishedWatchDog;
+import jobs4u.base.jobopeningmanagement.domain.events.ApplicationAcceptedEvent;
+import jobs4u.base.jobopeningmanagement.domain.events.ApplicationStatusChangedEvent;
+import jobs4u.base.jobopeningmanagement.domain.events.JobOpeningResultsPublishedEvent;
 import jobs4u.base.usermanagement.domain.BasePasswordPolicy;
 import eapli.framework.infrastructure.authz.application.AuthzRegistry;
 import eapli.framework.infrastructure.authz.domain.model.PlainTextEncoder;
@@ -86,5 +92,8 @@ public final class BaseBackoffice extends BaseApplication {
     protected void doSetupEventHandlers(final EventDispatcher dispatcher) {
         dispatcher.subscribe(new NewCustomerUserRegisteredWatchDog(), NewCustomerUserRegisteredEvent.class);
         dispatcher.subscribe(new NewCandidateUserRegisteredWatchDog(), NewCandidateUserRegisteredEvent.class);
+        dispatcher.subscribe(new ApplicationAcceptedWatchDog(), ApplicationAcceptedEvent.class);
+        dispatcher.subscribe(new ApplicationStatusChangedWatchDog(), ApplicationStatusChangedEvent.class);
+        dispatcher.subscribe(new JobOpeningResultsPublishedWatchDog(), JobOpeningResultsPublishedEvent.class);
     }
 }

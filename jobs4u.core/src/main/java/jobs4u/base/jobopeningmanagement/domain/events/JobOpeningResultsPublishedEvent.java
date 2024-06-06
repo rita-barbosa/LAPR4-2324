@@ -40,6 +40,13 @@ public class JobOpeningResultsPublishedEvent extends DomainEventBase implements 
     }
 
     public String information() {
-        return "Hello, this is Jobs4u, we came to tell you that your result has been accepted for the job opening: " + jobReference.toString();
+        StringBuilder builder = new StringBuilder();
+
+        String information = "Hello, this is Jobs4u, we came to tell you that the candidates have been selected for the job opening: ";
+        builder.append(information).append(jobReference.toString()).append("\n").append("» Candidates Information:");
+        for (Candidate candidate : acceptedCandidatesList) {
+            builder.append(candidate.toString()).append("\n");
+        }
+        return builder.toString();
     }
 }

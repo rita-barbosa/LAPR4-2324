@@ -12,6 +12,8 @@ import jobs4u.base.jobopeningmanagement.domain.events.ApplicationAcceptedEvent;
 import jobs4u.base.jobopeningmanagement.domain.events.JobOpeningResultsPublishedEvent;
 import jobs4u.base.network.FollowUpConnectionService;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -20,6 +22,7 @@ public class SendEmailOnJobOpeningResultsPublishedController {
     private static final FollowUpConnectionService connectionService = new FollowUpConnectionService();
     private static final AuthorizationService authz = AuthzRegistry.authorizationService();
     private static final CustomerRepository customerRepository = PersistenceContext.repositories().customers();
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceContext.class);
 
     private Username getSessionCredentials() {
         Optional<UserSession> session = authz.session();
@@ -43,9 +46,8 @@ public class SendEmailOnJobOpeningResultsPublishedController {
                 throw new IllegalArgumentException("Error: Could not establish connection" + connection.getValue());
             }
             connectionService.sendEmail(event.senderEmail(), customer.get().customerUser().email().toString(), event.topic(), event.information());
-
         } catch (NoSuchElementException | IllegalArgumentException e) {
-            System.out.println("Error");
+            LOGGER.error(e.getMessage());
         }
     }
 }

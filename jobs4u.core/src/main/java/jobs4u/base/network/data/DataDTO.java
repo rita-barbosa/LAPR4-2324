@@ -44,7 +44,7 @@ public class DataDTO implements Serializable {
         return dataDTO;
     }
 
-    public byte[] toByteArray() {
+    public synchronized byte[] toByteArray() {
         //version and code bytes
         int totalLength = 2;
 
@@ -78,7 +78,7 @@ public class DataDTO implements Serializable {
         return buffer.array();
     }
 
-    public static DataDTO fromByteArray(byte[] bytes) {
+    public synchronized static DataDTO fromByteArray(byte[] bytes) {
         ByteBuffer buffer = ByteBuffer.wrap(bytes);
         int version = Byte.toUnsignedInt(buffer.get());
         if (version != VERSION) {
