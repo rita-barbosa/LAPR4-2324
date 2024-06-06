@@ -3,6 +3,8 @@ package jobs4u.base.applicationmanagement.application;
 import eapli.framework.application.UseCaseController;
 import eapli.framework.infrastructure.authz.application.AuthorizationService;
 import eapli.framework.infrastructure.authz.application.AuthzRegistry;
+import eapli.framework.infrastructure.pubsub.EventPublisher;
+import eapli.framework.infrastructure.pubsub.impl.inprocess.service.InProcessPubSub;
 import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.applicationmanagement.domain.ApplicationFile;
 import jobs4u.base.candidatemanagement.application.RegisterCandidateController;
@@ -12,6 +14,8 @@ import jobs4u.base.candidatemanagement.repository.CandidateRepository;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.application.JobOpeningManagementService;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
+import jobs4u.base.jobopeningmanagement.domain.JobReference;
+import jobs4u.base.jobopeningmanagement.domain.events.ApplicationReceivedEvent;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.usermanagement.domain.BaseRoles;
@@ -28,6 +32,8 @@ public class RegisterJobOpeningApplicationController {
 
     private final CandidateRepository candidateRepository;
 
+    private final EventPublisher dispatcher;
+
     private final ApplicationManagementService applicationManagementService;
 
     private final JobOpeningRepository jobOpeningRepository;
@@ -35,6 +41,7 @@ public class RegisterJobOpeningApplicationController {
     private final JobOpeningManagementService jobOpeningManagementService;
 
     public RegisterJobOpeningApplicationController(){
+        this.dispatcher = InProcessPubSub.publisher();
         this.authz = AuthzRegistry.authorizationService();
         this.applicationManagementService = new ApplicationManagementService();
         this.jobOpeningManagementService = new JobOpeningManagementService();
@@ -65,6 +72,8 @@ public class RegisterJobOpeningApplicationController {
             jobOpening.setApplications(newApplications);
             jobOpeningRepository.save(jobOpening);
         }
+
+        dispatcher.publish(new ApplicationReceivedEvent(application.get().candidate().email().toString(), jobOpeningDTO.getJobReference()));
 
         return application;
     }
