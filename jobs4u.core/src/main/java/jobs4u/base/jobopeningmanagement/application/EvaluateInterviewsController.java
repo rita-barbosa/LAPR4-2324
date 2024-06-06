@@ -35,9 +35,9 @@ public class EvaluateInterviewsController {
         if (!applications.iterator().hasNext()) {
             throw new IllegalArgumentException("No applications have associated interview answers.");
         }
-        for (Application application : applications){
+        /*for (Application application : applications){
 
-        }
+        }*/
         return true;
     }
 
