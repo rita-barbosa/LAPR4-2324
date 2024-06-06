@@ -162,10 +162,10 @@ public class FollowUpConnectionService {
         }
     }
 
-    public List<NotificationDTO> receiveNotificationList(String username) {
+    public List<NotificationDTO> receiveUnseenNotificationList(String username) {
         //send client user notifications request with dataDTO
         try {
-            DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.NOTIFLIST.getCode());
+            DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.UNSEENNOTIFLIST.getCode());
             byte[] serialized = SerializationUtil.serialize(username);
             dataDTO.addDataBlock(serialized.length, serialized);
             byte[] message = dataDTO.toByteArray();
