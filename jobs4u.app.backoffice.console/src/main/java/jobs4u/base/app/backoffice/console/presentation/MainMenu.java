@@ -38,6 +38,7 @@ import jobs4u.base.app.backoffice.console.presentation.interviewTemplate.Generat
 import jobs4u.base.app.backoffice.console.presentation.interviewmodel.SelectInterviewModelAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.editing.EditJobOpeningAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.listing.ListJobOpeningsAction;
+import jobs4u.base.app.backoffice.console.presentation.jobopening.publishing.PublishResultJobOpeningAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.registration.RegisterJobOpeningAction;
 import jobs4u.base.app.backoffice.console.presentation.applications.ListJobOpeningApplicationsAction;
 import jobs4u.base.app.backoffice.console.presentation.recruitmentprocess.ChangePhaseStatesAction;
@@ -273,6 +274,7 @@ public class MainMenu extends AbstractUI {
         menu.addItem(7, "Edit a job opening", new EditJobOpeningAction());
         menu.addItem(8, "Opening / Closing phases", new ChangePhaseStatesAction());
         menu.addItem(9, "Verify Requirement Specifitions of applications", new VerifyRequirementAction());
+        menu.addItem(10,"Publish results of job opening", new PublishResultJobOpeningAction());
         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
 
         return menu;
