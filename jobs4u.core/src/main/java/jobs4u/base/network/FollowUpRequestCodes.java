@@ -8,10 +8,11 @@ public enum FollowUpRequestCodes {
     ERR(3),
     AUTH(4),
     EMAIL(5),
-    NOTIFLIST(6),
+    UNSEENNOTIFLIST(6),
     JOBOPLIST(7),
-    APPLIST(8);
-
+    APPLIST(8),
+    SEENNOTIFLIST(9),
+    CHECKNOTIF(10);
     private final int code;
 
     FollowUpRequestCodes(int code) {
