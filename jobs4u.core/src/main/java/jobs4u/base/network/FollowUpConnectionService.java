@@ -35,7 +35,7 @@ public class FollowUpConnectionService {
     public FollowUpConnectionService() {
     }
 
-    public Pair<Boolean, String> establishConnection(Username username, String password) {
+    public synchronized Pair<Boolean, String> establishConnection(Username username, String password) {
         try {
             if (!defineServerIpAddress()) {
                 return Pair.of(false, "Server IP Address not válid (" + serverIp + ").");
@@ -85,7 +85,7 @@ public class FollowUpConnectionService {
         }
     }
 
-    public static Pair<Boolean, String> closeConnection() {
+    public synchronized static Pair<Boolean, String> closeConnection() {
         try {
             DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.DISCONN.getCode());
             byte[] message = dataDTO.toByteArray();
@@ -171,7 +171,7 @@ public class FollowUpConnectionService {
         }
     }
 
-    public boolean sendEmail(String senderEmail, String receiverEmail, String topic, String info) {
+    public synchronized boolean sendEmail(String senderEmail, String receiverEmail, String topic, String info) {
         //send email request with dataDTO
         try {
             DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.EMAIL.getCode());
