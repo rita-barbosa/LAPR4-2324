@@ -155,6 +155,7 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
     public Interview interview() {
         return interview;
     }
+    public RequirementResult requirementResult(){return requirementResult;}
 
     public String requirementAnswerFilePath() {
         return this.requirementAnswer.filepath();
