@@ -19,6 +19,8 @@ import jobs4u.base.infrastructure.bootstrapers.UsersBootstrapperBase;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.domain.*;
 import jobs4u.base.contracttypemanagement.dto.ContractTypeDTO;
+import jobs4u.base.notificationmanagement.domain.*;
+import jobs4u.base.notificationmanagement.repositories.NotificationRepository;
 import jobs4u.base.workmodemanagement.dto.WorkModeDTO;
 import jobs4u.base.contracttypemanagement.repository.ContractTypeRepository;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
@@ -52,7 +54,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
     private CriteriaRepository criteriaRepository;
     private RecruitmentProcessRepository recruitmentProcessRepository;
     private ApplicationRepository applicationRepository;
-
+    private NotificationRepository notificationRepository;
     private CandidateRepository candidateRepository;
 
     List<RequirementSpecification> requirementSpecificationsList = new ArrayList<>();
@@ -72,10 +74,12 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         persistRecruitmentProcesses();
         persistJobOpenings();
         persistApplications();
+        persistNotifications();
         return true;
     }
 
     public void instantiateRepositories() {
+        this.notificationRepository = PersistenceContext.repositories().notifications();
         this.contractTypeRepository = PersistenceContext.repositories().contractTypes();
         this.workModeRepository = PersistenceContext.repositories().workModes();
         this.requirementSpecificationRepository = PersistenceContext.repositories().requirementSpecifications();
@@ -94,73 +98,56 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         criteriaRepository.save(new Criteria("Time Interval", JobOpening.class.getSimpleName()));
     }
 
+    private void persistNotifications() {
+        Calendar calendar1 = null, calendar2 = null, calendar3 = null,
+                    calendar4 = null, calendar5 = null, calendar6 = null;
+
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
+        try {
+            calendar1 = Calendars.fromDate(df.parse("16-03-2024"));
+            calendar2 = Calendars.fromDate(df.parse("17-03-2024"));
+            calendar3 = Calendars.fromDate(df.parse("18-03-2024"));
+            calendar4 = Calendars.fromDate(df.parse("19-03-2024"));
+            calendar5 = Calendars.fromDate(df.parse("20-03-2024"));
+            calendar6 = Calendars.fromDate(df.parse("21-03-2024"));
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        notificationRepository.save(new Notification(new NotificationType(String.valueOf(NotificationTypeEnum.CANDIDATE)), new NotificationRecipient("candidate@email.com"), new NotificationBody("YOUR APPLICATION FOR THE JOB OF Night Guard AT ISEP WAS RECEIVED."), new NotificationDate(calendar1), new NotificationStatus(String.valueOf(NotificationStatusEnum.SEEN))));
+        notificationRepository.save(new Notification(new NotificationType(String.valueOf(NotificationTypeEnum.CANDIDATE)), new NotificationRecipient("candidate@email.com"), new NotificationBody("YOUR APPLICATION FOR THE JOB OF Night Guard AT ISEP WAS ACCEPTED."), new NotificationDate(calendar2), new NotificationStatus(String.valueOf(NotificationStatusEnum.SEEN))));
+        notificationRepository.save(new Notification(new NotificationType(String.valueOf(NotificationTypeEnum.CANDIDATE)), new NotificationRecipient("candidate@email.com"), new NotificationBody("YOU WERE CHOSEN FOR THE JOB OF Night Guard AT ISEP."), new NotificationDate(calendar3), new NotificationStatus(String.valueOf(NotificationStatusEnum.UNSEEN))));
+
+        notificationRepository.save(new Notification(new NotificationType(String.valueOf(NotificationTypeEnum.CUSTOMER)), new NotificationRecipient("c@email.com"), new NotificationBody("YOUR JOB OPENING ISEP-4 IS ON IT'S APPLICATION PHASE."), new NotificationDate(calendar1), new NotificationStatus(String.valueOf(NotificationStatusEnum.SEEN))));
+        notificationRepository.save(new Notification(new NotificationType(String.valueOf(NotificationTypeEnum.CUSTOMER)), new NotificationRecipient("c@email.com"), new NotificationBody("YOUR JOB OPENING ISEP-4 IS ON IT'S SCREENING PHASE."), new NotificationDate(calendar2), new NotificationStatus(String.valueOf(NotificationStatusEnum.SEEN))));
+        notificationRepository.save(new Notification(new NotificationType(String.valueOf(NotificationTypeEnum.CUSTOMER)), new NotificationRecipient("c@email.com"), new NotificationBody("YOUR JOB OPENING ISEP-4 IS ON IT'S INTERVIEW PHASE."), new NotificationDate(calendar3), new NotificationStatus(String.valueOf(NotificationStatusEnum.SEEN))));
+        notificationRepository.save(new Notification(new NotificationType(String.valueOf(NotificationTypeEnum.CUSTOMER)), new NotificationRecipient("c@email.com"), new NotificationBody("YOUR JOB OPENING ISEP-4 IS ON IT'S ANALYSIS PHASE."), new NotificationDate(calendar4), new NotificationStatus(String.valueOf(NotificationStatusEnum.UNSEEN))));
+        notificationRepository.save(new Notification(new NotificationType(String.valueOf(NotificationTypeEnum.CUSTOMER)), new NotificationRecipient("c@email.com"), new NotificationBody("YOUR JOB OPENING ISEP-4 IS ON IT'S RESULTS PHASE."), new NotificationDate(calendar5), new NotificationStatus(String.valueOf(NotificationStatusEnum.UNSEEN))));
+        notificationRepository.save(new Notification(new NotificationType(String.valueOf(NotificationTypeEnum.CUSTOMER)), new NotificationRecipient("c@email.com"), new NotificationBody("YOUR JOB OPENING ISEP-4 HAS CONCLUDED."), new NotificationDate(calendar6), new NotificationStatus(String.valueOf(NotificationStatusEnum.UNSEEN))));
+    }
+
     private void persistRecruitmentProcesses() {
-        DateInterval dateInterval1 = null;
-        DateInterval dateInterval2 = null;
-        DateInterval dateInterval3 = null;
-        DateInterval dateInterval4 = null;
-        DateInterval dateInterval5 = null;
-        DateInterval dateInterval6 = null;
-        Calendar start1 = null;
-        Calendar end1 = null;
-        Calendar start2 = null;
-        Calendar end2 = null;
-        Calendar start3 = null;
-        Calendar end3 = null;
-        Calendar start4 = null;
-        Calendar end4 = null;
-        Calendar start5 = null;
-        Calendar end5 = null;
-        Calendar start6 = null;
-        Calendar end6 = null;
-        Calendar start7 = null;
-        Calendar end7 = null;
-        Calendar start8 = null;
-        Calendar end8 = null;
-        Calendar start9 = null;
-        Calendar end9 = null;
-        Calendar start10 = null;
-        Calendar end10 = null;
-        Calendar start11 = null;
-        Calendar end11 = null;
-        Calendar start12 = null;
-        Calendar end12 = null;
-        Calendar start13 = null;
-        Calendar end13 = null;
-        Calendar start14 = null;
-        Calendar end14 = null;
-        Calendar start15 = null;
-        Calendar end15 = null;
-        Calendar start16 = null;
-        Calendar end16 = null;
-        Calendar start17 = null;
-        Calendar end17 = null;
-        Calendar start18 = null;
-        Calendar end18 = null;
-        Calendar start19 = null;
-        Calendar end19 = null;
-        Calendar start20 = null;
-        Calendar end20 = null;
-        Calendar start21 = null;
-        Calendar end21 = null;
-        Calendar start22 = null;
-        Calendar end22 = null;
-        Calendar start23 = null;
-        Calendar end23 = null;
-        Calendar start24 = null;
-        Calendar end24 = null;
-        Calendar start25 = null;
-        Calendar end25 = null;
-        Calendar start26 = null;
-        Calendar end26 = null;
-        Calendar start27 = null;
-        Calendar end27 = null;
-        Calendar start28 = null;
-        Calendar end28 = null;
-        Calendar start29 = null;
-        Calendar end29 = null;
-        Calendar start30 = null;
-        Calendar end30 = null;
+        DateInterval dateInterval1 = null, dateInterval2 = null,
+                dateInterval3 = null, dateInterval4 = null,
+                dateInterval5 = null, dateInterval6 = null;
+
+        Calendar start1 = null, end1 = null, start2 = null, end2 = null,
+                start3 = null, end3 = null, start4 = null, end4 = null,
+                start5 = null, end5 = null, start6 = null, end6 = null,
+                start7 = null, end7 = null, start8 = null, end8 = null,
+                start9 = null, end9 = null, start10 = null, end10 = null,
+                start11 = null, end11 = null, start12 = null, end12 = null,
+                start13 = null, end13 = null, start14 = null, end14 = null,
+                start15 = null, end15 = null, start16 = null, end16 = null,
+                start17 = null, end17 = null, start18 = null, end18 = null,
+                start19 = null, end19 = null, start20 = null, end20 = null,
+                start21 = null, end21 = null, start22 = null, end22 = null,
+                start23 = null, end23 = null, start24 = null, end24 = null,
+                start25 = null, end25 = null, start26 = null, end26 = null,
+                start27 = null, end27 = null, start28 = null, end28 = null,
+                start29 = null, end29 = null, start30 = null, end30 = null;
+
 
         try {
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
