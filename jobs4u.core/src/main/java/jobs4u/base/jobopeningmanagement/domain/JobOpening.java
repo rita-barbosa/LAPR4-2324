@@ -244,6 +244,10 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         this.applications = applications;
     }
 
+    public JobFunction function(){
+        return this.function;
+    }
+
 
     protected JobOpening() {
         //for ORM
