@@ -63,7 +63,7 @@ public class ClientConnectionThread implements Runnable {
                 if (code == FollowUpRequestCodes.EMAIL.getCode()) {
                     requestThread = new Thread(new EmailSendingRequestThread(dataDTO, new DataOutputStream(socket.getOutputStream())));
 
-                } else if (code == FollowUpRequestCodes.NOTIFLIST.getCode()) {
+                } else if (code == FollowUpRequestCodes.UNSEENNOTIFLIST.getCode()) {
                     requestThread = new Thread(new NotificationRequestThread(dataDTO, new DataOutputStream(socket.getOutputStream())));
 
                 } else if (code == FollowUpRequestCodes.APPLIST.getCode() || code == FollowUpRequestCodes.JOBOPLIST.getCode()) {
@@ -71,6 +71,13 @@ public class ClientConnectionThread implements Runnable {
 
                 } else if (code == FollowUpRequestCodes.COMMTEST.getCode()) {
                     sendEmptyResponse(FollowUpRequestCodes.ACK);
+
+                } else if (code == FollowUpRequestCodes.SEENNOTIFLIST.getCode()) {
+                    requestThread = new Thread(new NotificationRequestThread(dataDTO, new DataOutputStream(socket.getOutputStream())));
+
+                }else if (code == FollowUpRequestCodes.CHECKNOTIF.getCode()) {
+                    requestThread = new Thread(new NotificationRequestThread(dataDTO, new DataOutputStream(socket.getOutputStream())));
+
                 }else if (code == FollowUpRequestCodes.DISCONN.getCode()){
                     break;
                 }
