@@ -57,7 +57,7 @@ public class InMemoryApplicationRepository
     public Iterable<Application> applicationsForJobOpeningWithInterviewAnswers(String jobReference) {
         JobOpeningRepository jobOpeningRepository = PersistenceContext.repositories().jobOpenings();
         Optional<JobOpening> jobOpenings = jobOpeningRepository.getJobOpeningByJobReference(new JobReference(jobReference));
-        jobOpenings.ifPresent(jobOpening -> match(e -> e.interview().interviewAnswer() != null && jobOpening.getApplications().contains(e)));
+        jobOpenings.ifPresent(jobOpening -> match(e -> e.interview() != null && jobOpening.getApplications().contains(e)));
         return Collections.emptyList();
     }
 }
