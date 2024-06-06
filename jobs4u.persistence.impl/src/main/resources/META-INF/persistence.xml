@@ -42,6 +42,14 @@
         <class>jobs4u.base.applicationmanagement.domain.Application</class>
         <class>jobs4u.base.applicationmanagement.domain.ApplicationFile</class>
         <!--        <class>jobs4u.base.interviewmodelmanagement.domain.InterviewModel</class>-->
+        <class>jobs4u.base.notificationmanagement.domain.Notification</class>
+        <class>jobs4u.base.notificationmanagement.domain.NotificationStatusEnum</class>
+        <class>jobs4u.base.notificationmanagement.domain.NotificationStatus</class>
+        <class>jobs4u.base.notificationmanagement.domain.NotificationTypeEnum</class>
+        <class>jobs4u.base.notificationmanagement.domain.NotificationType</class>
+        <class>jobs4u.base.notificationmanagement.domain.NotificationBody</class>
+        <class>jobs4u.base.notificationmanagement.domain.NotificationRecipient</class>
+        <class>jobs4u.base.notificationmanagement.domain.NotificationDate</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:tcp://vsgate-s2.dei.isep.ipp.pt:10773/jobs4u"/>
