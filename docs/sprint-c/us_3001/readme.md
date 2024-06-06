@@ -139,18 +139,8 @@ This topic presents the classes with the patterns applied to them along with jus
 
 ### 4.4. Tests
 
-*Include here the main tests used to validate the functionality. Focus on how they relate to the acceptance criteria.*
+No new tests were made regarding the domain entities within this functionality.
 
-**Test 1:** Verifies that it is not possible to ...
-
-**Refers to Acceptance Criteria:** G002.1
-
-````
-@Test(expected = IllegalArgumentException.class)
-public void ensureXxxxYyyy() {
-...
-}
-````
 
 ## 5. Implementation
 
