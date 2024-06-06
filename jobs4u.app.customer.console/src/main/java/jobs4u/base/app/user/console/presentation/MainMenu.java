@@ -23,6 +23,7 @@
  */
 package jobs4u.base.app.user.console.presentation;
 
+import eapli.framework.actions.Actions;
 import jobs4u.base.app.common.console.presentation.authz.MyUserMenu;
 import eapli.framework.actions.menu.Menu;
 import eapli.framework.actions.menu.MenuItem;
@@ -31,6 +32,7 @@ import eapli.framework.presentation.console.menu.MenuItemRenderer;
 import eapli.framework.presentation.console.menu.MenuRenderer;
 import eapli.framework.presentation.console.menu.VerticalMenuRenderer;
 import jobs4u.base.app.user.console.presentation.jobopeninglist.ListCustomerJobOpeningsAction;
+import jobs4u.base.app.user.console.presentation.notifications.NotificationInboxCustomerAction;
 
 /**
  * @author Paulo Gandra Sousa
@@ -43,6 +45,7 @@ public class MainMenu extends CustomerUserUI {
 
     // MAIN MENU
     private static final int MY_USER_OPTION = 1;
+    private static final int NOTIFICATION_OPTION = 3;
 
     @Override
     public boolean show() {
@@ -65,12 +68,21 @@ public class MainMenu extends CustomerUserUI {
 
         final Menu myUserMenu = new MyUserMenu();
         mainMenu.addSubMenu(MY_USER_OPTION, myUserMenu);
-        mainMenu.addItem(2, "See my job openings", new ListCustomerJobOpeningsAction());
-
+        mainMenu.addItem(2, "See my job openings >", new ListCustomerJobOpeningsAction());
+        final Menu notificationMenu = buildCandidateNotificationInboxMenu();
+        mainMenu.addSubMenu(NOTIFICATION_OPTION, notificationMenu);
         mainMenu.addItem(MenuItem.separator(SEPARATOR_LABEL));
 
         mainMenu.addItem(EXIT_OPTION, "Exit", new ExitWithMessageAction("Closing."));
 
         return mainMenu;
+    }
+
+    private Menu buildCandidateNotificationInboxMenu() {
+        final Menu menu = new Menu("Notifications >");
+        menu.addItem(1, "Notification inbox", new NotificationInboxCustomerAction());
+        menu.addItem(EXIT_OPTION, "Return", Actions.SUCCESS);
+
+        return menu;
     }
 }
