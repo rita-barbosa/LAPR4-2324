@@ -13,4 +13,6 @@ public interface ApplicationRepository extends DomainRepository<Long, Applicatio
     Iterable<Application> applicationsFromCandidate(String phoneNumber);
 
     Application getApplicationFromDTO(ApplicationDTO applicationDTO);
+
+    Iterable<Application> applicationsForJobOpeningWithInterviewAnswers(String jobReference);
 }

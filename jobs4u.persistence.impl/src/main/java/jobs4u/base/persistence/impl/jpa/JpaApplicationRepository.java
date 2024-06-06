@@ -70,6 +70,26 @@ public class JpaApplicationRepository
     }
 
     @Override
+    public Iterable<Application> applicationsForJobOpeningWithInterviewAnswers(String jobReference) {
+        String[] f = jobReference.split("-");
+        final TypedQuery<Application>
+                q = createQuery("SELECT a \n" +
+                        "FROM Application a \n" +
+                        "WHERE a.id IN (\n" +
+                        "    SELECT app.id \n" +
+                        "    FROM JobOpening jo \n" +
+                        "    JOIN jo.applications app \n" +
+                        "    WHERE jo.jobReference.companyCode = :companyCode \n" +
+                        "    AND jo.jobReference.sequentialCode = :sequentialCode\n" +
+                        ")\n" +
+                        "AND a.interview.interviewAnswer IS NOT NULL",
+                Application.class);
+        q.setParameter("companyCode", f[0]);
+        q.setParameter("sequentialCode", f[1]);
+        return q.getResultList();
+    }
+
+    @Override
     public Iterable<Application> applicationsFromCandidate(String phoneNumber) {
         PhoneNumber number = new PhoneNumber("+351", phoneNumber);
         final TypedQuery<Application>
