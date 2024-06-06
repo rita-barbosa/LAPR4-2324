@@ -225,7 +225,7 @@ public class JpaJobOpeningRepository
                 q = createQuery("SELECT e \n" +
                         "FROM JobOpening e \n" +
                         "JOIN RecruitmentProcess rp ON e.jobReference = rp.jobOpening.jobReference\n" +
-                        "WHERE rp.recruitmentProcessStatus.statusDescription = 'RESULT'\n" +
+                        "WHERE rp.recruitmentProcessStatus.statusDescription = 'RESULTS'\n" +
                         "AND e.jobReference.companyCode IN (\n" +
                         "    SELECT code.customerCode \n" +
                         "    FROM Customer c \n" +

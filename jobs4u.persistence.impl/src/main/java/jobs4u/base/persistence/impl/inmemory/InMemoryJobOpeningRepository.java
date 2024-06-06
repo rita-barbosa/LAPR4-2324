@@ -185,7 +185,7 @@ public class InMemoryJobOpeningRepository
         List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername);
 
         return match(e -> {
-            if (e.getRecruitmentProcess().currentActivePhase().equalsIgnoreCase("result")) {
+            if (e.getRecruitmentProcess().currentActivePhase().equalsIgnoreCase("results")) {
                 return customers.stream().anyMatch(customer -> customer.customerCode().toString().equals(e.jobReference().getcustomerCode()));
             }
             return false;
