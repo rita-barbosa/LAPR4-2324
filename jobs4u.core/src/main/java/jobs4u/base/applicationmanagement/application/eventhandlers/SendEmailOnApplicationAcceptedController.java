@@ -1,4 +1,4 @@
-package jobs4u.base.jobopeningmanagement.application.eventhandlers;
+package jobs4u.base.applicationmanagement.application.eventhandlers;
 
 import eapli.framework.infrastructure.authz.application.AuthorizationService;
 import eapli.framework.infrastructure.authz.application.AuthzRegistry;

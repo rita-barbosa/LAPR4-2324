@@ -1,4 +1,4 @@
-package jobs4u.base.jobopeningmanagement.application.eventhandlers;
+package jobs4u.base.applicationmanagement.application.eventhandlers;
 
 import eapli.framework.domain.events.DomainEvent;
 import eapli.framework.infrastructure.pubsub.EventHandler;
