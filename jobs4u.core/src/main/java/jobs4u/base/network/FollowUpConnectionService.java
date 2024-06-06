@@ -8,7 +8,7 @@ import jobs4u.base.network.responseprocessors.JobOpeningListResponseProcessor;
 import jobs4u.base.network.responseprocessors.NotificationListResponseProcessor;
 import jobs4u.base.network.responseprocessors.ResponseProcessor;
 import jobs4u.base.network.data.DataDTO;
-import jobs4u.base.notificationmanagement.NotificationDTO;
+import jobs4u.base.notificationmanagement.dto.NotificationDTO;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.DataInputStream;
@@ -80,6 +80,27 @@ public class FollowUpConnectionService {
             sOut.write(message);
             sOut.flush();
 
+        } catch (IOException e) {
+            throw new RuntimeException(e + "\n Unable to send authentication request.\n");
+        }
+    }
+
+    public DataDTO startCheckForNotificationsThread(Username username){
+        try {
+            DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.CHECKNOTIF.getCode());
+            byte[] stringBytes = SerializationUtil.serialize(username.toString());
+            dataDTO.addDataBlock(stringBytes.length, stringBytes);
+
+            byte[] message = dataDTO.toByteArray();
+            sOut.writeInt(message.length);
+            sOut.write(message);
+            sOut.flush();
+            int byteLength = sIn.readInt();
+            byte[] bytes = new byte[byteLength];
+            sIn.readFully(bytes);
+            DataDTO dataDTOanswer = DataDTO.fromByteArray(bytes);
+
+            return dataDTOanswer;
         } catch (IOException e) {
             throw new RuntimeException(e + "\n Unable to send authentication request.\n");
         }
