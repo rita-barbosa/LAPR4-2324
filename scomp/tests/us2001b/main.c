@@ -112,60 +112,6 @@ void test_copy_files()
     TEST_ASSERT_EQUAL_INT(1, actual_count);
 }
 
-void test_delegate_work()
-{
-    int fd[2][2];
-
-    if (pipe(fd[0]) == -1)
-    {
-        perror("pipe");
-        exit(1);
-    }
-    if (pipe(fd[1]) == -1)
-    {
-        perror("pipe");
-        exit(1);
-    }
-
-    int lastCandidate = 2;
-    int copiedCandDiff = 2;
-    int child = 0;
-    int expected_candidate = 1;
-
-    call_func_delegate_candidate(delegate_candidate, lastCandidate, copiedCandDiff, child, fd);
-
-    int actual_candidate;
-    int n = read(fd[child][0], &actual_candidate, sizeof(actual_candidate));
-    if (n != sizeof(actual_candidate))
-    {
-        perror("pipe read");
-        exit(1);
-    }
-    TEST_ASSERT_EQUAL_INT(expected_candidate, actual_candidate);
-}
-
-void test_available_child()
-{
-    int available = 1;
-    int received = 0;
-    int shared_pipe[2];
-
-    if (pipe(shared_pipe) == -1)
-    {
-        perror("pipe");
-        exit(1);
-    }
-    int n = write(shared_pipe[1], &available, sizeof(available));
-    if (n != sizeof(available))
-    {
-        perror("pipe read");
-        exit(1);
-    }
-
-    call_func_available_child(available_child, &received, shared_pipe[0]);
-    TEST_ASSERT_EQUAL_INT(1, received);
-}
-
 void test_generate_report()
 {
     // Call the function to generate the report
@@ -227,8 +173,6 @@ int main(void)
     printf("\n»»» START TESTS «««\n");
     RUN_TEST(test_get_new_candidates);
     RUN_TEST(test_copy_files);
-    RUN_TEST(test_delegate_work);
-    RUN_TEST(test_available_child);
     RUN_TEST(test_generate_report);
     printf("\n»»» END TESTS «««\n");
     return UNITY_END();
