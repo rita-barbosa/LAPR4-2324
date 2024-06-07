@@ -481,9 +481,11 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
     private void persistCandidates() {
         final Set<Role> roles = new HashSet<>();
         roles.add(BaseRoles.CANDIDATE_USER);
-        PhoneNumber phoneNumber = new PhoneNumber("+351", "910000034");
+        PhoneNumber phoneNumber1 = new PhoneNumber("+351", "910000034");
+        PhoneNumber phoneNumber2= new PhoneNumber("+351","910095800");
 
-        candidateManagementService.registerCandidate("Joana", "candidate@email.com", phoneNumber);
+        candidateManagementService.registerCandidate("Joana", "candidate@email.com", phoneNumber1);
+        candidateManagementService.registerCandidate("Vitor", "1211273@isep.ipp.pt",phoneNumber2);
     }
 
     private void persistWorkModes() {
@@ -534,7 +536,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
 
         Date date = new Date(2024 - 1900, Calendar.JANUARY, 5);
         Interview interview = new Interview("interview1", new Date(2024 - 1900, Calendar.MARCH, 2),
-                new InterviewResult("passed", 50, "the grade is above 50"), interviewAnswer);
+                new InterviewResult(50, "the grade is above 50"), interviewAnswer);
 
         PhoneNumber phone = new PhoneNumber("+351", "910000034");
 
@@ -545,14 +547,14 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         Date date1 = new Date(2024 - 1900, Calendar.JANUARY, 6);
         InterviewAnswer interviewAnswer1 = InterviewAnswer.valueOf("plugins-config-file/interview/i-answer-1.txt");
         Interview interview1 = new Interview("interview1", new Date(2024 - 1900, Calendar.MARCH, 3),
-                new InterviewResult("passed", 60, "the grade is above 50"), interviewAnswer1);
+                new InterviewResult( 60, "the grade is above 50"), interviewAnswer1);
 
         RequirementAnswer requirementAnswer2 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
         RequirementResult requirementResult2 =  RequirementResult.valueOf(true);
         Date date2 = new Date(2024 - 1900, Calendar.JANUARY, 8);
         InterviewAnswer interviewAnswer2 = InterviewAnswer.valueOf("plugins-config-file/interview/i-answer-1.txt");
         Interview interview2 = new Interview("interview2", new Date(2024 - 1900, Calendar.MARCH, 4),
-                new InterviewResult("passed", 80, "the grade is above 50"), interviewAnswer2);
+                new InterviewResult( 80, "the grade is above 50"), interviewAnswer2);
         RequirementAnswer requirementAnswer3 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
         RequirementResult requirementResult3 =  RequirementResult.valueOf(true);
         ApplicationFile file10 = new ApplicationFile(new File("output/candidate3/example3.txt"));
@@ -561,7 +563,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         InterviewAnswer interviewAnswer3 = InterviewAnswer.valueOf("plugins-config-file/interview/i-answer-1.txt");
         Date date3 = new Date(2024 - 1900, Calendar.JANUARY, 10);
         Interview interview3 = new Interview("interview3", new Date(2024 - 1900, Calendar.MARCH, 5),
-                new InterviewResult("failed", 20, "the grade is below 50"), interviewAnswer3);
+                new InterviewResult(20, "the grade is below 50"), interviewAnswer3);
 
 
         RequirementAnswer requirementAnswer4 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
@@ -572,7 +574,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         Date date4 = new Date(2024 - 1900, Calendar.JANUARY, 12);
         InterviewAnswer interviewAnswer4 = InterviewAnswer.valueOf("plugins-config-file/interview/i-answer-1.txt");
         Interview interview4 = new Interview("interview4", new Date(2024 - 1900, Calendar.MARCH, 6),
-                new InterviewResult("passed", 88, "the grade is above 50"), interviewAnswer4);
+                new InterviewResult( 88, "the grade is above 50"), interviewAnswer4);
         ApplicationFile file12 = new ApplicationFile(new File("output/candidate5/example5.txt"));
         Set<ApplicationFile> files5 = new HashSet<>();
         files5.add(file12);
@@ -585,7 +587,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         Date date5 = new Date(2024 - 1900, Calendar.JANUARY, 12);
         InterviewAnswer interviewAnswer5 = InterviewAnswer.valueOf("plugins-config-file/interview/i-answer-1.txt");
         Interview interview5 = new Interview("interview5", new Date(2024 - 1900, Calendar.MARCH, 6),
-                new InterviewResult("passed", 75, "the grade is above 50"), interviewAnswer5);
+                new InterviewResult(75, "the grade is above 50"), interviewAnswer5);
 
 
         Application application, application1, application2, application3, application4, application5;
