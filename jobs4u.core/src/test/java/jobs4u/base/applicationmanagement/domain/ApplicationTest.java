@@ -24,7 +24,7 @@ public class ApplicationTest {
     Date date = new Date(2024, Calendar.JANUARY, 5);
     InterviewAnswer interviewAnswer = new InterviewAnswer(i.toString());
     Interview interview = new Interview("interview1", new Date(2024, Calendar.FEBRUARY, 2),
-            new InterviewResult("correct", 50, "wrong"), interviewAnswer);
+            new InterviewResult( 50, "wrong"), interviewAnswer);
 
     public ApplicationTest() throws IOException {
     }

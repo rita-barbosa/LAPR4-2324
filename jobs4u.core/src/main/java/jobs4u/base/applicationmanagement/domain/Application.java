@@ -157,8 +157,13 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
     }
     public RequirementResult requirementResult(){return requirementResult;}
 
+
     public String requirementAnswerFilePath() {
         return this.requirementAnswer.filepath();
+    }
+
+    public String interviewAnswerFilePath() {
+        return this.interview.interviewAnswer().filepath();
     }
 
     @Override
@@ -231,6 +236,28 @@ public class Application implements AggregateRoot<Long>, DTOable<ApplicationDTO>
         }
     }
 
+    public void updateInterviewGrade(Pair<Integer, String> result) {
+        Preconditions.nonEmpty(interviewAnswerFilePath());
+
+        File interviewFile = new File(interviewAnswerFilePath());
+        try {
+
+            if (!interviewFile.isAbsolute()) {
+                interviewFile = interviewFile.getCanonicalFile();
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to get the absolute path of interview answers file.", e);
+        }
+
+        if (interviewFile.exists() && interviewFile.isFile()) {
+
+            this.interview.updateInterviewResult(result);
+
+        } else {
+            throw new IllegalArgumentException("No valid interview answer file.");
+        }
+    }
     public void updateApplicationSchedule(Date newSchedule) {
         Preconditions.noneNull(newSchedule);
         this.interview.updateSchedule(newSchedule);
