@@ -31,8 +31,8 @@ void handle_signal(int signo)
     }
 }
 
-// VERSION: 8
-// 04/05/2024
+// VERSION: 9
+// 07/06/2024
 // Group: 2DG2
 int main(int argc, char *argv[])
 {
@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
                 if ((sem_post(sem3) == -1) && !time_to_terminate)
                 {
                     perror("sem_post");
-                    exit(10);
+                    exit(5);
                 }
             }
             else
@@ -160,7 +160,18 @@ int main(int argc, char *argv[])
             }
             sleep(config.time_interval);
         }
-        exit(0);
+        if (munmap(shared_memory, size) == -1)
+        {
+            perror("munmap");
+            close(fd);
+            exit(6);
+        }
+        if (close(fd) == -1)
+        {
+            perror("close");
+            exit(7);
+        }
+        exit(10);
     }
     //==================================================================================
 
@@ -175,27 +186,37 @@ int main(int argc, char *argv[])
                 if ((sem_wait(sem1) == -1) && !time_to_terminate)
                 {
                     perror("sem_wait 11");
-                    exit(i + 20);
+                    exit(6);
                 }
                 if ((sem_wait(sem2) == -1) && !time_to_terminate)
                 {
                     perror("sem_wait 22");
-                    exit(201);
+                    exit(6);
                 }
                     if (!time_to_terminate)
                     {
                         copy_files(shared_memory->array[shared_memory->tail], config.input_directory, config.output_directory); // Copies the files from the input directoty to the ouput directory
-                        printf("»»» New candidate processed >|< ID: %d | TAIL: %d\n", shared_memory->array[shared_memory->tail], shared_memory->tail);
+                        printf("»»» New candidate processed: %d\n", shared_memory->array[shared_memory->tail]);
                         shared_memory->tail = (shared_memory->tail + 1) % LENGTH_BUFFER;
                         shared_memory->size--;
-                    }
+                    }   
                 if ((sem_post(sem2) == -1) && !time_to_terminate)
                 {
-                    perror("sem_wait 222");
-                    exit(202);
+                    perror("sem_post");
+                    exit(5);
                 }
             }
-            exit(i + 20);
+            if (munmap(shared_memory, size) == -1)
+            {
+                perror("munmap");
+                exit(7);
+            }
+            if (close(fd) == -1)
+            {
+                perror("close");
+                exit(8);
+            }
+            exit(10 + i);
         }
     }
     //==================================================================================
@@ -206,26 +227,33 @@ int main(int argc, char *argv[])
         if ((sem_wait(sem3) == -1) && !time_to_terminate)
         {
             perror("sem_wait 333");
-            exit(201);
+            exit(6);
         }
         get_new_candidates(config.input_directory, &lastCandidate, &copiedCandDiff);
         diff = copiedCandDiff;
         while (diff > 0)
         {
-            if ((sem_wait(sem2) == -1) && !time_to_terminate)
-            {
-                perror("sem_wait 2222");
-                exit(201);
-            }
+
             for (int i = 0; i < copiedCandDiff; i++)
             {
                 if (shared_memory->size != LENGTH_BUFFER)
                 {
                     cand = (lastCandidate - (diff - 1));
-                    printf("»» New candidate delegated: %d | HEAD: %d | TAIL: %d\n", cand, shared_memory->head, shared_memory->tail);
                     shared_memory->array[shared_memory->head] = cand;
                     shared_memory->head = (shared_memory->head + 1) % LENGTH_BUFFER;
+                    printf("»» New candidate delegated: %d\n", cand);
+
+                    if ((sem_wait(sem2) == -1) && !time_to_terminate)
+                    {
+                        perror("sem_wait 2222");
+                        exit(6);
+                    }
                     shared_memory->size++;
+                    if ((sem_post(sem2) == -1) && !time_to_terminate)
+                    {
+                        perror("sem_wait 22222");
+                        exit(5);
+                    }
                     delegated_cand++;
                     diff--;
                 }
@@ -235,17 +263,12 @@ int main(int argc, char *argv[])
                     break;
                 }
             }
-            if ((sem_post(sem2) == -1) && !time_to_terminate)
-            {
-                perror("sem_wait 22222");
-                exit(202);
-            }
             for (int i = 0; i < delegated_cand; i++)
             {
                 if ((sem_post(sem1) == -1) && !time_to_terminate)
                 {
                     perror("sem_post");
-                    exit(8);
+                    exit(5);
                 }
             }
             delegated_cand = 0;
@@ -262,18 +285,18 @@ int main(int argc, char *argv[])
     if (close(fd) == -1)
     {
         perror("close");
-        exit(7);
+        exit(8);
     }
     if (munmap(shared_memory, size) == -1)
     {
         perror("munmap");
-        close(fd);
-        exit(6);
+        exit(7);
     }
-    shm_unlink("/shm_us2001b");
-    sem_unlink("/sem1");
-    sem_unlink("/sem2");
-    sem_unlink("/sem3");
+    if ((shm_unlink("/shm_us2001b") == -1) || (sem_unlink("/sem1") == -1) || (sem_unlink("/sem2") == -1) || (sem_unlink("/sem3") == -1))
+    {
+        perror("unlink");
+        exit(9);
+    }
 
     for (int j = 0; j < (config.num_worker_children + 1); j++)
     {

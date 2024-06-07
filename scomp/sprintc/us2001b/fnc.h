@@ -1,7 +1,7 @@
 #ifndef FNC_H
 #define FNC_H
 
-#define LENGTH_BUFFER 5
+#define LENGTH_BUFFER 3
 
 typedef struct
 {
@@ -20,7 +20,6 @@ typedef struct
 } BufferCircular;
 
 void get_new_candidates(char *directory, int *current_number, int *max_diff);
-void available_child(int *child, int fd);
 int check_files_child(char *input_directory);
 void copy_files(int n, char *input_directory, char *output_directory);
 void generate_report(int lastCandidate, char *output_directory);
