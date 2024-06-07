@@ -123,7 +123,7 @@ public class ClientConnectionThread implements Runnable {
         }
     }
 
-    public synchronized boolean authenticationProtocol(DataDTO dataDto) {
+    public boolean authenticationProtocol(DataDTO dataDto) {
         AuthzRegistry.configure(PersistenceContext.repositories().users(), new BasePasswordPolicy(), new PlainTextEncoder());
         AuthenticationService authenticationService = AuthzRegistry.authenticationService();
         List<DataBlock> dataBlocks = dataDto.dataBlockList();
