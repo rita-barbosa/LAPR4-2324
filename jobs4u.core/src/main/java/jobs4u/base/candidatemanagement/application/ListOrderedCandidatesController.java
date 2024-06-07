@@ -48,22 +48,7 @@ public class ListOrderedCandidatesController {
     }
 
     public Iterable<JobOpeningDTO> getJobOpeningList() {
-//        Optional<SystemUser> customerManager = authz.loggedinUserWithPermissions(BaseRoles.CUSTOMER_MANAGER);
-//        return customerManager.map(systemUser -> jobOpeningManagementService.jobOpeningsInScreeingListOfCustomerManager(systemUser.username())).orElse(null);
-
         return jobOpeningManagementService.getSTARTEDJobOpenings();
-    }
-
-    public List <CandidateDTO> getCandidateList(JobOpeningDTO jobOpeningDTO){
-        JobOpening job = jobOpeningManagementService.getJobOpening(jobOpeningDTO);
-
-        List<ApplicationDTO> applicationListDTO = applicationManagementService.getApplicationsList(job);
-
-        Set<Application> applicationList = applicationManagementService.getApplications(job);
-
-        List<CandidateDTO> candidateListDTO = candidateManagementService.getCandidatesFromApplications(applicationList);
-
-        return candidateListDTO;
     }
 
     public List <ApplicationDTO> getApplicationsOrderedByInterviewResult(JobOpeningDTO jobOpeningDTO){
@@ -71,11 +56,9 @@ public class ListOrderedCandidatesController {
 
         List<ApplicationDTO> applicationListDTO = applicationManagementService.getApplicationsList(job);
 
-//        Set<Application> applicationList = applicationManagementService.getApplications(job);
-//
-//        List<CandidateDTO> candidateListDTO = candidateManagementService.getCandidatesFromApplications(applicationList);
+        List<ApplicationDTO> orderApplicationDTOList = applicationManagementService.getApplicationsOrderedByInterviewResult(applicationListDTO);
 
-        return applicationListDTO;
+        return orderApplicationDTOList;
     }
 
 

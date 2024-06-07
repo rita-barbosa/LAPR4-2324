@@ -58,22 +58,23 @@ public class ListOrderedCandidatesUI extends AbstractUI {
             List<ApplicationDTO> applicationListDTO = controller.getApplicationsOrderedByInterviewResult(jobOpeningDTO);
 
             if (applicationListDTO.isEmpty()){
-                System.out.println("Don't exist applications for the job opening chosen!");
+                System.out.println("Don't exist applications for the job opening chosen, so it's not possible to get the" +
+                        "order list of the candidates!");
+            } else {
+
+                assert jobOpeningDTO != null;
+                System.out.println("\nJob Opening:" + jobOpeningDTO.getJobReference());
+                String headerApplication = "Name   |          Email          |  Grade  |  Justification   \n";
+                System.out.println(headerApplication);
+
+                //alinhar isto direito
+                for (ApplicationDTO app : applicationListDTO) {
+                    String candidate = app.getCandidateName() + "  |    "  + app.getCandidate() + "   |  " + app.getInterview().interviewResult().interviewGrade().toString() + "  |  " + app.getInterview().interviewResult().justification();
+                    System.out.println(candidate);
+                }
+
             }
 
-            for (ApplicationDTO app : applicationListDTO) {
-                System.out.println(app.toString());
-            }
-
-//            List<CandidateDTO> candidateDTOList = controller.getCandidateList()
-//
-//
-//
-//
-//            List<CandidateDTO> candidatesDTOList = this.controller.getCandidatesList();
-//            for (CandidateDTO candidate: candidatesDTOList){
-//                System.out.printf("%d. %s | %s | %s%n", index++, candidate.getCandidateName(), candidate.getCandidateEmail(), candidate.getCandidatePhoneNumber());
-//            }
         } catch (final IntegrityViolationException | ConcurrencyException e) {
             System.out.println(
                     "Unfortunatelly there was an unexpected error in the application. Please try again and if the problem persists, contact your system admnistrator.");
