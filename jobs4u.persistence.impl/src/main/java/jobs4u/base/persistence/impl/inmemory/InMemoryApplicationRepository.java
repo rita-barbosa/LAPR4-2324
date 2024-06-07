@@ -1,6 +1,7 @@
 package jobs4u.base.persistence.impl.inmemory;
 
 
+import eapli.framework.infrastructure.authz.domain.model.Username;
 import eapli.framework.infrastructure.repositories.impl.inmemory.InMemoryDomainRepository;
 import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
@@ -59,5 +60,10 @@ public class InMemoryApplicationRepository
         Optional<JobOpening> jobOpenings = jobOpeningRepository.getJobOpeningByJobReference(new JobReference(jobReference));
         jobOpenings.ifPresent(jobOpening -> match(e -> e.interview() != null && jobOpening.getApplications().contains(e)));
         return Collections.emptyList();
+    }
+
+    @Override
+    public Iterable<Application> getApplicationFromCandidateUserName(Username username) {
+        return match(e -> e.candidate().user().username().equals(username));
     }
 }

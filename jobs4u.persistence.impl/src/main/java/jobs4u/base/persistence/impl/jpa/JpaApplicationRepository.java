@@ -1,6 +1,7 @@
 package jobs4u.base.persistence.impl.jpa;
 
 import eapli.framework.domain.repositories.TransactionalContext;
+import eapli.framework.infrastructure.authz.domain.model.Username;
 import eapli.framework.infrastructure.repositories.impl.jpa.JpaAutoTxRepository;
 
 import jakarta.persistence.TypedQuery;
@@ -98,6 +99,17 @@ public class JpaApplicationRepository
                         "WHERE a.candidate.phoneNumber = :phone\n",
                 Application.class);
         q.setParameter("phone", number);
+        return q.getResultList();
+    }
+
+    @Override
+    public Iterable<Application> getApplicationFromCandidateUserName(Username username) {
+        final TypedQuery<Application>
+                q = createQuery("SELECT a \n" +
+                        "FROM Application a \n" +
+                        "WHERE a.candidate.user.username = :username\n",
+                Application.class);
+        q.setParameter("username", username);
         return q.getResultList();
     }
 

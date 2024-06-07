@@ -24,6 +24,7 @@
 package jobs4u.base.app.candidate.console.presentation;
 
 import jobs4u.base.Application;
+import jobs4u.base.app.candidate.console.presentation.applicationlist.ListApplicationsAndStateAction;
 import jobs4u.base.app.candidate.console.presentation.notifications.NotificationInboxCandidateAction;
 import jobs4u.base.app.common.console.presentation.authz.MyUserMenu;
 import jobs4u.base.usermanagement.domain.BaseRoles;
@@ -104,10 +105,10 @@ public class MainMenu extends AbstractUI {
         }
 
         if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.CANDIDATE_USER)) {
-            final Menu cashierMenu = buildCandidateMenu();
-            mainMenu.addSubMenu(APPLICATION_OPTION, cashierMenu);
             final Menu notificationMenu = buildCandidateNotificationInboxMenu();
             mainMenu.addSubMenu(NOTIFICATION_OPTION, notificationMenu);
+            final Menu cashierMenu = buildCandidateApplicationMenu();
+            mainMenu.addSubMenu(APPLICATION_OPTION, cashierMenu);
         }
 
         if (!Application.settings().isMenuLayoutHorizontal()) {
@@ -127,8 +128,9 @@ public class MainMenu extends AbstractUI {
         return menu;
     }
 
-    private Menu buildCandidateMenu() {
+    private Menu buildCandidateApplicationMenu() {
         final Menu cashierMenu = new Menu("> Applications");
+        cashierMenu.addItem(1, "List applications and state", new ListApplicationsAndStateAction());
         cashierMenu.addItem(EXIT_OPTION, "Return", Actions.SUCCESS);
 
         return cashierMenu;
