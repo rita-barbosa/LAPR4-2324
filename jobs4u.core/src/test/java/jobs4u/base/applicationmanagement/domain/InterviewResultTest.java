@@ -12,20 +12,20 @@ class InterviewResultTest {
 
     @Test
     public void ensureMustHaveResult(){
-        assertThrows(IllegalArgumentException.class, () -> new InterviewResult(null, interviewGrade,
+        assertThrows(IllegalArgumentException.class, () -> new InterviewResult( interviewGrade,
                 justification));
     }
 
     @Test
     public void ensureMustHaveGrade(){
-        assertThrows(IllegalArgumentException.class, () -> new InterviewResult(interviewResult, null,
+        assertThrows(IllegalArgumentException.class, () -> new InterviewResult(null,
                 justification));
 
     }
 
     @Test
     public void ensureMustHaveJustification(){
-        assertThrows(IllegalArgumentException.class, () -> new InterviewResult(interviewResult, interviewGrade,
+        assertThrows(IllegalArgumentException.class, () -> new InterviewResult( interviewGrade,
             null));
     }
 
