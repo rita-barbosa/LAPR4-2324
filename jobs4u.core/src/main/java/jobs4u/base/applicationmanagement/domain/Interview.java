@@ -1,5 +1,6 @@
 package jobs4u.base.applicationmanagement.domain;
 
+import com.ibm.icu.impl.Pair;
 import eapli.framework.domain.model.ValueObject;
 import eapli.framework.validations.Preconditions;
 import jakarta.persistence.Embeddable;
@@ -57,5 +58,11 @@ public class Interview implements ValueObject {
         Preconditions.noneNull(filepath);
         this.interviewAnswer = InterviewAnswer.valueOf(filepath);
     }
-
+    public void updateInterviewResult(Pair<Integer, String> result){
+        if (!result.second.isEmpty()) {
+            this.interviewResult = InterviewResult.valueOf(result.first, result.second);
+        } else {
+            this.interviewResult = InterviewResult.valueOf(result.first);
+        }
+    }
 }
