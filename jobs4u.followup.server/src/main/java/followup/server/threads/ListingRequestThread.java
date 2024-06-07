@@ -35,12 +35,20 @@ public class ListingRequestThread implements Runnable {
 
         // check code
         //according to code redirection to the right service
-        if (code == FollowUpRequestCodes.APPLIST.getCode()){
+        if (code == FollowUpRequestCodes.APPLIST.getCode()) {
             //get Application Service
             ApplicationManagementService appSrv = new ApplicationManagementService();
             Map<ApplicationDTO, Integer> applicationsDTOMap = appSrv.getApplicationsAndNumber(username);
             List<Map.Entry<ApplicationDTO, Integer>> applicationDTOList = new ArrayList<>(applicationsDTOMap.entrySet());
-            dataDTO = DataDTO.turnListIntoDataDTO(code, applicationDTOList);
+
+
+            dataDTO = new DataDTO(code);
+            for (Map.Entry<ApplicationDTO, Integer> app : applicationDTOList) {
+                byte[] key = SerializationUtil.serialize(app.getKey());
+                dataDTO.addDataBlock(key.length, key);
+                byte[] value = SerializationUtil.serialize(app.getValue());
+                dataDTO.addDataBlock(value.length, value);
+            }
 
         } else if (code == FollowUpRequestCodes.JOBOPLIST.getCode()) {
             //get Job Opening Service

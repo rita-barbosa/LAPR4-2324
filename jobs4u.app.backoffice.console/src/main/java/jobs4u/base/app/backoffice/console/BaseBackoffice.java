@@ -26,7 +26,6 @@ package jobs4u.base.app.backoffice.console;
 import jobs4u.base.app.backoffice.console.presentation.MainMenu;
 import jobs4u.base.app.common.console.BaseApplication;
 import jobs4u.base.app.common.console.presentation.authz.LoginUI;
-import jobs4u.base.applicationmanagement.application.eventhandlers.ApplicationAcceptedWatchDog;
 import jobs4u.base.applicationmanagement.application.eventhandlers.ApplicationReceivedWatchDog;
 import jobs4u.base.applicationmanagement.application.eventhandlers.ApplicationStatusChangedWatchDog;
 import jobs4u.base.candidatemanagement.application.eventhandlers.NewCandidateUserRegisteredWatchDog;
@@ -36,7 +35,6 @@ import jobs4u.base.customermanagement.domain.events.NewCustomerUserRegisteredEve
 import jobs4u.base.infrastructure.authz.AuthenticationCredentialHandler;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.application.eventhandlers.JobOpeningPhaseChangedWatchDog;
-import jobs4u.base.jobopeningmanagement.application.eventhandlers.JobOpeningResultsPublishedWatchDog;
 import jobs4u.base.jobopeningmanagement.domain.events.*;
 import jobs4u.base.usermanagement.domain.BasePasswordPolicy;
 import eapli.framework.infrastructure.authz.application.AuthzRegistry;
@@ -92,9 +90,7 @@ public final class BaseBackoffice extends BaseApplication {
     protected void doSetupEventHandlers(final EventDispatcher dispatcher) {
         dispatcher.subscribe(new NewCustomerUserRegisteredWatchDog(), NewCustomerUserRegisteredEvent.class);
         dispatcher.subscribe(new NewCandidateUserRegisteredWatchDog(), NewCandidateUserRegisteredEvent.class);
-        dispatcher.subscribe(new ApplicationAcceptedWatchDog(), ApplicationAcceptedEvent.class);
         dispatcher.subscribe(new ApplicationStatusChangedWatchDog(), ApplicationStatusChangedEvent.class);
-        dispatcher.subscribe(new JobOpeningResultsPublishedWatchDog(), JobOpeningResultsPublishedEvent.class);
         dispatcher.subscribe(new ApplicationReceivedWatchDog(), ApplicationReceivedEvent.class);
         dispatcher.subscribe(new JobOpeningPhaseChangedWatchDog(), JobOpeningPhaseChangedEvent.class);
     }

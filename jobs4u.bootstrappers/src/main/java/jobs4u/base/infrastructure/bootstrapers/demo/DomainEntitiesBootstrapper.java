@@ -21,6 +21,9 @@ import jobs4u.base.jobopeningmanagement.domain.*;
 import jobs4u.base.contracttypemanagement.dto.ContractTypeDTO;
 import jobs4u.base.notificationmanagement.domain.*;
 import jobs4u.base.notificationmanagement.repositories.NotificationRepository;
+import jobs4u.base.rankmanagement.domain.Rank;
+import jobs4u.base.rankmanagement.domain.RankOrder;
+import jobs4u.base.rankmanagement.persistence.RankRepository;
 import jobs4u.base.workmodemanagement.dto.WorkModeDTO;
 import jobs4u.base.contracttypemanagement.repository.ContractTypeRepository;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
@@ -34,6 +37,7 @@ import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRep
 import jobs4u.base.usermanagement.domain.BaseRoles;
 import jobs4u.base.workmodemanagement.domain.WorkMode;
 
+import javax.swing.text.html.Option;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,9 +55,12 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
     private InterviewModelRepository interviewModelRepository;
     private JobOpeningRepository jobOpeningRepository;
     List<InterviewModel> interviewModelsList = new ArrayList<>();
+    List<JobOpening> jobOpeningList = new ArrayList<>();
     private CriteriaRepository criteriaRepository;
     private RecruitmentProcessRepository recruitmentProcessRepository;
     private NotificationRepository notificationRepository;
+    private RankRepository rankRepository;
+
     private CandidateRepository candidateRepository;
 
     List<RequirementSpecification> requirementSpecificationsList = new ArrayList<>();
@@ -74,7 +81,28 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         persistJobOpenings();
         persistApplications();
         persistNotifications();
+        persistRank();
         return true;
+    }
+
+    private void persistRank() {
+        Optional<JobOpening> jo = jobOpeningRepository.getJobOpeningByJobReference(new JobReference("AVIP", 1));
+
+        if (jo.isPresent()) {
+            Iterable<Application> applicationsIterable = jo.get().getApplications();
+            List<Application> applications = new ArrayList<>();
+            applicationsIterable.forEach(applications::add);
+
+            if (applications.size() >= 2) {
+                List<RankOrder> rankOrders = new ArrayList<>();
+                for (int i = 0; i < 2; i++) {
+                    rankOrders.add(new RankOrder(applications.get(i), i + 1));
+                }
+
+                Rank rank = new Rank(new JobReference("AVIP", 1), rankOrders);
+                rankRepository.save(rank);
+            }
+        }
     }
 
     public void instantiateRepositories() {
@@ -87,6 +115,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         this.criteriaRepository = PersistenceContext.repositories().criteria();
         this.recruitmentProcessRepository = PersistenceContext.repositories().recruitmentProcesses();
         this.candidateRepository = PersistenceContext.repositories().candidates();
+        this.rankRepository = PersistenceContext.repositories().ranks();
     }
 
     private void persistCriteria() {
@@ -98,7 +127,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
 
     private void persistNotifications() {
         Calendar calendar1 = null, calendar2 = null, calendar3 = null,
-                    calendar4 = null, calendar5 = null, calendar6 = null;
+                calendar4 = null, calendar5 = null, calendar6 = null;
 
         SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -221,7 +250,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
             start30 = Calendars.fromDate(df.parse("26-03-2024"));
             end30 = Calendars.fromDate(df.parse("27-03-2024"));
             dateInterval6 = new DateInterval(start26, end30);
-        }catch (ParseException e){
+        } catch (ParseException e) {
             System.out.println(e.getMessage());
         }
 
@@ -233,37 +262,37 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         List<Phase> phases6 = new ArrayList<>();
 
         Phase application1 = new Phase(String.valueOf(PhaseTypeEnum.APPLICATION), "Candidates send applications.", start1, end1);
-        Phase screening1 = new Phase(String.valueOf(PhaseTypeEnum.SCREENING), "Candidates screening.",  start2, end2);
-        Phase analysis1 = new Phase(String.valueOf(PhaseTypeEnum.ANALYSIS), "Candidates analysis.",  start3, end3);
-        Phase interview1 = new Phase(String.valueOf(PhaseTypeEnum.INTERVIEW),"Candidates get interviewed.",  start4, end4);
-        Phase result1 = new Phase(String.valueOf(PhaseTypeEnum.RESULTS),"Candidates get results.",  start5, end5);
+        Phase screening1 = new Phase(String.valueOf(PhaseTypeEnum.SCREENING), "Candidates screening.", start2, end2);
+        Phase analysis1 = new Phase(String.valueOf(PhaseTypeEnum.ANALYSIS), "Candidates analysis.", start3, end3);
+        Phase interview1 = new Phase(String.valueOf(PhaseTypeEnum.INTERVIEW), "Candidates get interviewed.", start4, end4);
+        Phase result1 = new Phase(String.valueOf(PhaseTypeEnum.RESULTS), "Candidates get results.", start5, end5);
 
         Phase application2 = new Phase(String.valueOf(PhaseTypeEnum.APPLICATION), "Candidates send applications.", start6, end6);
-        Phase screening2 = new Phase(String.valueOf(PhaseTypeEnum.SCREENING),"Candidates screening.", start7, end7);
+        Phase screening2 = new Phase(String.valueOf(PhaseTypeEnum.SCREENING), "Candidates screening.", start7, end7);
         Phase analysis2 = new Phase(String.valueOf(PhaseTypeEnum.ANALYSIS), "Candidates analysis.", start8, end8);
         Phase interview2 = new Phase(String.valueOf(PhaseTypeEnum.INTERVIEW), "Candidates get interviewed.", start9, end9);
-        Phase result2 = new Phase(String.valueOf(PhaseTypeEnum.RESULTS),"Candidates get results.", start10, end10);
+        Phase result2 = new Phase(String.valueOf(PhaseTypeEnum.RESULTS), "Candidates get results.", start10, end10);
 
 
-        Phase application3 = new Phase(String.valueOf(PhaseTypeEnum.APPLICATION),"Candidates send applications.", start11, end11);
+        Phase application3 = new Phase(String.valueOf(PhaseTypeEnum.APPLICATION), "Candidates send applications.", start11, end11);
         Phase screening3 = new Phase(String.valueOf(PhaseTypeEnum.SCREENING), "Candidates screening.", start12, end12);
         Phase analysis3 = new Phase(String.valueOf(PhaseTypeEnum.ANALYSIS), "Candidates analysis.", start13, end13);
         Phase interview3 = new Phase(String.valueOf(PhaseTypeEnum.INTERVIEW), "Candidates get interviewed.", start14, end14);
         Phase result3 = new Phase(String.valueOf(PhaseTypeEnum.RESULTS), "Candidates get results.", start15, end15);
 
-        Phase application4 = new Phase(String.valueOf(PhaseTypeEnum.APPLICATION),"Candidates send applications.", start16, end16);
+        Phase application4 = new Phase(String.valueOf(PhaseTypeEnum.APPLICATION), "Candidates send applications.", start16, end16);
         Phase screening4 = new Phase(String.valueOf(PhaseTypeEnum.SCREENING), "Candidates screening.", start17, end17);
         Phase analysis4 = new Phase(String.valueOf(PhaseTypeEnum.ANALYSIS), "Candidates analysis.", start18, end18);
         Phase interview4 = new Phase(String.valueOf(PhaseTypeEnum.INTERVIEW), "Candidates get interviewed.", start19, end19);
         Phase result4 = new Phase(String.valueOf(PhaseTypeEnum.RESULTS), "Candidates get results.", start20, end20);
 
-        Phase application5 = new Phase(String.valueOf(PhaseTypeEnum.APPLICATION),"Candidates send applications.", start21, end21);
+        Phase application5 = new Phase(String.valueOf(PhaseTypeEnum.APPLICATION), "Candidates send applications.", start21, end21);
         Phase screening5 = new Phase(String.valueOf(PhaseTypeEnum.SCREENING), "Candidates screening.", start22, end22);
         Phase analysis5 = new Phase(String.valueOf(PhaseTypeEnum.ANALYSIS), "Candidates analysis.", start23, end23);
         Phase interview5 = new Phase(String.valueOf(PhaseTypeEnum.INTERVIEW), "Candidates get interviewed.", start24, end24);
         Phase result5 = new Phase(String.valueOf(PhaseTypeEnum.RESULTS), "Candidates get results.", start25, end25);
 
-        Phase application6 = new Phase(String.valueOf(PhaseTypeEnum.APPLICATION),"Candidates send applications.", start26, end26);
+        Phase application6 = new Phase(String.valueOf(PhaseTypeEnum.APPLICATION), "Candidates send applications.", start26, end26);
         Phase screening6 = new Phase(String.valueOf(PhaseTypeEnum.SCREENING), "Candidates screening.", start27, end27);
         Phase analysis6 = new Phase(String.valueOf(PhaseTypeEnum.ANALYSIS), "Candidates analysis.", start28, end28);
         Phase interview6 = new Phase(String.valueOf(PhaseTypeEnum.INTERVIEW), "Candidates get interviewed.", start29, end29);
@@ -345,7 +374,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         JobReference jobReference3 = new JobReference("ISEP", 4);
         JobReference jobReference4 = new JobReference("ISEP", 5);
         JobReference jobReference5 = new JobReference("ISEP", 6);
-        JobReference jobReference6 = new JobReference("ISEP", 7);
+        JobReference jobReference6 = new JobReference("AVIP", 0);
 
 
         JobOpening jobOpening1 = new JobOpening("Front End Junior Developer", contract, mode, "123 Main Street",
@@ -375,7 +404,6 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         JobOpening jobOpening7 = new JobOpening("Back End Senior Developer", contract, mode, "Third Street",
                 "Third Town", "Third District", "Third", "4510-910", 6, description,
                 requirementSpecificationsList.get(0), interviewModelsList.get(0), jobReference6);
-
 
 
         jobOpening1.updateStatusToNotStarted();
@@ -430,6 +458,13 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
             jobOpeningRepository.save(jobOpenings.get(j));
         }
 
+        jobOpeningList.add(jobOpening1);
+        jobOpeningList.add(jobOpening2);
+        jobOpeningList.add(jobOpening3);
+        jobOpeningList.add(jobOpening4);
+        jobOpeningList.add(jobOpening5);
+        jobOpeningList.add(jobOpening6);
+        jobOpeningList.add(jobOpening7);
     }
 
     private void persistRequirementSpecifications() {
@@ -437,12 +472,12 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         String name1 = "Requirements_Back_End_Dev";
         String fullClassName1 = "jobs4u.plugin.core.adapter.RequirementPluginAdapter";
         String dataImporter = "jobs4u.plugin.core.adapter.FileManagementAdapter";
-        RequirementSpecification requirementSpecification1 = new RequirementSpecification(name1, description1, fullClassName1, "plugins-config-file/requirement/r-config-1.txt",dataImporter);
+        RequirementSpecification requirementSpecification1 = new RequirementSpecification(name1, description1, fullClassName1, "plugins-config-file/requirement/r-config-1.txt", dataImporter);
 
         String description2 = "Front-End Developer With Experience in Java";
-        String name2 = "Requirements_Front_End_Dev.jar";
+        String name2 = "Requirements_Front_End_Dev";
         String fullClassName2 = "jobs4u.plugin.core.adapter.RequirementPluginAdapter";
-        RequirementSpecification requirementSpecification2 = new RequirementSpecification(name2, description2, fullClassName2, "plugins-config-file/requirement/r-config-1.txt",dataImporter);
+        RequirementSpecification requirementSpecification2 = new RequirementSpecification(name2, description2, fullClassName2, "plugins-config-file/requirement/r-config-2.txt", dataImporter);
 
         requirementSpecificationsList.add(requirementSpecification1);
         requirementSpecificationsList.add(requirementSpecification2);
@@ -452,16 +487,16 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
 
     private void persistInterviewModels() {
         String description1 = "Back-End Developer With Experience in Java";
-        String name1 = "Interview_Back_End_Dev.jar";
+        String name1 = "Interview_Back_End_Dev";
         String fullClassName1 = "jobs4u.plugin.core.adapter.InterviewPluginAdapter";
         String dataImporter = "jobs4u.plugin.core.adapter.FileManagementAdapter";
-        InterviewModel interviewModel1 = new InterviewModel(name1, description1, fullClassName1, "plugins-config-file/requirement/r-config-1.txt",dataImporter);
+        InterviewModel interviewModel1 = new InterviewModel(name1, description1, fullClassName1, "plugins-config-file/interview/i-config-1.txt", dataImporter);
 
 
         String description2 = "Front-End Developer With Experience in Java";
-        String name2 = "Interview_Front_End_Dev.jar";
+        String name2 = "Interview_Front_End_Dev";
         String fullClassName2 = "jobs4u.plugin.core.adapter.InterviewPluginAdapter";
-        InterviewModel interviewModel2 = new InterviewModel(name2, description2, fullClassName2, "plugins-config-file/requirement/r-config-1.txt",dataImporter);
+        InterviewModel interviewModel2 = new InterviewModel(name2, description2, fullClassName2, "plugins-config-file/interview/i-config-2.txt", dataImporter);
 
         interviewModelsList.add(interviewModel1);
         interviewModelsList.add(interviewModel2);
@@ -473,21 +508,31 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
     private void persistCustomers() {
         final Set<Role> roles = new HashSet<>();
         roles.add(BaseRoles.CUSTOMER_MANAGER);
-        SystemUser customerManager = registerUser("customerM2@email.com", "Password-1", "Joana", "Cash", roles);
         Address address = new Address("StreetLane", "City Garden", "District 9", "14th", "4590-890");
 
+        SystemUser customerManager = registerUser("customerM2@email.com", "Password-1", "Joana", "Cash", roles);
         customerManagementService.registerNewCustomer("Instituto Superior de Engenharia do Porto", address.toString(),
                 "ISEP", customerManager, "isep@email.com");
+
+        SystemUser customerManager2 = registerUser("1220841@isep.ipp.pt", "Password-1", "Rita", "Barbosa", roles);
+        customerManagementService.registerNewCustomer("Ana VIP", address.toString(),
+                "AVIP", customerManager2, "1221933@isep.ipp.pt");
     }
 
     private void persistCandidates() {
         final Set<Role> roles = new HashSet<>();
         roles.add(BaseRoles.CANDIDATE_USER);
-        PhoneNumber phoneNumber1 = new PhoneNumber("+351", "910000034");
-        PhoneNumber phoneNumber2= new PhoneNumber("+351","910095800");
+        PhoneNumber phoneNumber = new PhoneNumber("+351", "910000034");
+        candidateManagementService.registerCandidate("Joana", "candidate@email.com", phoneNumber);
 
-        candidateManagementService.registerCandidate("Joana", "candidate@email.com", phoneNumber1);
-        candidateManagementService.registerCandidate("Vitor", "1211273@isep.ipp.pt",phoneNumber2);
+        PhoneNumber phoneNumber2 = new PhoneNumber("+351", "910000000");
+        candidateManagementService.registerCandidate("Matilde", "1220683@isep.ipp.pt", phoneNumber2);
+
+        PhoneNumber phoneNumber3 = new PhoneNumber("+351", "910000001");
+        candidateManagementService.registerCandidate("José", "1220738@isep.ipp.pt", phoneNumber3);
+        PhoneNumber phoneNumber4 = new PhoneNumber("+351", "910095800");
+
+        candidateManagementService.registerCandidate("Vitor", "1211273@isep.ipp.pt", phoneNumber4);
     }
 
     private void persistWorkModes() {
@@ -509,10 +554,8 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
     }
 
     private void persistApplications() {
-        RequirementAnswer requirementAnswer = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
-        RequirementResult requirementResult =  RequirementResult.valueOf(true);
+        RequirementResult requirementResult = RequirementResult.valueOf(true);
 
-        InterviewAnswer interviewAnswer = InterviewAnswer.valueOf("plugins-config-file/interview/i-answer-1.txt");
 
         ApplicationFile file1 = new ApplicationFile(new File("output/candidate1/1-big-file-1.txt"));
         ApplicationFile file2 = new ApplicationFile(new File("output/candidate1/1-candidate-data.txt"));
@@ -537,123 +580,121 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         files2.add(file9);
 
         Date date = new Date(2024 - 1900, Calendar.JANUARY, 5);
-        Interview interview = new Interview("interview1", new Date(2024 - 1900, Calendar.MARCH, 2),
-                new InterviewResult(50, "the grade is above 50"), interviewAnswer);
-
-        PhoneNumber phone = new PhoneNumber("+351", "910000034");
-
-        Optional<Candidate> opCandidate = candidateRepository.findByPhoneNumber(phone);
 
         RequirementAnswer requirementAnswer1 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
-        RequirementResult requirementResult1 =  RequirementResult.valueOf(true);
+        RequirementResult requirementResult1 = RequirementResult.valueOf(true);
         Date date1 = new Date(2024 - 1900, Calendar.JANUARY, 6);
+
         InterviewAnswer interviewAnswer1 = InterviewAnswer.valueOf("plugins-config-file/interview/i-answer-1.txt");
         Interview interview1 = new Interview("interview1", new Date(2024 - 1900, Calendar.MARCH, 3),
-                new InterviewResult( 60, "the grade is above 50"), interviewAnswer1);
+                new InterviewResult(60, "the grade is above 50"), interviewAnswer1);
 
-        RequirementAnswer requirementAnswer2 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
-        RequirementResult requirementResult2 =  RequirementResult.valueOf(true);
+        RequirementAnswer requirementAnswer2 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-2.txt");
+        RequirementResult requirementResult2 = RequirementResult.valueOf(true);
         Date date2 = new Date(2024 - 1900, Calendar.JANUARY, 8);
-        InterviewAnswer interviewAnswer2 = InterviewAnswer.valueOf("plugins-config-file/interview/i-answer-1.txt");
+        InterviewAnswer interviewAnswer2 = InterviewAnswer.valueOf("plugins-config-file/interview/i-answer-2.txt");
         Interview interview2 = new Interview("interview2", new Date(2024 - 1900, Calendar.MARCH, 4),
-                new InterviewResult( 80, "the grade is above 50"), interviewAnswer2);
-        RequirementAnswer requirementAnswer3 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
-        RequirementResult requirementResult3 =  RequirementResult.valueOf(true);
+                new InterviewResult(80, "the grade is above 50"), interviewAnswer2);
+
+
         ApplicationFile file10 = new ApplicationFile(new File("output/candidate3/example3.txt"));
         Set<ApplicationFile> files3 = new HashSet<>();
         files3.add(file10);
-        InterviewAnswer interviewAnswer3 = InterviewAnswer.valueOf("plugins-config-file/interview/i-answer-1.txt");
+
         Date date3 = new Date(2024 - 1900, Calendar.JANUARY, 10);
-        Interview interview3 = new Interview("interview3", new Date(2024 - 1900, Calendar.MARCH, 5),
-                new InterviewResult(20, "the grade is below 50"), interviewAnswer3);
 
 
-        RequirementAnswer requirementAnswer4 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
-        RequirementResult requirementResult4 =  RequirementResult.valueOf(true);
         ApplicationFile file11 = new ApplicationFile(new File("output/candidate4/example4.txt"));
         Set<ApplicationFile> files4 = new HashSet<>();
         files4.add(file11);
+
         Date date4 = new Date(2024 - 1900, Calendar.JANUARY, 12);
-        InterviewAnswer interviewAnswer4 = InterviewAnswer.valueOf("plugins-config-file/interview/i-answer-1.txt");
-        Interview interview4 = new Interview("interview4", new Date(2024 - 1900, Calendar.MARCH, 6),
-                new InterviewResult( 88, "the grade is above 50"), interviewAnswer4);
         ApplicationFile file12 = new ApplicationFile(new File("output/candidate5/example5.txt"));
         Set<ApplicationFile> files5 = new HashSet<>();
         files5.add(file12);
 
-        RequirementAnswer requirementAnswer5 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-1.txt");
-        RequirementResult requirementResult5 =  RequirementResult.valueOf(true);
         ApplicationFile file13 = new ApplicationFile(new File("output/candidate6/example6.txt"));
         Set<ApplicationFile> files6 = new HashSet<>();
         files6.add(file13);
+
         Date date5 = new Date(2024 - 1900, Calendar.JANUARY, 12);
-        InterviewAnswer interviewAnswer5 = InterviewAnswer.valueOf("plugins-config-file/interview/i-answer-1.txt");
-        Interview interview5 = new Interview("interview5", new Date(2024 - 1900, Calendar.MARCH, 6),
-                new InterviewResult(75, "the grade is above 50"), interviewAnswer5);
 
 
         Application application, application1, application2, application3, application4, application5, application6, application7, application8, application9, application10;
-        if (opCandidate.isPresent()) {
-            Candidate candidate = opCandidate.get();
-            application = new Application(requirementAnswer, requirementResult, files1, date, candidate, interview);
-            application1 = new Application(requirementAnswer1, requirementResult1, files2, date1, candidate, interview1);
-            application2 = new Application(requirementAnswer2, requirementResult2, files3, date2, candidate, interview2);
-            application3 = new Application(requirementAnswer3, requirementResult3, files4, date3, candidate, interview3);
-            application4 = new Application(requirementAnswer4, requirementResult4, files5, date4, candidate, interview4);
-            application5 = new Application(requirementAnswer5, requirementResult5, files6, date5, candidate, interview5);
-            application6 = new Application(requirementAnswer1, requirementResult1, files2, date1, candidate, interview1);
-            application7 = new Application(requirementAnswer2, requirementResult2, files3, date2, candidate, interview2);
-            application8 = new Application(requirementAnswer3, requirementResult3, files4, date3, candidate, interview3);
-            application9 =  new Application(requirementAnswer, requirementResult, files1, date, candidate, interview);
-            application10 = new Application(requirementAnswer4, requirementResult4, files5, date4, candidate, interview4);
-        } else {
-            application = new Application(requirementAnswer, requirementResult, files1, date, interview);
-            application1 = new Application(requirementAnswer1, requirementResult1, files2, date1, interview1);
-            application2 = new Application(requirementAnswer2, requirementResult2, files3, date2, interview2);
-            application3 = new Application(requirementAnswer3, requirementResult3, files4, date3, interview3);
-            application4 = new Application(requirementAnswer4, requirementResult4, files5, date4, interview4);
-            application5 = new Application(requirementAnswer5, requirementResult5, files6, date5, interview5);
-            application6 = new Application(requirementAnswer1, requirementResult1, files2, date1, interview1);
-            application7 = new Application(requirementAnswer2, requirementResult2, files3, date2, interview2);
-            application8 = new Application(requirementAnswer3, requirementResult3, files4, date3, interview3);
-            application9 =  new Application(requirementAnswer, requirementResult, files1, date, interview);
-            application10 = new Application(requirementAnswer4, requirementResult4, files5, date4, interview4);
-        }
+        PhoneNumber phone = new PhoneNumber("+351", "910000000");
+        Optional<Candidate> candidate1 = candidateRepository.findByPhoneNumber(phone);
+        PhoneNumber phone1 = new PhoneNumber("+351", "910000001");
+        Optional<Candidate> candidate2 = candidateRepository.findByPhoneNumber(phone1);
+        Optional<Candidate> c4 = candidateRepository.findByPhoneNumber(new PhoneNumber("+351", "910000034"));
 
+        if (candidate1.isPresent() && candidate2.isPresent() && c4.isPresent()) {
+            Candidate candidate = candidate1.get();
+            Candidate candidate3 = candidate2.get();
+            Candidate candidate4 = c4.get();
+            application = new Application(requirementAnswer1, requirementResult, files1, date, candidate, interview1);
+            application1 = new Application(requirementAnswer1, requirementResult1, files2, date1, candidate, interview1);
+            application2 = new Application(requirementAnswer1, requirementResult1, files3, date2, candidate4, interview1);
+            application3 = new Application(requirementAnswer1, requirementResult1, files4, date3, candidate, interview1);
+            application4 = new Application(requirementAnswer1, requirementResult1, files5, date4, candidate3, interview1);
+            application5 = new Application(requirementAnswer1, requirementResult1, files6, date5, candidate3, interview1);
+            application6 = new Application(requirementAnswer1, requirementResult1, files2, date1, candidate, interview1);
+            application7 = new Application(requirementAnswer1, requirementResult1, files3, date2, candidate, interview1);
+            application8 = new Application(requirementAnswer2, requirementResult2, files4, date3, candidate, interview2);
+            application9 = new Application(requirementAnswer2, requirementResult2, files1, date, candidate4, interview2);
+            application10 = new Application(requirementAnswer2, requirementResult2, files5, date4, candidate, interview2);
+
+        } else {
+            application = new Application(requirementAnswer1, requirementResult, files1, date, interview1);
+            application1 = new Application(requirementAnswer1, requirementResult1, files2, date1, interview1);
+            application2 = new Application(requirementAnswer1, requirementResult1, files3, date2, interview1);
+            application3 = new Application(requirementAnswer1, requirementResult1, files4, date3, interview1);
+            application4 = new Application(requirementAnswer1, requirementResult1, files5, date4, interview1);
+            application5 = new Application(requirementAnswer1, requirementResult1, files6, date5, interview1);
+            application6 = new Application(requirementAnswer1, requirementResult1, files2, date1, interview1);
+            application7 = new Application(requirementAnswer1, requirementResult1, files3, date2, interview1);
+            application8 = new Application(requirementAnswer2, requirementResult2, files4, date3, interview2);
+            application9 = new Application(requirementAnswer2, requirementResult2, files1, date, interview2);
+            application10 = new Application(requirementAnswer2, requirementResult2, files5, date4, interview2);
+        }
 
         Set<Application> applicationsSet = new HashSet<>();
         application.applicationStatus().updateStatusDescriptionAsACCEPTED();
         applicationsSet.add(application);
-        applicationsSet.add(application6);
-        applicationsSet.add(application7);
-        applicationsSet.add(application8);
-        applicationsSet.add(application9);
-        applicationsSet.add(application10);
+        applicationsSet.add(application1);
+        applicationsSet.add(application2);
 
         Set<Application> applicationsSet1 = new HashSet<>();
-        application1.applicationStatus().updateStatusDescriptionAsACCEPTED();
-        applicationsSet1.add(application1);
+        application3.applicationStatus().updateStatusDescriptionAsACCEPTED();
+        applicationsSet1.add(application3);
 
         Set<Application> applicationsSet2 = new HashSet<>();
-        application2.applicationStatus().updateStatusDescriptionAsACCEPTED();
-        applicationsSet2.add(application2);
+        application4.applicationStatus().updateStatusDescriptionAsACCEPTED();
+        applicationsSet2.add(application4);
 
         Set<Application> applicationsSet3 = new HashSet<>();
-        application3.applicationStatus().updateStatusDescriptionAsREJECTED();
-        applicationsSet3.add(application3);
-        application4.applicationStatus().updateStatusDescriptionAsACCEPTED();
-        applicationsSet3.add(application4);
+        application5.applicationStatus().updateStatusDescriptionAsREJECTED();
+        applicationsSet3.add(application5);
+        application6.applicationStatus().updateStatusDescriptionAsACCEPTED();
+        applicationsSet3.add(application6);
+        application7.applicationStatus().updateStatusDescriptionAsACCEPTED();
+        applicationsSet3.add(application7);
 
         Set<Application> applicationsSet4 = new HashSet<>();
-        application5.applicationStatus().updateStatusDescriptionAsACCEPTED();
-        applicationsSet4.add(application5);
+        applicationsSet4.add(application8);
+        applicationsSet4.add(application9);
+
+        Set<Application> applicationsSet5 = new HashSet<>();
+        applicationsSet4.add(application10);
 
 
         List<JobOpening> jobs = new ArrayList<>();
         for (JobOpening job : jobOpeningRepository.findAll()) {
             jobs.add(job);
+            if (job.jobReference().equals(new JobReference("AVIP", 1))) {
+                job.setApplications(applicationsSet3);
+                jobOpeningRepository.save(job);
+            }
         }
-
         jobs.get(0).setApplications(applicationsSet);
         jobOpeningRepository.save(jobs.get(0));
 
@@ -666,7 +707,11 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         jobs.get(4).setApplications(applicationsSet2);
         jobOpeningRepository.save(jobs.get(4));
 
-        jobs.get(5).setApplications(applicationsSet3);
+        jobs.get(5).setApplications(applicationsSet4);
         jobOpeningRepository.save(jobs.get(5));
+        jobs.get(5).setApplications(applicationsSet5);
+        jobOpeningRepository.save(jobs.get(6));
+
     }
 }
+

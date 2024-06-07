@@ -9,8 +9,8 @@ public class PhoneNumber implements ValueObject, Comparable<PhoneNumber> {
     private String extension;
     private String number;
 
-    public PhoneNumber(String extension, String number){
-        if (!isValidPhoneNumber(extension,number)) {
+    public PhoneNumber(String extension, String number) {
+        if (!isValidPhoneNumber(extension, number)) {
             throw new IllegalArgumentException(
                     "The inserted phone number is not in the right format.");
         } else if (extension == null || number == null) {
@@ -21,18 +21,21 @@ public class PhoneNumber implements ValueObject, Comparable<PhoneNumber> {
         this.extension = extension;
         this.number = number;
     }
-    protected PhoneNumber(){
+
+    protected PhoneNumber() {
 
     }
-    public String extension(){
+
+    public String extension() {
         return this.extension;
     }
-    public String number(){
+
+    public String number() {
         return this.number;
     }
 
-    public static PhoneNumber valueOf(final String extension, final  String number) {
-        return new PhoneNumber(extension,number);
+    public static PhoneNumber valueOf(final String extension, final String number) {
+        return new PhoneNumber(extension, number);
     }
 
     @Override
@@ -55,17 +58,15 @@ public class PhoneNumber implements ValueObject, Comparable<PhoneNumber> {
 
     @Override
     public String toString() {
-        return "PhoneNumber{" +
-                "extension='" + extension + '\'' +
-                ", number='" + number + '\'' +
-                '}';
+        return extension + " " + number;
     }
+
     @Override
     public int compareTo(PhoneNumber o) {
         return number.compareTo(o.number);
     }
 
-    public static boolean isValidPhoneNumber(String extension,String number) {
+    public static boolean isValidPhoneNumber(String extension, String number) {
 
         boolean extensionContaisPlus = extension.contains("+");
 

@@ -15,12 +15,20 @@ public class ApplicationListResponseProcessor implements ResponseProcessor<Map.E
         List<Map.Entry<ApplicationDTO, Integer>> applicationDTOList = new ArrayList<>();
         List<DataBlock> dataBlocks = dataDTO.dataBlockList();
 
+        int counter = 1;
+        ApplicationDTO key = null;
+        Integer value = 0;
         for (DataBlock dataBlock : dataBlocks) {
-            Map.Entry<ApplicationDTO, Integer> entry = (Map.Entry<ApplicationDTO, Integer>) SerializationUtil.deserialize(dataBlock.data());
-//            ApplicationDTO applicationDTO = (ApplicationDTO) SerializationUtil.deserialize(dataBlock.data());
-            applicationDTOList.add(entry);
+            if (counter == 1) {
+                key = (ApplicationDTO) SerializationUtil.deserialize(dataBlock.data());
+                counter--;
+            } else {
+                value = (Integer) SerializationUtil.deserialize(dataBlock.data());
+                counter++;
+                Map.Entry<ApplicationDTO, Integer> entry = Map.entry(key, value);
+                applicationDTOList.add(entry);
+            }
         }
-
         return applicationDTOList;
     }
 }

@@ -104,11 +104,14 @@ public class JpaApplicationRepository
 
     @Override
     public Iterable<Application> getApplicationFromCandidateUserName(Username username) {
-        final TypedQuery<Application>
-                q = createQuery("SELECT a \n" +
-                        "FROM Application a \n" +
-                        "WHERE a.candidate.user.username = :username\n",
-                Application.class);
+        final TypedQuery<Application> q = createQuery(
+                "SELECT a " +
+                        "FROM Application a " +
+                        "JOIN a.candidate c " +
+                        "JOIN c.systemUser su " +
+                        "WHERE su.username = :username",
+                Application.class
+        );
         q.setParameter("username", username);
         return q.getResultList();
     }

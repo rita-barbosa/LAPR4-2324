@@ -67,8 +67,13 @@ public class Candidate implements AggregateRoot<PhoneNumber> {
         return this.systemUser;
     }
 
-    public EmailAddress email(){ return this.systemUser.email();}
-    public Name name(){ return this.systemUser.name();}
+    public EmailAddress email() {
+        return this.systemUser.email();
+    }
+
+    public Name name() {
+        return this.systemUser.name();
+    }
 
     @Override
     public boolean equals(final Object o) {
@@ -95,6 +100,11 @@ public class Candidate implements AggregateRoot<PhoneNumber> {
     @Override
     public PhoneNumber identity() {
         return this.phoneNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Name: " + systemUser.name().firstName() + "| Phone Number: " + phoneNumber.toString() + "| Email: " + email().toString();
     }
 
 }

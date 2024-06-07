@@ -2,7 +2,7 @@
 1) HTML
 2) Python
 3) CSS
-A:. HTML CSS
+A:. HTML
 
 [DN]-1 "What is the pixel width of a standard Bootstrap container?"
 A:. 13.2

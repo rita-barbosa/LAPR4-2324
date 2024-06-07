@@ -13,9 +13,8 @@ database ":RankRepository" as R_REPO <<repository>>
 participant ":RankOrder" as R <<domain>>
 participant ":Application" as A <<domain>>
 database ":ApplicationRepository" as A_REPO <<repository>>
-participant ":ApplicationAcceptedEvent" as NAAE <<domain event>>
+participant ":FollowUpConnectionService" as FUCS <<service>>
 participant ":ApplicationStatusChangedEvent" as ASCE <<domain event>>
-participant ":JobOpeningResults\nPublishedEvent" as JORPE <<domain event>>
 participant ":EventPublisher" as EP <<interface>>
 
 
@@ -73,14 +72,24 @@ activate UI
                     deactivate A
                     deactivate R
 
-                    CTRL -> NAAE**: create(customerManagerEmail, candidateEmail, jobReference)
-                    CTRL -> EP: publish(applicationAcceptedEvent)
-                    activate EP
-                    deactivate EP
-
                     CTRL -> A_REPO: save(application)
                     activate A_REPO
                     deactivate A_REPO
+
+                    CTRL -> CTRL:  sendEmail(customerManagerEmail, candidateEmail, jobReference, userPassword)
+                    activate CTRL
+
+                    CTRL -> FUCS: sendEmail(senderEmail, receiverEmail, topic, info)
+                    activate FUCS
+                    deactivate FUCS
+
+                    CTRL -> FUCS: closeConnection()
+                    activate FUCS
+                    deactivate FUCS
+
+                    CTRL --> CTRL:
+                    deactivate CTRL
+
                 else if orderValue > numVacancies
 
                     CTRL -> R : rejectApplication()
@@ -97,18 +106,26 @@ activate UI
                 end alt
 
 
-
-               CTRL -> ASCE** : create(candidateEmail, jobReference, newStatus)
+                CTRL -> ASCE** : create(candidateEmail, jobReference, newStatus)
                 CTRL-> EP: publish(applicationStatusChangedEvent)
                 activate EP
                 deactivate EP
             end loop
 
+            CTRL -> CTRL:  sendEmail(customerManagerEmail, customerEmail, acceptedCandidadeList, jobReference, userPassword)
+            activate CTRL
 
-    CTRL-> JORPE**: create(customerManagerEmail, acceptedCandidateList, companyCode, jobReference)
-    CTRL -> EP: publish(jobOpeningResultsPublishedEvent)
-    activate EP
-    deactivate EP
+            CTRL -> FUCS: sendEmail(senderEmail, receiverEmail, topic, info)
+            activate FUCS
+            deactivate FUCS
+
+            CTRL -> FUCS: closeConnection()
+            activate FUCS
+            deactivate FUCS
+
+            CTRL --> CTRL:
+            deactivate CTRL
+
 
 
     CTRL --> CTRL:

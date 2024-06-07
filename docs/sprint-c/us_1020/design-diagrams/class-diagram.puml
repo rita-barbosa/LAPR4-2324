@@ -18,6 +18,8 @@ class PublishingResultJobOpeningUI {
 class PublishingResultJobOpeningController  {
 + getJobOpeningList() : jobOpeningListDto
 + publishResultForJobOpening(jobOpeningDto)
+- sendEmail(customerManagerEmail, candidateEmail, jobReference, userPassword)
+- sendEmail(customerManagerEmail, customerEmail, acceptedCandidadeList, jobReference, userPassword)
 - publishResults(jobOpeningDto, customerManagerEmail)
 }
 
@@ -72,17 +74,7 @@ interface EventHandler{
 interface DomainEvent{
 }
 
-'Job Opening Results Published
-class JobOpeningResultsPublishedWatchDog{
-}
 
-class JobOpeningResultsPublishedEvent{
-}
-class SendEmailOnJobOpeningResultsPublishedController{
-+ sendEmail(jobOpeningResultsPublishedEvent)
-- getSessionCredentials()
-- establishConnection(username, password)
-}
 class CustomerRepository{
 + customerEmailOfCustomer(companyCode)
 }
@@ -107,17 +99,6 @@ class Notification {
 + Notification(applicationStatusChangedEvent)
 }
 
-'Application Accepted Event
-class ApplicationAcceptedWatchDog{
-}
-
-class ApplicationAcceptedEvent{
-}
-class SendEmailOnApplicationAcceptedController{
-+ sendEmail(applicationAcceptedEvent)
-- getSessionCredentials()
-- establishConnection(username, password)
-}
 class FollowUpConnectionService{
 + sendEmail(customerManagerEmail, receiverEmail,topic,emailBody)
 + closeConnection()
@@ -142,41 +123,28 @@ ApplicationRepository .--> Application
 ApplicationRepository .--|> DomainRepository
 RankRepository .-|> DomainRepository
 
-ApplicationAcceptedEvent .-|> DomainEvent
-JobOpeningResultsPublishedEvent .--|> DomainEvent
 ApplicationStatusChangedEvent .--|> DomainEvent
 
 Rank ---|> EventPublisher
-ApplicationAcceptedWatchDog .--|> EventHandler
-JobOpeningResultsPublishedWatchDog .--|> EventHandler
 ApplicationStatusChangedWatchDog .---|> EventHandler
-ApplicationAcceptedWatchDog .--> SendEmailOnApplicationAcceptedController
-JobOpeningResultsPublishedWatchDog .--> SendEmailOnJobOpeningResultsPublishedController
 ApplicationStatusChangedWatchDog .--> NotifyCandidateOnApplicationStatusChangedController
-ApplicationAcceptedWatchDog .--> ApplicationAcceptedEvent
-JobOpeningResultsPublishedWatchDog .--> JobOpeningResultsPublishedEvent
 ApplicationStatusChangedWatchDog .--> ApplicationStatusChangedEvent
 
-SendEmailOnApplicationAcceptedController ---> FollowUpConnectionService
-SendEmailOnJobOpeningResultsPublishedController ---> FollowUpConnectionService
-SendEmailOnJobOpeningResultsPublishedController --> CustomerRepository
+PublishingResultJobOpeningController ---> FollowUpConnectionService
+PublishingResultJobOpeningController --> CustomerRepository
 NotifyCandidateOnApplicationStatusChangedController ---> NotificationManagementService
 NotificationManagementService .--> Notification
 NotificationManagementService --> NotificationRepository
 NotificationRepository --> Notification
 
-SendEmailOnApplicationAcceptedController --> ApplicationAcceptedEvent
-SendEmailOnJobOpeningResultsPublishedController ----> JobOpeningResultsPublishedEvent
 NotifyCandidateOnApplicationStatusChangedController --> ApplicationStatusChangedEvent
 PublishingResultJobOpeningController --> RankRepository
 PublishingResultJobOpeningController .--> Rank
 Rank --> "1..*" RankOrder
 RankOrder --> "1" Application
 Rank --> ApplicationRepository
-Rank .----> ApplicationStatusChangedEvent
-Rank .---> ApplicationAcceptedEvent
+Rank .--> ApplicationStatusChangedEvent
 
-PublishingResultJobOpeningController .-----> JobOpeningResultsPublishedEvent
 PublishingResultJobOpeningController  --|> EventPublisher
 PublishingResultJobOpeningController -up-> JobOpeningManagementService
 JobOpeningRepository .-|> DomainRepository

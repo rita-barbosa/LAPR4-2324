@@ -85,17 +85,9 @@ company/customer, the email must contain the list of selected candidates, includ
 
 ![Sequence Diagram](design-diagrams/sequence-diagram-job-opening-in-result.svg)
 
-#### 4.1.2. Sending email to candidate upon application acceptance
-
-![Sequence Diagram](design-diagrams/sequence-diagram-application-accepted.svg)
-
-#### 4.1.3. Notifying candidates of the application status change
+#### 4.1.2. Notifying candidates of the application status change
 
 ![Sequence Diagram](design-diagrams/sequence-diagram-application-status-changed.svg)
-
-#### 4.1.4. Sending an email to the customer upon the publication of results
-
-![Sequence Diagram](design-diagrams/sequence-diagram-job-opening-results-published.svg)
 
 ### 4.2. Class Diagram
 
@@ -122,6 +114,7 @@ company/customer, the email must contain the list of selected candidates, includ
 > * ApplicationRepository
 > * CustomerRepository
 > * NotificationRepository
+> * RankRepository
 >
 > **Justification:**
 >
@@ -143,6 +136,7 @@ company/customer, the email must contain the list of selected candidates, includ
 > * JobOpeningDtoService
 > * AuthorizationService
 > * NotificationManagementService
+> * FollowUpConnectionService
 >
 > **Justification:**
 >
@@ -154,12 +148,6 @@ company/customer, the email must contain the list of selected candidates, includ
 > The authorization service was used to verify the roles of the logged-in user.
 
 > **Observer**
-> * ApplicationAcceptedEvent
-> * ApplicationAcceptedWatchDog
-> * SendEmailOnApplicationAcceptedController
-> * JobOpeningResultsPublishedEvent
-> * JobOpeningResultsPublishedWatchDog
-> * SendEmailOnJobOpeningResultsPublishedController
 > * ApplicationStatusChangedEvent
 > * ApplicationStatusChangedWatchDog
 > * NotifyCandidateOnApplicationStatusChangedController
@@ -170,43 +158,6 @@ company/customer, the email must contain the list of selected candidates, includ
 > All the mentioned objects are components of the implemented observer pattern. This pattern was employed to ensure that
 > when results are published, emails are sent to candidates and customers, and notifications are created for changes in
 > application status, allowing candidates to stay informed about new updates.
-
-### 4.4. Tests
-
-#### RankTests
-
-**Test 1:** Verifies that it is not possible to select more applications/candidates than the number of vacancies.
-
-**Refers to Acceptance Criteria:** 1020.1
-
-````
-@Test(expected = IllegalArgumentException.class)
-public void ensureCantSelectApplicationMoreThanNumberOfVacancies() {
-...
-}
-````
-
-**Test 2:** Verifies that it selects the first N applications/candidates, where N is the number of vacancies.
-
-**Refers to Acceptance Criteria:** 1020.3
-
-````
-@Test(expected = IllegalArgumentException.class)
-public void ensureMustSelectFirstNApplicationInTheRank() {
-...
-}
-````
-
-**Test 3:** Verifies that it updates the status of all ranked applications/candidates.
-
-**Refers to Acceptance Criteria:** 1020.4
-
-````
-@Test(expected = IllegalArgumentException.class)
-public void ensureMustUpdateStatusOfAllRankedApplications() {
-...
-}
-````
 
 ## 5. Implementation
 
