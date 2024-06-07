@@ -25,6 +25,7 @@ package jobs4u.base.app.backoffice.console.presentation;
 
 import jobs4u.base.Application;
 import jobs4u.base.app.backoffice.console.presentation.applications.AnalyseApplicationFilesAction;
+import jobs4u.base.app.backoffice.console.presentation.applications.DisplayAllApplicationDataAction;
 import jobs4u.base.app.backoffice.console.presentation.applications.ScheduleInterviewAction;
 import jobs4u.base.app.backoffice.console.presentation.authz.AddUserUI;
 import jobs4u.base.app.backoffice.console.presentation.authz.EnableDisableUserAction;
@@ -33,6 +34,7 @@ import jobs4u.base.app.backoffice.console.presentation.candidate.*;
 import jobs4u.base.app.backoffice.console.presentation.customer.RegisterCustomerAction;
 import jobs4u.base.app.backoffice.console.presentation.interviewTemplate.GenerateInterviewModelTemplateFileUI;
 import jobs4u.base.app.backoffice.console.presentation.interviewmodel.SelectInterviewModelAction;
+import jobs4u.base.app.backoffice.console.presentation.interviewmodel.UploadInterviewResponsesAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.editing.EditJobOpeningAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.listing.ListJobOpeningsAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.publishing.PublishResultJobOpeningAction;
@@ -200,6 +202,7 @@ public class MainMenu extends AbstractUI {
         final Menu menu = new Menu("Applications >");
         menu.addItem(1, "See Application TOP 20 Used Words List", new AnalyseApplicationFilesAction());
         menu.addItem(2,"Schedule Interview", new ScheduleInterviewAction());
+        menu.addItem(3, "Display all data of an application", new DisplayAllApplicationDataAction());
         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
         return menu;
     }
@@ -207,6 +210,7 @@ public class MainMenu extends AbstractUI {
     private Menu buildCustomerManagerCandidateMenu() {
         final Menu menu = new Menu("Candidates >");
         menu.addItem(1, "See all data of a candidate", new ListCandidateDataAction());
+        menu.addItem(2, "Get an ordered list of candidates", new ListOrderedCandidatesAction());
         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
         return menu;
     }
@@ -222,6 +226,7 @@ public class MainMenu extends AbstractUI {
     private Menu buildCustomerManagerPluginMenu() {
         final Menu menu = new Menu("Plugins >");
         menu.addItem(1, "Generate and export Interview Model Template", new GenerateInterviewModelTemplateFileUI()::show);
+        menu.addItem(2, "Import Interview Answer Files", new UploadInterviewResponsesAction());
         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
         return menu;
     }
