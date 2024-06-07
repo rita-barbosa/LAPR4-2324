@@ -101,4 +101,21 @@ public class ApplicationManagementService {
         }
         return application;
     }
+
+    public List<ApplicationDTO> getApplicationsOrderedByInterviewResult(List<ApplicationDTO> applicationListDTO) {
+        List<ApplicationDTO> orderList = applicationListDTO;
+
+        Collections.sort(orderList, new Comparator<ApplicationDTO>() {
+            @Override
+            public int compare(ApplicationDTO app1, ApplicationDTO app2) {
+                Integer grade1 = app1.getInterview().interviewResult().interviewGrade();
+                Integer grade2 = app2.getInterview().interviewResult().interviewGrade();
+
+
+                return grade2.compareTo(grade1);
+            }
+        });
+
+        return orderList;
+    }
 }
