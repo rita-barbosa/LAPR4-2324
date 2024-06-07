@@ -11,4 +11,6 @@ public interface InterviewModelRepository extends DomainRepository<InterviewMode
     Iterable<InterviewModel> interviewModels();
 
     Optional<InterviewModel> getFileByName(String filename);
+
+    Optional<InterviewModel> interviewModelByInterviewName(String interviewModelName);
 }

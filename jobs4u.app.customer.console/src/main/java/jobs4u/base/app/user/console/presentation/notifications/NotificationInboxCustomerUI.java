@@ -25,12 +25,13 @@ public class NotificationInboxCustomerUI extends AbstractUI{
         //establish connection
         Pair<Boolean, String> pair = controller.establishConnection(username, password);
         boolean connectionEstablished = pair.getKey();
-        controller.startCheckForNotificationsThread(username);
 
         int option = 0;
 
         System.out.println(pair.getValue());
         if (connectionEstablished) {
+
+            controller.startCheckForNotificationsThread(username);
 
             while(option != 3) {
                 option = Console.readInteger("\nPlease choose an option:\n1) Notifications To Be Seen\n2) Notifications Already Seen\n3) Exit\n");
@@ -64,6 +65,11 @@ public class NotificationInboxCustomerUI extends AbstractUI{
                 }
             }
 
+            try {
+                controller.closeCheckForNotificationsThread();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             Pair<Boolean, String> response = controller.closeConnection();
             System.out.println(response.getValue());
         }

@@ -529,6 +529,11 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
 
         PhoneNumber phoneNumber3 = new PhoneNumber("+351", "910000001");
         candidateManagementService.registerCandidate("José", "1220738@isep.ipp.pt", phoneNumber3);
+        PhoneNumber phoneNumber1 = new PhoneNumber("+351", "910000034");
+        PhoneNumber phoneNumber4= new PhoneNumber("+351","910095800");
+
+        candidateManagementService.registerCandidate("Joana", "candidate@email.com", phoneNumber1);
+        candidateManagementService.registerCandidate("Vitor", "1211273@isep.ipp.pt",phoneNumber4);
     }
 
     private void persistWorkModes() {
@@ -583,7 +588,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
 
         InterviewAnswer interviewAnswer1 = InterviewAnswer.valueOf("plugins-config-file/interview/i-answer-1.txt");
         Interview interview1 = new Interview("interview1", new Date(2024 - 1900, Calendar.MARCH, 3),
-                new InterviewResult("passed", 60, "the grade is above 50"), interviewAnswer1);
+                new InterviewResult( 60, "the grade is above 50"), interviewAnswer1);
 
         RequirementAnswer requirementAnswer2 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-2.txt");
         RequirementResult requirementResult2 = RequirementResult.valueOf(true);

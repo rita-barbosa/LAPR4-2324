@@ -31,4 +31,10 @@ public class InMemoryInterviewModelRepository
     public Optional<InterviewModel> getFileByName(String filename) {
         return matchOne(e -> e.identity().name().equals(filename));
     }
+
+    @Override
+    public Optional<InterviewModel> interviewModelByInterviewName(String interviewModelName) {
+        return matchOne(e -> e.identity().name().equals(interviewModelName));
+
+    }
 }

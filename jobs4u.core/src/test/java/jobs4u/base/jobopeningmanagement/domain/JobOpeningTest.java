@@ -41,7 +41,7 @@ public class JobOpeningTest {
 
     InterviewAnswer interviewAnswer = InterviewAnswer.valueOf("../plugins-config-file/interview/i-answer-1.txt");
     Interview interview = new Interview("interview", new Date(2024 - 1900, Calendar.MARCH, 6),
-            new InterviewResult("passed", 88, "the grade is above 50"), interviewAnswer);
+            new InterviewResult(88, "the grade is above 50"), interviewAnswer);
 
 
     public RequirementSpecification jobOpeningRequirement() {

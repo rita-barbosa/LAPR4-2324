@@ -86,7 +86,7 @@ public class FollowUpConnectionService {
         }
     }
 
-    public DataDTO startCheckForNotificationsThread(Username username){
+    public DataDTO checkForNotifications(Username username){
         try {
             DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.CHECKNOTIF.getCode());
             byte[] stringBytes = SerializationUtil.serialize(username.toString());

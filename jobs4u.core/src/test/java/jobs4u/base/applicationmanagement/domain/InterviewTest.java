@@ -11,7 +11,7 @@ class InterviewTest {
 
     String interviewTypeDenomination = "interview1";
     Date schedule = new Date(2024,Calendar.JANUARY, 5);
-    InterviewResult interviewResult = new InterviewResult("correct", 50, "wrong");
+    InterviewResult interviewResult = new InterviewResult( 50, "wrong");
     InterviewAnswer interviewAnswer = InterviewAnswer.valueOf("../plugins-config-file/interview/i-answer-1.txt");
 
     @Test

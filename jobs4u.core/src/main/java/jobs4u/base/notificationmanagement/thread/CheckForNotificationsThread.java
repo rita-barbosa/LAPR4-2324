@@ -16,7 +16,6 @@ import java.util.Calendar;
 public class CheckForNotificationsThread implements Runnable {
 
     public final Username username;
-
     private final FollowUpConnectionService followUpConnectionService;
 
     public CheckForNotificationsThread(Username username) {
@@ -28,21 +27,22 @@ public class CheckForNotificationsThread implements Runnable {
     public void run() {
         String answer;
 
-        while(true) {
+        while(!Thread.interrupted()) {
 
-            answer = (String) SerializationUtil.deserialize(followUpConnectionService.startCheckForNotificationsThread(username).dataBlockList().get(0).data());
+            answer = (String) SerializationUtil.deserialize(followUpConnectionService.checkForNotifications(username).dataBlockList().get(0).data());
 
             if(answer.equals("true")){
                 System.out.println("\n[NEW NOTIFICATIONS TO BE SEEN]");
             }
 
             try {
-                Thread.sleep(30000);
+                wait(30000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
 
         }
     }
+
 
 }

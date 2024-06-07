@@ -21,6 +21,7 @@ public class NotificationInboxCandidateController {
 
     FollowUpConnectionService followUpConnectionService;
     AuthorizationService authorizationService;
+    Thread checkForNotificationsThread;
 
     public NotificationInboxCandidateController() {
         this.followUpConnectionService = new FollowUpConnectionService();
@@ -41,9 +42,15 @@ public class NotificationInboxCandidateController {
     }
 
     public void startCheckForNotificationsThread(Username username){
-        Thread thread = new Thread(new CheckForNotificationsThread(username));
-        thread.start();
+        checkForNotificationsThread = new Thread(new CheckForNotificationsThread(username));
+        checkForNotificationsThread.start();
     }
+
+    public void closeCheckForNotificationsThread() throws InterruptedException {
+        checkForNotificationsThread.interrupt();
+        checkForNotificationsThread.join();
+    }
+
 
     public Pair<Boolean, String> closeConnection() {
         return FollowUpConnectionService.closeConnection();
@@ -56,4 +63,5 @@ public class NotificationInboxCandidateController {
     public Iterable<NotificationDTO> getAllSeenNotifications(Username username, String date) {
         return followUpConnectionService.receiveSeenNotificationList(username.toString(), date);
     }
+
 }

@@ -10,19 +10,21 @@ import java.util.Objects;
 @Embeddable
 public class InterviewResult  implements ValueObject {
 
-    private String interviewResult;
     private Integer interviewGrade;
     private String justification;
 
-
-    public InterviewResult(String interviewResult, Integer interviewGrade, String justification){
-        Preconditions.noneNull(interviewResult, interviewGrade, justification);
-        Preconditions.nonEmpty(interviewResult);
+    public InterviewResult(Integer interviewGrade, String justification){
+        Preconditions.noneNull(interviewGrade, justification);
         Preconditions.nonEmpty(justification);
 
-        this.interviewResult = interviewResult;
         this.interviewGrade = interviewGrade;
         this.justification = justification;
+    }
+    protected InterviewResult(Integer grade) {
+        Preconditions.noneNull(grade);
+
+        this.interviewGrade = grade;
+        this.justification = "";
     }
 
     protected InterviewResult(){
@@ -42,14 +44,18 @@ public class InterviewResult  implements ValueObject {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         InterviewResult that = (InterviewResult) o;
-        return Objects.equals(interviewResult, that.interviewResult) && Objects.equals(interviewGrade, that.interviewGrade) && Objects.equals(justification, that.justification);
+        return  Objects.equals(interviewGrade, that.interviewGrade) && Objects.equals(justification, that.justification);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(interviewResult, interviewGrade, justification);
+        return Objects.hash( interviewGrade, justification);
     }
-    public void updateInterviewGrade(int interviewGrade) {
-        this.interviewGrade = interviewGrade;
+    public static InterviewResult valueOf(final Integer grade, final String justification) {
+        return new InterviewResult(grade, justification);
     }
+    public static InterviewResult valueOf(final Integer grade) {
+        return new InterviewResult(grade);
+    }
+
 }

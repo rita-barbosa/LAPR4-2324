@@ -35,7 +35,7 @@ public class EvaluateInterviewsUI extends AbstractUI {
 
             return controller.interviewsEvaluation(jobOpeningDTO);
         } catch (NullPointerException ex) {
-            System.out.println("Error: Please select a job opening"+ex.getMessage());
+            System.out.println("Error: Please select a job opening "+ex.getMessage());
 
         } catch (IntegrityViolationException | ConcurrencyException ex) {LOGGER.error("Error, please try again", ex);
             System.out.println("An unexpected error occurred. Please try again or contact the administrator.");
