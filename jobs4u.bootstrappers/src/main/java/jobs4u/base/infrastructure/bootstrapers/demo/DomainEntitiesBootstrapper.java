@@ -37,6 +37,7 @@ import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRep
 import jobs4u.base.usermanagement.domain.BaseRoles;
 import jobs4u.base.workmodemanagement.domain.WorkMode;
 
+import javax.swing.text.html.Option;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -529,11 +530,9 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
 
         PhoneNumber phoneNumber3 = new PhoneNumber("+351", "910000001");
         candidateManagementService.registerCandidate("José", "1220738@isep.ipp.pt", phoneNumber3);
-        PhoneNumber phoneNumber1 = new PhoneNumber("+351", "910000034");
-        PhoneNumber phoneNumber4= new PhoneNumber("+351","910095800");
+        PhoneNumber phoneNumber4 = new PhoneNumber("+351", "910095800");
 
-        candidateManagementService.registerCandidate("Joana", "candidate@email.com", phoneNumber1);
-        candidateManagementService.registerCandidate("Vitor", "1211273@isep.ipp.pt",phoneNumber4);
+        candidateManagementService.registerCandidate("Vitor", "1211273@isep.ipp.pt", phoneNumber4);
     }
 
     private void persistWorkModes() {
@@ -588,14 +587,14 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
 
         InterviewAnswer interviewAnswer1 = InterviewAnswer.valueOf("plugins-config-file/interview/i-answer-1.txt");
         Interview interview1 = new Interview("interview1", new Date(2024 - 1900, Calendar.MARCH, 3),
-                new InterviewResult( 60, "the grade is above 50"), interviewAnswer1);
+                new InterviewResult(60, "the grade is above 50"), interviewAnswer1);
 
         RequirementAnswer requirementAnswer2 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-2.txt");
         RequirementResult requirementResult2 = RequirementResult.valueOf(true);
         Date date2 = new Date(2024 - 1900, Calendar.JANUARY, 8);
         InterviewAnswer interviewAnswer2 = InterviewAnswer.valueOf("plugins-config-file/interview/i-answer-2.txt");
         Interview interview2 = new Interview("interview2", new Date(2024 - 1900, Calendar.MARCH, 4),
-                new InterviewResult( 80, "the grade is above 50"), interviewAnswer2);
+                new InterviewResult(80, "the grade is above 50"), interviewAnswer2);
 
 
         ApplicationFile file10 = new ApplicationFile(new File("output/candidate3/example3.txt"));
@@ -626,20 +625,22 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         Optional<Candidate> candidate1 = candidateRepository.findByPhoneNumber(phone);
         PhoneNumber phone1 = new PhoneNumber("+351", "910000001");
         Optional<Candidate> candidate2 = candidateRepository.findByPhoneNumber(phone1);
+        Optional<Candidate> c4 = candidateRepository.findByPhoneNumber(new PhoneNumber("+351", "910000034"));
 
-        if (candidate1.isPresent() && candidate2.isPresent()) {
+        if (candidate1.isPresent() && candidate2.isPresent() && c4.isPresent()) {
             Candidate candidate = candidate1.get();
             Candidate candidate3 = candidate2.get();
+            Candidate candidate4 = c4.get();
             application = new Application(requirementAnswer1, requirementResult, files1, date, candidate, interview1);
             application1 = new Application(requirementAnswer1, requirementResult1, files2, date1, candidate, interview1);
-            application2 = new Application(requirementAnswer1, requirementResult1, files3, date2, candidate, interview1);
+            application2 = new Application(requirementAnswer1, requirementResult1, files3, date2, candidate4, interview1);
             application3 = new Application(requirementAnswer1, requirementResult1, files4, date3, candidate, interview1);
             application4 = new Application(requirementAnswer1, requirementResult1, files5, date4, candidate3, interview1);
             application5 = new Application(requirementAnswer1, requirementResult1, files6, date5, candidate3, interview1);
             application6 = new Application(requirementAnswer1, requirementResult1, files2, date1, candidate, interview1);
             application7 = new Application(requirementAnswer1, requirementResult1, files3, date2, candidate, interview1);
             application8 = new Application(requirementAnswer2, requirementResult2, files4, date3, candidate, interview2);
-            application9 = new Application(requirementAnswer2, requirementResult2, files1, date, candidate, interview2);
+            application9 = new Application(requirementAnswer2, requirementResult2, files1, date, candidate4, interview2);
             application10 = new Application(requirementAnswer2, requirementResult2, files5, date4, candidate, interview2);
 
         } else {
@@ -663,11 +664,11 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         applicationsSet.add(application2);
 
         Set<Application> applicationsSet1 = new HashSet<>();
-        application1.applicationStatus().updateStatusDescriptionAsACCEPTED();
+        application3.applicationStatus().updateStatusDescriptionAsACCEPTED();
         applicationsSet1.add(application3);
 
         Set<Application> applicationsSet2 = new HashSet<>();
-        application2.applicationStatus().updateStatusDescriptionAsACCEPTED();
+        application4.applicationStatus().updateStatusDescriptionAsACCEPTED();
         applicationsSet2.add(application4);
 
         Set<Application> applicationsSet3 = new HashSet<>();
