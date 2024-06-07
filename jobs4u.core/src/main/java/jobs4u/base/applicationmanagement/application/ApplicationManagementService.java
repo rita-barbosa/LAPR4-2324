@@ -7,7 +7,9 @@ import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
 import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
 import jobs4u.base.candidatemanagement.domain.Candidate;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
+import jobs4u.base.jobopeningmanagement.application.JobOpeningManagementService;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
+import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.requirementsmanagement.application.ApplicationListDTOService;
 
 import java.io.File;
@@ -22,6 +24,9 @@ public class ApplicationManagementService {
 
     private final ApplicationRepository applicationRepository = PersistenceContext.
             repositories().applications();
+
+    private final JobOpeningRepository jobOpeningRepository = PersistenceContext.
+            repositories().jobOpenings();
 
     private final ApplicationDTOService applicationDTOService = new ApplicationDTOService();
 
@@ -61,8 +66,20 @@ public class ApplicationManagementService {
     }
 
 
-    public List<ApplicationDTO> getApplicationsListByUsername(Username username) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public Map<ApplicationDTO, Integer> getApplicationsAndNumber(Username username) {
+        Iterable<Application> list = applicationRepository.getApplicationFromCandidateUserName(username);
+        Map<ApplicationDTO, Integer> applicationDTOMap = new LinkedHashMap<>();
+        for (Application application : list) {
+                for (JobOpening jobOpening : jobOpeningRepository.findAll()) {
+                    for (Application app : jobOpening.getApplications()) {
+                        if (application.equals(app)){
+                            applicationDTOMap.put(application.toDTO(), jobOpening.getApplications().size());
+                        }
+                    }
+                }
+        }
+
+        return applicationDTOMap;
     }
 
     public List<ApplicationDTO> getApplicationsFromJobReference(String jobReference) {
