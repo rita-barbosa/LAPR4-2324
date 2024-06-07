@@ -20,65 +20,67 @@ public class DisplayAllApplicationDataUI extends AbstractUI {
 
             List<ApplicationDTO> applicationDTOList = controller.getApplicationsList();
 
-            for (ApplicationDTO dto : applicationDTOList) {
-                System.out.printf("INDEX: %d", index);
-                System.out.println(dto.toString());
-                index++;
-            }
-
-            int option = selectsIndexNoCancel(applicationDTOList);
-
-            ApplicationDTO applicationDTO = applicationDTOList.get(option);
-            String sb;
-            
-            if (applicationDTO.getInterview() != null && applicationDTO.getRequirementAnswer() != null && applicationDTO.getRequirementResult() != null){
-                sb = "==================================================================\n" +
-                        "[Application]" + applicationDTO.getId() + "\n" +
-                        "[Files]" + applicationDTO.getApplicationFiles() + "\n" +
-                        "[Application Date]" + applicationDTO.getApplicationDate() + "\n" +
-                        "[Application Status]" + applicationDTO.getApplicationStatus() + "\n" +
-                        "[Candidate Name]" + applicationDTO.getCandidateName() + "\n" +
-                        "[Candidate Username]" + applicationDTO.getCandidate() + "\n" +
-                        "[Interview Result]" + applicationDTO.getInterview().interviewResult() + "\n" +
-                        "[Interview Answer]" + applicationDTO.getInterview().interviewAnswer().name() + "\n" +
-                        "[Requirement Result]" + applicationDTO.getRequirementResult() + "\n" +
-                        "[Requirement Answer]" + applicationDTO.getRequirementAnswer().name() + "\n" +
-                        "=====================================================================";
-            } else if (applicationDTO.getInterview() != null) {
-                sb = "==================================================================\n" +
-                        "[Application]" + applicationDTO.getId() + "\n" +
-                        "[Files]" + applicationDTO.getApplicationFiles() + "\n" +
-                        "[Application Date]" + applicationDTO.getApplicationDate() + "\n" +
-                        "[Application Status]" + applicationDTO.getApplicationStatus() + "\n" +
-                        "[Candidate Name]" + applicationDTO.getCandidateName() + "\n" +
-                        "[Candidate Username]" + applicationDTO.getCandidate() + "\n" +
-                        "[Interview Result]" + applicationDTO.getInterview().interviewResult() + "\n" +
-                        "[Interview Answer]" + applicationDTO.getInterview().interviewAnswer().name() + "\n" +
-                        "=====================================================================";
-            } else if (applicationDTO.getRequirementResult() != null && applicationDTO.getRequirementAnswer() != null) {
-                sb = "==================================================================\n" +
-                        "[Application]" + applicationDTO.getId() + "\n" +
-                        "[Files]" + applicationDTO.getApplicationFiles() + "\n" +
-                        "[Application Date]" + applicationDTO.getApplicationDate() + "\n" +
-                        "[Application Status]" + applicationDTO.getApplicationStatus() + "\n" +
-                        "[Candidate Name]" + applicationDTO.getCandidateName() + "\n" +
-                        "[Candidate Username]" + applicationDTO.getCandidate() + "\n" +
-                        "[Requirement Result]" + applicationDTO.getRequirementResult() + "\n" +
-                        "[Requirement Answer]" + applicationDTO.getRequirementAnswer().name() + "\n" +
-                        "=====================================================================";
+            if (applicationDTOList.isEmpty()){
+                System.out.println("Don't exist applications for the job openings related to this customer manager chosen!");
             } else {
-                sb = "==================================================================\n" +
-                        "[Application]" + applicationDTO.getId() + "\n" +
-                        "[Files]" + applicationDTO.getApplicationFiles() + "\n" +
-                        "[Application Date]" + applicationDTO.getApplicationDate() + "\n" +
-                        "[Application Status]" + applicationDTO.getApplicationStatus() + "\n" +
-                        "[Candidate Name]" + applicationDTO.getCandidateName() + "\n" +
-                        "[Candidate Username]" + applicationDTO.getCandidate() + "\n" +
-                        "=====================================================================";
+                for (ApplicationDTO dto : applicationDTOList) {
+                    System.out.printf("INDEX: %d", index);
+                    System.out.println(dto.toString());
+                    index++;
+                }
+
+                int option = selectsIndexNoCancel(applicationDTOList);
+
+                ApplicationDTO applicationDTO = applicationDTOList.get(option);
+                String sb;
+
+                if (applicationDTO.getInterview() != null && applicationDTO.getRequirementAnswer() != null && applicationDTO.getRequirementResult() != null){
+                    sb = "==================================================================\n" +
+                            "[Application Number] " + applicationDTO.getId() + "\n" +
+                            "[Files] " + applicationDTO.getApplicationFiles() + "\n" +
+                            "[Application Date] " + applicationDTO.getApplicationDate() + "\n" +
+                            "[Application Status] " + applicationDTO.getApplicationStatus() + "\n" +
+                            "[Candidate Name] " + applicationDTO.getCandidateName() + "\n" +
+                            "[Candidate Username] " + applicationDTO.getCandidate() + "\n" +
+                            "[Interview Result] " + applicationDTO.getInterview().interviewResult().interviewGrade() + "\n" +
+                            "[Interview Answer] " + applicationDTO.getInterview().interviewAnswer().name() + "\n" +
+                            "[Requirement Result] " + applicationDTO.getRequirementResult().requirementResult() + "\n" +
+                            "[Requirement Answer] " + applicationDTO.getRequirementAnswer().name() + "\n" +
+                            "=====================================================================";
+                } else if (applicationDTO.getInterview() != null) {
+                    sb = "==================================================================\n" +
+                            "[Application] " + applicationDTO.getId() + "\n" +
+                            "[Files] " + applicationDTO.getApplicationFiles() + "\n" +
+                            "[Application Date] " + applicationDTO.getApplicationDate() + "\n" +
+                            "[Application Status] " + applicationDTO.getApplicationStatus() + "\n" +
+                            "[Candidate Name] " + applicationDTO.getCandidateName() + "\n" +
+                            "[Candidate Username] " + applicationDTO.getCandidate() + "\n" +
+                            "[Interview Result] " + applicationDTO.getInterview().interviewResult().interviewGrade() + "\n" +
+                            "[Interview Answer] " + applicationDTO.getInterview().interviewAnswer().name() + "\n" +
+                            "=====================================================================";
+                } else if (applicationDTO.getRequirementResult() != null && applicationDTO.getRequirementAnswer() != null) {
+                    sb = "==================================================================\n" +
+                            "[Application] " + applicationDTO.getId() + "\n" +
+                            "[Files] " + applicationDTO.getApplicationFiles() + "\n" +
+                            "[Application Date] " + applicationDTO.getApplicationDate() + "\n" +
+                            "[Application Status] " + applicationDTO.getApplicationStatus() + "\n" +
+                            "[Candidate Name] " + applicationDTO.getCandidateName() + "\n" +
+                            "[Candidate Username] " + applicationDTO.getCandidate() + "\n" +
+                            "[Requirement Result] " + applicationDTO.getRequirementResult().requirementResult() + "\n" +
+                            "[Requirement Answer] " + applicationDTO.getRequirementAnswer().name() + "\n" +
+                            "=====================================================================";
+                } else {
+                    sb = "==================================================================\n" +
+                            "[Application] " + applicationDTO.getId() + "\n" +
+                            "[Files] " + applicationDTO.getApplicationFiles() + "\n" +
+                            "[Application Date] " + applicationDTO.getApplicationDate() + "\n" +
+                            "[Application Status] " + applicationDTO.getApplicationStatus() + "\n" +
+                            "[Candidate Name] " + applicationDTO.getCandidateName() + "\n" +
+                            "[Candidate Username] " + applicationDTO.getCandidate() + "\n" +
+                            "=====================================================================";
+                }
+                System.out.println(sb);
             }
-
-            System.out.println(sb);
-
         } catch (NoSuchElementException | IllegalArgumentException e){
             System.out.println(e.getMessage());
             return false;
