@@ -19,6 +19,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 //TODO ADD LOGGER COMMENTS
@@ -145,7 +146,24 @@ public class FollowUpConnectionService {
         }
     }
 
-    public List<ApplicationDTO> receiveCandidateApplicationList(String username) {
+//    public List<ApplicationDTO> receiveCandidateApplicationList(Username username) {
+//        //send candidate applications request with dataDTO
+//        try {
+//            DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.APPLIST.getCode());
+//            byte[] serialized = SerializationUtil.serialize(username);
+//            dataDTO.addDataBlock(serialized.length, serialized);
+//            byte[] message = dataDTO.toByteArray();
+//            sOut.writeInt(message.length);
+//            sOut.write(message);
+//            sOut.flush();
+//            return processListResponse(new ApplicationListResponseProcessor());
+//
+//        } catch (IOException e) {
+//            throw new RuntimeException(e + "\n Unable to send applications list request.\n");
+//        }
+//    }
+
+    public List<Map.Entry<ApplicationDTO, Integer>> receiveCandidateApplicationAndNumberList(Username username) {
         //send candidate applications request with dataDTO
         try {
             DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.APPLIST.getCode());
