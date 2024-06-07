@@ -1,6 +1,7 @@
 package jobs4u.base.applicationmanagement.repositories;
 
 import eapli.framework.domain.repositories.DomainRepository;
+import eapli.framework.infrastructure.authz.domain.model.Username;
 import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
 
@@ -15,4 +16,7 @@ public interface ApplicationRepository extends DomainRepository<Long, Applicatio
     Application getApplicationFromDTO(ApplicationDTO applicationDTO);
 
     Iterable<Application> applicationsForJobOpeningWithInterviewAnswers(String jobReference);
+
+    Iterable<Application> getApplicationFromCandidateUserName(Username username);
+
 }
