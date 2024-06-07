@@ -193,6 +193,21 @@ public class JpaJobOpeningRepository
     }
 
     @Override
+    public Iterable<JobOpening> jobOpeningsListOfCustomerManager(Username customerManagerUsername) {
+        final TypedQuery<JobOpening>
+                q = createQuery("SELECT e \n" +
+                        "FROM JobOpening e \n" +
+                        "WHERE e.jobReference.companyCode IN (\n" +
+                        "    SELECT code.customerCode \n" +
+                        "    FROM Customer c \n" +
+                        "    WHERE c.customerManager.username.value = :manager\n" +
+                        ")\n",
+                JobOpening.class);
+        q.setParameter("manager", customerManagerUsername.toString());
+        return q.getResultList();
+    }
+
+    @Override
     public Iterable<JobOpening> getJobOpeningFromUsername(Username username) {
         String query = "SELECT e " +
                 "FROM JobOpening e " +

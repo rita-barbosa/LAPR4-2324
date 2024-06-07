@@ -3,6 +3,7 @@ package jobs4u.base.persistence.impl.inmemory;
 import eapli.framework.infrastructure.authz.domain.model.Username;
 import eapli.framework.infrastructure.repositories.impl.inmemory.InMemoryDomainRepository;
 import eapli.framework.time.domain.model.DateInterval;
+import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.customermanagement.domain.Customer;
 import jobs4u.base.customermanagement.domain.CustomerCode;
 import jobs4u.base.customermanagement.repository.CustomerRepository;
@@ -155,6 +156,15 @@ public class InMemoryJobOpeningRepository
             return false;
         });
     }
+
+    @Override
+    public Iterable<JobOpening> jobOpeningsListOfCustomerManager(Username customerManagerUsername) {
+        CustomerRepository custRepo = PersistenceContext.repositories().customers();
+        List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername);
+
+        return match (e -> customers.stream().anyMatch(customer -> customer.customerCode().toString().equals(e.jobReference().getcustomerCode())));
+    }
+
 
 
     @Override
