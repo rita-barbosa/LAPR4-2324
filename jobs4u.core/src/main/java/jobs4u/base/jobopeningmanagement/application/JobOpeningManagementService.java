@@ -2,6 +2,8 @@ package jobs4u.base.jobopeningmanagement.application;
 
 import eapli.framework.infrastructure.authz.domain.model.Username;
 import eapli.framework.time.domain.model.DateInterval;
+import jobs4u.base.applicationmanagement.application.ApplicationManagementService;
+import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
 import jobs4u.base.customermanagement.application.CustomerManagementService;
 import jobs4u.base.customermanagement.domain.Customer;
 import jobs4u.base.customermanagement.domain.CustomerCode;
@@ -30,6 +32,8 @@ public class JobOpeningManagementService {
     private final RecruitmentProcessManagementService recruitmentProcessManagementService = new RecruitmentProcessManagementService();
 
     private final CustomerManagementService customerManagementService = new CustomerManagementService();
+
+    private final ApplicationManagementService applicationManagementService = new ApplicationManagementService();
 
     public Iterable<JobOpening> getUNFINISHEDJobOpenings() {
         return jobOpeningRepository.getUNFINISHEDJobOpeningList();
@@ -187,5 +191,15 @@ public class JobOpeningManagementService {
 
     public Iterable<JobOpeningDTO> jobOpeningsInResultListOfCustomerManager(Username customerManagerUsername) {
         return dtoSvc.convertToDTO(jobOpeningRepository.jobOpeningsInResultListOfCustomerManager(customerManagerUsername));
+    }
+
+    public List<ApplicationDTO> getApplicationsList(Iterable<JobOpeningDTO> jobOpeningDTOList) {
+        List<ApplicationDTO> applicationDTOList = new ArrayList<>();
+        for (JobOpeningDTO dto :jobOpeningDTOList) {
+            JobOpening jobOpening = getJobOpening(dto);
+            List<ApplicationDTO> applicationDTOFromJobOpening = applicationManagementService.getApplicationsList(jobOpening);
+            applicationDTOList.addAll(applicationDTOFromJobOpening);
+        }
+        return applicationDTOList;
     }
 }
