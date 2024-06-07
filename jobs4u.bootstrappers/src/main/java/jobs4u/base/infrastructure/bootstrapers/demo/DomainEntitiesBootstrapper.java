@@ -595,7 +595,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         Date date2 = new Date(2024 - 1900, Calendar.JANUARY, 8);
         InterviewAnswer interviewAnswer2 = InterviewAnswer.valueOf("plugins-config-file/interview/i-answer-2.txt");
         Interview interview2 = new Interview("interview2", new Date(2024 - 1900, Calendar.MARCH, 4),
-                new InterviewResult("passed", 80, "the grade is above 50"), interviewAnswer2);
+                new InterviewResult( 80, "the grade is above 50"), interviewAnswer2);
 
 
         ApplicationFile file10 = new ApplicationFile(new File("output/candidate3/example3.txt"));
