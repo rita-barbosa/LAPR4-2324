@@ -29,6 +29,14 @@ public class InterviewResult  implements ValueObject {
         //for ORM
     }
 
+    public Integer interviewGrade(){
+        return interviewGrade;
+    }
+
+    public String justification(){
+        return justification;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

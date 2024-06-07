@@ -31,6 +31,12 @@ public class Interview implements ValueObject {
         //for ORM
     }
 
+    public InterviewResult interviewResult(){
+        return interviewResult;
+    }
+
+    public InterviewAnswer interviewAnswer(){return interviewAnswer;}
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
