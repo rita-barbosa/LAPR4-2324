@@ -36,4 +36,11 @@ public class JpaInterviewModelRepository
         return matchOne("e.interviewModelName.name=:filename", params);
     }
 
+    @Override
+    public Optional<InterviewModel> interviewModelByInterviewName(String interviewModelName) {
+        final Map<String, Object> params = new HashMap<>();
+        params.put("interview", interviewModelName);
+        return matchOne("e.interviewModelName.name=:interview", params);
+    }
+
 }
