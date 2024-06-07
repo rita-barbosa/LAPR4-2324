@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 
-//TODO ADD LOGGER COMMENTS
 public class CheckForNotificationsThread implements Runnable {
 
     public final Username username;

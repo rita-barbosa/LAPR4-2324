@@ -144,25 +144,499 @@ No new tests were made regarding the domain entities within this functionality.
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+### NotificationInboxCandidateUI
+````
+public class NotificationInboxCandidateUI extends AbstractUI{
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+    NotificationInboxCandidateController controller = new NotificationInboxCandidateController();
+
+    private Username username;
+
+    NotificationDTOPrinter notificationDTOPrinter = new NotificationDTOPrinter();
+
+    @Override
+    protected boolean doShow() {
+
+        username = controller.getSessionCredentials();
+        String password = Console.readLine("Please provide your password again:");
+
+        //establish connection
+        Pair<Boolean, String> pair = controller.establishConnection(username, password);
+        boolean connectionEstablished = pair.getKey();
+        controller.startCheckForNotificationsThread(username);
+
+        int option = 0;
+
+        System.out.println(pair.getValue());
+        if (connectionEstablished) {
+
+            while(option != 3) {
+                option = Console.readInteger("\nPlease choose an option:\n1) Notifications To Be Seen\n2) Notifications Already Seen\n3) Exit\n");
+
+                switch (option) {
+                    case 1:
+                        Iterable<NotificationDTO> unseenNotificationList = controller.getAllUnseenNotifications(username);
+                        if (unseenNotificationList.iterator().hasNext()) {
+                            for (NotificationDTO notif : unseenNotificationList) {
+                                notificationDTOPrinter.visit(notif);
+                            }
+                        } else {
+                            System.out.println("==========================================");
+                            System.out.println("     NO NEW NOTIFICATIONS TO BE SEEN      ");
+                            System.out.println("==========================================");
+                        }
+                        break;
+                    case 2:
+                        String date = Console.readLine("From which date do you want to see the notifications? (DD-MM-YYYY)");
+                        Iterable<NotificationDTO> seenNotificationList = controller.getAllSeenNotifications(username, date);
+                        if (seenNotificationList.iterator().hasNext()) {
+                            for (NotificationDTO notif : seenNotificationList) {
+                                notificationDTOPrinter.visit(notif);
+                            }
+                        } else {
+                            System.out.println("==========================================");
+                            System.out.println("    NO NOTIFICATIONS IN THAT TIME FRAME   ");
+                            System.out.println("==========================================");
+                        }
+                        break;
+                }
+            }
+
+            Pair<Boolean, String> response = controller.closeConnection();
+            System.out.println(response.getValue());
+        }
+
+        return false;
+    }
+
+    @Override
+    public String headline() {
+        return "Notification Inbox For Candidate\n";
+    }
+}
+````
+
+### NotificationInboxCandidateController
+````
+public class NotificationInboxCandidateController {
+
+    FollowUpConnectionService followUpConnectionService;
+    AuthorizationService authorizationService;
+
+    public NotificationInboxCandidateController() {
+        this.followUpConnectionService = new FollowUpConnectionService();
+        this.authorizationService = AuthzRegistry.authorizationService();
+    }
+
+    public Username getSessionCredentials() {
+        Optional<UserSession> session = authorizationService.session();
+        if (session.isPresent()) {
+            SystemUser user = session.get().authenticatedUser();
+            return user.identity();
+        }
+        throw new NoSuchElementException("No session found");
+    }
+
+    public Pair<Boolean, String> establishConnection(Username username, String password) {
+        return followUpConnectionService.establishConnection(username, password);
+    }
+
+    public void startCheckForNotificationsThread(Username username){
+        Thread thread = new Thread(new CheckForNotificationsThread(username));
+        thread.start();
+    }
+
+    public Pair<Boolean, String> closeConnection() {
+        return FollowUpConnectionService.closeConnection();
+    }
+
+    public Iterable<NotificationDTO> getAllUnseenNotifications(Username username) {
+        return followUpConnectionService.receiveUnseenNotificationList(username.toString());
+    }
+
+    public Iterable<NotificationDTO> getAllSeenNotifications(Username username, String date) {
+        return followUpConnectionService.receiveSeenNotificationList(username.toString(), date);
+    }
+}
+````
+
+### FollowUpConnectionService
+````
+public class FollowUpConnectionService {
+
+    //get server IP
+    private static Socket clientSocket;
+    private static DataOutputStream sOut;
+    private static DataInputStream sIn;
+    private InetAddress serverIp;
+    public static int PORT_NUMBER = 6666;
+
+    public FollowUpConnectionService() {
+    }
+
+    public synchronized Pair<Boolean, String> establishConnection(Username username, String password) {
+        try {
+            if (!defineServerIpAddress()) {
+                return Pair.of(false, "Server IP Address not válid (" + serverIp + ").");
+            }
+            clientSocket = new Socket(serverIp, PORT_NUMBER);
+            sOut = new DataOutputStream(clientSocket.getOutputStream());
+            sIn = new DataInputStream(clientSocket.getInputStream());
+
+        } catch (IOException ex) {
+            return Pair.of(false, "Socket unable to connect to server.");
+        }
+
+        sendAuthenticationRequest(username, password);
+
+        if (receiveEmptyResponse()) {
+            return Pair.of(true, "Connection successfully established.");
+        } else {
+            return Pair.of(false, "Unable to establish connection, wrong credentials.");
+        }
+    }
+
+    private boolean defineServerIpAddress() {
+        try {
+//            serverIp = InetAddress.getByName("10.8.0.80");
+            serverIp = InetAddress.getLocalHost();
+            return true;
+        } catch (UnknownHostException ex) {
+            //add logger comments
+        }
+        return false;
+    }
+
+    private static void sendAuthenticationRequest(Username username, String password) {
+        try {
+            DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.AUTH.getCode());
+            byte[] stringBytes = SerializationUtil.serialize(username);
+            dataDTO.addDataBlock(stringBytes.length, stringBytes);
+            stringBytes = SerializationUtil.serialize(password);
+            dataDTO.addDataBlock(stringBytes.length, stringBytes);
+            byte[] message = dataDTO.toByteArray();
+            sOut.writeInt(message.length);
+            sOut.write(message);
+            sOut.flush();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e + "\n Unable to send authentication request.\n");
+        }
+    }
+
+    public DataDTO startCheckForNotificationsThread(Username username){
+        try {
+            DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.CHECKNOTIF.getCode());
+            byte[] stringBytes = SerializationUtil.serialize(username.toString());
+            dataDTO.addDataBlock(stringBytes.length, stringBytes);
+
+            byte[] message = dataDTO.toByteArray();
+            sOut.writeInt(message.length);
+            sOut.write(message);
+            sOut.flush();
+            int byteLength = sIn.readInt();
+            byte[] bytes = new byte[byteLength];
+            sIn.readFully(bytes);
+            DataDTO dataDTOanswer = DataDTO.fromByteArray(bytes);
+
+            return dataDTOanswer;
+        } catch (IOException e) {
+            throw new RuntimeException(e + "\n Unable to send authentication request.\n");
+        }
+    }
+
+    public synchronized static Pair<Boolean, String> closeConnection() {
+        try {
+            DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.DISCONN.getCode());
+            byte[] message = dataDTO.toByteArray();
+            sOut.writeInt(message.length);
+            sOut.write(message);
+            sOut.flush();
+
+            boolean response = receiveEmptyResponse();
+            clientSocket.close();
+            if (response){
+                return Pair.of(true, "Connection successfully closed.\n");
+            }else {
+                throw new RuntimeException();
+            }
+
+        } catch (IOException e) {
+            //put logger comment
+            return Pair.of(false, "Connection closed.");
+        }
+    }
+
+    public List<JobOpeningDTO> receiveJobOpeningsDataList(Username username) {
+        //send job opening request with dataDTO
+        try {
+            DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.JOBOPLIST.getCode());
+            byte[] serialized = SerializationUtil.serialize(username);
+            dataDTO.addDataBlock(serialized.length, serialized);
+            byte[] message = dataDTO.toByteArray();
+            sOut.writeInt(message.length);
+            sOut.write(message);
+            sOut.flush();
+            return processListResponse(new JobOpeningListResponseProcessor());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e + "\n Unable to send job opening list request.\n");
+        }
+    }
+
+    public List<ApplicationDTO> receiveCandidateApplicationList(String username) {
+        //send candidate applications request with dataDTO
+        try {
+            DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.APPLIST.getCode());
+            byte[] serialized = SerializationUtil.serialize(username);
+            dataDTO.addDataBlock(serialized.length, serialized);
+            byte[] message = dataDTO.toByteArray();
+            sOut.writeInt(message.length);
+            sOut.write(message);
+            sOut.flush();
+            return processListResponse(new ApplicationListResponseProcessor());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e + "\n Unable to send applications list request.\n");
+        }
+    }
+
+    public List<NotificationDTO> receiveUnseenNotificationList(String username) {
+        //send client user notifications request with dataDTO
+        try {
+            DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.UNSEENNOTIFLIST.getCode());
+            byte[] serialized = SerializationUtil.serialize(username);
+            dataDTO.addDataBlock(serialized.length, serialized);
+            byte[] message = dataDTO.toByteArray();
+            sOut.writeInt(message.length);
+            sOut.write(message);
+            sOut.flush();
+            return processListResponse(new NotificationListResponseProcessor());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e + "\n Unable to send notification list request.\n");
+        }
+    }
+
+    public List<NotificationDTO> receiveSeenNotificationList(String username, String date) {
+        //send client user notifications request with dataDTO
+        try {
+            DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.SEENNOTIFLIST.getCode());
+            List<String> params = new ArrayList<>();
+            params.add(username);
+            params.add(date);
+
+            for (String parameter : params){
+                byte[] serialized = SerializationUtil.serialize(parameter);
+                dataDTO.addDataBlock(serialized.length, serialized);
+            }
+
+            byte[] message = dataDTO.toByteArray();
+            sOut.writeInt(message.length);
+            sOut.write(message);
+            sOut.flush();
+            return processListResponse(new NotificationListResponseProcessor());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e + "\n Unable to send notification list request.\n");
+        }
+    }
+
+    private <T> List<T> processListResponse(ResponseProcessor<T> processor) {
+        try {
+            int byteLength = sIn.readInt();
+            byte[] bytes = new byte[byteLength];
+            sIn.readFully(bytes);
+            DataDTO dataDTO = DataDTO.fromByteArray(bytes);
+            return processor.process(dataDTO);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e + "\n Unable to process response.\n");
+        }
+    }
+
+    public synchronized boolean sendEmail(String senderEmail, String receiverEmail, String topic, String info) {
+        //send email request with dataDTO
+        try {
+            DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.EMAIL.getCode());
+            List<String> params = new ArrayList<>();
+            params.add(senderEmail);
+            params.add(receiverEmail);
+            params.add(topic);
+            params.add(info);
+
+            for (String parameter : params){
+                byte[] serialized = SerializationUtil.serialize(parameter);
+                dataDTO.addDataBlock(serialized.length, serialized);
+            }
+
+            byte[] message = dataDTO.toByteArray();
+            sOut.writeInt(message.length);
+            sOut.write(message);
+            sOut.flush();
+            return receiveEmptyResponse();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e + "\n Unable to send email request.\n");
+        }
+    }
+
+    private static boolean receiveEmptyResponse() {
+        DataDTO dataDTO = null;
+        try {
+            int byteLength = sIn.readInt();
+            byte[] bytes = new byte[byteLength];
+            sIn.readFully(bytes);
+            dataDTO = DataDTO.fromByteArray(bytes);
+        } catch (IOException e) {
+            //get LOGGER
+        }
+
+        assert dataDTO != null;
+        int code = dataDTO.code();
+
+        if (code == FollowUpRequestCodes.ACK.getCode()) {
+            return true;
+        }
+
+        assert code == FollowUpRequestCodes.ERR.getCode();
+        closeConnection();
+        return false;
+    }
+
+}
+````
+
+### NotificationRequestThread
+````
+public class NotificationRequestThread implements Runnable {
+
+    public final DataDTO data;
+    private final DataOutputStream sOut;
+
+    public NotificationRequestThread(DataDTO dataDTO, DataOutputStream dataOutputStream) {
+        this.data = dataDTO;
+        this.sOut = dataOutputStream;
+    }
+
+    @Override
+    public void run() {
+        // get the notificationManagementService
+        NotificationManagementService notificationManagementService = new NotificationManagementService();
+        Iterable<NotificationDTO> notificationsDTO = null;
+        DataDTO dataDTO = null;
+
+        if(data.code() == FollowUpRequestCodes.UNSEENNOTIFLIST.getCode()) {
+            String username = (String) SerializationUtil.deserialize(data.dataBlockList().get(0).data());
+
+            //get notificationDTO list
+            //convert to dataDTO
+            notificationsDTO = notificationManagementService.getUnseenNotificationsByUsername(username);
+            dataDTO = DataDTO.turnListIntoDataDTO(data.code(), notificationsDTO);
+        } else if(data.code() == FollowUpRequestCodes.SEENNOTIFLIST.getCode()) {
+            String username = (String) SerializationUtil.deserialize(data.dataBlockList().get(0).data());
+
+            String date = (String) SerializationUtil.deserialize(data.dataBlockList().get(1).data());
+
+            Calendar newDate = null;
+
+            try {
+                newDate = Calendars.parse(date, "dd-MM-yyyy");
+            } catch (DateTimeParseException e) {
+                e.printStackTrace();
+            }
+            //get notificationDTO list
+            //convert to dataDTO
+            notificationsDTO = notificationManagementService.getSeenNotificationsByUsernameAndDate(username, newDate);
+            dataDTO = DataDTO.turnListIntoDataDTO(data.code(), notificationsDTO);
+        } else if(data.code() == FollowUpRequestCodes.CHECKNOTIF.getCode()) {
+            String username = (String) SerializationUtil.deserialize(data.dataBlockList().get(0).data());
+
+            boolean answer = notificationManagementService.checkForUnseenNotificationsByUsername(username);
+            dataDTO = new DataDTO(data.code());
+            byte[] stringBytes = SerializationUtil.serialize(String.valueOf(answer));
+            dataDTO.addDataBlock(stringBytes.length, stringBytes);
+        }
+
+
+        //send response
+        try {
+            byte[] bytes = dataDTO.toByteArray();
+            sOut.writeInt(bytes.length);
+            sOut.write(bytes);
+            sOut.flush();
+            sOut.flush();
+        } catch (IOException e) {
+            //add logger comment
+            throw new RuntimeException(e + "\nCouldn't serialize to stream and send response.\n");
+        }
+    }
+
+}
+````
+
+### CheckForNotificationsThread
+````
+package jobs4u.base.notificationmanagement.thread;
+
+import eapli.framework.infrastructure.authz.domain.model.Username;
+import eapli.framework.time.util.Calendars;
+import jobs4u.base.network.FollowUpConnectionService;
+import jobs4u.base.network.SerializationUtil;
+import jobs4u.base.network.data.DataDTO;
+import jobs4u.base.notificationmanagement.dto.NotificationDTO;
+import jobs4u.base.notificationmanagement.application.NotificationManagementService;
+
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.time.format.DateTimeParseException;
+import java.util.Calendar;
+
+public class CheckForNotificationsThread implements Runnable {
+
+    public final Username username;
+
+    private final FollowUpConnectionService followUpConnectionService;
+
+    public CheckForNotificationsThread(Username username) {
+        this.username = username;
+        this.followUpConnectionService = new FollowUpConnectionService();
+    }
+
+    @Override
+    public void run() {
+        String answer;
+
+        while(true) {
+
+            answer = (String) SerializationUtil.deserialize(followUpConnectionService.startCheckForNotificationsThread(username).dataBlockList().get(0).data());
+
+            if(answer.equals("true")){
+                System.out.println("\n[NEW NOTIFICATIONS TO BE SEEN]");
+            }
+
+            try {
+                Thread.sleep(30000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+    }
+
+}
+````
+
+**Major Commits**
+
+| Commits             | Brief Description                           |
+|:--------------------|:--------------------------------------------|
+| 72aad08<br/>4bdda9e | Initial Classes Setup for the Functionality |
+| c3ff8f7             | Persistence modifications                   |
+
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
-
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
-
-## 7. Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
+To activate this feature, you'll need to run the script named `run-candidate-app` and log in with Candidate
+permissions. Then, navigate to the "Notifications" menu and select option 1 - `Notification Inbox` and then select either of the options - to access this
+feature.

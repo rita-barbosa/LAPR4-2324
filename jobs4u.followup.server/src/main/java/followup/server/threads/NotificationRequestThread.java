@@ -18,7 +18,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-//TODO ADD LOGGER COMMENTS
 public class NotificationRequestThread implements Runnable {
 
     public final DataDTO data;
