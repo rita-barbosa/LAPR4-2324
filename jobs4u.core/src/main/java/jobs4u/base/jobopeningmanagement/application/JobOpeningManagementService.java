@@ -179,6 +179,11 @@ public class JobOpeningManagementService {
         return dtoSvc.convertToDTO(jobOpeningRepository.jobOpeningsListOfCustomerManager(customerManagerUsername));
     }
 
+    public Iterable<JobOpeningDTO> getSTARTEDJobOpeningsOfCustomerManager(Username customerManagerUsername){
+        Iterable<JobOpening> jobs = jobOpeningRepository.getSTARTEDJobOpeningList(customerManagerUsername);
+        return dtoSvc.convertToDTO(jobs);
+    }
+
     public List<JobOpeningDTO> getOnGoingJobOpenings() {
         List<JobOpening> jobOpenings = jobOpeningRepository.getJobOpeningListMatchingStatus(String.valueOf(JobOpeningStatusEnum.STARTED));
         List<JobOpeningDTO> jobOpeningDTOs = new ArrayList<>();

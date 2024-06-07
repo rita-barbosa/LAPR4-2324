@@ -179,14 +179,14 @@ public class InMemoryJobOpeningRepository
     }
 
     @Override
-    public Iterable<JobOpening> getSTARTEDJobOpeningList() {
-        String status = new JobOpeningStatus(JobOpeningStatusEnum.STARTED).getStatusDescription();
-        List<JobOpening> jobOpeningArrayList = new ArrayList<>();
-        Iterable<JobOpening> jobOpenings = match(e -> e.currentStatus().toString().equals(status));
-        for (JobOpening element : jobOpenings) {
-            jobOpeningArrayList.add(element);
+    public Iterable<JobOpening> getSTARTEDJobOpeningList(Username customerManagerUsername) {
+        CustomerRepository custRepo = PersistenceContext.repositories().customers();
+        List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername);
+
+        for (Customer customer : customers) {
+            return match(e -> customer.customerCode().toString().contains(e.jobReference().getcustomerCode()) && (e.jobOpeningStatus().equals(JobOpeningStatusEnum.STARTED)));
         }
-        return jobOpeningArrayList;
+        return Collections.emptyList();
     }
 
     @Override
