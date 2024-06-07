@@ -175,8 +175,12 @@ public class JobOpeningManagementService {
         return dtoSvc.convertToDTO(jobOpeningRepository.jobOpeningsInScreeingListOfCustomerManager(customerManagerUsername));
     }
 
-    public Iterable<JobOpeningDTO> getSTARTEDJobOpenings(){
-        Iterable<JobOpening> jobs = jobOpeningRepository.getSTARTEDJobOpeningList();
+    public Iterable<JobOpeningDTO> jobOpeningsListOfCustomerManager(Username customerManagerUsername) {
+        return dtoSvc.convertToDTO(jobOpeningRepository.jobOpeningsListOfCustomerManager(customerManagerUsername));
+    }
+
+    public Iterable<JobOpeningDTO> getSTARTEDJobOpeningsOfCustomerManager(Username customerManagerUsername){
+        Iterable<JobOpening> jobs = jobOpeningRepository.getSTARTEDJobOpeningList(customerManagerUsername);
         return dtoSvc.convertToDTO(jobs);
     }
 

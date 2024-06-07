@@ -53,7 +53,6 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
     List<InterviewModel> interviewModelsList = new ArrayList<>();
     private CriteriaRepository criteriaRepository;
     private RecruitmentProcessRepository recruitmentProcessRepository;
-    private ApplicationRepository applicationRepository;
     private NotificationRepository notificationRepository;
     private CandidateRepository candidateRepository;
 
@@ -88,7 +87,6 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         this.criteriaRepository = PersistenceContext.repositories().criteria();
         this.recruitmentProcessRepository = PersistenceContext.repositories().recruitmentProcesses();
         this.candidateRepository = PersistenceContext.repositories().candidates();
-        this.applicationRepository = PersistenceContext.repositories().applications();
     }
 
     private void persistCriteria() {
@@ -308,7 +306,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         phases6.add(analysis6);
         phases6.add(result6);
 
-        RecruitmentProcess recruitmentProcess1 = new RecruitmentProcess(dateInterval1.start(), dateInterval1.end(), phases1, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.PLANNED)));
+        RecruitmentProcess recruitmentProcess1 = new RecruitmentProcess(dateInterval1.start(), dateInterval1.end(), phases1, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.ANALYSIS)));
 
         RecruitmentProcess recruitmentProcess2 = new RecruitmentProcess(dateInterval2.start(), dateInterval2.end(), phases2, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.SCREENING)));
 
@@ -351,7 +349,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
 
 
         JobOpening jobOpening1 = new JobOpening("Front End Junior Developer", contract, mode, "123 Main Street",
-                "Flagtown", "Star District", "USA", "4500-900", 10, description,
+                "Flagtown", "Star District", "USA", "4500-900", 2, description,
                 requirementSpecificationsList.get(0), interviewModelsList.get(0), jobReference);
 
         JobOpening jobOpening2 = new JobOpening("Back End Senior Developer", contract, mode, "456 Elm Street",
@@ -414,7 +412,11 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
             recruitmentProcessRepository.save(recruitmentProcessList.get(i));
         }
 
-        JobOpening jobOpening = jobOpenings.get(1);
+        JobOpening jobOpening = jobOpenings.get(0);
+        jobOpening.updateStatusToStarted();
+        jobOpeningRepository.save(jobOpening);
+
+        jobOpening = jobOpenings.get(1);
         jobOpening.updateStatusToStarted();
         jobOpeningRepository.save(jobOpening);
 
@@ -590,7 +592,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
                 new InterviewResult(75, "the grade is above 50"), interviewAnswer5);
 
 
-        Application application, application1, application2, application3, application4, application5;
+        Application application, application1, application2, application3, application4, application5, application6, application7, application8, application9, application10;
         if (opCandidate.isPresent()) {
             Candidate candidate = opCandidate.get();
             application = new Application(requirementAnswer, requirementResult, files1, date, candidate, interview);
@@ -599,6 +601,11 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
             application3 = new Application(requirementAnswer3, requirementResult3, files4, date3, candidate, interview3);
             application4 = new Application(requirementAnswer4, requirementResult4, files5, date4, candidate, interview4);
             application5 = new Application(requirementAnswer5, requirementResult5, files6, date5, candidate, interview5);
+            application6 = new Application(requirementAnswer1, requirementResult1, files2, date1, candidate, interview1);
+            application7 = new Application(requirementAnswer2, requirementResult2, files3, date2, candidate, interview2);
+            application8 = new Application(requirementAnswer3, requirementResult3, files4, date3, candidate, interview3);
+            application9 =  new Application(requirementAnswer, requirementResult, files1, date, candidate, interview);
+            application10 = new Application(requirementAnswer4, requirementResult4, files5, date4, candidate, interview4);
         } else {
             application = new Application(requirementAnswer, requirementResult, files1, date, interview);
             application1 = new Application(requirementAnswer1, requirementResult1, files2, date1, interview1);
@@ -606,12 +613,22 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
             application3 = new Application(requirementAnswer3, requirementResult3, files4, date3, interview3);
             application4 = new Application(requirementAnswer4, requirementResult4, files5, date4, interview4);
             application5 = new Application(requirementAnswer5, requirementResult5, files6, date5, interview5);
+            application6 = new Application(requirementAnswer1, requirementResult1, files2, date1, interview1);
+            application7 = new Application(requirementAnswer2, requirementResult2, files3, date2, interview2);
+            application8 = new Application(requirementAnswer3, requirementResult3, files4, date3, interview3);
+            application9 =  new Application(requirementAnswer, requirementResult, files1, date, interview);
+            application10 = new Application(requirementAnswer4, requirementResult4, files5, date4, interview4);
         }
 
 
         Set<Application> applicationsSet = new HashSet<>();
         application.applicationStatus().updateStatusDescriptionAsACCEPTED();
         applicationsSet.add(application);
+        applicationsSet.add(application6);
+        applicationsSet.add(application7);
+        applicationsSet.add(application8);
+        applicationsSet.add(application9);
+        applicationsSet.add(application10);
 
         Set<Application> applicationsSet1 = new HashSet<>();
         application1.applicationStatus().updateStatusDescriptionAsACCEPTED();

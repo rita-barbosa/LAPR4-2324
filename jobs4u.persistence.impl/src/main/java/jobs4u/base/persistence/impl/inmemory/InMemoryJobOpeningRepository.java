@@ -3,6 +3,7 @@ package jobs4u.base.persistence.impl.inmemory;
 import eapli.framework.infrastructure.authz.domain.model.Username;
 import eapli.framework.infrastructure.repositories.impl.inmemory.InMemoryDomainRepository;
 import eapli.framework.time.domain.model.DateInterval;
+import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.customermanagement.domain.Customer;
 import jobs4u.base.customermanagement.domain.CustomerCode;
 import jobs4u.base.customermanagement.repository.CustomerRepository;
@@ -156,6 +157,15 @@ public class InMemoryJobOpeningRepository
         });
     }
 
+    @Override
+    public Iterable<JobOpening> jobOpeningsListOfCustomerManager(Username customerManagerUsername) {
+        CustomerRepository custRepo = PersistenceContext.repositories().customers();
+        List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername);
+
+        return match (e -> customers.stream().anyMatch(customer -> customer.customerCode().toString().equals(e.jobReference().getcustomerCode())));
+    }
+
+
 
     @Override
     public Iterable<JobOpening> getPlannedJobOpeningListMatchingCustomerManager(Username customerManagerUsername) {
@@ -169,14 +179,14 @@ public class InMemoryJobOpeningRepository
     }
 
     @Override
-    public Iterable<JobOpening> getSTARTEDJobOpeningList() {
-        String status = new JobOpeningStatus(JobOpeningStatusEnum.STARTED).getStatusDescription();
-        List<JobOpening> jobOpeningArrayList = new ArrayList<>();
-        Iterable<JobOpening> jobOpenings = match(e -> e.currentStatus().toString().equals(status));
-        for (JobOpening element : jobOpenings) {
-            jobOpeningArrayList.add(element);
+    public Iterable<JobOpening> getSTARTEDJobOpeningList(Username customerManagerUsername) {
+        CustomerRepository custRepo = PersistenceContext.repositories().customers();
+        List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername);
+
+        for (Customer customer : customers) {
+            return match(e -> customer.customerCode().toString().contains(e.jobReference().getcustomerCode()) && (e.jobOpeningStatus().equals(JobOpeningStatusEnum.STARTED)));
         }
-        return jobOpeningArrayList;
+        return Collections.emptyList();
     }
 
     @Override

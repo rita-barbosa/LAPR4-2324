@@ -32,7 +32,7 @@ public class DisplayAllApplicationDataController {
 
     public Iterable<JobOpeningDTO> getJobOpeningList() {
         Optional<SystemUser> customerManager = authz.loggedinUserWithPermissions(BaseRoles.CUSTOMER_MANAGER);
-        return customerManager.map(systemUser -> jobOpeningManagementService.jobOpeningsInScreeingListOfCustomerManager(systemUser.username())).orElse(null);
+        return customerManager.map(systemUser -> jobOpeningManagementService.jobOpeningsListOfCustomerManager(systemUser.username())).orElse(null);
 
     }
 }

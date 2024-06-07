@@ -11,7 +11,9 @@ import jobs4u.base.network.data.DataDTO;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 //TODO ADD LOGGER COMMENTS
 public class ListingRequestThread implements Runnable {
@@ -36,8 +38,9 @@ public class ListingRequestThread implements Runnable {
         if (code == FollowUpRequestCodes.APPLIST.getCode()){
             //get Application Service
             ApplicationManagementService appSrv = new ApplicationManagementService();
-            List<ApplicationDTO> applicationsDTO = appSrv.getApplicationsListByUsername(username);
-            dataDTO = DataDTO.turnListIntoDataDTO(code, applicationsDTO);
+            Map<ApplicationDTO, Integer> applicationsDTOMap = appSrv.getApplicationsAndNumber(username);
+            List<Map.Entry<ApplicationDTO, Integer>> applicationDTOList = new ArrayList<>(applicationsDTOMap.entrySet());
+            dataDTO = DataDTO.turnListIntoDataDTO(code, applicationDTOList);
 
         } else if (code == FollowUpRequestCodes.JOBOPLIST.getCode()) {
             //get Job Opening Service

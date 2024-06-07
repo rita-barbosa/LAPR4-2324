@@ -193,6 +193,21 @@ public class JpaJobOpeningRepository
     }
 
     @Override
+    public Iterable<JobOpening> jobOpeningsListOfCustomerManager(Username customerManagerUsername) {
+        final TypedQuery<JobOpening>
+                q = createQuery("SELECT e \n" +
+                        "FROM JobOpening e \n" +
+                        "WHERE e.jobReference.companyCode IN (\n" +
+                        "    SELECT code.customerCode \n" +
+                        "    FROM Customer c \n" +
+                        "    WHERE c.customerManager.username.value = :manager\n" +
+                        ")\n",
+                JobOpening.class);
+        q.setParameter("manager", customerManagerUsername.toString());
+        return q.getResultList();
+    }
+
+    @Override
     public Iterable<JobOpening> getJobOpeningFromUsername(Username username) {
         String query = "SELECT e " +
                 "FROM JobOpening e " +
@@ -209,14 +224,19 @@ public class JpaJobOpeningRepository
     }
 
     @Override
-    public Iterable<JobOpening> getSTARTEDJobOpeningList() {
-        String status = new JobOpeningStatus(JobOpeningStatusEnum.STARTED).getStatusDescription();
-        try {
-            return match("e.status.statusDescription = :status", "status", status);
-        } catch (HibernateException ex) {
-            return match("e=(SELECT c FROM JobOpening c WHERE c.status.statusDescription = :status)",
-                    "status", status);
-        }
+    public Iterable<JobOpening> getSTARTEDJobOpeningList(Username customerManagerUsername) {
+        final TypedQuery<JobOpening>
+                q = createQuery("SELECT e \n" +
+                        "FROM JobOpening e \n" +
+                        "WHERE e.jobReference.companyCode IN (\n" +
+                        "    SELECT code.customerCode \n" +
+                        "    FROM Customer c \n" +
+                        "    WHERE c.customerManager.username.value = :manager\n" +
+                        ")\n" +
+                        "AND (e.status.statusDescription = 'STARTED')",
+                JobOpening.class);
+        q.setParameter("manager", customerManagerUsername.toString());
+        return q.getResultList();
     }
 
     @Override
