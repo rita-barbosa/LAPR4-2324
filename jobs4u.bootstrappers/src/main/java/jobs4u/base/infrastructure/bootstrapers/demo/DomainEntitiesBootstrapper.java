@@ -314,7 +314,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
 
         RecruitmentProcess recruitmentProcess3 = new RecruitmentProcess(dateInterval3.start(), dateInterval3.end(), phases3, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.PLANNED)));
 
-        RecruitmentProcess recruitmentProcess4 = new RecruitmentProcess(dateInterval4.start(), dateInterval4.end(), phases4, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.RESULTS)));
+        RecruitmentProcess recruitmentProcess4 = new RecruitmentProcess(dateInterval4.start(), dateInterval4.end(), phases4, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.INTERVIEW)));
 
         RecruitmentProcess recruitmentProcess5 = new RecruitmentProcess(dateInterval5.start(), dateInterval5.end(), phases5, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.RESULTS)));
 
