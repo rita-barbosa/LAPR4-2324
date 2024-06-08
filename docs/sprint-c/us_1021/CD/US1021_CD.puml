@@ -10,7 +10,6 @@ title US1021 Class Diagram
     class DisplayAllApplicationDataController <<Application>> {
         + getApplicationList()
         + getJobOpeningList()
-        + getAllApplicationInformation(applicationDTO)
     }
 '}
 
@@ -26,12 +25,10 @@ class JobOpeningDTOService <<Service>> {
 
 class ApplicationManagementService <<Service>> {
     + getApplicationsList(jobOpening)
-    + getAllApplicationInformation(applicationDTO)
 }
 
 class ApplicationDTOService <<Service>> {
     + convertToDTO(applicationList)
-    + convertToDTO(application)
 }
 
 
