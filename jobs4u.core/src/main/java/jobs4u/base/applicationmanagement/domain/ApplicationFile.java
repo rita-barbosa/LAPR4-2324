@@ -5,7 +5,10 @@ import eapli.framework.domain.model.ValueObject;
 import jakarta.persistence.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Objects;
+import java.util.Scanner;
+
 
 @Entity
 @Table(name = "APPLICATION_FILE")
@@ -27,12 +30,12 @@ public class ApplicationFile implements ValueObject {
         this.file = file;
     }
 
-    protected ApplicationFile(){
+    protected ApplicationFile() {
         //for ORM
     }
 
 
-    public static ApplicationFile valueOf(final File file){
+    public static ApplicationFile valueOf(final File file) {
         return new ApplicationFile(file);
     }
 
@@ -50,11 +53,20 @@ public class ApplicationFile implements ValueObject {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return String.valueOf(file);
     }
 
-    public File getApplicationFile(){
+    public File getApplicationFile() {
         return file;
+    }
+
+    public String getContent() throws FileNotFoundException {
+        StringBuilder content = new StringBuilder();
+        Scanner scanner = new Scanner(file);
+        while (scanner.hasNextLine()) {
+            content.append(scanner.nextLine()).append(System.lineSeparator());
+        }
+        return content.toString();
     }
 }
