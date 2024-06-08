@@ -120,26 +120,124 @@ public void ensureMustHaveRequirementsToVerify() {
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+### VerifyRequirementController
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this
-requirement.*
+````
+private Boolean verifyRequirementsOfApplications(String jobReference, String requirement) {
+    ClassLoader loader = ClassLoader.getSystemClassLoader();
+
+    Iterable<Application> applications = repo.applicationsForJobOpeningWithRequirements(jobReference);
+    if (!applications.iterator().hasNext()) {
+        throw new IllegalArgumentException("No applications have associated requirement specification answers.");
+    }
+    Optional<RequirementSpecification> rs = repoRS.requirementSpecificationByRequirementName(requirement);
+
+    try {
+        if (rs.isPresent()) {
+            RequirementSpecification requirementSpec = rs.get();
+            FileManagement dataImporterInstance = (FileManagement) loader.loadClass(requirementSpec.dataImporter()).getDeclaredConstructor().newInstance();
+            RequirementsSpecificationPlugin reqSpecEvaluator = (RequirementsSpecificationPlugin) loader.loadClass(requirementSpec.className()).getDeclaredConstructor().newInstance();
+            dataImporterInstance.importData(requirementSpec.configurationFile().toString());
+            for (Application a : applications) {
+                try {
+                    Pair<Boolean, String> result = reqSpecEvaluator.evaluateRequirementSpecificationFile(a.requirementAnswerFilePath());
+                    a.updateRequirementResult(result);
+                    repo.save(a);
+                } catch (Exception e) {
+                    LOGGER.error("Couldn't evaluate application.");
+                    return false;
+                }
+            }
+        } else {
+            LOGGER.error("Requirement specification not found for: {}", requirement);
+            return false;
+        }
+    } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
+             InvocationTargetException e) {
+        LOGGER.error("Unable to access plugin.");
+        return false;
+    }
+    return true;
+}
+````
+
+### Application
+
+````
+public void updateRequirementResult(Pair<Boolean, String> result) {
+    Preconditions.nonEmpty(requirementAnswerFilePath());
+    File requirementFile = new File(requirementAnswerFilePath());
+    try {
+        if (!requirementFile.isAbsolute()) {
+            requirementFile = requirementFile.getCanonicalFile();
+        }
+    } catch (IOException e) {
+        throw new RuntimeException("Failed to get the absolute path of the requirement answer file.", e);
+    }
+
+    if (requirementFile.exists() && requirementFile.isFile()) {
+        if (!result.second.isEmpty()) {
+            this.requirementResult = RequirementResult.valueOf(result.first, result.second);
+        } else {
+            this.requirementResult = RequirementResult.valueOf(result.first);
+        }
+    } else {
+        throw new IllegalArgumentException("No valid requirement answer file.");
+    }
+}
+````
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
+To use this feature, you'll need to run the script named `run-backoffice-app` and log in with Customer Manager
+permissions.
 
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
+Then, navigate to the _Job Opening_ menu and select option 9 - `Verify Requirement Specifitions of applications` - to
+access this
+feature.
+
+````
++= Verification of Requirements Specification =================================+
+
+Select the job opening to verify the requeriments of the applications.
+1. 
+»» Job Reference: ISEP-2
+ » Function: Back End Senior Developer
+ » Contract Type: part-time
+ » Work Mode: remote
+ » Address: 456 Elm Street, Canada, Maple Town, Moonlight District, 4500-900
+ » Description: Night Guard.
+ » Number of Vacancies: 5
+ » Company: ISEP
+
+0. Exit
+Select an option: 
+1
+Requirements verified sucessfully
++==============================================================================+
+````
 
 ## 7. Observations
 
-*This section should be used to include any content that does not fit any of the previous sections.*
+To evaluate the requirement specifications of the applications, our team developed and used a plugin. We incorporated it
+as a dependency of the **jobs4u.core**:
 
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
+````
+<dependencies>
+    <dependency>
+        <groupId>plugin</groupId>
+        <artifactId>lprog-plugin</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <scope>system</scope>
+        <systemPath>${project.basedir}/libs/plugin/lprog-plugin.jar</systemPath>
+    </dependency>
+</dependencies>
 
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
+<repositories>
+    <repository>
+        <id>in-project</id>
+        <name>In Project Repo</name>
+        <url>file://${project.basedir}/libs/plugin</url>
+    </repository>
+</repositories>
+````
