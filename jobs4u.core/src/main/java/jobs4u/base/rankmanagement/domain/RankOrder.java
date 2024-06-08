@@ -2,19 +2,19 @@ package jobs4u.base.rankmanagement.domain;
 
 import eapli.framework.domain.model.ValueObject;
 import eapli.framework.general.domain.model.EmailAddress;
+import eapli.framework.representations.dto.DTOable;
 import jakarta.persistence.*;
 
 import jobs4u.base.applicationmanagement.domain.Application;
-import jobs4u.base.candidatemanagement.domain.Candidate;
-import jobs4u.base.jobopeningmanagement.domain.JobReference;
+import jobs4u.base.rankmanagement.dto.RankOrderDTO;
 
 @Entity
-@Table(name = "T_RANK_ENTRIES")
-public class RankOrder implements ValueObject {
+@Table(name = "T_RANK_ORDERS")
+public class RankOrder implements ValueObject, DTOable<RankOrderDTO> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Integer rankEntryId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "application_id")
@@ -31,21 +31,32 @@ public class RankOrder implements ValueObject {
         this.numberRanked = numberRanked;
     }
 
-    public Integer numberRanked() {
-        return this.numberRanked;
+    public Application application() {
+        return this.application;
     }
 
-    public Application acceptApplication() {
-        this.application.acceptApplication();
-        return this.application;
+    public Integer numberRanked() {
+        return this.numberRanked;
     }
 
     public EmailAddress candidateEmail() {
         return this.application.candidate().email();
     }
 
+
+    public Application acceptApplication() {
+        this.application.acceptApplication();
+        return this.application;
+    }
+
+
     public Application rejectApplication() {
         this.application.rejectApplication();
         return this.application;
+    }
+
+    @Override
+    public RankOrderDTO toDTO() {
+       return new RankOrderDTO(id, numberRanked, application.toDTO());
     }
 }

@@ -72,7 +72,7 @@ public class PublishResultJobOpeningController {
         final List<Candidate> acceptedCandidateList = new ArrayList<>();
         String newStatus;
 
-        for (RankOrder entry : rank.rankEntries()) {
+        for (RankOrder entry : rank.rankOrder()) {
             if (entry.numberRanked() <= jobOpeningDTO.getNumVacancies()) {
                 Application app = entry.acceptApplication();
                 newStatus = app.applicationStatus().getStatusDescription();
