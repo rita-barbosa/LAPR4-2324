@@ -135,25 +135,142 @@ public void ensureXxxxYyyy() {
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+### Father process delegating the work to the N works
+```
+    while (!time_to_terminate)
+    {
+        if ((sem_wait(sem3) == -1) && !time_to_terminate)
+        {
+            perror("sem_wait 333");
+            exit(6);
+        }
+        get_new_candidates(config.input_directory, &lastCandidate, &copiedCandDiff);
+        diff = copiedCandDiff;
+        while (diff > 0)
+        {
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+            for (int i = 0; i < copiedCandDiff; i++)
+            {
+                if (shared_memory->size != LENGTH_BUFFER)
+                {
+                    cand = (lastCandidate - (diff - 1));
+                    shared_memory->array[shared_memory->head] = cand;
+                    shared_memory->head = (shared_memory->head + 1) % LENGTH_BUFFER;
+                    printf("»» New candidate delegated: %d\n", cand);
+
+                    if ((sem_wait(sem2) == -1) && !time_to_terminate)
+                    {
+                        perror("sem_wait 2222");
+                        exit(6);
+                    }
+                    shared_memory->size++;
+                    if ((sem_post(sem2) == -1) && !time_to_terminate)
+                    {
+                        perror("sem_wait 22222");
+                        exit(5);
+                    }
+                    delegated_cand++;
+                    diff--;
+                }
+                else
+                {
+                    diff = copiedCandDiff - delegated_cand;
+                    break;
+                }
+            }
+            for (int i = 0; i < delegated_cand; i++)
+            {
+                if ((sem_post(sem1) == -1) && !time_to_terminate)
+                {
+                    perror("sem_post");
+                    exit(5);
+                }
+            }
+            delegated_cand = 0;
+            copiedCandDiff = diff;
+        }
+    }
+```
+
+
+### How each worker received, process and tells that finished the work
+```
+for (int i = 1; i <= config.num_worker_children; i++)
+    {
+        child_p[i] = fork();
+        if (child_p[i] == 0)
+        {
+            while (!time_to_terminate)
+            {
+                if ((sem_wait(sem1) == -1) && !time_to_terminate)
+                {
+                    perror("sem_wait 11");
+                    exit(6);
+                }
+                if ((sem_wait(sem2) == -1) && !time_to_terminate)
+                {
+                    perror("sem_wait 22");
+                    exit(6);
+                }
+                    if (!time_to_terminate)
+                    {
+                        copy_files(shared_memory->array[shared_memory->tail], config.input_directory, config.output_directory); // Copies the files from the input directoty to the ouput directory
+                        printf("»»» New candidate processed: %d\n", shared_memory->array[shared_memory->tail]);
+                        shared_memory->tail = (shared_memory->tail + 1) % LENGTH_BUFFER;
+                        shared_memory->size--;
+                    }   
+                if ((sem_post(sem2) == -1) && !time_to_terminate)
+                {
+                    perror("sem_post");
+                    exit(5);
+                }
+            }
+            if (munmap(shared_memory, size) == -1)
+            {
+                perror("munmap");
+                exit(7);
+            }
+            if (close(fd) == -1)
+            {
+                perror("close");
+                exit(8);
+            }
+            exit(10 + i);
+        }
+    }
+```
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
+To execute the program, it is necessary to compile and run it. Using `make run` allows for execution with predefined
+configurations. If you wish to modify these configurations, you can adjust the `run` command in the makefile or execute
+the program directly via `./prog <<input_dir> <output_dir> <num__child_workers> <time_interval>`.
 
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
+To run the implemented tests, they must be located outside the directory containing the program but within the same
+folder. Additionally, an environmental variable named REPO must be created, specifying the folder containing the
+program (in this case `export REPO=sprintc`). Once set up, you can compile and run the tests using `make run`.
 
-## 7. Observations
+The files generated in this functionality will be used by the operator to register applications.
 
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
+```
+./prog files output 2 5
+» New file found «
+»» New candidate delegated: 1
+»» New candidate delegated: 2
+»» New candidate delegated: 3
+»»» New candidate processed: 1
+»» New candidate delegated: 4
+»»» New candidate processed: 2
+»»» New candidate processed: 3
+»»» New candidate processed: 4
+» New file not found «
+» New file not found «
+» New file not found «
+» New file not found «
+» New file not found «
+» New file not found «
+^C
+[Child 3365] - Exit Status:10 
+[Child 3366] - Exit Status:11 
+[Child 3367] - Exit Status:12 
+```
