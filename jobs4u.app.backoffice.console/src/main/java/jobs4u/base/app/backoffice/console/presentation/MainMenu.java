@@ -26,6 +26,7 @@ package jobs4u.base.app.backoffice.console.presentation;
 import jobs4u.base.Application;
 import jobs4u.base.app.backoffice.console.presentation.applications.AnalyseApplicationFilesAction;
 import jobs4u.base.app.backoffice.console.presentation.applications.DisplayAllApplicationDataAction;
+import jobs4u.base.app.backoffice.console.presentation.rank.ApplicationRankingAction;
 import jobs4u.base.app.backoffice.console.presentation.applications.ScheduleInterviewAction;
 import jobs4u.base.app.backoffice.console.presentation.authz.AddUserUI;
 import jobs4u.base.app.backoffice.console.presentation.authz.EnableDisableUserAction;
@@ -41,6 +42,7 @@ import jobs4u.base.app.backoffice.console.presentation.jobopening.listing.ListJo
 import jobs4u.base.app.backoffice.console.presentation.jobopening.publishing.PublishResultJobOpeningAction;
 import jobs4u.base.app.backoffice.console.presentation.jobopening.registration.RegisterJobOpeningAction;
 import jobs4u.base.app.backoffice.console.presentation.applications.ListJobOpeningApplicationsAction;
+import jobs4u.base.app.backoffice.console.presentation.rank.UpdateSystemRankConfigurationUI;
 import jobs4u.base.app.backoffice.console.presentation.recruitmentprocess.ChangePhaseStatesAction;
 import jobs4u.base.app.backoffice.console.presentation.requirementTemplate.GenerateRequirementsTemplateFileUI;
 import jobs4u.base.app.backoffice.console.presentation.operator.RegisterJobOpeningApplicationsAction;
@@ -118,6 +120,9 @@ public class MainMenu extends AbstractUI {
 
     private final AuthorizationService authz = AuthzRegistry.authorizationService();
 
+    public MainMenu() {
+    }
+
     @Override
     public boolean show() {
         drawFormTitle();
@@ -159,6 +164,8 @@ public class MainMenu extends AbstractUI {
         if (authz.isAuthenticatedUserAuthorizedTo(BaseRoles.ADMIN)) {
             final Menu usersMenu = buildUsersMenu();
             mainMenu.addSubMenu(USERS_OPTION, usersMenu);
+            final Menu rankMenu = buildAdminRankMenu();
+            mainMenu.addSubMenu(2, rankMenu);
 //            final Menu settingsMenu = buildAdminSettingsMenu();
 //            mainMenu.addSubMenu(SETTINGS_OPTION, settingsMenu);
         }
@@ -199,11 +206,19 @@ public class MainMenu extends AbstractUI {
         return mainMenu;
     }
 
+    private Menu buildAdminRankMenu() {
+        final Menu menu = new Menu("Rank >");
+        menu.addItem(1, "Update System Configuration for Rank", new UpdateSystemRankConfigurationUI()::show);
+        menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
+        return menu;
+    }
+
     private Menu buildCustomerManagerApplicationMenu() {
         final Menu menu = new Menu("Applications >");
         menu.addItem(1, "See Application TOP 20 Used Words List", new AnalyseApplicationFilesAction());
         menu.addItem(2,"Schedule Interview", new ScheduleInterviewAction());
         menu.addItem(3, "Display all data of an application", new DisplayAllApplicationDataAction());
+        menu.addItem(4, "Rank Applications", new ApplicationRankingAction());
         menu.addItem(EXIT_OPTION, RETURN_LABEL, Actions.SUCCESS);
         return menu;
     }
