@@ -2,93 +2,181 @@
 'https://plantuml.com/sequence-diagram
 
 autonumber
-participant "<<Presentation>>\nNotificationInboxUI" as UI
-participant "<<Application>>\nNotificationInboxController" as CTRL
-participant "<<ArrayList>>\nListForUI" as LIST
-participant "<<Service>>\nFollowUpConnectionService" as SER
+actor "Candidate" as ACTOR
+participant "<<Presentation>>\nNotificationInboxCandidateUI" as UI
+participant "<<Application>>\nNotificationInboxCandidateController" as CTRL
+participant "<<Service>>\nFollowUpConnectionService" as SERVICE
+participant "<<Thread>>\nClientConnectionThread" as CLITHREAD
+participant "<<Thread>>\nCheckForNotificationsThread" as THREAD
 
-activate UI
+activate ACTOR
 
-    ref over UI
-    shared-sequence-diagram
-    sequence-diagram-tcp-connection
-    end ref
+    ACTOR -> UI : asks to see the\n notification inbox
 
-    UI -> CTRL : startNotificationRetrievalProcess(username)
+    activate UI
 
-    note bottom
-    username is obtained
-    as described in the
-    shared diagram
-    end note
+        ref over UI, CLITHREAD
+        connection to the server in
+        sequence-diagram-tcp-connection.puml
+        in team-decisions directory
+        end
 
-    activate CTRL
+        UI -> CTRL : startCheckForNotificationsThread(username)
 
-        CTRL -> SER : startNotificationRetrievalProcess(username)
+        activate CTRL
 
-        activate SER
+            CTRL -> THREAD** : create(username)
 
-            note left
-            code = 6 (NOTIFICATION)
-            end note
+            CTRL -> THREAD : start()
 
-                loop Every minute
+            activate THREAD
 
-                    alt if it finds notifications (returns a list)
+                THREAD -> THREAD : run()
 
-                        SER --> CTRL : notificationListDTO
+                loop
 
-                        loop For every notification DTO in the list
+                    THREAD -> SERVICE : checkForNotifications(username)
 
-                            CTRL -> CTRL : notifsOfController.add(notificationListDTO.get(i))
+                    activate SERVICE
 
-                        end
+                        SERVICE --> THREAD : answer
 
-                    else if it doesn't find notifications (returns 0)
+                    deactivate SERVICE
 
-                        SER --> CTRL : 0
+                    alt if answer is true
 
+                        THREAD --> ACTOR : show message indicating it has new notifications
                     end
 
-        deactivate SER
+                    THREAD --> THREAD : wait(30000)
+
+                end
+
+        deactivate CTRL
+
+        opt Option 1 (Notifications to be seen)
+
+            UI -> CTRL : getAllUnseenNotifications(username)
+
+            activate CTRL
+
+                CTRL -> SERVICE : receiveUnseenNotificationList(username.toString())
+
+                activate SERVICE
+
+                   SERVICE -> SERVICE : byte[] message = dataDTO.toByteArray();
+
+                   SERVICE -> CLITHREAD : sOut.writeInt(message.length)
+
+                   activate CLITHREAD
+
+                   deactivate CLITHREAD
+
+                   SERVICE -> CLITHREAD : sOut.write(message)
+
+                   activate CLITHREAD
+
+                   deactivate CLITHREAD
+
+                   SERVICE -> CLITHREAD : sOut.flush()
+
+                   activate CLITHREAD
+
+                   deactivate CLITHREAD
+
+                   SERVICE --> CTRL : unseenNotificationList
+
+                deactivate SERVICE
+
+                CTRL --> UI : unseenNotificationList
+
+                alt empty unseenNotificationList
+
+                    UI --> ACTOR : show it has \nno new notifications
+
+                else not empty unseenNotificationList
+
+                    UI --> ACTOR : shows all notifications
+
+                end
+
+            deactivate CTRL
+
+        else Option 2 (Notifications already seen)
+
+            UI --> ACTOR : asks from when should it show the notifications
+
+            ACTOR -> UI : date
+
+            UI -> CTRL : getAllSeenNotifications(username, date)
+
+            activate CTRL
+                            CTRL -> SERVICE : receiveSeenNotificationList(username.toString())
+
+                            activate SERVICE
+                               SERVICE -> SERVICE : byte[] message = dataDTO.toByteArray();
+
+                               SERVICE -> CLITHREAD : sOut.writeInt(message.length)
+
+                               activate CLITHREAD
+
+                               deactivate CLITHREAD
+
+                               SERVICE -> CLITHREAD : sOut.write(message)
+
+                               activate CLITHREAD
+
+                               deactivate CLITHREAD
+
+                               SERVICE -> CLITHREAD : sOut.flush()
+
+                               activate CLITHREAD
+
+                               deactivate CLITHREAD
+
+                               SERVICE --> CTRL : seenNotificationList
+
+                            deactivate SERVICE
+
+                            CTRL --> UI : seenNotificationList
+
+                            alt empty seenNotificationList
+
+                                UI --> ACTOR : show it has \nno new notifications
+
+                            else not empty seenNotificationList
+
+                                UI --> ACTOR : shows all notifications
+
+                            end
+
+                        deactivate CTRL
+
+        else Option 3 (Exit)
+            UI -> CTRL : closeCheckNotificationsThread()
+
+            activate CTRL
+
+                CTRL -> THREAD : interrupt()
+
+                CTRL -> THREAD : join()
+
+                deactivate THREAD
+
+            deactivate CTRL
+
+            UI -> CTRL : closeConnection()
+
+            CTRL --> UI : response
+
+            UI -> UI : doShow()
+
+            UI --> ACTOR : response
 
         end
 
-        UI -> CTRL : getAllUnseenNotifications()
+    deactivate UI
 
-        CTRL -> CTRL : listForUI = new ArrayList()
-
-        loop For every notification in the list of the controller at that time
-
-            CTRL -> LIST : add(notifsOfController.get(i))
-
-            activate LIST
-
-            deactivate LIST
-
-            CTRL -> CTRL : notifsOfController.remove(i)
-
-        end
-
-        CTRL --> UI : listForUI
-
-    deactivate CTRL
-
-        UI -> UI : doShow()
-
-    opt "0 - Exit"
-
-    UI -> CTRL : closeConnection(PORT_NUMBER)
-    activate CTRL
-
-    CTRL -> SER : closeConnection(PORT_NUMBER)
-    deactivate CTRL
-    activate SER
-
-    autonumber resume
-
-    UI -> UI : sock.close()
-    end opt
-
+deactivate ACTOR
 
 @enduml
