@@ -90,7 +90,7 @@ activate UI
         loop for each application
 
 
-             CTRL -> RSP: evaluateRequirementsFile(requirementAnswer)
+             CTRL -> RSP: evaluateRequirementSpecificationFile(requirementAnswer)
              activate RSP
 
              RSP --> CTRL: result

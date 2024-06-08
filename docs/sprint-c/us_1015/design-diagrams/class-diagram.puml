@@ -27,7 +27,7 @@ interface FileManagement {
 }
 
 interface RequirementSpecificationPlugin {
-+ evaluateFile(file) : Integer
++ evaluateRequirementSpecificationFile(file) : Integer
 }
 
 interface ApplicationRepository {
