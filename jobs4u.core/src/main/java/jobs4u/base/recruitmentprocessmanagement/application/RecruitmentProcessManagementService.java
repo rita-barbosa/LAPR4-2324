@@ -61,7 +61,7 @@ public class RecruitmentProcessManagementService {
         Optional<RecruitmentProcess> recruitmentProcess = recruitmentProcessRepository.getRecruitmentProcessByJobReference(new JobReference(jobReference));
         RecruitmentProcess recruitmentProcess1 = recruitmentProcess.get();
         try {
-            while(!(String.valueOf(recruitmentProcessStatusEnum.get(i)).equals(recruitmentProcess1.recruitmentProcessStatus().currentStatus().toString()))){
+            while(!(String.valueOf(recruitmentProcessStatusEnum.get(i)).equals(recruitmentProcess1.recruitmentProcessStatus().currentStatus()))){
                 i++;
             }
 
@@ -89,7 +89,7 @@ public class RecruitmentProcessManagementService {
         Optional<RecruitmentProcess> recruitmentProcess = recruitmentProcessRepository.getRecruitmentProcessByJobReference(new JobReference(jobReference));
         RecruitmentProcess recruitmentProcess1 = recruitmentProcess.get();
         try {
-            while(!(String.valueOf(recruitmentProcessStatusEnum.get(i)).equals(recruitmentProcess1.recruitmentProcessStatus().currentStatus().toString()))){
+            while(!(String.valueOf(recruitmentProcessStatusEnum.get(i)).equals(recruitmentProcess1.recruitmentProcessStatus().currentStatus()))){
                 i++;
             }
 
@@ -124,5 +124,22 @@ public class RecruitmentProcessManagementService {
             return phase.equals("Interview Phase");
         }
         return false;
+    }
+
+    public boolean checkIfRecruitmentProcessIsInAnalysisPhase(String jobReference) {
+        Optional<RecruitmentProcess> recruitmentProcess = recruitmentProcessRepository.getRecruitmentProcessByJobReference(new JobReference(jobReference));
+        if(recruitmentProcess.isPresent()){
+            String phase = recruitmentProcess.get().currentActivePhase();
+            return phase.equals("Analysis Phase");
+        }
+        return false;
+    }
+
+    public boolean checkRecruitmentProcessHasInterview(String jobReference) {
+        Optional<RecruitmentProcess> recruitmentProcess = recruitmentProcessRepository.getRecruitmentProcessByJobReference(new JobReference(jobReference));
+        if(recruitmentProcess.isPresent()){
+            return recruitmentProcess.get().hasInterview();
+        }
+        throw new RuntimeException("No recruitment process found");
     }
 }

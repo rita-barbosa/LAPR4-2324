@@ -48,7 +48,7 @@ public class JpaJobOpeningRepository
     }
 
     @Override
-    public JobReference lastJobReference(String customerCode) {
+    public synchronized JobReference lastJobReference(String customerCode) {
         Iterable<JobOpening> jobOpenings = findAllJobOpeningsWithCustomerCode(customerCode);
         List<JobOpening> c = (List<JobOpening>) jobOpenings;
         int size = c.size();
@@ -152,7 +152,7 @@ public class JpaJobOpeningRepository
                         "WHERE e.jobReference.companyCode IN (\n" +
                         "    SELECT code.customerCode \n" +
                         "    FROM Customer c \n" +
-                        "    WHERE c.customerManager.username.value = :manager\n" +
+                        "    WHERE c.customerManager.username = :manager\n" +
                         ")",
                 JobOpening.class);
         q.setParameter("manager", customerManagerUsername.toString());

@@ -90,6 +90,15 @@ public class RecruitmentProcess implements AggregateRoot<Long>, DTOable<Recruitm
         return recruitmentProcessStatus;
     }
 
+    public boolean hasInterview(){
+        for (Phase phase : phases) {
+            if (phase.description().equals(PhaseTypeEnum.INTERVIEW.toString())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void addPhases(List<Phase> phases) {
         Preconditions.ensure(phases.size() == 4 || phases.size() == 5);
         for (int i = 0; i + 1 < phases.size(); i++) {
