@@ -25,7 +25,7 @@ public class RankOrderDTO {
     @Override
     public String toString() {
         return String.format("\n=====================================================================\n" +
-                "#Number of Order: #%d\n%s", numberRanked, application.toString());
+                "#Number of Order: # %d%s", numberRanked, application.toString());
     }
 
 }
