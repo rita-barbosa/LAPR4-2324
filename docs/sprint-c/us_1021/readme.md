@@ -180,17 +180,27 @@ public void ensureExistInterview() {
 }
 ````
 
-**Test 2:** Verifies that exist requirement process
+**Test 2:** Verifies that exist requirement answer
 
 **Refers to Acceptance Criteria:** 1021.2
 
 ````
 @Test
-public void ensureExistRequirementProcess() {
+public void ensureMustHaveRequirementAnswer() {
 ...
 }
 ````
 
+**Test 3:** Verifies that exist requirement result
+
+**Refers to Acceptance Criteria:** 1021.2
+
+````
+@Test
+public void ensureMustHaveRequirementResult() {
+...
+}
+````
 
 ## 5. Implementation
 
