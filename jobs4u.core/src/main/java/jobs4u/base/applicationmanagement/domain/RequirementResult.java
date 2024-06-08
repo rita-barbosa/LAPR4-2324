@@ -19,6 +19,11 @@ public class RequirementResult implements ValueObject {
         this.reqJustification = "";
     }
 
+    @Override
+    public String toString() {
+        return "requirementResult was " + requirementResult +
+                ". Justification: '" + reqJustification +".";
+    }
     protected RequirementResult() {}
 
     protected RequirementResult(Boolean answer, String reqJustification) {

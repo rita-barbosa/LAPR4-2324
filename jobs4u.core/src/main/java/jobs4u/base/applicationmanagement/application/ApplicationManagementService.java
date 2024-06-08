@@ -7,17 +7,15 @@ import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
 import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
 import jobs4u.base.candidatemanagement.domain.Candidate;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
-import jobs4u.base.jobopeningmanagement.application.JobOpeningManagementService;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.requirementsmanagement.application.ApplicationListDTOService;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.io.File;
 import java.util.*;
 
 public class ApplicationManagementService {
@@ -134,5 +132,21 @@ public class ApplicationManagementService {
         });
 
         return orderList;
+    }
+
+    public String getApplicationFileContent(ApplicationDTO applicationDTO, String filename) {
+        Application application = getApplication(applicationDTO);
+        ApplicationFile file = null;
+        for (ApplicationFile applicationFile : application.allFiles()) {
+            if (applicationFile.getApplicationFile().getName().equals(filename)){
+                file = applicationFile;
+            }
+        }
+        assert file != null;
+        try {
+            return file.getContent();
+        }catch (FileNotFoundException e){
+            return "!";
+        }
     }
 }

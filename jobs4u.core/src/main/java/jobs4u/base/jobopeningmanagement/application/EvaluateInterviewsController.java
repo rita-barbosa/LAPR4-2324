@@ -39,9 +39,7 @@ public class EvaluateInterviewsController {
 
     public Iterable<JobOpeningDTO> getJobOpeningsList() {
         authorizationService.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN);
-        Optional<SystemUser> customerManager = authorizationService.loggedinUserWithPermissions(BaseRoles.CUSTOMER_MANAGER);
-
-        return jobOpeningManagementService.jobOpeningsOfCustomerManager(customerManager.get().username());
+        return jobOpeningManagementService.activeJobOpenings();
     }
 
     public boolean interviewsEvaluation(JobOpeningDTO jobOpening) {

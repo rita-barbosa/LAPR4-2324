@@ -6,7 +6,7 @@ import eapli.framework.domain.model.DomainEntities;
 import jakarta.persistence.*;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -17,7 +17,7 @@ public class Rank implements AggregateRoot<JobReference> {
     private JobReference jobReference;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<RankOrder> entries = new ArrayList<>();
+    private List<RankOrder> order = new LinkedList<>();
 
     public Rank() {
         //for ORM
@@ -25,10 +25,49 @@ public class Rank implements AggregateRoot<JobReference> {
 
     public Rank(JobReference jobOpeningAssociated, List<RankOrder> rankOrders) {
         this.jobReference = jobOpeningAssociated;
-        this.entries = rankOrders;
+        this.order = rankOrders;
     }
     public Rank(JobReference jobOpeningAssociated) {
         this.jobReference = jobOpeningAssociated;
+    }
+
+    public JobReference jobReference() {
+        return this.jobReference;
+    }
+
+    public List<RankOrder> rankOrder(){
+        return this.order;
+    }
+
+
+    public void updateRankOrderList(LinkedList<RankOrder> newRankOrders) {
+        this.rankOrder().clear();
+        this.rankOrder().addAll(newRankOrders);
+    }
+
+    public LinkedList<RankOrder> rankOrderUntilOrder(int order) {
+        LinkedList<RankOrder> untilOrder = new LinkedList<>();
+        for (RankOrder rankOrder : this.rankOrder()) {
+            if (rankOrder.numberRanked() < order){
+                untilOrder.add(rankOrder);
+            }
+        }
+        return untilOrder;
+    }
+
+    public LinkedList<RankOrder> rankOrdersSinceOrder(int order) {
+        LinkedList<RankOrder> sinceOrder = new LinkedList<>();
+        for (RankOrder rankOrder : this.rankOrder()) {
+            if (rankOrder.numberRanked() >= order){
+                sinceOrder.add(rankOrder);
+            }
+        }
+        return sinceOrder;
+    }
+
+    @Override
+    public JobReference identity() {
+        return this.jobReference;
     }
 
     @Override
@@ -41,12 +80,4 @@ public class Rank implements AggregateRoot<JobReference> {
         return DomainEntities.areEqual(this, other);
     }
 
-    public List<RankOrder> rankEntries() {
-        return this.entries;
-    }
-
-    @Override
-    public JobReference identity() {
-        return this.jobReference;
-    }
 }

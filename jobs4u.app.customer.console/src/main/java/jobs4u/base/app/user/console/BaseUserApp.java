@@ -21,10 +21,8 @@
 package jobs4u.base.app.user.console;
 
 import eapli.framework.infrastructure.pubsub.EventDispatcher;
-import eapli.framework.presentation.console.AbstractUI;
 import jobs4u.base.app.common.console.BaseApplication;
 import jobs4u.base.app.common.console.presentation.authz.LoginUI;
-import jobs4u.base.app.user.console.presentation.FrontMenu;
 import jobs4u.base.app.user.console.presentation.MainMenu;
 import jobs4u.base.infrastructure.authz.AuthenticationCredentialHandler;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;

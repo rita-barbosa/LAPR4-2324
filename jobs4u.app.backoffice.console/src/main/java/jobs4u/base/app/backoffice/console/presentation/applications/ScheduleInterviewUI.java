@@ -16,6 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 
 public class ScheduleInterviewUI extends AbstractUI {
     private final ScheduleInterviewController controller = new ScheduleInterviewController();
@@ -23,6 +26,10 @@ public class ScheduleInterviewUI extends AbstractUI {
 
     @Override
     protected boolean doShow() {
+        String dateInput;
+        String timeInput;
+        LocalDate interviewDate;
+        LocalTime interviewTime;
 
         SelectWidget<JobOpeningDTO> selectorJobOpening;
         final JobOpeningDTO jobOpeningDTO;
@@ -36,15 +43,35 @@ public class ScheduleInterviewUI extends AbstractUI {
             selectorJobOpening.show();
             jobOpeningDTO = selectorJobOpening.selectedElement();
 
+            if (jobOpeningDTO == null) {
+                System.out.println(" Exiting...");
+                return false;
+            }
+
             selectorApplication = new SelectWidget<>("Please select an application", controller.getApplicationList(jobOpeningDTO), new ApplicationDtoPrinter());
             selectorApplication.show();
             applicationDTO = selectorApplication.selectedElement();
 
-            final String date = Console.readLine("Insert the date for the interview (ex: YYYY-MM-DD): ");
+            if (applicationDTO == null) {
+                System.out.println("Exiting...");
+                return false;
+            }
 
-            final String time = Console.readLine("Insert the time for the interview (ex: hh:mm): ");
+            do {
+                dateInput = Console.readLine("Insert the date for the interview (YYYY-MM-DD): ");
+                timeInput = Console.readLine("Insert the time for the interview (hh:mm): ");
 
-            return controller.updateApplication(applicationDTO,date,time);
+                try {
+                    interviewDate = LocalDate.parse(dateInput);
+                    interviewTime = LocalTime.parse(timeInput);
+                } catch (DateTimeParseException e) {
+                    System.out.println("Invalid date or time format. Please try again.");
+                    continue;
+                }
+                break;
+            } while (true);
+
+            return controller.updateApplication(applicationDTO,dateInput,timeInput);
         } catch (NullPointerException ex) {
             System.out.println("Error: Please select a job opening, an application, and insert the date and time for the interview."+ex.getMessage());
 

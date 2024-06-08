@@ -58,4 +58,7 @@ public class InterviewResult  implements ValueObject {
         return new InterviewResult(grade);
     }
 
+    public int compareTo(InterviewResult result1) {
+        return this.interviewGrade.compareTo(result1.interviewGrade);
+    }
 }
