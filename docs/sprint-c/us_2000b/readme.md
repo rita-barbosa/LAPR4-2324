@@ -17,6 +17,7 @@
 - 2000b.3. The candidate data should be showed to the operator
 
 
+
 **Client Clarifications**
 
 > **Question:** I would like to know if the client would like two different menus to be created, with each menu responsible for either activating or deactivating candidates.
@@ -55,153 +56,118 @@ need to be done, such as:
 While many functionalities were pre-existing in the base project and EAPLI framework, our investigation of the code
 uncovered several patterns, including:
 
-* **Builder**
-* **Visitor**
-* **Service**
 * **Repository**
-
-The only pattern we directly applied was:
-
 * **Service**
+* **DTO**
 
-This pattern was specifically implemented to select all active and deactive candidate users and to active or disable users.
+
+> **Repository Pattern**
+> * SystemUserRepository
+>
+> **Justifications**
+> 
+>The SystemUserRepository has stored all the SystemUser instances created in all sessions in its database, it's where the instances can be rebuilt.
+
+> **Service Pattern**
+> * CandidateManagementService
+> * AuthorizationService
+> * UserManagementService
+>
+> **Justifications**
+>
+> The UserManagementService and AuthorizationService are implemented in Eapli Framework, We used them to activate and deactivate users and to check if the user has the right permissions.
+> The CandidateManagementService is used to get the active or deactive candidates and to active or deactive them. This service was created because can be used in more than one user story.
+ 
+> **DTO**
+> * CandidateDto
+>
+> **Justifications**
+>
+> We choose DTOs because we have a big amount of domain data required for this functionality. Recognizing the
+> benefits of encapsulation and layer decoupling offered by DTOs, we decided applying this pattern to our project.
 
 ### 4.4. Tests
 
-**Test 1:** Verifies if equal users are detected
+**All the domain tests for this user storie were done in other US.**
 
-**Refers to Acceptance Criteria:** 2000a.1
-
-````
-    @Test
-    public void ensureEqualsCandidateUsersPassesForSamePhoneNumber() throws Exception {
-
-        final Candidate candidate1 = new Candidate(getNewDummyUser(),phoneNumber1);
-        final Candidate candidate2 = new Candidate(getNewDummyUser(),phoneNumber1);
-
-        final boolean expected = candidate1.equals(candidate2);
-
-        assertTrue(expected);
-    }
-````
-**Test 2:** Verifies if a candidate without phone number fails
-
-**Refers to Acceptance Criteria:** 2000a.2
-
-````
-    @Test
-    public void ensureCandidateUserWithoutPhoneNumberFails(){
-        assertThrows(IllegalArgumentException.class, () -> new Candidate(getNewDummyUser(), null));
-    }
-````
-**Test 3:** Verifies if a candidate without system user fails
-
-**Refers to Acceptance Criteria:** 2000a.2
-
-````
-    @Test
-    public void ensureCandidateUserWithoutSystemUserFails(){
-        assertThrows(IllegalArgumentException.class, () -> new Candidate(null, phoneNumber1));
-    }
-````
-**Test 4:** Verifies if a phone number without extension Fails
-
-**Refers to Acceptance Criteria:** 2000a.1
-
-````
-    @Test
-    public void ensurePhoneNumberWithoutExtensionFails() {
-        assertThrows(NullPointerException.class, () -> new PhoneNumber(null, "910000000"));
-    }
-````
-**Test 5:** Verifies if a phone number without number Fails
-
-**Refers to Acceptance Criteria:** 2000a.1
-
-````
-    @Test
-    public void ensurePhoneNumberWithoutNumberFails() {
-        assertThrows(NullPointerException.class, () -> new PhoneNumber("+351", null));
-    }
-````
-
-**Test 6:** Verifies if an extension without "+" Fails
-
-**Refers to Acceptance Criteria:** 2000a.1
-
-````
-    @Test
-    public void ensureExtensionWithoutPlusFails(){
-        assertThrows(IllegalArgumentException.class, () -> new PhoneNumber("351", "12345678"));
-    }
-````
-
-**Test 6 and 7:** Verifies if a number with less than 8 digits and plus than 15 digits Fails
-
-**Refers to Acceptance Criteria:** 2000a.1
-
-````
-    @Test
-    public void ensurePhoneNumberLessThan8DigitsFails() {
-        assertThrows(IllegalArgumentException.class, () -> new PhoneNumber("+351", "1234567"));
-    }
-    
-    @Test
-    public void ensurePhoneNumberPlusThan15DigitsFails() {
-        assertThrows(IllegalArgumentException.class, () -> new PhoneNumber("+351", "1234567890123456"));
-
-    }
-````
 ## 5. Implementation
 
-### RegisterCandidateController
+### EnableDisableCandidateController
 
 ```
- public boolean registerCandidate(String name, String email, String extension, String number){
-        Optional<SystemUser> operator = authz.loggedinUserWithPermissions(BaseRoles.OPERATOR);
-        PhoneNumber phoneNumber = new PhoneNumber(extension, number);
-        operator.ifPresent(systemUser -> candidateManagementService.registerCandidate(name, email, phoneNumber));
+ public class EnableDisableCandidateController {
+    private final AuthorizationService authz = AuthzRegistry.authorizationService();
+    private final static CandidateManagementService candidateService = new CandidateManagementService();
+    private final UserManagementService userService = AuthzRegistry.userService();
 
-        return true;
+    public Iterable<CandidateDTO> activeCandidates() {
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.OPERATOR);
+
+        return candidateService.activeCandidates();
     }
+    public Iterable<CandidateDTO> deactivatedCandidates() {
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.OPERATOR);
+
+        return candidateService.deactivatedCandidates();
+    }
+
+    public void deactivateCandidate(final CandidateDTO candidateDTO) {
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.OPERATOR);
+
+        Candidate candidate= candidateService.getCandidateByPhoneNumber(candidateDTO.getCandidatePhoneNumber()).get();
+        userService.deactivateUser(candidate.user());
+    }
+    public void activateCandidate(final CandidateDTO candidateDTO) {
+        authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.OPERATOR);
+
+        Candidate candidate= candidateService.getCandidateByPhoneNumber(candidateDTO.getCandidatePhoneNumber()).get();
+        userService.activateUser(candidate.user());
+    }
+}
 ```
 ### CandidateManagementService
 
 ```
- public void registerCandidate(String name, String email, PhoneNumber phoneNumber) {
-        String password = passwordService.generatePassword();
+    public Optional<Candidate> getCandidateByPhoneNumber(String phoneNumber){
+        return candidateRepository.findByPhoneNumber(new PhoneNumber("+351", phoneNumber));
+    }
+    
+    public Iterable<CandidateDTO> activeCandidates() {
+        Iterable<Candidate> candidates = this.candidateRepository.findByActive(true);
+        return candidateDTOService.convertToDTO(candidates);
+    }
 
-        final Set<Role> roles = new HashSet<>();
-        roles.add(BaseRoles.CANDIDATE_USER);
-
-        SystemUser sysUser = userManagementService.registerNewUser(email, password, name,"Candidate",email, roles);
-
-        final DomainEvent event = new NewCandidateUserRegisteredEvent(sysUser,phoneNumber);
-        dispatcher.publish(event);
+    public Iterable<CandidateDTO> deactivatedCandidates() {
+        Iterable<Candidate> candidates = this.candidateRepository.findByActive(false);
+        return candidateDTOService.convertToDTO(candidates);
     }
 ```
-### NewCandidateUserRegisteredWatchDog
+### UserManagementService
 
 ```
- @Override
-    public void onEvent(final DomainEvent domainEvent) {
-        assert domainEvent instanceof NewCandidateUserRegisteredEvent;
+    public Iterable<SystemUser> activeUsers() {
+        return this.userRepository.findByActive(true);
+    }
 
-        final NewCandidateUserRegisteredEvent newCandidateUserRegisteredEvent = (NewCandidateUserRegisteredEvent) domainEvent;
+    public Iterable<SystemUser> deactivatedUsers() {
+        return this.userRepository.findByActive(false);
+    }
+    
+    @Transactional
+    public SystemUser deactivateUser(final SystemUser user) {
+        user.deactivate(CurrentTimeCalendars.now());
+        return (SystemUser)this.userRepository.save(user);
+    }
 
-        final AddCandidateOnNewCandidateUserRegisteredController controller = new AddCandidateOnNewCandidateUserRegisteredController();
-        controller.registerNewCandidate(newCandidateUserRegisteredEvent);
+    @Transactional
+    public SystemUser activateUser(final SystemUser user) {
+        user.activate();
+        return (SystemUser)this.userRepository.save(user);
     }
 ```
-### AddCandidateOnNewCandidateUserRegisteredController
 
-```
- public void registerNewCandidate(NewCandidateUserRegisteredEvent event) {
-        candidateRepository.save(new Candidate(event.systemUser(), event.phoneNumber()));
-    }
-```
 ## 6. Integration/Demonstration
 To execute this functionality it is necessary to run the script named `run-backoffice-app` and log in with Operator permissions
-after it, must select the menu `Operator` followed by `Register a Candidate`.
+after it, must select the menu `Operator` followed by `Active/deactive a candidate`.
 
 

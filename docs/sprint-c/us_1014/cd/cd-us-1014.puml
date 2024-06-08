@@ -38,8 +38,20 @@ class ScheduleInterviewController  {
 + getApplicationList()
 + updateApplication(date,time)
 }
+class JobOpeningRepository{
+    + getJobOpeningList()
 
+}
 
+class ApplicationRepository{
+    + getApplicationsList()
+    + save()
+}
+
+Interface DomainRepository{
+    + save()
+    + ofIdentify()
+}
 
 AbstractUI <|-- AbstractListUI
 AbstractUI <|- ScheduleInterviewUI
@@ -51,6 +63,12 @@ ScheduleInterviewController .--> ApplicationManagementService
 ScheduleInterviewController .--> JobOpeningManagementService
 
 ApplicationManagementService .--> ApplicationDtoService
+ApplicationManagementService --> ApplicationRepository
 JobOpeningManagementService .--> JobOpeningDTOService
+JobOpeningManagementService --> JobOpeningRepository
+
+JobOpeningRepository ..> DomainRepository
+
+ApplicationRepository --> DomainRepository
 
 @enduml

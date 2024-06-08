@@ -73,6 +73,8 @@ After successfully submitting this information, the system should send the notif
 >
 >The repositories were employed to persist applications and job openings, as well as to reconstruct objects from the
 persistence.
+> 
+
 > **Service Pattern**
 > * AuthorizationService
 > * JobOpeningManagementService
@@ -99,141 +101,93 @@ persistence.
 > We choose DTOs because we have a big amount of domain data required for this functionality. 
 > Recognizing the benefits of encapsulation and layer decoupling offered by DTOs, we decided 
 > applying this pattern to our project.
+> 
+
 ### 4.4. Tests
 
-**Test 1:** Verifies if equal users are detected
+**Domain tests were implemented in other user stories**
 
-**Refers to Acceptance Criteria:** 2000a.1
-
-````
-    @Test
-    public void ensureEqualsCandidateUsersPassesForSamePhoneNumber() throws Exception {
-
-        final Candidate candidate1 = new Candidate(getNewDummyUser(),phoneNumber1);
-        final Candidate candidate2 = new Candidate(getNewDummyUser(),phoneNumber1);
-
-        final boolean expected = candidate1.equals(candidate2);
-
-        assertTrue(expected);
-    }
-````
-**Test 2:** Verifies if a candidate without phone number fails
-
-**Refers to Acceptance Criteria:** 2000a.2
-
-````
-    @Test
-    public void ensureCandidateUserWithoutPhoneNumberFails(){
-        assertThrows(IllegalArgumentException.class, () -> new Candidate(getNewDummyUser(), null));
-    }
-````
-**Test 3:** Verifies if a candidate without system user fails
-
-**Refers to Acceptance Criteria:** 2000a.2
-
-````
-    @Test
-    public void ensureCandidateUserWithoutSystemUserFails(){
-        assertThrows(IllegalArgumentException.class, () -> new Candidate(null, phoneNumber1));
-    }
-````
-**Test 4:** Verifies if a phone number without extension Fails
-
-**Refers to Acceptance Criteria:** 2000a.1
-
-````
-    @Test
-    public void ensurePhoneNumberWithoutExtensionFails() {
-        assertThrows(NullPointerException.class, () -> new PhoneNumber(null, "910000000"));
-    }
-````
-**Test 5:** Verifies if a phone number without number Fails
-
-**Refers to Acceptance Criteria:** 2000a.1
-
-````
-    @Test
-    public void ensurePhoneNumberWithoutNumberFails() {
-        assertThrows(NullPointerException.class, () -> new PhoneNumber("+351", null));
-    }
-````
-
-**Test 6:** Verifies if an extension without "+" Fails
-
-**Refers to Acceptance Criteria:** 2000a.1
-
-````
-    @Test
-    public void ensureExtensionWithoutPlusFails(){
-        assertThrows(IllegalArgumentException.class, () -> new PhoneNumber("351", "12345678"));
-    }
-````
-
-**Test 6 and 7:** Verifies if a number with less than 8 digits and plus than 15 digits Fails
-
-**Refers to Acceptance Criteria:** 2000a.1
-
-````
-    @Test
-    public void ensurePhoneNumberLessThan8DigitsFails() {
-        assertThrows(IllegalArgumentException.class, () -> new PhoneNumber("+351", "1234567"));
-    }
-    
-    @Test
-    public void ensurePhoneNumberPlusThan15DigitsFails() {
-        assertThrows(IllegalArgumentException.class, () -> new PhoneNumber("+351", "1234567890123456"));
-
-    }
-````
 ## 5. Implementation
 
-### RegisterCandidateController
+### SendNotificationEmailController
 
 ```
- public boolean registerCandidate(String name, String email, String extension, String number){
-        Optional<SystemUser> operator = authz.loggedinUserWithPermissions(BaseRoles.OPERATOR);
-        PhoneNumber phoneNumber = new PhoneNumber(extension, number);
-        operator.ifPresent(systemUser -> candidateManagementService.registerCandidate(name, email, phoneNumber));
+    public Iterable<JobOpeningDTO> getJobOpeningsList() {
+        authorizationService.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN);
 
+        return jobOpeningManagementService.activeJobOpenings();
+    }
+    private Pair<Boolean, String> establishConnection(Username username, String password) {
+        return followUpConnectionService.establishConnection(username, password);
+    }
+    public boolean sendEmail(JobOpeningDTO jobOpeningDTO, String userPassword) {
+        authorizationService.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN);
+        try {
+            //get job opening and applications list
+            JobOpening jobOpening= jobOpeningManagementService.getJobOpening(jobOpeningDTO);
+            Iterable<Application> applications = jobOpening.getApplications();
+            //get customer manager
+            Optional<SystemUser> customerManager = authorizationService.loggedinUserWithPermissions(BaseRoles.CUSTOMER_MANAGER);
+
+            String customerManagerEmail ="";
+            if (customerManager.isPresent()){
+                customerManagerEmail = customerManager.get().email().toString();
+            }
+            //Conection to server
+            Username user = customerManager.get().username();
+            Pair<Boolean, String> connection = establishConnection(user, userPassword);
+
+            if (!connection.getKey()) {
+                throw new IllegalArgumentException("Error: Could not establish connection" + connection.getValue());
+            }
+            for (Application application : applications){
+                if (application.requirementResult()!= null){
+                    followUpConnectionService.sendEmail(customerManagerEmail,application.candidate().email().toString(),"Verification Process Result","Hello, this email is intended to inform you that the result of your verification process was: "+application.requirementResult()+". Best Regards.");
+                }
+            }
+        } catch (NoSuchElementException | IllegalArgumentException e) {
+            System.out.println("Error");
+        }
         return true;
     }
 ```
-### CandidateManagementService
+### JobOpeningManagementService
 
 ```
- public void registerCandidate(String name, String email, PhoneNumber phoneNumber) {
-        String password = passwordService.generatePassword();
-
-        final Set<Role> roles = new HashSet<>();
-        roles.add(BaseRoles.CANDIDATE_USER);
-
-        SystemUser sysUser = userManagementService.registerNewUser(email, password, name,"Candidate",email, roles);
-
-        final DomainEvent event = new NewCandidateUserRegisteredEvent(sysUser,phoneNumber);
-        dispatcher.publish(event);
+ public Iterable<JobOpeningDTO> activeJobOpenings() {
+        return dtoSvc.convertToDTO(jobOpeningRepository.findAllJobOpeningsNotStarted());
     }
 ```
-### NewCandidateUserRegisteredWatchDog
+### FollowUpConnectionService
 
 ```
- @Override
-    public void onEvent(final DomainEvent domainEvent) {
-        assert domainEvent instanceof NewCandidateUserRegisteredEvent;
+    public boolean sendEmail(String senderEmail, String receiverEmail, String topic, String info) {
+        //send email request with dataDTO
+        try {
+            DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.EMAIL.getCode());
+            List<String> params = new ArrayList<>();
+            params.add(senderEmail);
+            params.add(receiverEmail);
+            params.add(topic);
+            params.add(info);
 
-        final NewCandidateUserRegisteredEvent newCandidateUserRegisteredEvent = (NewCandidateUserRegisteredEvent) domainEvent;
+            for (String parameter : params){
+                byte[] serialized = SerializationUtil.serialize(parameter);
+                dataDTO.addDataBlock(serialized.length, serialized);
+            }
 
-        final AddCandidateOnNewCandidateUserRegisteredController controller = new AddCandidateOnNewCandidateUserRegisteredController();
-        controller.registerNewCandidate(newCandidateUserRegisteredEvent);
-    }
-```
-### AddCandidateOnNewCandidateUserRegisteredController
+            byte[] message = dataDTO.toByteArray();
+            sOut.writeInt(message.length);
+            sOut.write(message);
+            sOut.flush();
+            return receiveEmptyResponse();
 
-```
- public void registerNewCandidate(NewCandidateUserRegisteredEvent event) {
-        candidateRepository.save(new Candidate(event.systemUser(), event.phoneNumber()));
+        } catch (IOException e) {
+            throw new RuntimeException(e + "\n Unable to send email request.\n");
+        }
     }
 ```
 ## 6. Integration/Demonstration
-To execute this functionality it is necessary to run the script named `run-backoffice-app` and log in with Operator permissions
-after it, must select the menu `Operator` followed by `Register a Candidate`.
+To execute this functionality it is necessary to run the script named `run-backoffice-app` and log in with Customer Manager permissions
+after it, must select the menu `Job Opening` followed by `Send Notification Email with Requirement Specification result`.
 

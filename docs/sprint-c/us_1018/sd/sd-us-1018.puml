@@ -12,6 +12,10 @@ participant ":JobOpeningDTOService" as JobOpeningDTOService <<Service>>
 participant ":AuthorizationService" as AUTHZ <<service>>
 participant ":JobOpeningRepository" as JobOpeningRepository <<repository>>
 participant ":ApplicationRepository" as ApplicationRepository <<repository>>
+participant ":InterviewModelRepository" as InterviewRepository <<repository>>
+participant ":FileManagement" as FM <<interface>>
+
+
 participant ":Application" as application <<domain>>
 
 
@@ -65,6 +69,15 @@ activate CTRL
     activate ApplicationRepository
         ApplicationRepository --> CTRL: applications
     deactivate ApplicationRepository
+    CTRL -> InterviewRepository: interviewModelByInterviewName(interviewName)
+    activate InterviewRepository
+        InterviewRepository --> CTRL: InterviewModel
+    deactivate InterviewRepository
+
+    CTRL -> FM: importData(configFileName)
+    activate FM
+        FM --> CTRL: data
+    deactivate FM
 
     loop for each application
         CTRL -> interviewPlugin: evaluateInterviewAnswerFiles(interviewAnswer)

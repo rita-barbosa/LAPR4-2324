@@ -65,12 +65,14 @@ public class CandidateManagementService {
     public Optional<Candidate> getCandidateByPhoneNumber(String phoneNumber){
         return candidateRepository.findByPhoneNumber(new PhoneNumber("+351", phoneNumber));
     }
-    public Iterable<Candidate> activeCandidates() {
-        return this.candidateRepository.findByActive(true);
+    public Iterable<CandidateDTO> activeCandidates() {
+        Iterable<Candidate> candidates = this.candidateRepository.findByActive(true);
+        return candidateDTOService.convertToDTO(candidates);
     }
 
-    public Iterable<Candidate> deactivatedCandidates() {
-        return this.candidateRepository.findByActive(false);
+    public Iterable<CandidateDTO> deactivatedCandidates() {
+        Iterable<Candidate> candidates = this.candidateRepository.findByActive(false);
+        return candidateDTOService.convertToDTO(candidates);
     }
 
     public Iterable<CandidateDTO> activeCandidatesDTO() {
