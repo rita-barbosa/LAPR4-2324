@@ -1,6 +1,6 @@
 [SC]-1/Which one do you have more experience in?/TypeScript;Python;C;Java/Java:10/Python:8/C:7
-[MC]-1/Which of the following are familiar with?/Bitbucket;Github;SourceTree/Bitbucket;Github:10/Bitbucket;SourceTree:7
-[WN]-1/How many company have you worked on?/2:10/>=
+[MC]-1/Which of the following are you familiar with?/Bitbucket;Github;SourceTree/Bitbucket;Github:10/Bitbucket;SourceTree:7
+[WN]-1/How many companies have you worked on?/2:10/>=
 [D]-1/When did you finish your university degree?/31-01-2022:10/>
 [WN]-2/How many programming languages do you know?/4:10/>=
 [TF]-1/Are you familiar with responsive web design?/True:10
