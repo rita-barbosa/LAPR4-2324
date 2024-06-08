@@ -15,7 +15,7 @@ import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.application.JobOpeningManagementService;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
-import jobs4u.base.jobopeningmanagement.domain.events.ApplicationReceivedEvent;
+import jobs4u.base.jobopeningmanagement.domain.events.ApplicationStatusChangedEvent;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.usermanagement.domain.BaseRoles;
@@ -73,7 +73,7 @@ public class RegisterJobOpeningApplicationController {
             jobOpeningRepository.save(jobOpening);
         }
 
-        dispatcher.publish(new ApplicationReceivedEvent(application.get().candidate().email().toString(), jobOpeningDTO.getJobReference()));
+        dispatcher.publish(new ApplicationStatusChangedEvent(application.get().candidate().email(), new JobReference(jobOpeningDTO.getJobReference()), "RECEIVED"));
 
         return application;
     }

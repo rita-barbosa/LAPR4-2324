@@ -2,9 +2,9 @@
 'https://plantuml.com/sequence-diagram
 
 autonumber
-actor "Candidate" as ACTOR
-participant "<<Presentation>>\nNotificationInboxCandidateUI" as UI
-participant "<<Application>>\nNotificationInboxCandidateController" as CTRL
+actor "Customer" as ACTOR
+participant "<<Presentation>>\nNotificationInboxCustomerUI" as UI
+participant "<<Application>>\nNotificationInboxCustomerController" as CTRL
 participant "<<Service>>\nFollowUpConnectionService" as SERVICE
 participant "<<Thread>>\nClientConnectionThread" as CLITHREAD
 participant "<<Thread>>\nCheckForNotificationsThread" as THREAD

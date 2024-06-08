@@ -96,6 +96,9 @@ is a partial domain model, with emphasis on US3001's concepts.
 **Perspective from the server:**
 ![Perspective from the server](US3001_SD/US3001_SD_Server_To_Repo.svg)
 
+**Change in Application Status:**
+![Perspective from the server](US3001_SD/US3001_SD_Event_Application_Status_Changed.svg)
+
 ### 4.2. Class Diagram
 
 ![a class diagram](US3001_CD/US3001_class_diagram-US3001_Class_Diagram.svg)

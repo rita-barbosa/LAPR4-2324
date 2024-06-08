@@ -93,11 +93,14 @@ is a partial domain model, with emphasis on US3001's concepts.
 
 ### 4.1. Realization
 
-**Perspective from the Candidate Application:**
-![Perspective from the Candidate Application](US3003_SD/US3003_SD_Candidate_App.svg)
+**Perspective from the Customer Application:**
+![Perspective from the Customer Application](US3003_SD/US3003_SD_Customer_App.svg)
 
 **Perspective from the server:**
 ![Perspective from the server](US3003_SD/US3003_SD_Server_To_Repo.svg)
+
+**The use of an Event was found to be neccessary to create notifications in case the customer wasn't in the app at the time:**
+![Event Handling](US3003_SD/US3003_SD_Event_Job_Opening_Status_Changed.svg)
 
 ### 4.2. Class Diagram
 

@@ -3,106 +3,140 @@
 
 autonumber
 
-participant "<<Service>>\nFollowUpConnectionService" as SER
-participant ":ClientConnectionThread" as CLITHREAD
-participant ":NotificationThread" as THREAD
+participant "<<Thread>>\nClientConnectionThread" as CLITHREAD
+participant "<<Thread>>\nNotificationRequestThread" as THREAD
 participant "<<Service>>\nNotificationManagementService" as NS
-participant "<<ArrayList>>\nNotificationListDTO" as LIST
-participant "<<Domain>>\nNotification" as N
 participant "<<Infrastructure>>\nNotificationRepository" as NREPO
+participant "<<Domain>>\nNotification" as N
+participant "<<DTO>>\nNotificationDTOService" as NDTOS
 
-activate SER
+activate CLITHREAD
 
-            SER -> CLITHREAD : getAllNotifications(username, code)
+    CLITHREAD -> CLITHREAD : dataDTO = receiveRequest()
 
-            note left
-            code = 6 (NOTIFICATION)
-            end note
+    CLITHREAD -> THREAD** : create(dataDTO, new DataOutputStream(socket.getOutputStream()))
 
-            activate CLITHREAD
+    opt Option 1 (data.code == FollowUpRequestCodes.UNSEENNOTIFLIST.getCode())
 
-                CLITHREAD -> THREAD** : createNotifThread(username)
+        activate THREAD
 
-                CLITHREAD -> THREAD : start()
+            THREAD -> THREAD : String username = (String) SerializationUtil.deserialize(data.dataBlockList().get(0).data())
 
-            deactivate CLITHREAD
+            THREAD -> NS : getUnseenNotificationsByUsername(username)
 
-            activate THREAD
+            activate NS
 
-                loop Every minute
+                NS -> NREPO : getUnseenNotificationsByUsername(username)
 
-                THREAD -> NS : getAllNotifProcess(username)
+                activate NREPO
 
-                activate NS
+                    NREPO --> NS : notifications
 
-                    NS -> NREPO : getAllUnseenNotificationWithUsername(username)
+                deactivate NREPO
+
+                loop for each notification in notifications
+
+                    NS -> N : notificationWasSeen()
+
+                    activate N
+
+                    deactivate N
+
+                    NS -> NREPO : save(notification)
 
                     activate NREPO
 
-                        NREPO --> NS : notificationList
-
                     deactivate NREPO
 
-                            NS -> LIST**: new ArrayList()
+                end
 
-                            loop for every notification in the list returned
+                NS -> NDTOS : convertToDTO(notifications)
 
-                                NS -> N : toDTO()
+                activate NDTOS
 
-                                activate N
+                    NDTOS --> NS : notificationsDTO
 
-                                    N --> NS : notificationDTO
+                deactivate NDTOS
 
-                                deactivate N
+                NS --> THREAD : notificationsDTO
 
-                                NS -> LIST : add(notificationDTO)
+            deactivate NS
 
-                                activate LIST
-
-                                deactivate LIST
-
-                                NS -> NS : notificationList.get(i).setToSeen()
-
-                                NS -> NREPO : save(notificationList.get(i))
-
-                                activate NREPO
-
-                                deactivate NREPO
-
-                            end
-
-                        NS --> THREAD : notificationListDTO
-
-                        THREAD --> SER : sOut.writeObject(notificationListDTO)
-
-                        end
-
-                        note right
-                        sOut an ObjectOutputStream from
-                        the connection's sock OutputStream
-                        end note
+                THREAD -> THREAD : dataDTO = DataDTO.turnListIntoDataDTO(data.code(), notificationsDTO)
 
 
+    else Option 2 (data.code == FollowUpRequestCodes.SEENNOTIFLIST.getCode())
 
-                       opt "0 - Exit"
+            THREAD -> THREAD : String username = (String) SerializationUtil.deserialize(data.dataBlockList().get(0).data())
 
-                       SER -> CLITHREAD : closeConnection(code)
-                       deactivate SER
-                       activate CLITHREAD
-                       note left
-                       code = 1 (DISCONN)
-                       end note
+            THREAD -> THREAD : String date = (String) SerializationUtil.deserialize(data.dataBlockList().get(1).data())
 
-                       CLITHREAD --> CLITHREAD : clientSocket.close()
+            THREAD -> NS : getSeenNotificationsByUsernameAndDate(username, date)
 
-                       autonumber stop
-                       CLITHREAD -[#white]> CLITHREAD
-                       deactivate CLITHREAD
+            activate NS
+
+                NS -> NREPO : getUnseenNotificationsByUsername(username)
+
+                activate NREPO
+
+                    NREPO --> NS : notifications
+
+                deactivate NREPO
+
+                NS -> NDTOS : convertToDTO(notifications)
+
+                                activate NDTOS
+
+                                    NDTOS --> NS : notificationsDTO
+
+                                deactivate NDTOS
+
+                                NS --> THREAD : notificationsDTO
+
+            deactivate NS
+
+                THREAD -> THREAD : dataDTO = DataDTO.turnListIntoDataDTO(data.code(), notificationsDTO)
 
 
-                       autonumber resume
 
-                       end opt
+    else data.code == FollowUpRequestCodes.CHECKNOTIF.getCode()
 
+        THREAD -> THREAD : String username = (String) SerializationUtil.deserialize(data.dataBlockList().get(0).data())
+
+        THREAD -> NS : checkForUnseenNotificationsByUsername(username)
+
+        activate NS
+
+            NS -> NREPO : checkForUnseenNotificationsByUsername(username)
+
+            activate NREPO
+
+                NREPO --> NS : answer
+
+            deactivate NREPO
+
+            NS --> THREAD : answer
+
+        deactivate NS
+
+            THREAD -> THREAD : dataDTO = DataDTO.turnListIntoDataDTO(data.code(), notificationsDTO)
+
+            THREAD -> THREAD : dataDTO = new DataDTO(data.code())
+
+            THREAD -> THREAD : byte[] stringBytes = SerializationUtil.serialize(String.valueOf(answer))
+
+            THREAD -> THREAD : dataDTO.addDataBlock(stringBytes.length, stringBytes)
+
+
+
+    else Option 3 (data.code == FollowUpRequestCodes.DISCONN.getCode())
+
+        CLITHREAD -> CLITHREAD : sendEmptyResponse(FollowUpRequestCodes.ACK)
+
+        CLITHREAD -> CLITHREAD : closeConnection()
+
+    end
+
+deactivate CLITHREAD
 
 @enduml

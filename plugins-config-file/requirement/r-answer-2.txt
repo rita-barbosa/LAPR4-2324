@@ -1,4 +1,4 @@
-[DN]-1 "What is the value of pi, with only two decimal places?"
+[DN]-1 "What is the value of pi with only two decimal places?"
 A:. 3.14
 
 [SA]-1 "What does SQL stands for?"
@@ -20,7 +20,7 @@ A:. HTML CSS JavaScript
 A:. 8
 
 [D]-1 "When was released the programming language Python?"
-A:. /20-02-1991
+A:. 20/02/1991
 
 [NS]-1 "How often do you use git on a scale of one to five?"
 A:. 4
@@ -34,4 +34,3 @@ A:. Java
 
 [TF]-1 "Is Java a high-level language?"
 A:. True
-
