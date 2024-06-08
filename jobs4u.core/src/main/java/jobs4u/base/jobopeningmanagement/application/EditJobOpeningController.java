@@ -2,15 +2,10 @@ package jobs4u.base.jobopeningmanagement.application;
 
 import eapli.framework.infrastructure.authz.application.AuthorizationService;
 import eapli.framework.infrastructure.authz.application.AuthzRegistry;
-import eapli.framework.infrastructure.authz.domain.model.SystemUser;
-import eapli.framework.io.util.Console;
-import eapli.framework.presentation.console.SelectWidget;
 import jobs4u.base.contracttypemanagement.application.ContractTypeManagementService;
-import jobs4u.base.contracttypemanagement.domain.ContractType;
 import jobs4u.base.contracttypemanagement.repository.ContractTypeRepository;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.interviewmodelmanagement.application.InterviewModelManagementService;
-import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
 import jobs4u.base.interviewmodelmanagement.domain.InterviewModelName;
 import jobs4u.base.interviewmodelmanagement.dto.InterviewModelDTO;
 import jobs4u.base.interviewmodelmanagement.repositories.InterviewModelRepository;
@@ -21,11 +16,9 @@ import jobs4u.base.jobopeningmanagement.domain.JobReference;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.jobopeningmanagement.repositories.JobOpeningRepository;
 import jobs4u.base.requirementsmanagement.domain.RequirementName;
-import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
 import jobs4u.base.usermanagement.domain.BaseRoles;
 import jobs4u.base.workmodemanagement.application.WorkModeManagementService;
-import jobs4u.base.workmodemanagement.domain.WorkMode;
 import jobs4u.base.workmodemanagement.dto.WorkModeDTO;
 import jobs4u.base.requirementsmanagement.application.RequirementSpecificationManagementService;
 import jobs4u.base.requirementsmanagement.dto.RequirementSpecificationDTO;
@@ -89,35 +82,43 @@ public class EditJobOpeningController {
 
         if (jobOpeningOptional.isPresent()) {
             JobOpening jobOpening = jobOpeningOptional.get();
-
-            for (int i = 0; i < selectedInformation.size(); i++) {
-                EditableInformation info = selectedInformation.get(i);
-                String newInfo = newInformation.get(i);
-
-                if (info.equals(CONTRACT_TYPE)) {
-                    contractTypeRepository.ofIdentity(newInfo)
-                            .ifPresent(jobOpening::changeContractType);
-                } else if (info.equals(WORK_MODE)) {
-                    workModeRepository.ofIdentity(newInfo)
-                            .ifPresent(jobOpening::changeWorkMode);
-                } else if (info.equals(REQ_SPECI)) {
-                    requirementSpecificationRepository.ofIdentity(new RequirementName(newInfo))
-                            .ifPresent(jobOpening::changeRequirementSpecification);
-                } else if (info.equals(INT_MODEL)) {
-                    interviewModelRepository.ofIdentity(new InterviewModelName(newInfo))
-                            .ifPresent(jobOpening::changeInterviewModel);
-                } else {
-                    jobOpening.changeInformation(selectedInformation, newInformation);
-                }
-            }
-
-            jobOpeningRepo.save(jobOpening);
+            jobOpeningRepo.save(editInformation(jobOpening, selectedInformation, newInformation));
             return true;
         }
-
         return false;
     }
 
+    private JobOpening editInformation(JobOpening jobOpening, List<EditableInformation> selectedInformation, List<String> newInformation) {
+        for (int i = 0; i < selectedInformation.size(); i++) {
+            EditableInformation info = selectedInformation.get(i);
+            String newInfo = newInformation.get(i);
+
+            if (info.equals(CONTRACT_TYPE)) {
+                contractTypeRepository.ofIdentity(newInfo)
+                        .ifPresentOrElse(jobOpening::changeContractType, () -> {
+                            throw new IllegalArgumentException("Specified contract type is not supported");
+                        });
+            } else if (info.equals(WORK_MODE)) {
+                workModeRepository.ofIdentity(newInfo)
+                        .ifPresentOrElse(jobOpening::changeWorkMode, () -> {
+                            throw new IllegalArgumentException("Specified work mode is not supported");
+                        });
+            } else if (info.equals(REQ_SPECI)) {
+                requirementSpecificationRepository.ofIdentity(new RequirementName(newInfo))
+                        .ifPresentOrElse(jobOpening::changeRequirementSpecification, () -> {
+                            throw new IllegalArgumentException("Specified requirement is not supported");
+                        });
+            } else if (info.equals(INT_MODEL)) {
+                interviewModelRepository.ofIdentity(new InterviewModelName(newInfo))
+                        .ifPresentOrElse(jobOpening::changeInterviewModel, () -> {
+                            throw new IllegalArgumentException("Specified interview model is not supported");
+                        });
+            } else {
+                jobOpening.changeInformation(info, newInfo);
+            }
+        }
+        return jobOpening;
+    }
 
     public Iterable<?> necessaryInformation(EditableInformation ed) {
         Map<EditableInformation, Supplier<Iterable<?>>> infoMap = Map.of(

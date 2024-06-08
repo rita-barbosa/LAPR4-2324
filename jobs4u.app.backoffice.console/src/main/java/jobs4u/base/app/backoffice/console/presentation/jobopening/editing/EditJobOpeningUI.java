@@ -44,36 +44,53 @@ public class EditJobOpeningUI extends AbstractUI {
         joDtos.show();
         jobOpeningDTO = joDtos.selectedElement();
 
-        while (wantsToExit == 0) {
-            ei = new SelectWidget<>("Select the information to be edited", controller.editableJobOpeningInformation(jobOpeningDTO), new EditableInformationPrinter());
-            ei.show();
-            editableInformation = ei.selectedElement();
-            selectedInformation.add(editableInformation);
-
-            Iterable<?> info = controller.necessaryInformation(editableInformation);
-
-            if (info == null) {
-                newInfo = Console.readLine("New " + editableInformation.toString());
-            } else {
-                if (editableInformation.equals(REQ_SPECI)) {
-                    newInfo = handleSelection((Iterable<RequirementSpecificationDTO>) info, "Select the new requirement specification", RequirementSpecificationDTO::getName, new RequirementSpecificationDTOPrinter());
-                } else if (editableInformation.equals(INT_MODEL)) {
-                    newInfo = handleSelection((Iterable<InterviewModelDTO>) info, "Select the new interview model", InterviewModelDTO::name, new InterviewModelDtoPrinter());
-                } else if (editableInformation.equals(WORK_MODE)) {
-                    newInfo = handleSelection((Iterable<WorkModeDTO>) info, "Select the new work mode", WorkModeDTO::workModeName, new WorkModeDtoPrinter());
-                } else if (editableInformation.equals(CONTRACT_TYPE)) {
-                    newInfo = handleSelection((Iterable<ContractTypeDTO>) info, "Select the new contract type", ContractTypeDTO::contractTypeName, new ContractTypeDtoPrinter());
-                } else {
-                    throw new IllegalArgumentException("Unsupported EditableInformation type");
+        try {
+            while (wantsToExit == 0) {
+                try {
+                    ei = new SelectWidget<>("Select the information to be edited", controller.editableJobOpeningInformation(jobOpeningDTO), new EditableInformationPrinter());
+                    ei.show();
+                    editableInformation = ei.selectedElement();
+                    selectedInformation.add(editableInformation);
+                } catch (IllegalStateException e) {
+                    System.out.println("Error: " + e.getMessage());
+                    return false;
                 }
+
+                Iterable<?> info = controller.necessaryInformation(editableInformation);
+
+                if (info == null) {
+                    newInfo = Console.readLine("New " + editableInformation.toString());
+                } else {
+                    if (editableInformation.equals(REQ_SPECI)) {
+                        newInfo = handleSelection((Iterable<RequirementSpecificationDTO>) info, "Select the new requirement specification", RequirementSpecificationDTO::getName, new RequirementSpecificationDTOPrinter());
+                    } else if (editableInformation.equals(INT_MODEL)) {
+                        newInfo = handleSelection((Iterable<InterviewModelDTO>) info, "Select the new interview model", InterviewModelDTO::name, new InterviewModelDtoPrinter());
+                    } else if (editableInformation.equals(WORK_MODE)) {
+                        newInfo = handleSelection((Iterable<WorkModeDTO>) info, "Select the new work mode", WorkModeDTO::workModeName, new WorkModeDtoPrinter());
+                    } else if (editableInformation.equals(CONTRACT_TYPE)) {
+                        newInfo = handleSelection((Iterable<ContractTypeDTO>) info, "Select the new contract type", ContractTypeDTO::contractTypeName, new ContractTypeDtoPrinter());
+                    } else {
+                        throw new IllegalArgumentException("Unsupported EditableInformation type");
+                    }
+                }
+                newInformation.add(newInfo);
+                wantsToExit = Console.readInteger("Do you want to continue editing?\n0 - Yes\n1 - No");
             }
-            newInformation.add(newInfo);
-            wantsToExit = Console.readInteger("Do you want to continue editing?\n0 - Yes\n1 - No");
+            try {
+                if (controller.changeJobOpeningInformation(jobOpeningDTO, selectedInformation, newInformation)) {
+                    System.out.println("The job opening was successfully edited.");
+                } else {
+                    System.out.println("Couldn't edit the job opening.");
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println("Error: " + e.getMessage());
+                return false;
+            }
+        } catch (NullPointerException e) {
+            return false;
         }
-        controller.changeJobOpeningInformation(jobOpeningDTO, selectedInformation, newInformation);
 
-
-        return false;
+        return true;
     }
 
     private <T> String handleSelection(Iterable<T> info, String prompt, Function<T, String> getNameFunction, Visitor<T> printer) {
