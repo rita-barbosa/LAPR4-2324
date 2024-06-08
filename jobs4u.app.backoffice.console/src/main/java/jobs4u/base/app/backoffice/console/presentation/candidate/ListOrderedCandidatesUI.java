@@ -58,7 +58,7 @@ public class ListOrderedCandidatesUI extends AbstractUI {
             List<ApplicationDTO> applicationListDTO = controller.getApplicationsOrderedByInterviewResult(jobOpeningDTO);
 
             if (applicationListDTO.isEmpty()){
-                System.out.println("Don't exist applications for the job opening chosen, so it's not possible to get the" +
+                System.out.println("Don't exist graded applications for the job opening chosen, so it's not possible to get the" +
                         "order list of the candidates!");
             } else {
 
@@ -68,9 +68,12 @@ public class ListOrderedCandidatesUI extends AbstractUI {
                 System.out.println(headerApplication);
 
                 //alinhar isto direito
+
                 for (ApplicationDTO app : applicationListDTO) {
-                    String candidate = app.getCandidateName() + "  |    "  + app.getCandidate() + "   |  " + app.getInterview().interviewResult().interviewGrade().toString() + "  |  " + app.getInterview().interviewResult().justification();
-                    System.out.println(candidate);
+                    if (app.getInterview().interviewResult() != null) {
+                        String candidate = app.getCandidateName() + "  |    " + app.getCandidate() + "   |  " + app.getInterview().interviewResult().interviewGrade().toString() + "  |  " + app.getInterview().interviewResult().justification();
+                        System.out.println(candidate);
+                    }
                 }
 
             }
