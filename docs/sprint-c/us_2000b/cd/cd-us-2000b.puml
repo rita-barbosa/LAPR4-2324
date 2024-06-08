@@ -23,8 +23,16 @@ class CandidateManagementService {
     + deactivateUser(candidate)
     + activateUser(candidate)
 }
-
-
+class UserManagementService {
+    + deactivateUser(user)
+    + activateUser(user)
+}
+class CandidateDtoService {
+    + convertToDto()
+}
+class SystemUserRepository {
+    + save()
+}
 
 class EnableDisableCandidateUI {
 
@@ -37,7 +45,9 @@ class EnableDisableCandidateController  {
 + activateUser(user)
 }
 
-
+Interface DomainRepository{
+    + save()
+}
 
 AbstractUI <|-- AbstractListUI
 AbstractUI <|- EnableDisableCandidateUI
@@ -47,4 +57,9 @@ EnableDisableCandidateUI .--> EnableDisableCandidateController
 EnableDisableCandidateController .--> AuthorizationService
 EnableDisableCandidateController .--> CandidateManagementService
 
+CandidateManagementService --> UserManagementService
+CandidateManagementService --> CandidateDtoService
+UserManagementService --> SystemUserRepository
+
+SystemUserRepository .-> DomainRepository
 @enduml

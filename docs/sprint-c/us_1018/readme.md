@@ -83,141 +83,71 @@ After successfully submitting this information, the system should evaluate all t
 > The authorization service was employed to verify the roles of the logged-in user. Different services were used to
 > get job openings. As for verifying the requirements, no services were used since this is a unique function not
 > intended for other use cases.
+
 ### 4.4. Tests
+**Domain Tests were implemented in other user stories**
 
-**Test 1:** Verifies if equal users are detected
-
-**Refers to Acceptance Criteria:** 2000a.1
-
-````
-    @Test
-    public void ensureEqualsCandidateUsersPassesForSamePhoneNumber() throws Exception {
-
-        final Candidate candidate1 = new Candidate(getNewDummyUser(),phoneNumber1);
-        final Candidate candidate2 = new Candidate(getNewDummyUser(),phoneNumber1);
-
-        final boolean expected = candidate1.equals(candidate2);
-
-        assertTrue(expected);
-    }
-````
-**Test 2:** Verifies if a candidate without phone number fails
-
-**Refers to Acceptance Criteria:** 2000a.2
-
-````
-    @Test
-    public void ensureCandidateUserWithoutPhoneNumberFails(){
-        assertThrows(IllegalArgumentException.class, () -> new Candidate(getNewDummyUser(), null));
-    }
-````
-**Test 3:** Verifies if a candidate without system user fails
-
-**Refers to Acceptance Criteria:** 2000a.2
-
-````
-    @Test
-    public void ensureCandidateUserWithoutSystemUserFails(){
-        assertThrows(IllegalArgumentException.class, () -> new Candidate(null, phoneNumber1));
-    }
-````
-**Test 4:** Verifies if a phone number without extension Fails
-
-**Refers to Acceptance Criteria:** 2000a.1
-
-````
-    @Test
-    public void ensurePhoneNumberWithoutExtensionFails() {
-        assertThrows(NullPointerException.class, () -> new PhoneNumber(null, "910000000"));
-    }
-````
-**Test 5:** Verifies if a phone number without number Fails
-
-**Refers to Acceptance Criteria:** 2000a.1
-
-````
-    @Test
-    public void ensurePhoneNumberWithoutNumberFails() {
-        assertThrows(NullPointerException.class, () -> new PhoneNumber("+351", null));
-    }
-````
-
-**Test 6:** Verifies if an extension without "+" Fails
-
-**Refers to Acceptance Criteria:** 2000a.1
-
-````
-    @Test
-    public void ensureExtensionWithoutPlusFails(){
-        assertThrows(IllegalArgumentException.class, () -> new PhoneNumber("351", "12345678"));
-    }
-````
-
-**Test 6 and 7:** Verifies if a number with less than 8 digits and plus than 15 digits Fails
-
-**Refers to Acceptance Criteria:** 2000a.1
-
-````
-    @Test
-    public void ensurePhoneNumberLessThan8DigitsFails() {
-        assertThrows(IllegalArgumentException.class, () -> new PhoneNumber("+351", "1234567"));
-    }
-    
-    @Test
-    public void ensurePhoneNumberPlusThan15DigitsFails() {
-        assertThrows(IllegalArgumentException.class, () -> new PhoneNumber("+351", "1234567890123456"));
-
-    }
-````
 ## 5. Implementation
 
-### RegisterCandidateController
+### EvaluateInterviewsController
 
 ```
- public boolean registerCandidate(String name, String email, String extension, String number){
-        Optional<SystemUser> operator = authz.loggedinUserWithPermissions(BaseRoles.OPERATOR);
-        PhoneNumber phoneNumber = new PhoneNumber(extension, number);
-        operator.ifPresent(systemUser -> candidateManagementService.registerCandidate(name, email, phoneNumber));
+    public Iterable<JobOpeningDTO> getJobOpeningsList() {
+        authorizationService.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN);
+        Optional<SystemUser> customerManager = authorizationService.loggedinUserWithPermissions(BaseRoles.CUSTOMER_MANAGER);
 
+        return jobOpeningManagementService.jobOpeningsOfCustomerManager(customerManager.get().username());
+    }
+
+
+    public boolean interviewsEvaluation(JobOpeningDTO jobOpening) {
+        authorizationService.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN);
+
+        ClassLoader loader = ClassLoader.getSystemClassLoader();
+
+        Iterable<Application> applications = applicationRepository.applicationsForJobOpeningWithInterviewAnswers(jobOpening.getJobReference());
+        long size = StreamSupport.stream(applications.spliterator(),false).count();
+        if (!applications.iterator().hasNext()) {
+            throw new IllegalArgumentException("No applications have associated interview answers.");
+        }
+
+        Optional<InterviewModel> im = interviewModelRepository.interviewModelByInterviewName(jobOpening.getInterviewModelName());
+
+        try {
+            if (im.isPresent()) {
+                InterviewModel interviewModel = im.get();
+
+                FileManagement dataImporterInstance = (FileManagement) loader.loadClass(interviewModel.dataImporter()).getDeclaredConstructor().newInstance();
+
+                InterviewModelPlugin interviewModelEvaluator = (InterviewModelPlugin) loader.loadClass(interviewModel.className()).getDeclaredConstructor().newInstance();
+
+                dataImporterInstance.importData(interviewModel.configurationFile().toString());
+
+                for (Application application : applications) {
+                    try {
+
+                        Pair<Integer, String> result = interviewModelEvaluator.evaluateInterviewModelFile(application.interviewAnswerFilePath());
+                        application.updateInterviewGrade(result);
+                        applicationRepository.save(application);
+
+                    } catch (Exception e) {
+                        LOGGER.error("Couldn't evaluate application.");
+                        return false;
+                    }
+                }
+            } else {
+                LOGGER.error("Requirement specification not found for: {}", jobOpening.getInterviewModelName());
+                return false;
+            }
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException e) {
+            LOGGER.error("Unable to access plugin.");
+            return false;
+        }
         return true;
     }
 ```
-### CandidateManagementService
-
-```
- public void registerCandidate(String name, String email, PhoneNumber phoneNumber) {
-        String password = passwordService.generatePassword();
-
-        final Set<Role> roles = new HashSet<>();
-        roles.add(BaseRoles.CANDIDATE_USER);
-
-        SystemUser sysUser = userManagementService.registerNewUser(email, password, name,"Candidate",email, roles);
-
-        final DomainEvent event = new NewCandidateUserRegisteredEvent(sysUser,phoneNumber);
-        dispatcher.publish(event);
-    }
-```
-### NewCandidateUserRegisteredWatchDog
-
-```
- @Override
-    public void onEvent(final DomainEvent domainEvent) {
-        assert domainEvent instanceof NewCandidateUserRegisteredEvent;
-
-        final NewCandidateUserRegisteredEvent newCandidateUserRegisteredEvent = (NewCandidateUserRegisteredEvent) domainEvent;
-
-        final AddCandidateOnNewCandidateUserRegisteredController controller = new AddCandidateOnNewCandidateUserRegisteredController();
-        controller.registerNewCandidate(newCandidateUserRegisteredEvent);
-    }
-```
-### AddCandidateOnNewCandidateUserRegisteredController
-
-```
- public void registerNewCandidate(NewCandidateUserRegisteredEvent event) {
-        candidateRepository.save(new Candidate(event.systemUser(), event.phoneNumber()));
-    }
-```
 ## 6. Integration/Demonstration
-To execute this functionality it is necessary to run the script named `run-backoffice-app` and log in with Operator permissions
-after it, must select the menu `Operator` followed by `Register a Candidate`.
+To execute this functionality it is necessary to run the script named `run-backoffice-app` and log in with Customer Manager permissions
+after it, must select the menu `Job Opening` followed by `Evaluate interviews for a job opening`.
 

@@ -15,7 +15,6 @@ import jobs4u.base.customermanagement.domain.Customer;
 import jobs4u.base.customermanagement.repository.CustomerRepository;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.domain.JobReference;
-import jobs4u.base.jobopeningmanagement.domain.events.ApplicationAcceptedEvent;
 import jobs4u.base.jobopeningmanagement.domain.events.ApplicationStatusChangedEvent;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.network.FollowUpConnectionService;

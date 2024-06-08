@@ -100,149 +100,81 @@ give us the list of all application and update the chosen one.
 > cases.
 
 > **DTO**
-> * ApplicationDTOService
-> * JobOpeningDTOService
+> * ApplicationDTO
+> * JobOpeningDTO
 >
 > **Justifications**
 >
-> In order to enforce encapsulation amongst layers and adequate responsibility assigment, the ApplicationDTOService and JobOpeningDTOService
+> In order to enforce encapsulation amongst layers and adequate responsibility assigment, the ApplicationDTO and JobOpeningDTO
 > were created, besides being a set of instructions that is used in other functionalities.
 >
 ### 4.4. Tests
 
-**Test 1:** Verifies if equal users are detected
+**Domain Tests were already implemented in other user stories**
 
-**Refers to Acceptance Criteria:** 2000a.1
-
-````
-    @Test
-    public void ensureEqualsCandidateUsersPassesForSamePhoneNumber() throws Exception {
-
-        final Candidate candidate1 = new Candidate(getNewDummyUser(),phoneNumber1);
-        final Candidate candidate2 = new Candidate(getNewDummyUser(),phoneNumber1);
-
-        final boolean expected = candidate1.equals(candidate2);
-
-        assertTrue(expected);
-    }
-````
-**Test 2:** Verifies if a candidate without phone number fails
-
-**Refers to Acceptance Criteria:** 2000a.2
-
-````
-    @Test
-    public void ensureCandidateUserWithoutPhoneNumberFails(){
-        assertThrows(IllegalArgumentException.class, () -> new Candidate(getNewDummyUser(), null));
-    }
-````
-**Test 3:** Verifies if a candidate without system user fails
-
-**Refers to Acceptance Criteria:** 2000a.2
-
-````
-    @Test
-    public void ensureCandidateUserWithoutSystemUserFails(){
-        assertThrows(IllegalArgumentException.class, () -> new Candidate(null, phoneNumber1));
-    }
-````
-**Test 4:** Verifies if a phone number without extension Fails
-
-**Refers to Acceptance Criteria:** 2000a.1
-
-````
-    @Test
-    public void ensurePhoneNumberWithoutExtensionFails() {
-        assertThrows(NullPointerException.class, () -> new PhoneNumber(null, "910000000"));
-    }
-````
-**Test 5:** Verifies if a phone number without number Fails
-
-**Refers to Acceptance Criteria:** 2000a.1
-
-````
-    @Test
-    public void ensurePhoneNumberWithoutNumberFails() {
-        assertThrows(NullPointerException.class, () -> new PhoneNumber("+351", null));
-    }
-````
-
-**Test 6:** Verifies if an extension without "+" Fails
-
-**Refers to Acceptance Criteria:** 2000a.1
-
-````
-    @Test
-    public void ensureExtensionWithoutPlusFails(){
-        assertThrows(IllegalArgumentException.class, () -> new PhoneNumber("351", "12345678"));
-    }
-````
-
-**Test 6 and 7:** Verifies if a number with less than 8 digits and plus than 15 digits Fails
-
-**Refers to Acceptance Criteria:** 2000a.1
-
-````
-    @Test
-    public void ensurePhoneNumberLessThan8DigitsFails() {
-        assertThrows(IllegalArgumentException.class, () -> new PhoneNumber("+351", "1234567"));
-    }
-    
-    @Test
-    public void ensurePhoneNumberPlusThan15DigitsFails() {
-        assertThrows(IllegalArgumentException.class, () -> new PhoneNumber("+351", "1234567890123456"));
-
-    }
-````
 ## 5. Implementation
 
-### RegisterCandidateController
+### ScheduleInterviewController
 
 ```
- public boolean registerCandidate(String name, String email, String extension, String number){
-        Optional<SystemUser> operator = authz.loggedinUserWithPermissions(BaseRoles.OPERATOR);
-        PhoneNumber phoneNumber = new PhoneNumber(extension, number);
-        operator.ifPresent(systemUser -> candidateManagementService.registerCandidate(name, email, phoneNumber));
+ public Iterable<JobOpeningDTO> getJobOpeningsList() {
+        authorizationService.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN);
 
-        return true;
+        return jobOpeningManagementService.activeJobOpenings();
+    }
+
+    public Iterable<ApplicationDTO> getApplicationList(JobOpeningDTO jobOpeningDto) {
+        authorizationService.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN);
+        JobOpening jobOpening= jobOpeningManagementService.getJobOpening(jobOpeningDto);
+        return applicationManagementService.getApplicationsList(jobOpening);
+    }
+
+    public boolean updateApplication(ApplicationDTO applicationDto, String date, String time) throws ParseException {
+        Application application = applicationManagementService.getApplication(applicationDto);
+        Date newSchedule = parseData(date,time);
+        if (application!=null){
+            application.updateApplicationSchedule(newSchedule);
+            applicationRepository.save(application);
+            return true;
+        }
+        return false;
+    }
+
+    public static Date parseData(String date, String hour) throws ParseException {
+        // Split date in day, month and year
+        String[] partesData = date.split("[/-]");
+        int year = Integer.parseInt(partesData[0]);
+        int month = Integer.parseInt(partesData[1]);
+        int day = Integer.parseInt(partesData[2]);
+
+        // Split hour
+        String[] partesHora = hour.split(":");
+        int hour1 = Integer.parseInt(partesHora[0]);
+        int minute = Integer.parseInt(partesHora[1]);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        return sdf.parse(year + "-" + month + "-" + day + " " + hour1 + ":" + minute + ":00");
     }
 ```
-### CandidateManagementService
+### JobOpeningManagementService
 
 ```
- public void registerCandidate(String name, String email, PhoneNumber phoneNumber) {
-        String password = passwordService.generatePassword();
-
-        final Set<Role> roles = new HashSet<>();
-        roles.add(BaseRoles.CANDIDATE_USER);
-
-        SystemUser sysUser = userManagementService.registerNewUser(email, password, name,"Candidate",email, roles);
-
-        final DomainEvent event = new NewCandidateUserRegisteredEvent(sysUser,phoneNumber);
-        dispatcher.publish(event);
+ public Iterable<JobOpeningDTO> activeJobOpenings() {
+        return dtoSvc.convertToDTO(jobOpeningRepository.findAllJobOpeningsNotStarted());
     }
 ```
-### NewCandidateUserRegisteredWatchDog
+### ApplicationManagementService
 
 ```
- @Override
-    public void onEvent(final DomainEvent domainEvent) {
-        assert domainEvent instanceof NewCandidateUserRegisteredEvent;
+ public List<ApplicationDTO> getApplicationsList(JobOpening jobOpening){
+        Set<Application> applicationList = jobOpening.getApplications();
 
-        final NewCandidateUserRegisteredEvent newCandidateUserRegisteredEvent = (NewCandidateUserRegisteredEvent) domainEvent;
-
-        final AddCandidateOnNewCandidateUserRegisteredController controller = new AddCandidateOnNewCandidateUserRegisteredController();
-        controller.registerNewCandidate(newCandidateUserRegisteredEvent);
+        return (List<ApplicationDTO>) applicationDTOService.convertToDTO(applicationList);
     }
 ```
-### AddCandidateOnNewCandidateUserRegisteredController
 
-```
- public void registerNewCandidate(NewCandidateUserRegisteredEvent event) {
-        candidateRepository.save(new Candidate(event.systemUser(), event.phoneNumber()));
-    }
-```
 ## 6. Integration/Demonstration
-To execute this functionality it is necessary to run the script named `run-backoffice-app` and log in with Operator permissions
-after it, must select the menu `Operator` followed by `Register a Candidate`.
+To execute this functionality it is necessary to run the script named `run-backoffice-app` and log in with CustomerManager permissions
+after it, must select the menu `Applications` followed by `Schedule Interview`.
 

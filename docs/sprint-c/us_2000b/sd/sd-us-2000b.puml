@@ -8,10 +8,14 @@ actor "Operator" as operator
 participant ":EnableDisableCandidateUI" as UI <<presentation>>
 participant ":EnableDisableController" as CTRL <<application>>
 participant ":CandidateManagementService" as CMS <<service>>
+participant ":CandidateManagementDtoService" as CandidateManagementDtoService <<service>>
 participant ":AuthorizationService" as AUTHZ <<service>>
+participant ":UserManagementService" as UserManagementService <<service>>
+participant ":SystemUserRepository" as UserRepository <<repository>>
 
-note right AUTHZ
-The AuthorizationService is implemented
+
+note right UserManagementService
+The AuthorizationService and UserManagementService are implemented
 in the eapli framework and will
 be used in this functionality.
 end note
@@ -40,10 +44,14 @@ deactivate AUTHZ
 CTRL -> CMS: deactivatedCandidates()
 activate CMS
 
-CMS --> CTRL: candidates
+CMS -> CandidateManagementDtoService: convertToDTO(candidates)
+activate CandidateManagementDtoService
+    CandidateManagementDtoService-->CMS: candidatesDTOList
+deactivate CandidateManagementDtoService
+CMS --> CTRL: candidatesDTOList
 deactivate CMS
 
-CTRL --> UI: candidates
+CTRL --> UI: candidatesDTOList
 deactivate CTRL
 
 UI --> operator: shows candidates
@@ -59,10 +67,19 @@ deactivate AUTHZ
 CTRL -> CMS : activateCandidate(candidate)
 activate CMS
 
-CMS --> CTRL : candidate
+CMS-> UserManagementService: activateUser(user)
+activate UserManagementService
+    UserManagementService -> UserRepository: save(user)
+    activate UserRepository
+        UserRepository --> UserManagementService: success
+    deactivate UserRepository
+    UserManagementService --> CMS: success
+deactivate UserManagementService
+
+CMS --> CTRL : success
 deactivate CMS
 
-CTRL --> UI : candidate
+CTRL --> UI : success
 deactivate CTRL
 
 else disable
@@ -77,10 +94,14 @@ deactivate AUTHZ
 CTRL -> CMS: activeCandidates()
 activate CMS
 
-CMS --> CTRL: candidates
+CMS ->CandidateManagementDtoService: convertToDTO(candidates)
+activate CandidateManagementDtoService
+    CandidateManagementDtoService--> CMS: candidatesDTOList
+deactivate CandidateManagementDtoService
+CMS --> CTRL: candidatesDTOList
 deactivate CMS
 
-CTRL --> UI: candidates
+CTRL --> UI: candidatesDTOList
 deactivate CTRL
 
 UI --> operator: shows candidates
@@ -96,10 +117,19 @@ deactivate AUTHZ
 CTRL -> CMS : deactivateCandidate(candidate)
 activate CMS
 
-CMS --> CTRL : candidate
+CMS-> UserManagementService: deactivateUser(user)
+activate UserManagementService
+    UserManagementService -> UserRepository: save(user)
+    activate UserRepository
+        UserRepository --> UserManagementService: success
+    deactivate UserRepository
+    UserManagementService --> CMS: success
+deactivate UserManagementService
+
+CMS --> CTRL : success
 deactivate CMS
 
-CTRL --> UI : candidate
+CTRL --> UI : success
 deactivate CTRL
 
 

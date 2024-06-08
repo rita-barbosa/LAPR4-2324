@@ -18,6 +18,8 @@ public class CheckForNotificationsThread implements Runnable {
     public final Username username;
     private final FollowUpConnectionService followUpConnectionService;
 
+    private final Object lock = new Object();
+
     public CheckForNotificationsThread(Username username) {
         this.username = username;
         this.followUpConnectionService = new FollowUpConnectionService();
@@ -26,21 +28,22 @@ public class CheckForNotificationsThread implements Runnable {
     @Override
     public void run() {
         String answer;
+        try {
+            synchronized (lock) { // Ensure the current thread owns the monitor of lock
+                while (!Thread.interrupted()) {
 
-        while(!Thread.interrupted()) {
+                    answer = (String) SerializationUtil.deserialize(followUpConnectionService.checkForNotifications(username).dataBlockList().get(0).data());
 
-            answer = (String) SerializationUtil.deserialize(followUpConnectionService.checkForNotifications(username).dataBlockList().get(0).data());
+                    if (answer.equals("true")) {
+                        System.out.println("\n[NEW NOTIFICATIONS TO BE SEEN]");
+                    }
 
-            if(answer.equals("true")){
-                System.out.println("\n[NEW NOTIFICATIONS TO BE SEEN]");
+                    lock.wait(30000);
+
+                }
             }
-
-            try {
-                wait(30000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 
