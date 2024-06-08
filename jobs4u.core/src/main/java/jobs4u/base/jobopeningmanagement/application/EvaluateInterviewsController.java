@@ -3,6 +3,7 @@ package jobs4u.base.jobopeningmanagement.application;
 import com.ibm.icu.impl.Pair;
 import eapli.framework.infrastructure.authz.application.AuthorizationService;
 import eapli.framework.infrastructure.authz.application.AuthzRegistry;
+import eapli.framework.infrastructure.authz.domain.model.SystemUser;
 import jobs4u.base.applicationmanagement.application.ApplicationManagementService;
 import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
@@ -38,8 +39,9 @@ public class EvaluateInterviewsController {
 
     public Iterable<JobOpeningDTO> getJobOpeningsList() {
         authorizationService.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN);
+        Optional<SystemUser> customerManager = authorizationService.loggedinUserWithPermissions(BaseRoles.CUSTOMER_MANAGER);
 
-        return jobOpeningManagementService.activeJobOpenings();
+        return jobOpeningManagementService.jobOpeningsOfCustomerManager(customerManager.get().username());
     }
 
     public boolean interviewsEvaluation(JobOpeningDTO jobOpening) {
