@@ -57,9 +57,10 @@ public class SendNotificationEmailController {
             }
             for (Application application : applications){
                 if (application.requirementResult()!= null){
-                    followUpConnectionService.sendEmail(customerManagerEmail,application.candidate().email().toString(),"Verification Process Result","Hello, this email is intended to inform you that the result of your verification process was: "+application.requirementResult()+". Best Regards.");
+                    followUpConnectionService.sendEmail(customerManagerEmail,application.candidate().email().toString(),"Verification Process Result","Hello, this email is intended to inform you that the result of your verification process was: "+application.requirementResult().toString()+". Best Regards.");
                 }
             }
+            FollowUpConnectionService.closeConnection();
         } catch (NoSuchElementException | IllegalArgumentException e) {
             System.out.println("Error");
         }
