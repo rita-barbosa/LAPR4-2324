@@ -31,11 +31,18 @@ public class EnableDisableCandidateController {
 
         Candidate candidate= candidateService.getCandidateByPhoneNumber(candidateDTO.getCandidatePhoneNumber()).get();
         userService.deactivateUser(candidate.user());
+        refreshCandidate(candidate);
+
     }
     public void activateCandidate(final CandidateDTO candidateDTO) {
         authz.ensureAuthenticatedUserHasAnyOf(BaseRoles.OPERATOR);
 
         Candidate candidate= candidateService.getCandidateByPhoneNumber(candidateDTO.getCandidatePhoneNumber()).get();
         userService.activateUser(candidate.user());
+        refreshCandidate(candidate);
+    }
+
+    private void refreshCandidate(Candidate candidate) {
+        candidateService.getCandidateByPhoneNumber(candidate.phoneNumber().number());
     }
 }
