@@ -16,8 +16,11 @@ A:. 04:00
 6) SQL
 A:. HTML CSS JavaScript
 
-[WN]-1 "How many bits are in a byte?"
+[WN]-2 "How many bits are in a byte?"
 A:. 8
+
+[WN]-1 "How many years have you been working with JavaScript?"
+A:. 5
 
 [D]-1 "When was released the programming language Python?"
 A:. 20/02/1991
@@ -34,3 +37,4 @@ A:. Java
 
 [TF]-1 "Is Java a high-level language?"
 A:. True
+
