@@ -16,11 +16,15 @@ public class DataDTO implements Serializable {
     final int code;
     List<DataBlock> dataBlockList;
     
-    public DataDTO(int code) {
+    public DataDTO(Integer code) {
         Preconditions.noneNull(code);
         Preconditions.isPositive(code);
         this.code = code;
         this.dataBlockList = new ArrayList<>();
+    }
+
+    public int version(){
+        return VERSION;
     }
     
     public int code(){

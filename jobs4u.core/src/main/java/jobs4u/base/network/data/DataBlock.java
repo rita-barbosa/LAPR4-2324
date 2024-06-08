@@ -6,10 +6,10 @@ import java.io.Serializable;
 
 public class DataBlock implements Serializable {
 
-    private final int length;
+    private final Integer length;
     private final byte[] data;
 
-    public DataBlock(int length, byte[] data) {
+    public DataBlock(Integer length, byte[] data) {
         Preconditions.noneNull(length, data);
         Preconditions.isPositive(length);
         this.length = length;
