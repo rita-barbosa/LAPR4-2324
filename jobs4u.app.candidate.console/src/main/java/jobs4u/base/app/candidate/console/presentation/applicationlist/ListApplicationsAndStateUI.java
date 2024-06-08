@@ -36,7 +36,7 @@ public class ListApplicationsAndStateUI extends AbstractUI {
                         "[Application Status] " + entry.getKey().getApplicationStatus() + "\n" +
                         "[Candidate Name] " + entry.getKey().getCandidateName() + "\n" +
                         "[Candidate Username] " + entry.getKey().getCandidate() + "\n\n" +
-                        "[Applications to the same job opening]" + entry.getValue() +
+                        "[Applications to the same job opening] " + entry.getValue() + "\n" +
                         "=====================================================================";
                 System.out.println(sb);
             }
