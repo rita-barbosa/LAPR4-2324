@@ -33,7 +33,7 @@ public class JobOpeningTest {
     Address address = new Address(streetName, city, district, streetNumber, zipcode);
 
     RequirementAnswer requirementAnswer = RequirementAnswer.valueOf("../plugins-config-file/requirement/r-answer-1.txt");
-    RequirementResult requirementResult =  RequirementResult.valueOf(true);
+    RequirementResult requirementResult = RequirementResult.valueOf(true);
     ApplicationFile file = new ApplicationFile(new File("example.txt"));
     Set<ApplicationFile> files = new HashSet<>();
 
@@ -49,7 +49,7 @@ public class JobOpeningTest {
         String description = "Database maintenance";
         String fullClassName = "jobs4u.plugin.core.adapter.RequirementPluginAdapter";
         String dataImporter = "jobs4u.plugin.core.adapter.FileManagementAdapter";
-        return new RequirementSpecification(name, description, fullClassName, "plugins-config-file/requirement/r-config-1.txt",dataImporter);
+        return new RequirementSpecification(name, description, fullClassName, "plugins-config-file/requirement/r-config-1.txt", dataImporter);
     }
 
     @Test
@@ -130,12 +130,9 @@ public class JobOpeningTest {
         JobOpening opening = new JobOpening("Senior Dev", contractType, workMode, address, 15,
                 "description", jobOpeningRequirement(), jobReference);
 
-        List<EditableInformation> e = new ArrayList<>();
-        List<String> s = new ArrayList<>();
-        s.add("ISEP-1");
-        e.add(new EditableInformation("Job Reference"));
+        EditableInformation e = new EditableInformation("Job Reference");
 
-        opening.changeInformation(e, s);
+        opening.changeInformation(e, "ISEP-1");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -144,12 +141,9 @@ public class JobOpeningTest {
                 "description", jobOpeningRequirement(), jobReference);
         opening.updateStatusToStarted();
 
-        List<EditableInformation> e = new ArrayList<>();
-        List<String> s = new ArrayList<>();
-        s.add("New Description");
-        e.add(EditableInformation.DESCRIPTION);
+        EditableInformation e = EditableInformation.DESCRIPTION;
 
-        opening.changeInformation(e, s);
+        opening.changeInformation(e, "New Description");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -176,7 +170,7 @@ public class JobOpeningTest {
         recruitmentProcess.addPhases(listA);
         opening.addRecruitmentProcess(recruitmentProcess);
 
-        opening.changeRequirementSpecification(new RequirementSpecification("Test.jar", "Test", "test.new.plugin.Classe", "plugins-config-file/requirement/r-config-1.txt","test.new.plugin.Classe"));
+        opening.changeRequirementSpecification(new RequirementSpecification("Test.jar", "Test", "test.new.plugin.Classe", "plugins-config-file/requirement/r-config-1.txt", "test.new.plugin.Classe"));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -203,11 +197,11 @@ public class JobOpeningTest {
         recruitmentProcess.addPhases(listA);
         opening.addRecruitmentProcess(recruitmentProcess);
 
-        opening.changeInterviewModel(new InterviewModel("Test.jar", "Test", "test.new.plugin.Classe", "plugins-config-file/requirement/r-config-1.txt","test.new.Classe"));
+        opening.changeInterviewModel(new InterviewModel("Test.jar", "Test", "test.new.plugin.Classe", "plugins-config-file/requirement/r-config-1.txt", "test.new.Classe"));
     }
 
     @Test
-    public void ensureJobOpeningHasInterview(){
+    public void ensureJobOpeningHasInterview() {
         files.add(file);
         Application application = new Application(requirementAnswer, requirementResult, files, date, interview);
 
