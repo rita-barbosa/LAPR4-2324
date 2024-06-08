@@ -81,9 +81,9 @@ CustomerManager-> UI: Selects an application
 UI --> CustomerManager: Asks for day and time for the interview
 CustomerManager-> UI: Insert the day and time
 
-UI->CTRL: updateApplication(date, time)
+UI->CTRL: updateApplication(applicationDto,date, time)
 activate CTRL
-    CTRL -> ApplicationService: updateApplication()
+    CTRL -> ApplicationService: updateApplication(newSchedule)
     activate ApplicationService
         ApplicationService -> ApplicationRepository: save(application)
         activate ApplicationRepository
