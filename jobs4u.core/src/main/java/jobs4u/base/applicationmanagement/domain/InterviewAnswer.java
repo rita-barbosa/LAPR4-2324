@@ -36,7 +36,7 @@ public class InterviewAnswer implements ValueObject {
         }
 
         File uploaded = new File(interviewAnswerFile);
-        Path targetDirectory = Paths.get("../interviewAnswers");
+        Path targetDirectory = Paths.get("../plugins-config-file/interview/");
         Path targetPath = targetDirectory.resolve(uploaded.getName());
 
         try {

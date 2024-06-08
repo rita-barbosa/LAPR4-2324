@@ -5,6 +5,6 @@
 [WN]-1/How many bits are in a byte?/8:1/=
 [TF]-1/Is Java a high-level language?/True:1
 [NS]-1/How often do you use git on a scale of one to five?/4-5:1
-[DN]-1/What is the value of pi, with only two decimal places?/3.14:1/=
+[DN]-1/What is the value of pi with only two decimal places?/3.14:1/=
 [SA]-1/What does SQL stands for?/Structured Query Language:1/Structure Query Language:1
 [T]-1/How long can you focus on a problem?/03:00:1/>=
