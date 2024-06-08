@@ -3,6 +3,7 @@ package jobs4u.base.rankmanagement.domain;
 import eapli.framework.domain.model.ValueObject;
 import eapli.framework.general.domain.model.EmailAddress;
 import eapli.framework.representations.dto.DTOable;
+import eapli.framework.validations.Preconditions;
 import jakarta.persistence.*;
 
 import jobs4u.base.applicationmanagement.domain.Application;
@@ -27,6 +28,8 @@ public class RankOrder implements ValueObject, DTOable<RankOrderDTO> {
     }
 
     public RankOrder(Application application, Integer numberRanked) {
+        Preconditions.noneNull(application, numberRanked);
+        Preconditions.isPositive(numberRanked);
         this.application = application;
         this.numberRanked = numberRanked;
     }
