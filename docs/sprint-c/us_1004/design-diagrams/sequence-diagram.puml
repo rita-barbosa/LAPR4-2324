@@ -107,6 +107,11 @@ end loop
     JO_REPO --> CTRL: jobOpening
     deactivate JO_REPO
 
+     loop for each newInformation
+
+    CTRL -> CTRL: editInformation(jobOpening, selectInformation, newInformation)
+activate CTRL
+
     alt selectedInformation == (requirements | interviewModel | ContractType | WorkMode)
         ref over CTRL
 
@@ -123,6 +128,9 @@ end loop
 
     end alt
 
+    CTRL --> CTRL:
+    deactivate CTRL
+end loop
     CTRL -> JO_REPO: save(jobOpening)
     activate JO_REPO
     deactivate JO_REPO

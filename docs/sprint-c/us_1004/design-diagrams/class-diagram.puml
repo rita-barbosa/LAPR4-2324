@@ -19,8 +19,9 @@ class EditJobOpeningUI {
 class EditJobOpeningController  {
 + getJobOpeningList() : jobOpeningListDto
 + editableJobOpeningInformation(jobOpeningDto) : editableInformationValues
-+ changeJobOpeningInformation(jobOpening, newInformation)
++ changeJobOpeningInformation(jobOpening,selectInformation, newInformation) : boolean
 + necessaryInformation(selectInformation)
+- editInformation(ejobOpening, selectInformation, newInformation) : jobOpening
 }
 
 note left
@@ -48,26 +49,9 @@ class InterviewModelRepository {
 
 }
 
-
-
-
-note left
-VERIFY THIS ATTRIBUTES
-end note
-
 class AuthorizationService {
 + ensureAuthenticatedUserHasAnyOf(roles)
 }
-
-''Address
-'class Address <<(V,#FF8B40) value object>> {
-'-  streetName : String
-'-  city : String
-'-  district : String
-'-  state : String
-'-  zipcode :String
-'+ valueOf()
-'}
 
 'Job Opening
 class JobOpening  {
@@ -77,25 +61,15 @@ class JobOpening  {
 - numVacancies : NumberVacancy
 - description : JobDescription
 - rank : Rank
-+ changeInformation(newInformation) : Boolean
++ changeInformation(selectedInformation,newInformation) : Boolean
 }
-
-note left
-The number of paramenters
-of the method varies
-depending on the amount of
-information the user changes.
-end note
-
 
 class WorkMode {
 -  workModeDenomination : String
-+ valueOf(String workModeDenomination)
 }
 
 class ContractType  {
 - contractTypeDenomination : String
-+ valueOf(String contractTypeDenomination)
 }
 
 interface JobOpeningRepository {
@@ -119,6 +93,15 @@ interface DomainRepository {
 + findAll()
 + save()
 }
+
+class EditableInformation{
+ - name
+ + isEditable
+ + notStartedEditableInformation() : List<EditableInformation>
+ + startedEditableInformation() : List<EditableInformation>
+ + screeningEditableInformation() : List<EditableInformation>
+}
+
 
 AbstractUI <|-- EditJobOpeningUI
 EditJobOpeningUI .-> EditJobOpeningController
@@ -152,5 +135,9 @@ ContractTypeRepository .-> DomainRepository
 InterviewModelRepository .-> DomainRepository
 RequirementSpecificationRepository .-> DomainRepository
 WorkModeRepository .--> DomainRepository
+EditJobOpeningController .-> EditableInformation
+JobOpening .--> EditableInformation
+
+
 
 @enduml
