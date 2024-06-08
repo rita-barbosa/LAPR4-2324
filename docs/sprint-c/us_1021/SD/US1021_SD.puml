@@ -1,4 +1,4 @@
-@startuml US1021_SD
+ @startuml US1021_SD
 
 skinparam monochrome true
 skinparam packageStyle rectangle
@@ -39,19 +39,6 @@ activate CTRL
 
     CTRL --> CTRL : jobOpeningDTOList
     deactivate CTRL
-
-
-'    CTRL -> JobManagement : getJobOpening(jobOpeningDTO)
-'    activate JobManagement
-'
-'    JobManagement -> JobOpeningRepository : getJobOpening(jobOpeningDTO)
-'    activate JobOpeningRepository
-'
-'    JobOpeningRepository --> JobManagement : jobOpening
-'    deactivate JobOpeningRepository
-'
-'    JobManagement --> CTRL : jobOpening
-'    deactivate JobManagement
 
 
     CTRL -> JobManagement : getApplicationsList(jobOpeningDTOList)
@@ -105,34 +92,6 @@ deactivate UI
 CM -> UI : selects the application
 activate UI
 
-'CHECK THIS PART --> BECAUSE I ALREADY HAVE ALL THE INFORMATION I NEED, SUCH AS INTERVIEW AND REQUIREMENTS INFORMATION,
-'SO I ONLY NEED TO DISPLAY ALL THE OTHER INFORMATION THA TI HADN'T DISPLAYED YET????
-UI -> CTRL : getAllApplicationInformation(applicationDTO)
-activate CTRL
-
-CTRL -> AppManagement : getAllApplicationInformation(applicationDTO)
-activate AppManagement
-
-AppManagement -> ApplicationRepository : getApplication(applicationDTO)
-activate ApplicationRepository
-
-ApplicationRepository --> AppManagement : application
-deactivate ApplicationRepository
-
-AppManagement --> AppDTOServ :  convertToDTO(application)
-            activate AppDTOServ
-
-            AppDTOServ -> Application : toDTO()
-            activate Application
-            deactivate Application
-
-            deactivate AppDTOServ
-
-        deactivate AppManagement
-
-
-CTRL --> UI : applicationDTO
-deactivate CTRL
 
 UI --> CM : shows all the information of the application, including interviews and requirement process
 deactivate UI

@@ -64,4 +64,13 @@ public class ApplicationTest {
         assertEquals(application.applicationStatus(), status);
     }
 
+    @Test
+    public void ensureExistInterview() {
+        Application application = new Application(requirementAnswer, requirementResult, files, date, interview);
+        Interview interview = new Interview("interview1", new Date(2024, Calendar.FEBRUARY, 2),
+                new InterviewResult( 50, "wrong"), interviewAnswer);
+
+        assertEquals(application.interview(), interview);
+    }
+
 }

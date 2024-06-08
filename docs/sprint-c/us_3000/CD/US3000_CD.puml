@@ -27,68 +27,43 @@ class ClientConnectionThread {
 + getApplicationsList(username, code)
 + closeConnection(code)
 + create(clientSocket)
-+ authenticationProtocol(messageDTO)
++ authenticationProtocol(dataDTO)
 }
 
 class ListingRequestThread {
 + getApplicationsList(code, username)
 }
 
+class DataDTO {
++ addDataBlock(DATA_LEN_L, DATA_LEN_M, applicationDTO.key())
++ addDataBlock(DATA_LEN_L, DATA_LEN_M, applicationDTO.value())
+}
+
+
+class DataBlock {
++ create(DATA_LEN_L, DATA_LEN_M, applicationDTO.key())
++ create(DATA_LEN_L, DATA_LEN_M, applicationDTO.value())
+}
+
 class JobOpeningManagementService <<Service>> {
-    + jobOpeningsOfCustomerManager(username)
-    + getApplicationList(jobOpeningDTOList)
-    + add(applicationListDTO)
-}
++ getJobOpeningList()
 
-class CustomerManagementService <<Service>> {
-    + getAssignedCustomerCodesList(username)
-}
-
-class JobOpeningDTOService <<Service>> {
-    + convertToDTO(jobOpeningList)
 }
 
 class ApplicationManagementService <<Service>> {
-    + getApplicationsList(jobOpening)
+    + getApplicationsAndNumber(username)
+    + applicationDTOMap.put(applicationDTO, jobOpeningApplicationNumber)
 }
 
 class ApplicationDTOService <<Service>> {
-    + convertToDTO(applicationList)
+    + convertToDTO(application)
 }
 
-
-    class AuthenticationService <<Application>> <<Service>> {
-        + loggedinUserWithPermissions(BaseRole.CUSTOMER_MANAGER)
-    }
-
-
-    class CustomerManager <<Domain>> <<Aggregate Root>> {
-        + customerCode()
-    }
-
     class JobOpening <<Domain>> <<Aggregate Root>> {
-        - function : String
-        - contractType : ContractType
-        - workMode : WorkMode
-        - companyAddress : Address
-        - costumerCode : String
-        - companyName : String
-        - numVacancies : Integer
-        - description : String
-        - requirementsSpecificationsFile : File
         + toDTO()
     }
 
     class Application <<Domain>> <<Aggregate Root>> {
-        - requirementAnswer : String
-        - requirementResult : Integer
-        - file : File
-        - email : String
-        - applicationDate : Date
-        - applicationStatus : Boolean
-        - candidateName : String
-        - phoneNumber : Integer
-        - interview : Interview
         + toDTO()
     }
 '}
@@ -100,15 +75,12 @@ class ApplicationDTOService <<Service>> {
     }
 
     class ApplicationRepository <<Persistence>> <<Repository>> {
-        + getApplicationsList(jobOpening)
+        + getApplicationFromCandidateUserName(username)
     }
 
 '}
 
 class FollowUpServer {}
-
-class MessageDTO {}
-
 
 class Socket {
 + Socket(serverIP, PORT_NUMBER)
@@ -123,11 +95,9 @@ class ServerSocket {
 
 
 ' Associations
-CustomerManager ..> ListApplicationsAndStateController
 ListApplicationsAndStateUI .> ListApplicationsAndStateController
 ListApplicationsAndStateController ..> ApplicationManagementService
 ListApplicationsAndStateController ..> JobOpeningManagementService
-ListApplicationsAndStateController ..> JobOpeningDTOService
 ListApplicationsAndStateController ..> ApplicationDTOService
 
 ' Domain Layer
@@ -152,10 +122,14 @@ FollowUpConnectionService ..> ClientConnectionThread
 FollowUpServer --> ClientConnectionThread
 ClientConnectionThread -> ListingRequestThread
 ClientConnectionThread --> AuthenticationService
-ClientConnectionThread -> MessageDTO
 
 FollowUpConnectionService -up-> Socket
-MessageDTO <- FollowUpConnectionService
 FollowUpServer -up-> ServerSocket
+
+ListingRequestThread --> DataDTO
+
+DataDTO <-- "1" DataBlock
+
+FollowUpConnectionService .> DataBlock
 
 @enduml

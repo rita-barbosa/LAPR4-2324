@@ -137,32 +137,37 @@ To make the design of this user story, were used the following patterns:
 >* Classes
 > * JobOpeningRepository
 > * ApplicationRepository
-> * InterviewModelRepository
 >
 >* Justification
    >
    >  The JobOpening, Application and Interview Model repository have the purpose of keeping the persistence of the
-   > job opening, application and interview model existing instances.
+   > job opening and application existing instances.
 
 
 >**_Service Pattern_**
 >* Classes
    >  * JobOpeningManagementService
->  * JobOpeningDTOService
 >  * ApplicationManagementService
 >  * ApplicationDTOService
->  * InterviewModelManagementService
->  * InterviewModelDTOService
->  * InterviewTemplateManagerService
 >  * AuthorizationService
 >
 >* Justification
    >
-   >  The services are in charge of managing request regarding jobOpenings, applications and interview model,
-   >serving as encapsulation between the controller and the JobOpeningRepository, ApplicationRepository and
-   >InterviewModelRepository along with the domain classes.
+   >  The services are in charge of managing request regarding jobOpenings and applications,
+   >serving as encapsulation between the controller and the JobOpeningRepository and ApplicationRepository
+   > along with the domain classes.
    >  The DtoServices to transform these instances into DTOs.
    >  The authorization service is used to verify the roles of the user.
+
+
+>**DTO Pattern**
+> * DataDTO
+> * class JobOpeningDataDTO
+>
+> **Justifications**
+>
+> * To enforce encapsulation amongst layers and adequate responsibility assigment, also facilitating the data
+    >   transfer within the TCP connection, the usage of DTO's is required.
 
 
 ### 4.4. Tests
@@ -178,38 +183,138 @@ public void ensureApplicationHasStatus() {
 }
 ````
 
-**Test 2:** Verifies the number of applicants exists
-
-**Refers to Acceptance Criteria:** 3000.3
-
-````
-@Test
-public void ensureNumberApplicants() {
-...
-}
-````
-
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+### ListApplicationsAndStateController
+
+```
+ public Username getSessionCredentials() {
+        Optional<UserSession> session = authorizationService.session();
+        if (session.isPresent()) {
+            SystemUser user = session.get().authenticatedUser();
+            return user.identity();
+        }
+        throw new NoSuchElementException("No session found");
+    }
+    public Pair<Boolean, String> establishConnection(Username username, String password) {
+        return connectionService.establishConnection(username, password);
+    }
+
+    public List<Map.Entry<ApplicationDTO, Integer>> applicationDTOList(Username username){
+        return connectionService.receiveCandidateApplicationAndNumberList(username);
+    }
+
+    public Pair<Boolean, String> closeConnection() {
+        return FollowUpConnectionService.closeConnection();
+    }
+```
+
+### FollowUpConnectionService
+```
+public Pair<Boolean, String> establishConnection(Username username, String password) {
+        try {
+            if (!defineServerIpAddress()) {
+                return Pair.of(false, "Server IP Address not válid (" + serverIp + ").");
+            }
+            clientSocket = new Socket(serverIp, PORT_NUMBER);
+            sOut = new DataOutputStream(clientSocket.getOutputStream());
+            sIn = new DataInputStream(clientSocket.getInputStream());
+
+        } catch (IOException ex) {
+            return Pair.of(false, "Socket unable to connect to server.");
+        }
+
+        sendAuthenticationRequest(username, password);
+
+        if (receiveEmptyResponse()) {
+            return Pair.of(true, "Connection successfully established.");
+        } else {
+            return Pair.of(false, "Unable to establish connection, wrong credentials.");
+        }
+    }
+    
+    
+public List<Map.Entry<ApplicationDTO, Integer>> receiveCandidateApplicationAndNumberList(Username username) {
+        try {
+            DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.APPLIST.getCode());
+            byte[] serialized = SerializationUtil.serialize(username);
+            dataDTO.addDataBlock(serialized.length, serialized);
+            byte[] message = dataDTO.toByteArray();
+            sOut.writeInt(message.length);
+            sOut.write(message);
+            sOut.flush();
+            return processListResponse(new ApplicationListResponseProcessor());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e + "\n Unable to send applications list request.\n");
+        }
+    }
+```
+
+### ApplicationListResponseProcessor
+
+```
+public List<Map.Entry<ApplicationDTO, Integer>> process(DataDTO dataDTO) {
+        List<Map.Entry<ApplicationDTO, Integer>> applicationDTOList = new ArrayList<>();
+        List<DataBlock> dataBlocks = dataDTO.dataBlockList();
+
+        int counter = 1;
+        ApplicationDTO key = null;
+        Integer value = 0;
+        for (DataBlock dataBlock : dataBlocks) {
+            if (counter == 1) {
+                key = (ApplicationDTO) SerializationUtil.deserialize(dataBlock.data());
+                counter--;
+            } else {
+                value = (Integer) SerializationUtil.deserialize(dataBlock.data());
+                counter++;
+                Map.Entry<ApplicationDTO, Integer> entry = Map.entry(key, value);
+                applicationDTOList.add(entry);
+            }
+        }
+        return applicationDTOList;
+    }
+```
+
+
+### ApplicationManagementService
+
+```
+public Map<ApplicationDTO, Integer> getApplicationsAndNumber(Username username) {
+        Iterable<Application> list = applicationRepository.getApplicationFromCandidateUserName(username);
+        Map<ApplicationDTO, Integer> applicationDTOMap = new LinkedHashMap<>();
+        for (Application application : list) {
+                for (JobOpening jobOpening : jobOpeningRepository.findAll()) {
+                    for (Application app : jobOpening.getApplications()) {
+                        if (application.equals(app)){
+                            applicationDTOMap.put(application.toDTO(), jobOpening.getApplications().size());
+                        }
+                    }
+                }
+        }
+
+        return applicationDTOMap;
+    }
+```
+
+### ApplicationDTOService
+
+```
+public Iterable<ApplicationDTO> convertToDTO(Iterable<Application> applications) {
+        Preconditions.noneNull(applications);
+
+        List<ApplicationDTO> dtos = new ArrayList<>();
+        for (Application j : applications) {
+            dtos.add(j.toDTO());
+        }
+
+        return dtos;
+    }
+```
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
+To execute this functionality it is necessary to run the script named `run-candidate-app` and log in with Customer Manager permissions.
+Then navigate to the menu `Applications` followed by option  1 - `List applications and state`.
 
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
-
-## 7. Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*

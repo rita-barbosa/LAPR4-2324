@@ -1,4 +1,4 @@
-[MC]-1 "Which of the following are front-end technologies?"
+[MC]-1 "Which of the following are front end languages?"
 1) HTML
 2) Python
 3) CSS
@@ -19,10 +19,10 @@ A:. 5
 [D]-1 "When did you start learning web development?"
 A:. 10/04/2022
 
-[NS]-1 "Rate your proficiency in CSS with the given scale."
+[NS]-1 "Rate your proficiency in CSS on a scale of one to five."
 A:. 3-5
 
-[SC]-1 "Do you prefer using React or Angular for front-end development?"
+[SC]-1 "Do you prefer using React or Angular for front end development?"
 1) React
 2) Angular
 A:. React

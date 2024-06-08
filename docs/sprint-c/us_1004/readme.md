@@ -173,7 +173,6 @@ public void ensureCantChangeJobReference() {
 }
 ````
 
-
 **Test 2:** Verifies that it is not possible to edit public information where the current job opening status isn't
 compatible.
 
@@ -186,7 +185,8 @@ public void ensureCanEditPublicInformationOnlyIfStatusIsValid() {
 }
 ````
 
-**Test 3:** Verifies that the requirement specification cannot be edited if the recruitment process phase is not compatible.
+**Test 3:** Verifies that the requirement specification cannot be edited if the recruitment process phase is not
+compatible.
 
 **Refers to Acceptance Criteria:** 1004.1 and 1004.2
 
@@ -210,26 +210,272 @@ public void ensureCanEditInterviewModelOnlyIfPhaseIsValid() {
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+### EditJobOpeningController
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this
-requirement.*
+```
+public boolean changeJobOpeningInformation(JobOpeningDTO jobOpeningDTO, List<EditableInformation> selectedInformation, List<String> newInformation) {
+    auth.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER);
+
+    Optional<JobOpening> jobOpeningOptional = jobOpeningRepo.ofIdentity(new JobReference(jobOpeningDTO.getJobReference()));
+
+    if (jobOpeningOptional.isPresent()) {
+        JobOpening jobOpening = jobOpeningOptional.get();
+        jobOpeningRepo.save(editInformation(jobOpening, selectedInformation, newInformation));
+        return true;
+    }
+    return false;
+}
+
+```
+
+```
+private JobOpening editInformation(JobOpening jobOpening, List<EditableInformation> selectedInformation, List<String> newInformation) {
+    for (int i = 0; i < selectedInformation.size(); i++) {
+        EditableInformation info = selectedInformation.get(i);
+        String newInfo = newInformation.get(i);
+
+        if (info.equals(CONTRACT_TYPE)) {
+            contractTypeRepository.ofIdentity(newInfo)
+                    .ifPresentOrElse(jobOpening::changeContractType, () -> {
+                        throw new IllegalArgumentException("Specified contract type is not supported");
+                    });
+        } else if (info.equals(WORK_MODE)) {
+            workModeRepository.ofIdentity(newInfo)
+                    .ifPresentOrElse(jobOpening::changeWorkMode, () -> {
+                        throw new IllegalArgumentException("Specified work mode is not supported");
+                    });
+        } else if (info.equals(REQ_SPECI)) {
+            requirementSpecificationRepository.ofIdentity(new RequirementName(newInfo))
+                    .ifPresentOrElse(jobOpening::changeRequirementSpecification, () -> {
+                        throw new IllegalArgumentException("Specified requirement is not supported");
+                    });
+        } else if (info.equals(INT_MODEL)) {
+            interviewModelRepository.ofIdentity(new InterviewModelName(newInfo))
+                    .ifPresentOrElse(jobOpening::changeInterviewModel, () -> {
+                        throw new IllegalArgumentException("Specified interview model is not supported");
+                    });
+        } else {
+            jobOpening.changeInformation(info, newInfo);
+        }
+    }
+    return jobOpening;
+}
+```
+
+### JobOpening
+
+````
+    public List<EditableInformation> editableJobOpeningInformation() {
+        String statusDescription = this.status.getStatusDescription();
+        
+        if ("UNFINISHED".equals(statusDescription) || "NOT_STARTED".equals(statusDescription)) {
+            return EditableInformation.notStartedEditableInformation();
+        }
+
+        if ("STARTED".equals(statusDescription)) {
+            String activePhase = recruitmentProcess.currentActivePhase().toLowerCase();
+            switch (activePhase) {
+                case "application":
+                case "none active":
+                    return EditableInformation.startedEditableInformation();
+                case "screening":
+                    return EditableInformation.screeningEditableInformation();
+                default:
+                    throw new IllegalStateException("It isn't possible to alter any information in the job opening");
+            }
+        }
+        throw new IllegalStateException("It isn't possible to alter any information in the job opening");
+    }
+````
+
+````
+public void changeInformation(EditableInformation selecttedInformation, String newInformation) {
+    if (EditableInformation.isEditable(selecttedInformation.toString())) {
+        if (selecttedInformation.equals(EditableInformation.ADDRESS)) {
+            changeAddress(newInformation);
+        } else if (selecttedInformation.equals(EditableInformation.DESCRIPTION)) {
+            changeDescription(newInformation);
+        } else if (selecttedInformation.equals(EditableInformation.FUNCTION)) {
+            changeFunction(newInformation);
+        } else if (selecttedInformation.equals(EditableInformation.NUM_VACANCIES)) {
+            changeNumVacancies(newInformation);
+        }
+    }
+}
+````
+
+````
+public void changeRequirementSpecification(RequirementSpecification requirementSpecification) {
+    Preconditions.noneNull(requirementSpecification);
+    Preconditions.ensure(!status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.ENDED)));
+    if (status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.STARTED))) {
+        Preconditions.ensure(recruitmentProcess.currentActivePhase().equalsIgnoreCase("Application"));
+    }
+    this.requirementSpecification = requirementSpecification;
+}
+
+public void changeInterviewModel(InterviewModel interviewModel) {
+    Preconditions.noneNull(requirementSpecification);
+    Preconditions.ensure(!status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.ENDED)));
+    if (status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.STARTED))) {
+        String active = recruitmentProcess.currentActivePhase();
+        Preconditions.ensure(active.equalsIgnoreCase("Application") || active.equalsIgnoreCase("Screening"));
+    }
+    this.interviewModel = interviewModel;
+}
+````
+
+````
+public void changeWorkMode(WorkMode newInfo) {
+    if (status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED)) || status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED))) {
+        this.workMode = newInfo;
+    } else {
+        throw new IllegalArgumentException("Unable to change information.");
+    }
+}
+
+private void changeNumVacancies(String newInfo) {
+    if (status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED)) || status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED))) {
+        this.numVacancies = NumberVacancy.valueOf(Integer.parseInt(newInfo));
+    } else {
+        throw new IllegalArgumentException("Unable to change information.");
+    }
+}
+
+private void changeFunction(String newInfo) {
+    if (status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED)) || status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED))) {
+        this.function = JobFunction.valueOf(newInfo);
+    } else {
+        throw new IllegalArgumentException("Unable to change information.");
+    }
+}
+
+private void changeDescription(String newInfo) {
+    if (status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED)) || status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED))) {
+        this.description = Description.valueOf(newInfo);
+    } else {
+        throw new IllegalArgumentException("Unable to change information.");
+    }
+}
+
+public void changeContractType(ContractType newInfo) {
+    if (status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED)) || status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED))) {
+        this.contractType = newInfo;
+    } else {
+        throw new IllegalArgumentException("Unable to change information.");
+    }
+}
+
+private void changeAddress(String newInfo) {
+    if (status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.NOT_STARTED)) || status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.UNFINISHED))) {
+        this.address = Address.valueOf(newInfo);
+    } else {
+        throw new IllegalArgumentException("Unable to change information.");
+    }
+}
+````
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
+To use this feature, you'll need to run the script named `run-backoffice-app` and log in with Customer Manager
+permissions.
 
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
+Then, navigate to the _Job Opening_ menu and select option 7 - `Edit a job opening` - to access this
+feature.
+
+```
++= Edit Job Opening ===========================================================+
+
+Select a job opening
+1.
+»» Job Reference: ISEP-1
+» Function: Front End Junior Developer
+» Contract Type: full-time
+» Work Mode: remote
+» Address: 123 Main Street, USA, Flagtown, Star District, 4500-900
+» Description: Night Guard.
+» Number of Vacancies: 2
+» Company: ISEP
+
+2.
+»» Job Reference: ISEP-2
+» Function: Back End Senior Developer
+» Contract Type: full-time
+» Work Mode: remote
+» Address: 456 Elm Street, Canada, Maple Town, Moonlight District, 4500-900
+» Description: Night Guard.
+» Number of Vacancies: 15
+» Company: ISEP
+
+3.
+»» Job Reference: ISEP-3
+» Function: Back End Senior Developer
+» Contract Type: full-time
+» Work Mode: remote
+» Address: MM Street, MMM, MM Town, MM District, 4500-900
+» Description: Night Guard.
+» Number of Vacancies: 8
+» Company: ISEP
+
+0. Exit
+Select an option:
+2
+
+Select the information to be edited
+1. Address
+2. Number Of Vacancies
+3. Function
+4. Description
+5. Contract Type
+6. Work Mode
+7. Requirement Specification
+8. Interview Model
+0. Exit
+Select an option:
+5
+
+Select the new contract type
+1. full-time
+2. part-time
+0. Exit
+Select an option:
+2
+
+Do you want to continue editing?
+0 - Yes
+1 - No
+0
+
+Select the information to be edited
+1. Address
+2. Number Of Vacancies
+3. Function
+4. Description
+5. Contract Type
+6. Work Mode
+7. Requirement Specification
+8. Interview Model
+0. Exit
+Select an option:
+2
+
+New Number Of Vacancies
+5
+
+Do you want to continue editing?
+0 - Yes
+1 - No
+1
+
+The job opening was successfully edited.
++==============================================================================+
+```
 
 ## 7. Observations
 
-*This section should be used to include any content that does not fit any of the previous sections.*
+This user story revealed to be very challenging, as there are many verifications to be done to determine what can be
+edited or not. The class EditableInformation was essential in overcoming these difficulties by streamlining the
+verification process. 
 
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
+Additionally, the functionality became even more complex because some of the job openings'
+attributes are also entities, adding another layer of intricacy to the task.

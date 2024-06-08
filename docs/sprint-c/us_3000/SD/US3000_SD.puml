@@ -10,18 +10,20 @@ participant "<<application>>\n:ListApplicationsAndStateController" as CTRL
 participant "<<service>>\n:FollowUpConnectionService" as ConnSrv
 participant ":ClientConnectionThread" as CLITHREAD
 participant ":ListingRequestThread" as THREAD
-participant "<<service>>\n:JobOpeningManagementService" as JobManagement
-participant ":<<service>>\n:JobOpeningDTOService" as JobDTOServ
-database "<<repository>>\n:JobOpeningRepository" as JobOpeningRepository
-participant "<<domain>>\n:JobOpening" as JobOpening
-
-participant "<<service>>\n:CustomerManagementService" as CustSrv
-database "<<repository>>\n:CustomerRepository" as CustomerRepository
 
 participant "<<service>>\n:ApplicationManagementService" as AppManagement
 database "<<repository>>\n:ApplicationRepositoryRepository" as ApplicationRepository
 participant "<<service>>\n:ApplicationDTOService" as AppDTOServ
 participant "<<domain>>\n:Application" as Application
+
+
+participant "<<service>>\n:JobOpeningManagementService" as JobManagement
+participant ":<<service>>\n:JobOpeningDTOService" as JobDTOServ
+database "<<repository>>\n:JobOpeningRepository" as JobOpeningRepository
+participant "<<domain>>\n:JobOpening" as JobOpening
+
+participant ":DataDTO" as DataDTO
+participant ":DataBlock" as DataBlock
 
 
 
@@ -47,92 +49,83 @@ UI -> CTRL: getApplicationsList(username)
 CTRL -> ConnSrv : getApplicationsList(username)
 activate ConnSrv
 
-ConnSrv -> CLITHREAD : getApplicationsList(username, code)
+ConnSrv -> CLITHREAD : receiveCandidateApplicationAndNumberList(username, code)
 note left
 code = 8 (APPLIST)
 end note
 
 activate CLITHREAD
 
-CLITHREAD -> THREAD** : getApplicationsList(code, username)
+CLITHREAD -> THREAD** : getApplicationsAndNumber(code, username)
 deactivate CLITHREAD
 activate THREAD
 
-THREAD -> JobManagement : getJobOpeningList(username)
+THREAD -> AppManagement : getApplicationsAndNumber(username)
+activate AppManagement
+
+AppManagement -> ApplicationRepository : getApplicationFromCandidateUserName(username)
+activate ApplicationRepository
+deactivate ApplicationRepository
+
+loop for each application
+
+AppManagement -> JobManagement : getJobOpeningList()
 activate JobManagement
 
-JobManagement -> CustSrv : getCustomerByUsername(username)
-activate CustSrv
+JobManagement -> JobOpeningRepository :  getJobOpeningList()
+activate JobOpeningRepository
+deactivate JobOpeningRepository
 
-CustSrv -> CustomerRepository : getCustomerByUsername(username)
-activate CustomerRepository
-deactivate CustomerRepository
-
-deactivate CustSrv
-
-    JobManagement -> JobOpeningRepository : getJobOpeningListMatchingCustomerManager(customerManagerUsername)
-    activate JobOpeningRepository
-    deactivate JobOpeningRepository
-
-JobManagement -> JobDTOServ : convertToDTO(jobOpeningList)
-activate JobDTOServ
-
-    loop for each JobOpening
-        JobDTOServ -> JobOpening : toDTO()
-        activate JobOpening
-        deactivate JobOpening
-    end loop
-deactivate JobDTOServ
-
-
-JobManagement --> THREAD : jobOpeningListDTO
 deactivate JobManagement
 
+loop for each application from a job opening
+
+opt when application match
+
+AppManagement --> AppDTOServ :  convertToDTO(application)
+            activate AppDTOServ
+
+            AppDTOServ -> Application : toDTO()
+            activate Application
+            deactivate Application
+
+            deactivate AppDTOServ
+
+AppManagement -> AppManagement : applicationDTOMap.put(applicationDTO, jobOpeningApplicationNumber)
+activate AppManagement
+deactivate AppManagement
 
 
+end opt
 
-     THREAD -> JobManagement : getApplicationsList(jobOpeningDTOList)
-     activate JobManagement
+end loop
 
-     loop for each jobOpening
+end loop
 
-         JobManagement -> JobOpeningRepository : getJobOpening(jobOpeningDTO)
-         activate JobOpeningRepository
+ AppManagement --> THREAD : applicationsDTOMap
+ deactivate AppManagement
 
-         JobOpeningRepository --> JobManagement : jobOpening
-         deactivate JobOpeningRepository
+ THREAD -> THREAD : applicationDTOList
+ activate THREAD
+ deactivate THREAD
 
-         JobManagement -> AppManagement : getApplicationsList(jobOpening)
-         activate AppManagement
+THREAD -> DataDTO** : create(version, code)
 
-         AppManagement -> ApplicationRepository : getApplicationsList(jobOpening)
-         activate ApplicationRepository
+loop for each list entry
 
-         ApplicationRepository --> AppManagement : applicationList
-         deactivate ApplicationRepository
+THREAD -> DataDTO : addDataBlock(DATA_LEN_L, DATA_LEN_M, applicationDTO.key())
+activate DataDTO
 
-         AppManagement --> AppDTOServ :  convertToDTO(applicationList)
-             activate AppDTOServ
+DataDTO -> DataBlock** : create(DATA_LEN_L, DATA_LEN_M, applicationDTO.key())
+deactivate DataDTO
 
-             loop for each application
-             AppDTOServ -> Application : toDTO()
-             activate Application
-             deactivate Application
-             end loop
+THREAD -> DataDTO : addDataBlock(DATA_LEN_L, DATA_LEN_M, applicationDTO.value())
+activate DataDTO
 
-             deactivate AppDTOServ
+DataDTO -> DataBlock : create(DATA_LEN_L, DATA_LEN_M, applicationDTO.value())
+deactivate DataDTO
 
-
-         deactivate AppManagement
-
-         JobManagement -> JobManagement : add(applicationListDTO)
-
-     end loop
-
-     JobManagement --> THREAD : applicationsListDTO
-     deactivate JobManagement
-
-
+end loop
 
 
 loop for all DTOs

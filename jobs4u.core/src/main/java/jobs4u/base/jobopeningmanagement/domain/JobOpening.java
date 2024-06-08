@@ -244,7 +244,7 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         this.applications = applications;
     }
 
-    public JobFunction function(){
+    public JobFunction function() {
         return this.function;
     }
 
@@ -325,31 +325,18 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         this.interviewModel = interviewModel;
     }
 
-    public Boolean changeInformation(List<EditableInformation> selectedInformation, List<String> newInformation) {
-        if (selectedInformation.size() != newInformation.size()) {
-            throw new IllegalArgumentException("The number of selected information must match the number of new information provided.");
-        }
-
-        for (int i = 0; i < selectedInformation.size(); i++) {
-            String selected = selectedInformation.get(i).toString();
-            String newInfo = newInformation.get(i);
-
-            EditableInformation info;
-            info = EditableInformation.fromString(selected);
-
-            if (info.equals(EditableInformation.ADDRESS)) {
-                changeAddress(newInfo);
-            } else if (info.equals(EditableInformation.DESCRIPTION)) {
-                changeDescription(newInfo);
-            } else if (info.equals(EditableInformation.FUNCTION)) {
-                changeFunction(newInfo);
-            } else if (info.equals(EditableInformation.NUM_VACANCIES)) {
-                changeNumVacancies(newInfo);
-            } else {
-                return false;
+    public void changeInformation(EditableInformation selecttedInformation, String newInformation) {
+        if (EditableInformation.isEditable(selecttedInformation.toString())) {
+            if (selecttedInformation.equals(EditableInformation.ADDRESS)) {
+                changeAddress(newInformation);
+            } else if (selecttedInformation.equals(EditableInformation.DESCRIPTION)) {
+                changeDescription(newInformation);
+            } else if (selecttedInformation.equals(EditableInformation.FUNCTION)) {
+                changeFunction(newInformation);
+            } else if (selecttedInformation.equals(EditableInformation.NUM_VACANCIES)) {
+                changeNumVacancies(newInformation);
             }
         }
-        return true;
     }
 
     public void changeWorkMode(WorkMode newInfo) {
@@ -405,8 +392,8 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
         String activeSinceDate = "";
 
-        if (recruitmentProcess != null)  {
-            activeSinceDate =  dateFormatter.format(recruitmentProcess.getRecruitmentPeriod().getStartDate().getTime());
+        if (recruitmentProcess != null) {
+            activeSinceDate = dateFormatter.format(recruitmentProcess.getRecruitmentPeriod().getStartDate().getTime());
         }
 
         if (interviewModel == null) {
@@ -433,16 +420,16 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         if ("STARTED".equals(statusDescription)) {
             String activePhase = recruitmentProcess.currentActivePhase().toLowerCase();
             switch (activePhase) {
-                case "application":
-                case "none active":
+                case "application phase":
+                case "no phase active.":
                     return EditableInformation.startedEditableInformation();
-                case "screening":
+                case "screening phase":
                     return EditableInformation.screeningEditableInformation();
                 default:
-                    throw new IllegalStateException("It isn't possible to alter any information in the job opening");
+                    throw new IllegalStateException("It isn't possible to alter any information of the job opening");
             }
         }
-        throw new IllegalStateException("It isn't possible to alter any information in the job opening");
+        throw new IllegalStateException("It isn't possible to alter any information of the job opening");
     }
 
 }

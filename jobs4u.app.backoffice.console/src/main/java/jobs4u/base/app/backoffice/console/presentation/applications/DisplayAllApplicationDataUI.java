@@ -2,6 +2,7 @@ package jobs4u.base.app.backoffice.console.presentation.applications;
 
 import eapli.framework.io.util.Console;
 import eapli.framework.presentation.console.AbstractUI;
+import eapli.framework.presentation.console.SelectWidget;
 import jobs4u.base.applicationmanagement.application.DisplayAllApplicationDataController;
 import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
 
@@ -14,24 +15,16 @@ public class DisplayAllApplicationDataUI extends AbstractUI {
 
     @Override
     protected boolean doShow() {
+        SelectWidget<ApplicationDTO> selectorApplication;
+        final ApplicationDTO applicationDTO;
 
         try{
-            int index = 0;
+            selectorApplication = new SelectWidget<>("Please select an application", controller.getApplicationsList(), new ApplicationDtoPrinter());
 
-            List<ApplicationDTO> applicationDTOList = controller.getApplicationsList();
+            selectorApplication.show();
+            applicationDTO = selectorApplication.selectedElement();
 
-            if (applicationDTOList.isEmpty()){
-                System.out.println("Don't exist applications for the job openings related to this customer manager chosen!");
-            } else {
-                for (ApplicationDTO dto : applicationDTOList) {
-                    System.out.printf("INDEX: %d", index);
-                    System.out.println(dto.toString());
-                    index++;
-                }
-
-                int option = selectsIndexNoCancel(applicationDTOList);
-
-                ApplicationDTO applicationDTO = applicationDTOList.get(option);
+            if (applicationDTO != null){
                 String sb;
 
                 if (applicationDTO.getInterview() != null && applicationDTO.getRequirementAnswer() != null && applicationDTO.getRequirementResult() != null){
@@ -88,20 +81,6 @@ public class DisplayAllApplicationDataUI extends AbstractUI {
         return true;
     }
 
-    private static int selectsIndexNoCancel(List<?> list) {
-        String input;
-        int value;
-        do {
-            input = Console.readNonEmptyLine("Select the application index:", "Providing a application option is obligatory.");
-
-            try {
-                value = Integer.parseInt(input);
-            } catch (NumberFormatException ex) {
-                value = -1;
-            }
-        } while (value < 0 || value > list.size() - 1);
-        return value;
-    }
 
     @Override
     public String headline() {

@@ -107,7 +107,7 @@ To be able to promote encapsulation between layers, it will be used DTOs.
 * JobOpening
 * Application
 * JobOpeningManagementService
-* JobOpeningDTODTOService
+* JobOpeningDTOService
 * ApplicationManagementService
 * ApplicationDTOService
 
@@ -180,39 +180,109 @@ public void ensureExistInterview() {
 }
 ````
 
-**Test 2:** Verifies that exist requirement process
+**Test 2:** Verifies that exist requirement answer
 
 **Refers to Acceptance Criteria:** 1021.2
 
 ````
 @Test
-public void ensureExistRequirementProcess() {
+public void ensureMustHaveRequirementAnswer() {
 ...
 }
 ````
 
+**Test 3:** Verifies that exist requirement result
+
+**Refers to Acceptance Criteria:** 1021.2
+
+````
+@Test
+public void ensureMustHaveRequirementResult() {
+...
+}
+````
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+### DisplayAllApplicationDataController
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+```
+
+    public List <ApplicationDTO> getApplicationsList(){
+        Iterable<JobOpeningDTO> jobOpeningDTOList = getJobOpeningList();
+
+        return jobOpeningManagementService.getApplicationsList(jobOpeningDTOList);
+    }
+
+
+    public Iterable<JobOpeningDTO> getJobOpeningList() {
+        Optional<SystemUser> customerManager = authz.loggedinUserWithPermissions(BaseRoles.CUSTOMER_MANAGER);
+        return customerManager.map(systemUser -> jobOpeningManagementService.jobOpeningsListOfCustomerManager(systemUser.username())).orElse(null);
+
+    }
+} 
+```
+### JobOpeningManagementService
+
+```
+public Iterable<JobOpeningDTO> jobOpeningsListOfCustomerManager(Username customerManagerUsername) {
+        return dtoSvc.convertToDTO(jobOpeningRepository.jobOpeningsListOfCustomerManager(customerManagerUsername));
+    }
+    
+    public List<ApplicationDTO> getApplicationsList(Iterable<JobOpeningDTO> jobOpeningDTOList) {
+        List<ApplicationDTO> applicationDTOList = new ArrayList<>();
+        for (JobOpeningDTO dto :jobOpeningDTOList) {
+            JobOpening jobOpening = getJobOpening(dto);
+            List<ApplicationDTO> applicationDTOFromJobOpening = applicationManagementService.getApplicationsList(jobOpening);
+            applicationDTOList.addAll(applicationDTOFromJobOpening);
+        }
+        return applicationDTOList;
+    }
+```
+
+### JobOpeningDTOService
+
+```
+public Iterable<JobOpeningDTO> convertToDTO(Iterable<JobOpening> jobOpenings) {
+        Preconditions.noneNull(jobOpenings);
+
+        List<JobOpeningDTO> dtos = new ArrayList<>();
+        for (JobOpening j : jobOpenings) {
+            dtos.add(j.toDTO());
+        }
+
+        return dtos;
+    }
+```
+
+### ApplicationManagementService
+
+```
+public List<ApplicationDTO> getApplicationsList(JobOpening jobOpening){
+        Set<Application> applicationList = jobOpening.getApplications();
+
+        return (List<ApplicationDTO>) applicationDTOService.convertToDTO(applicationList);
+    }
+```
+
+### ApplicationDTOService
+
+```
+public Iterable<ApplicationDTO> convertToDTO(Iterable<Application> applications) {
+        Preconditions.noneNull(applications);
+
+        List<ApplicationDTO> dtos = new ArrayList<>();
+        for (Application j : applications) {
+            dtos.add(j.toDTO());
+        }
+
+        return dtos;
+    }
+```
+
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
+To execute this functionality it is necessary to run the script named `run-backoffice-app` and log in with Customer Manager permissions.
+Then navigate to the menu `Applications` followed by option  3 - `Display all data of an application`.
 
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
-
-## 7. Observations
-
-*This section should be used to include any content that does not fit any of the previous sections.*
-
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*

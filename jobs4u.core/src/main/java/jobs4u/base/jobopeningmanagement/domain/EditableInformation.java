@@ -26,10 +26,10 @@ public class EditableInformation {
             ADDRESS, NUM_VACANCIES, FUNCTION, DESCRIPTION, CONTRACT_TYPE, WORK_MODE
     };
 
-    public static EditableInformation fromString(String text) {
+    public static boolean isEditable(String text) {
         for (EditableInformation info : VALUES) {
             if (info.toString().equalsIgnoreCase(text)) {
-                return info;
+                return true;
             }
         }
         throw new IllegalArgumentException("Not possible to edit " + text);
@@ -48,6 +48,7 @@ public class EditableInformation {
         e.add(INT_MODEL);
         return e;
     }
+
     @Override
     public String toString() {
         return this.name;
