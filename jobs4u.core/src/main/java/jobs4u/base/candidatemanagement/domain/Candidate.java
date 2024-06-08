@@ -107,4 +107,8 @@ public class Candidate implements AggregateRoot<PhoneNumber> {
         return "Name: " + systemUser.name().firstName() + "| Phone Number: " + phoneNumber.toString() + "| Email: " + email().toString();
     }
 
+    public void updateUser(SystemUser user) {
+        this.systemUser = user;
+    }
+
 }

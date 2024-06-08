@@ -155,7 +155,7 @@ public class JpaJobOpeningRepository
                         "    WHERE c.customerManager.username = :manager\n" +
                         ")",
                 JobOpening.class);
-        q.setParameter("manager", customerManagerUsername.toString());
+        q.setParameter("manager", customerManagerUsername);
         return q.getResultList();
     }
 
