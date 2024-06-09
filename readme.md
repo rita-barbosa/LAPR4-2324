@@ -74,9 +74,12 @@ Before running the application, is necessary to build the project. For more info
 > or\
 > run-customer-app.sh
 
-## 6. How to Install/Deploy into Another Machine (or Virtual Machine)
 
-N/a
+* follow-up server
+
+> run-follow-up-server.bat\
+> or\
+> run-follow-up-server.sh
 
 ## 7. How to Generate PlantUML Diagrams
 
