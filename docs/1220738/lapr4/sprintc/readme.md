@@ -73,7 +73,7 @@
 | 4 – Correct       | The system runs outside the IDE, distributed across two or more local virtual environments (machines or containers). The group was able to demonstrate the system without any execution failures during the demonstration. The correct version was used.                                      |
 | 5 - Exceptional   | 	The system runs outside the IDE, distributed across two or more remote virtual environments (machines or containers) (e.g. in the cloud). The group was able to demonstrate the system without any execution failures during the demonstration. The correct version was used.                |
 
-**Selected Level:** 4
+**Selected Level:** 5
 
 **Justification and Evidences:**
 
