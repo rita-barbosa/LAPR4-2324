@@ -654,7 +654,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         Optional<Candidate> candidate1 = candidateRepository.findByPhoneNumber(phone);
         PhoneNumber phone1 = new PhoneNumber("+351", "910000001");
         Optional<Candidate> candidate2 = candidateRepository.findByPhoneNumber(phone1);
-        Optional<Candidate> c4 = candidateRepository.findByPhoneNumber(new PhoneNumber("+351", "910000034"));
+        Optional<Candidate> c4 = candidateRepository.findByPhoneNumber(new PhoneNumber("+351", "910095800"));
 
 
         if (candidate1.isPresent() && candidate2.isPresent() && c4.isPresent()) {
