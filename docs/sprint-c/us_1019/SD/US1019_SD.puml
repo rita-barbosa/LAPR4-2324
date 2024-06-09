@@ -38,7 +38,7 @@ CTRL -> AUTHZ : loggedinUserWithPermissions(BaseRole.CUSTOMER_MANAGER)
     CTRL -> JobManagement: jobOpeningsOfCustomerManager(username)
     activate JobManagement
 
-    JobManagement -> JobOpeningRepository : getJobOpeningListMatchingCustomerManager(customerManagerUsername)
+    JobManagement -> JobOpeningRepository : getJobOpeningListInAnalysisPhase(customerManagerUsername)
     activate JobOpeningRepository
     deactivate JobOpeningRepository
 
@@ -105,6 +105,8 @@ activate CTRL
 
     CTRL -> AppManagement : getApplicationsOrderedByInterviewResult(applicationsListDTO)
     activate AppManagement
+
+    AppManagement --> CTRL : orderApplicationDTOList
     deactivate AppManagement
 
 
