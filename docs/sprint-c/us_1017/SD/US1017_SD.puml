@@ -5,13 +5,9 @@ title US1017 Sequence Diagram
 actor "Customer Manager" as USER
 |||
 
-
 participant "<<presentation>>\n:UploadInterviewResponsesUI" as UI
 participant "<<application>>\n:UploadInterviewResponsesController" as CTRL
-participant "<<service>>\n:InterviewModelManagementService" as IntModelMan
-database "<<repository>>\n:InterviewModelRepository" as IntModelRepository
-participant "<<service>>\n:InterviewModelDTOService" as IntModDTOServ
-participant "<<domain>>\n:InterviewModel" as IntModel
+participant "<<service>>\n:AuthorizationService" as AUTHZ
 participant "<<service>>\n:JobOpeningManagementService" as JobManagement
 database "<<repository>>\n:JobOpeningRepository" as JobOpeningRepository
 participant "<<domain>>\n:JobOpening" as JobOpening
@@ -19,12 +15,12 @@ participant "<<service>>\n:ApplicationManagementService" as AppManagement
 participant "<<repository>>\n:ApplicationRepositoryRepository" as ApplicationRepository
 participant "<<service>>\n:ApplicationDTOService" as AppDTOServ
 participant "<<domain>>\n:Application" as Application
-participant "<<service>>\n:InterviewTemplateManagerService" as IntManager
-'database "<<repository>>\n:InterviewModelRepository" as IntRep
+participant "<<domain>>\n:InterviewAnswer" as IntAnswer
+participant "<<service>>\n:InterviewModelManagementService" as IntModelMan
+database "<<repository>>\n:InterviewModelRepository" as IntModelRepository
 
-box Plugin
-participant "<<Plugin>>\n:InterviewModelPlugin" as Plugin
-participant "<<Parser/Interpreter>>\n:InterviewModelParser" as Parser
+box Plugin #LightBlue
+    participant "Main" as Plugin
 end box
 
 
@@ -37,52 +33,34 @@ UI -> CTRL : create()
 activate CTRL
 deactivate CTRL
 
-UI -> CTRL :  getInterviewModelTemplates()
+UI -> CTRL: getJobOpenings()
 activate CTRL
+CTRL -> AUTHZ : loggedinUserWithPermissions(BaseRole.CUSTOMER_MANAGER)
+    activate AUTHZ
+    deactivate AUTHZ
 
-CTRL -> IntModelMan : getInterviewModelTemplates()
-activate IntModelMan
+    CTRL -> JobManagement: getJobOpeningsInInterviewAndAnalysisPhase(username)
+    activate JobManagement
 
-IntModelMan -> IntModelRepository : getInterviewModelTemplates()
-activate IntModelRepository
-deactivate IntModelRepository
+    JobManagement -> JobOpeningRepository : getJobOpeningsInInterviewAndAnalysisPhase(phase, customerManagerUsername)
+    activate JobOpeningRepository
+    deactivate JobOpeningRepository
 
-IntModelMan --> IntModDTOServ :  convertToDTO(interviewModelList)
-    activate IntModDTOServ
+JobManagement -> JobOpeningRepository : convertToDTO(jobOpeningList)
+activate JobOpeningRepository
 
-    loop for each interview model
-    IntModDTOServ -> IntModel : toDTO()
-    activate IntModel
-    deactivate IntModel
+    loop for each JobOpening
+        JobOpeningRepository -> JobOpening : toDTO()
+        activate JobOpening
+        deactivate JobOpening
     end loop
+deactivate JobOpeningRepository
 
-    deactivate IntModDTOServ
+JobManagement --> CTRL : jobOpeningDTOList
+deactivate JobManagement
 
-    IntModelMan --> CTRL : interviewModelListDTO
-    deactivate IntModelMan
-
-    CTRL --> UI : interviewModelListDTO
-        deactivate CTRL
-
-
-UI --> USER : shows the interview templates and asks\n to select one
-deactivate UI
-
-
-
-USER -> UI : selects the interview model
-activate UI
-
-UI -> CTRL: getJobOpeningList()
-activate CTRL
-
-    ref over CTRL
-    **[ref1]:** Check **sequence-diagram-get-job-openings**
-    in the folder **team-decisions**
-    end ref
-
-    CTRL --> UI : jobOpeningListDTO
-    deactivate CTRL
+CTRL --> UI : jobOpeningDTOList
+deactivate CTRL
 
 
 UI --> USER : asks to select a job opening
@@ -92,7 +70,7 @@ USER -> UI : selects a job opening
 activate UI
 
 
-UI -> CTRL: getApplicationList(JobOpeningDTO)
+UI -> CTRL: getApplications(JobOpeningDTO)
 activate CTRL
 
 CTRL -> JobManagement : getJobOpening(jobOpeningDTO)
@@ -108,10 +86,10 @@ CTRL -> JobManagement : getJobOpening(jobOpeningDTO)
     deactivate JobManagement
 
 
-    CTRL -> AppManagement : getApplicationsList(jobOpening)
+    CTRL -> AppManagement : getApplicationsFromJobReference(jobReference)
     activate AppManagement
 
-    AppManagement -> ApplicationRepository : getApplicationsListWithInterviewResult()
+    AppManagement -> ApplicationRepository : getApplicationsFromJobReference(jobReference)
     activate ApplicationRepository
     deactivate ApplicationRepository
 
@@ -146,111 +124,55 @@ USER -> UI : gives the filepath
 activate UI
 
 
-UI -> CTRL : uploadInterviewModelAnswers(applicationDTO, filepath, interviewModelDTO)
+UI -> CTRL : uploadFile(applicationDTO, interviewName, filepath)
 activate CTRL
 
-' CHECK IF THIS IS NECESSARY OR IF THE PLUGIN IT'S AUTOMATIC?? --> INTERVIEWMODEL
-CTRL -> IntModelMan : getInterviewModel(interviewModelDTO)
+
+CTRL -> IntModelMan : checkAnswersFileIsValid(interviewName, filepath)
 activate IntModelMan
 
-IntModelMan -> IntModelRepository : getInterviewModel(interviewModelDTO)
+IntModelMan -> IntModelRepository : getFileByName(interviewName)
 activate IntModelRepository
-
-IntModelRepository --> IntModelMan : interviewModel
 deactivate IntModelRepository
 
-IntModelMan --> CTRL : interviewModel
-deactivate IntModelMan
-
-CTRL -> IntManager : checkFileFormat(filepath)
-activate IntManager
-
-IntManager -> Plugin : checkFileFormat(filepath)
+IntModelMan -> Plugin : checkFileFormat(filepath)
 activate Plugin
 
-
-Plugin -> Parser : checkFileSyntax(filepath)
-note left: Along with the requirements\n template grammar.
-
-activate Parser
-deactivate Parser
-
-
-Plugin --> IntManager : confirmation
+Plugin --> IntModelMan : true
 deactivate Plugin
 
+IntModelMan --> CTRL : true
+deactivate IntModelMan
 
 
 
-'CTRL -> IntManager : getInterviewFromJobOpening(jobOpeningDTO)
-'activate IntManager
-'
-'IntManager -> IntRep : interviewModelFromDTO(jobOpeningDTO)
-'deactivate IntManager
-'activate IntRep
 
+CTRL -> AppManagement : uploadInterviewAnswerFile(applicationDTO, filepath)
+activate AppManagement
+AppManagement -> ApplicationRepository : getApplicationFromDTO(applicationDTO)
+activate ApplicationRepository
+deactivate ApplicationRepository
 
+AppManagement -> Application : updateRequirementAnswer(fileWithAnswers)
+activate Application
+note right
+    Conversion of
+    file content
+     to a in-system
+     File already made
+end note
 
-'UI -> CTRL : exportTemplateFile(jobOpeningDTO)
-'activate CTRL
-'
-'CTRL -> IntManager : getInterviewFromJobOpening(jobOpeningDTO)
-'activate IntManager
-'
-'IntManager -> IntRep : interviewModelFromDTO(jobOpeningDTO)
-'deactivate IntManager
-'activate IntRep
-'
-'IntRep -[#lightblue]> IntRep
-'deactivate IntRep
-'
-'
-'    CTRL -> IntManager : generateNewTemplate(interviewModel)
-'    activate IntManager
-'
-'        IntManager -> Plugin : newInterviewModelTemplate()
-'    activate Plugin
-'
-'        Plugin -> Plugin : generateFile()
-'
-'        Plugin -> Parser : checkFileSyntax(templateFile)
-'        note left: Along with the requirements\n template grammar.
-'
-'        activate Parser
-'        deactivate Parser
-'
-'        Plugin -> Plugin : export()
-'       Plugin --> IntManager : confirmation
-'    deactivate Plugin
+Application -> IntAnswer** : InterviewAnswer(fileWithAnswers)
+deactivate Application
 
-    IntManager --> CTRL : confirmation
-    deactivate IntManager
-
-    CTRL -> AppManagement : getApplication(applicationDTO)
-        activate AppManagement
-
-        AppManagement -> ApplicationRepository : getApplication(applicationDTO)
-        activate ApplicationRepository
-
-        ApplicationRepository --> AppManagement : application
-        deactivate ApplicationRepository
-
-'????? CHECK !!!
-        AppManagement --> ApplicationRepository :  add(filepath)
-        activate ApplicationRepository
-        deactivate ApplicationRepository
-
-'        AppManagement --> CTRL : application
-'        deactivate AppManagement
-
+AppManagement -> ApplicationRepository : save(application)
+activate ApplicationRepository
+deactivate ApplicationRepository
 deactivate AppManagement
-
 
 
     CTRL --> UI : shows operation success
 deactivate CTRL
-
-
 
 UI --> USER : shows operation success
 deactivate UI
