@@ -286,3 +286,145 @@ public Iterable<ApplicationDTO> convertToDTO(Iterable<Application> applications)
 To execute this functionality it is necessary to run the script named `run-backoffice-app` and log in with Customer Manager permissions.
 Then navigate to the menu `Applications` followed by option  3 - `Display all data of an application`.
 
+````
++= Display All Data of Application ============================================+
+
+Please select an application
+1. 
+
+=====================================================================
+#Application: 1
+#File: [output\candidate1\1-report-1.txt, output\candidate1\1-candidate-data.txt, output\candidate1\1-big-file-1.txt, output\candidate1\1-email.txt, output\candidate1\1-cv.txt]
+#Application Date: 2024-01-05 00:00:00.0
+#Application Status: ACCEPTED
+#Candidate name: José
+#Candidate username: 1220738@isep.ipp.pt
+=====================================================================
+
+2. 
+
+=====================================================================
+#Application: 2
+#File: [output\candidate2\2-letter.txt, output\candidate2\2-cv.txt, output\candidate2\2-candidate-data.txt, output\candidate2\2-email.txt]
+#Application Date: 2024-01-06 00:00:00.0
+#Application Status: NOT_CHECKED
+#Candidate name: Matilde
+#Candidate username: 1220683@isep.ipp.pt
+=====================================================================
+
+3. 
+
+=====================================================================
+#Application: 3
+#File: [output\candidate3\example3.txt]
+#Application Date: 2024-01-08 00:00:00.0
+#Application Status: NOT_CHECKED
+#Candidate name: Joana
+#Candidate username: candidate@email.com
+=====================================================================
+
+4. 
+
+=====================================================================
+#Application: 4
+#File: [output\candidate5\example5.txt]
+#Application Date: 2024-01-12 00:00:00.0
+#Application Status: NOT_CHECKED
+#Candidate name: Matilde
+#Candidate username: 1220683@isep.ipp.pt
+=====================================================================
+
+5. 
+
+=====================================================================
+#Application: 5
+#File: [output\candidate4\example4.txt]
+#Application Date: 2024-01-10 00:00:00.0
+#Application Status: ACCEPTED
+#Candidate name: Matilde
+#Candidate username: 1220683@isep.ipp.pt
+=====================================================================
+
+6. 
+
+=====================================================================
+#Application: 6
+#File: [output\candidate5\example5.txt]
+#Application Date: 2024-01-12 00:00:00.0
+#Application Status: NOT_CHECKED
+#Candidate name: José
+#Candidate username: 1220738@isep.ipp.pt
+=====================================================================
+
+7. 
+
+=====================================================================
+#Application: 7
+#File: [output\candidate4\example4.txt]
+#Application Date: 2024-01-10 00:00:00.0
+#Application Status: NOT_CHECKED
+#Candidate name: Matilde
+#Candidate username: 1220683@isep.ipp.pt
+=====================================================================
+
+8. 
+
+=====================================================================
+#Application: 8
+#File: [output\candidate1\1-report-1.txt, output\candidate1\1-candidate-data.txt, output\candidate1\1-big-file-1.txt, output\candidate1\1-email.txt, output\candidate1\1-cv.txt]
+#Application Date: 2024-01-05 00:00:00.0
+#Application Status: NOT_CHECKED
+#Candidate name: Joana
+#Candidate username: candidate@email.com
+=====================================================================
+
+9. 
+
+=====================================================================
+#Application: 9
+#File: [output\candidate3\example3.txt]
+#Application Date: 2024-01-08 00:00:00.0
+#Application Status: NOT_CHECKED
+#Candidate name: José
+#Candidate username: 1220738@isep.ipp.pt
+=====================================================================
+
+10. 
+
+=====================================================================
+#Application: 12
+#File: [output\candidate4\example4.txt]
+#Application Date: 2024-01-10 00:00:00.0
+#Application Status: NOT_CHECKED
+#Candidate name: Matilde
+#Candidate username: 1220683@isep.ipp.pt
+=====================================================================
+
+11. 
+
+=====================================================================
+#Application: 13
+#File: [output\candidate2\2-letter.txt, output\candidate2\2-cv.txt, output\candidate2\2-candidate-data.txt, output\candidate2\2-email.txt]
+#Application Date: 2024-01-06 00:00:00.0
+#Application Status: NOT_CHECKED
+#Candidate name: Joana
+#Candidate username: candidate@email.com
+=====================================================================
+
+0. Exit
+Select an option: 
+11
+==================================================================
+[Application Number] 13
+[Files] [output\candidate2\2-letter.txt, output\candidate2\2-cv.txt, output\candidate2\2-candidate-data.txt, output\candidate2\2-email.txt]
+[Application Date] 2024-01-06 00:00:00.0
+[Application Status] NOT_CHECKED
+[Candidate Name] Joana
+[Candidate Username] candidate@email.com
+[Interview Result] 60
+[Interview Answer] i-answer-1.txt
+[Requirement Result] false
+[Requirement Answer] r-answer-1.txt
+=====================================================================
++==============================================================================+
+````
