@@ -78,12 +78,12 @@ is a partial domain model, with emphasis on US3002's concepts.
 To get the job opening list, the customer App must establish connection through FollowUpConnectionService, in charge of
 establishing the connection with the FollowUpServer and managing requests and responses between the two sides.
 
-The ClientConnectionThread, created by the FollowUpServer, will analyse the code sent through the in a message and will 
-act accordingly with it, redirecting the action needed to the service that can solve the request.
+The ClientConnectionThread, created by the FollowUpServer, will analyse the code sent through a message and will act 
+accordingly with it, redirecting the action needed to the service that can solve the request.
 
 For this functionality, a ListingRequestThread will be created and will be the path of the request and response.
 
-After a response has been elaborated, it will be sent through the same connection through a MessageDTO.
+After a response has been elaborated, it will be sent through the same connection through a DataDTO.
 
 The FollowUpConnectionService will then decrypt the content of the message according to its code, and send the content to
 the controller.
@@ -175,9 +175,93 @@ This topic presents the classes with the patterns applied to them along with jus
 
 ### 4.4. Tests
 
-No new tests were made regarding the domain entities within this functionality.
+Some new tests were made regarding the domain entities within this functionality, regarding the class DataDTO and DataBlocks.
 
 > * [US1002 - JobOpening Tests](../../sprint-b/sb_us_1002/readme.md/#45-tests)
+
+
+* **DataDTO Class** 
+
+**Test 1:** Verifies that is not possible to have a message DataDTO with a null code
+
+**Refers to Acceptance Criteria:** 3002.7
+
+````
+@Test
+public void ensureMessageCodeIsNotNull(){
+...
+}
+````
+
+**Test 2:** Verifies that is not possible to have a message DataDTO with a negative code
+
+**Refers to Acceptance Criteria:** 3002.7
+
+````
+@Test
+public void ensureMessageCodeIsNotANegative() {
+...
+}
+````
+
+**Test 3:** Verifies that message DataDTO has defined structure
+
+**Refers to Acceptance Criteria:** 3002.6
+
+````
+@Test
+public void ensureMessageHasDefinedStructure() {
+...
+}
+````
+
+
+* **DataBlock Class**
+
+**Test 1:** Verifies that is not possible to have a dataBlock with null length
+
+**Refers to Acceptance Criteria:** 3002.6
+
+````
+@Test
+public void ensureDataBlockLengthIsNotNull(){
+...
+}
+````
+
+**Test 2:** Verifies that is not possible to have a dataBlock with negative length
+
+**Refers to Acceptance Criteria:** 3002.6
+
+````
+@Test
+public void ensureDataBlockLengthIsNotNegative() {
+...
+}
+````
+
+**Test 3:** Verifies that is not possible to have a dataBlock with zero length
+
+**Refers to Acceptance Criteria:** 3002.6
+
+````
+@Test
+public void ensureDataBlockLengthIsNotZero() {
+...
+}
+````
+
+**Test 4:** Verifies that is not possible to have a dataBlock with null data
+
+**Refers to Acceptance Criteria:** 3002.6
+
+````
+@Test
+public void ensureDataBlockDataIsNotNull() {
+...
+}
+````
+
 
 ## 5. Implementation
 
