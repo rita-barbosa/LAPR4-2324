@@ -118,8 +118,6 @@ To be able to promote encapsulation between layers, it will be used DTOs.
 
 ![US1017 Sequence Diagram](SD/US1017_SD.svg)
 
-**Ref1:** Check the partial sequence diagram in [team-decisions](../../team-decisions/team-decisions.md#shared-sequence-diagrams) to see the adopted behaviour.
-
 
 ### 4.2. Class Diagram
 

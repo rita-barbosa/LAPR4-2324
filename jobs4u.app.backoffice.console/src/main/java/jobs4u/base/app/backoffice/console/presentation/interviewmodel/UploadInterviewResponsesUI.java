@@ -13,33 +13,39 @@ public class UploadInterviewResponsesUI extends AbstractUI {
 
     @Override
     protected boolean doShow() {
-
-        SelectWidget<JobOpeningDTO> jobOpeningDTOSelectWidget = new SelectWidget<>("Select Job Opening",
-                controller.getJobOpenings());
-        jobOpeningDTOSelectWidget.show();
-        JobOpeningDTO jobOpeningDTO = jobOpeningDTOSelectWidget.selectedElement();
-
-        ApplicationDTO applicationDTO;
+        JobOpeningDTO jobOpeningDTO;
         try {
-            SelectWidget<ApplicationDTO> applicationDTOSelectWidget = new SelectWidget<>("Select Application",
-                    controller.getApplications(jobOpeningDTO.getJobReference()));
-            applicationDTOSelectWidget.show();
-            applicationDTO = applicationDTOSelectWidget.selectedElement();
+            SelectWidget<JobOpeningDTO> jobOpeningDTOSelectWidget = new SelectWidget<>("Select Job Opening",
+                    controller.getJobOpenings());
+            jobOpeningDTOSelectWidget.show();
+            jobOpeningDTO = jobOpeningDTOSelectWidget.selectedElement();
+
+            if (jobOpeningDTO != null){
+                ApplicationDTO applicationDTO;
+                try {
+                    SelectWidget<ApplicationDTO> applicationDTOSelectWidget = new SelectWidget<>("Select Application",
+                            controller.getApplications(jobOpeningDTO));
+                    applicationDTOSelectWidget.show();
+                    applicationDTO = applicationDTOSelectWidget.selectedElement();
+                } catch (RuntimeException e) {
+                    System.out.println(e.getMessage());
+                    return false;
+                }
+
+                if(applicationDTO != null){
+                    String filepath = Console.readLine("Please enter the filepath of the interview answers file: ");
+
+                    if (controller.uploadFile(applicationDTO, jobOpeningDTO.getInterviewModelName(), filepath)) {
+                        System.out.println("File uploaded successfully.");
+                    } else {
+                        System.out.println("File not uploaded.\nPlease check the syntax or format of the file.");
+                    }
+                }
+            }
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
             return false;
         }
-
-        assert applicationDTO != null;
-        String filepath = Console.readLine("Please enter the filepath of the interview answers file: ");
-
-        assert false;
-        if (controller.uploadFile(applicationDTO, jobOpeningDTO.getInterviewModelName(), filepath)) {
-            System.out.println("File uploaded successfully.");
-        } else {
-            System.out.println("File not uploaded.\nPlease check the syntax or format of the file.");
-        }
-
         return false;
     }
 
