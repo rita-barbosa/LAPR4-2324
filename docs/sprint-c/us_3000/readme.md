@@ -318,3 +318,49 @@ public Iterable<ApplicationDTO> convertToDTO(Iterable<Application> applications)
 To execute this functionality it is necessary to run the script named `run-candidate-app` and log in with Customer Manager permissions.
 Then navigate to the menu `Applications` followed by option  1 - `List applications and state`.
 
+````
++= The list of candidate applications and their state =========================+
+
+Please provide your password again:
+UecqgyyY0dq<
+
+Connection successfully established.
+
+==================================================================
+[Application] 3
+[Files] [output\candidate3\example3.txt]
+[Application Date] 2024-01-08 00:00:00.0
+[Application Status] NOT_CHECKED
+[Candidate Name] Joana
+[Candidate Username] candidate@email.com
+
+[Applications to the same job opening] 3
+=====================================================================
+
+==================================================================
+[Application] 8
+[Files] [output\candidate1\1-report-1.txt, output\candidate1\1-candidate-data.txt, output\candidate1\1-cv.txt, output\candidate1\1-big-file-1.txt, output\candidate1\1-email.txt]
+[Application Date] 2024-01-05 00:00:00.0
+[Application Status] NOT_CHECKED
+[Candidate Name] Joana
+[Candidate Username] candidate@email.com
+
+[Applications to the same job opening] 3
+=====================================================================
+
+==================================================================
+[Application] 13
+[Files] [output\candidate2\2-letter.txt, output\candidate2\2-candidate-data.txt, output\candidate2\2-cv.txt, output\candidate2\2-email.txt]
+[Application Date] 2024-01-06 00:00:00.0
+[Application Status] NOT_CHECKED
+[Candidate Name] Joana
+[Candidate Username] candidate@email.com
+
+[Applications to the same job opening] 2
+=====================================================================
+
+
+Connection successfully closed.
+
++==============================================================================+
+````
