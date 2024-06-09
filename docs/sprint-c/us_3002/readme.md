@@ -377,8 +377,7 @@ try {
 
 ## 6. Integration/Demonstration
 
-To use this feature, you'll need to run the script named `run-customer-app` and log in with Customer Manager
-permissions.
+To use this feature, you'll need to run the script named `run-customer-app` and log in with Customer permissions.
 
 Then, navigate to the _Job Opening_ menu and select option 2 - `See my job openings` - to access this
 feature.
