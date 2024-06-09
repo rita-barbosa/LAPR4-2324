@@ -28,6 +28,14 @@ public class Interview implements ValueObject {
         this.interviewAnswer = interviewAnswer;
     }
 
+    public Interview(String interviewTypeDenomination, Date schedule) {
+        Preconditions.noneNull(schedule);
+        Preconditions.nonEmpty(interviewTypeDenomination);
+
+        this.interviewTypeDenomination = interviewTypeDenomination;
+        this.schedule = schedule;
+    }
+
     protected Interview(){
         //for ORM
     }
