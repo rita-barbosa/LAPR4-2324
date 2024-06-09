@@ -80,84 +80,106 @@ given by the candidates.
 ### 3.3 Grammar
 
 ```
-grammar InterviewTemplate;
+grammar Plugin;
 
-//Parser rules
-start: template;
+start: (group)* EOF;
 
-//Costitution of the template
-template: interview+;
+group: (question NEWLINE?)+;
 
-//Costitution of a interview
-interview : INTERVIEW_NUMBER NEWLINE question+;
+question: type '"' PHRASE ('.' | '?') '"' choices answer;
 
-//Types of questions
-question: true_false_question
-| short_answer_question
-| single_choice_question
-| multiple_choice_question
-| integer_question
-| decimal_question
-| date_question
-| time_question
-| numeric_scale_question
-;
+type: TYPES '-' NUM ' ';
+choices: choice*;
+
+choice: NUM ') '  PHRASE ;
+
+// Answers for the questions
+answer: START_ANSWER answer_option ;
+
+answer_option: true_false_a | text |  date_a | time_a | whole_n_a |  scale_a | decimal_a  ;
+
+text:  PHRASE ;
+whole_n_a:   NUM+;
+true_false_a:  BOOLEAN ;
+scale_a:   NUM+ '-'  NUM+;
+decimal_a:  NUM+ '.' NUM+;
+date_a:  NUM NUM '/' NUM NUM '/' NUM NUM NUM NUM;
+time_a:  NUM NUM ':' NUM NUM;
+
+BOOLEAN: 'True' | 'False' | 'true' | 'false';
+START_ANSWER: 'A:. ';
+PHRASE: (WORD ' ')* WORD;
+WORD : ([a-zA-Z]|[-]|[/])+;
+NEWLINE: '\r'? '\n'->skip;
+NUM: [0-9];
+TYPES: '[SC]'
+    | '[MC]'
+    | '[WN]'
+    | '[TF]'
+    | '[NS]'
+    | '[DN]'
+    | '[SA]'
+    | '[D]'
+    | '[T]'
+    ;
+```
+
+```
+grammar SymbolTable;
+
+start : (line NEWLINE?)+;
+
+line : type question choices? evals;
+
+evals : answer_eval*;
+
+answer_eval: '/' (PHRASE ';'?)* ':' numbers
+           | '/' answer_numbers ':' numbers
+           | '/' condition
+           | '/' date ':' numbers
+           | '/' BOOLEAN ':' numbers
+           | '/' scale ':' numbers
+           | '/' decimal ':' numbers
+           | '/' time ':' numbers
+           ;
+
+date:  NUM NUM '-' NUM NUM '-' NUM NUM NUM NUM;
+
+scale:   NUM+ '-'  NUM+;
+decimal:  NUM+ '.' NUM+;
+time:  NUM NUM ':' NUM NUM;
+
+condition : SIGNALS+;
+
+answer_numbers : numbers;
+
+choices : choice+;
+
+choice : '/' (PHRASE ';'?)*;
+
+type : TYPES'-' numbers;
+question: '/' PHRASE ('.' | '?');
+numbers : NUM+;
 
 
-//Questions Format
-true_false_question: QUESTION_TYPE SPACE TRUE_FALSE NEWLINE DESCRIPTION NEWLINE* solution+;
-short_answer_question: QUESTION_TYPE SPACE SHORT_ANSWER NEWLINE DESCRIPTION NEWLINE* solution+;
-single_choice_question: QUESTION_TYPE SPACE SINGLE_CHOICE NEWLINE DESCRIPTION NEWLINE option+ solution+;
-multiple_choice_question: QUESTION_TYPE SPACE  MULTIPLE_CHOICE NEWLINE DESCRIPTION NEWLINE option+ solution+;
-integer_question: QUESTION_TYPE SPACE INTEGER NEWLINE DESCRIPTION NEWLINE* solution+;
-decimal_question: QUESTION_TYPE SPACE DECIMAL NEWLINE DESCRIPTION NEWLINE* solution+;
-date_question: QUESTION_TYPE SPACE DATE NEWLINE DESCRIPTION SPACE DATE_FORMAT NEWLINE* solution+;
-time_question: QUESTION_TYPE SPACE TIME NEWLINE DESCRIPTION SPACE TIME_FORMAT NEWLINE* solution+;
-numeric_scale_question: QUESTION_TYPE SPACE NUMERIC_SCALE NEWLINE DESCRIPTION SPACE SCALE_FORMAT NEWLINE* solution+;
+BOOLEAN: 'True' | 'False' | 'true' | 'false';
+START_ANSWER: 'A:. ';
+PHRASE: (WORD ' ')* WORD;
+WORD : ([a-zA-Z]|[-,])+;
+NEWLINE: '\r'? '\n'->skip;
+SIGNALS: ([<]|[=]|[>])+;
+NUM: [0-9];
+TYPES: '[SC]'
+    | '[MC]'
+    | '[WN]'
+    | '[TF]'
+    | '[NS]'
+    | '[DN]'
+    | '[SA]'
+    | '[D]'
+    | '[T]'
+    ;
 
-
-// Option format
-option : ID_OPTION SPACE DESCRIPTION NEWLINE+;
-
-
-//Solution format
-solution : ID_SOLUTION SPACE SOLUTION_DESCRIPTION* NEWLINE+;
-
-
-//Formatters
-ID_OPTION : NUMBER')';
-ID_SOLUTION : 'SOLUTION 'NUMBER ':';
-INTERVIEW_NUMBER : 'QUESTION 'NUMBER;
-QUESTION_TYPE : 'Type of Question:';
-TRUE_FALSE_FORMAT : '"True" or "False"';
-SCALE_FORMAT : '['NUMBER'-'NUMBER']';
-DATE_FORMAT : 'DD/MM/YYYY';
-TIME_FORMAT : 'HH:MM';
-
-
-//Lexer rules
-//Types of questions identifiers
-TRUE_FALSE : 'TRUE/FALSE';
-SHORT_ANSWER : 'SHORT ANSWER';
-SINGLE_CHOICE : 'SINGLE CHOICE';
-MULTIPLE_CHOICE : 'MULTIPLE CHOICE';
-INTEGER : 'NUMBER';
-DECIMAL : 'DECIMAL NUMBER';
-DATE : 'DATE';
-TIME : 'TIME';
-NUMERIC_SCALE : 'NUMERIC SCALE';
-
-
-//Solution
-SOLUTION_DESCRIPTION : DESCRIPTION NEWLINE 'VALUE:' SPACE DECIMAL_NUMBER;
-
-
-//Other identifiers
-SPACE: ' ';
-DESCRIPTION: '"' (~["\r\n])* '"';
-NUMBER: [0-9]+;
-DECIMAL_NUMBER: [1-9]*[0-9]+ '.' [0-9][0-9];
-NEWLINE: '\r'?'\n';
 ```
 
 ## 4. Design
