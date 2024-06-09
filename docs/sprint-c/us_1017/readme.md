@@ -95,15 +95,11 @@ To be able to promote encapsulation between layers, it will be used DTOs.
 
 * JobOpening
 * Application
-* InterviewModel
 * Interview
 * JobOpeningManagementService
-* JobOpeningDTOService
 * ApplicationManagementService
 * ApplicationDTOService
 * InterviewModelManagementService
-* InterviewModelDTOService
-* InterviewTemplateManagerService
 
 
 **Application Layer Classes**
@@ -143,64 +139,203 @@ To make the design of this user story, were used the following patterns:
    >
    >  The JobOpening, Application and Interview Model repository have the purpose of keeping the persistence of the 
    > job opening, application and interview model existing instances.
+>   The recruitment processes are stored within the database, and must be rebuilt, so that the system can evaluate if the 
+> instance associated with the chosen jobOpening is in the right phase.
 
 
 >**_Service Pattern_**
 >* Classes
 >  * JobOpeningManagementService
->  * JobOpeningDTOService
 >  * ApplicationManagementService
 >  * ApplicationDTOService
 >  * InterviewModelManagementService
->  * InterviewModelDTOService
->  * InterviewTemplateManagerService
->  * AuthorizationService
 >
 >* Justification
    >
    >  The services are in charge of managing request regarding jobOpenings, applications and interview model,
    >serving as encapsulation between the controller and the JobOpeningRepository, ApplicationRepository and
    >InterviewModelRepository along with the domain classes.
-   >  The DtoServices to transform these instances into DTOs.
-   >  The authorization service is used to verify the roles of the user.
+   >  The DtoServices to transform the instances into DTOs.
 
 
 ### 4.4. Tests
 
-**Test 1:** Verifies the uploaded file format
+No new tests were made regarding the domain entities within this functionality.
 
-**Refers to Acceptance Criteria:** 1017.5
-
-````
-@Test
-public void ensureFileFormat() {
-...
-}
-````
-
+> * [US1002 - JobOpening Tests](../../sprint-b/sb_us_1002/readme.md/#45-tests)
+>
+> * [US2002 - Application Tests](../../sprint-b/sb_us_2002/readme.md/#44-tests)
 
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+### UploadInterviewResponsesController
+
+```
+    public List<JobOpeningDTO> getJobOpenings() {
+        List <JobOpeningDTO> jobOpeningDTOList = auth.loggedinUserWithPermissions(BaseRoles.CUSTOMER_MANAGER)
+                .map(user -> jobOpeningManagementService.getJobOpeningsInInterviewAndAnalysisPhase(user.identity())).orElse(new ArrayList<>());
+        if (!jobOpeningDTOList.isEmpty()){
+            return jobOpeningDTOList;
+        }
+        throw new RuntimeException("\n[WARNING] Don't exist applications for the selected job opening.");
+    }
+
+    public List<ApplicationDTO> getApplications(String jobReference) {
+        List<ApplicationDTO> applicationDTOList = applicationManagementService.getApplicationsFromJobReference(jobReference);
+        if (!applicationDTOList.isEmpty()){
+            return applicationDTOList;
+        }
+        throw new RuntimeException("\n[WARNING] Don't exist applications for the selected job opening.");
+    }
+
+    public boolean uploadFile(ApplicationDTO applicationDTO, String interviewName, String filepath) {
+        if(interviewModelManagementService.checkAnswersFileIsValid(interviewName, filepath)){
+            applicationManagementService.uploadInterviewAnswerFile(applicationDTO, filepath);
+            return true;
+        }
+        return false;
+    }
+```
+
+### JobOpeningManagementService
+
+```
+    public List<JobOpeningDTO> getJobOpeningsInInterviewAndAnalysisPhase(Username customerManagerUsername){
+        Iterable<JobOpening> jobOpenings = jobOpeningRepository.getJobOpeningListMatchingStatusFromCustomerManager(String.valueOf(JobOpeningStatusEnum.STARTED), customerManagerUsername);
+        List<JobOpeningDTO> jobOpeningInInterviewAndAnalysisPhase = new ArrayList<>();
+        for (JobOpening jobOpening : jobOpenings) {
+            jobOpeningInInterviewAndAnalysisPhase.add(jobOpening.toDTO());
+        }
+        return jobOpeningInInterviewAndAnalysisPhase;
+    }
+```
+
+
+### ApplicationManagementService
+
+```
+    public List<ApplicationDTO> getApplicationsFromJobReference(String jobReference) {
+        Iterable<Application> applications = applicationRepository.applicationsForJobOpeningWithRequirements(jobReference);
+        return applicationListDTOService.convertApplicationsToDTO(applications);
+    }
+```
+
+### ApplicationDTOService
+
+```
+    public List<ApplicationDTO> convertApplicationsToDTO(Iterable<Application> applicationsList){
+        List<ApplicationDTO> applicationDTOList = new ArrayList<>();
+        for(Application application : applicationsList){
+            applicationDTOList.add(application.toDTO());
+        }
+        return applicationDTOList;
+    }
+```
+
+### InterviewModelManagementService
+
+```
+    public boolean checkAnswersFileIsValid(String interviewName, String filepath) {
+        ClassLoader loader = ClassLoader.getSystemClassLoader();
+        try {
+            Optional<InterviewModel> im = repository.getFileByName(interviewName);
+            if (im.isPresent()) {
+                InterviewModel interviewSpec = im.get();
+                FileManagement dataImporterInstance = (FileManagement) loader.loadClass(interviewSpec.dataImporter()).getDeclaredConstructor().newInstance();
+                dataImporterInstance.importData(interviewSpec.configurationFile().toString());
+                return dataImporterInstance.checkFileFormat(filepath);
+            }
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException e) {
+            LOGGER.error("Unable to access plugin.");
+            return false;
+        }
+        return false;
+    }
+```
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
+To execute this functionality it is necessary to run the script named `run-backoffice-app` and log in with Customer Manager permissions.
+Then navigate to the menu `Plugin` followed by option  2 - `Import Interview Answer Files`.
 
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
+````
++= Import interview answers file ==============================================+
 
-## 7. Observations
+Select Job Opening
+1. »» Job Reference: ISEP-1
+ » Function: Front End Junior Developer
+ » Contract Type: full-time
+ » Work Mode: remote
+ » Address: 123 Main Street, USA, Flagtown, Star District, 4500-900
+ » Description: Night Guard.
+ » Number of Vacancies: 2
+ » Company: ISEP
 
-*This section should be used to include any content that does not fit any of the previous sections.*
 
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
+2. »» Job Reference: ISEP-5
+ » Function: Front End Senior Developer
+ » Contract Type: full-time
+ » Work Mode: remote
+ » Address: Test Street, Portugal, Test Town, Test District, 4500-900
+ » Description: Night Guard.
+ » Number of Vacancies: 4
+ » Company: ISEP
 
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
+
+3. »» Job Reference: ISEP-7
+ » Function: Front End Senior Developer
+ » Contract Type: full-time
+ » Work Mode: remote
+ » Address: Third Street, New Dream, New Town, New District, 4520-920
+ » Description: Night Guard.
+ » Number of Vacancies: 3
+ » Company: ISEP
+
+
+4. »» Job Reference: ISEP-8
+ » Function: Back End Junior Developer
+ » Contract Type: full-time
+ » Work Mode: remote
+ » Address: Flower Street, Fever Sun, Sun Town, Sea District, 4560-910
+ » Description: Night Guard.
+ » Number of Vacancies: 5
+ » Company: ISEP
+
+
+0. Exit
+Select an option: 
+3
+Select Application
+1. 
+=====================================================================
+#Application: 12
+#File: [output\candidate4\example4.txt]
+#Application Date: 2024-01-10 00:00:00.0
+#Application Status: NOT_CHECKED
+#Candidate name: Matilde
+#Candidate username: 1220683@isep.ipp.pt
+=====================================================================
+
+
+2. 
+=====================================================================
+#Application: 13
+#File: [output\candidate2\2-letter.txt, output\candidate2\2-cv.txt, output\candidate2\2-candidate-data.txt, output\candidate2\2-email.txt]
+#Application Date: 2024-01-06 00:00:00.0
+#Application Status: NOT_CHECKED
+#Candidate name: Joana
+#Candidate username: candidate@email.com
+=====================================================================
+
+
+0. Exit
+Select an option: 
+1
+Please enter the filepath of the interview answers file: 
+plugins-config-file/interview/i-answer-1.txt
+File uploaded successfully.
++==============================================================================+
+````
