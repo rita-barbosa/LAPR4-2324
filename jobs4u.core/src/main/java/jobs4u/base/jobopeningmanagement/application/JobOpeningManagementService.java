@@ -216,4 +216,15 @@ public class JobOpeningManagementService {
         }
         return applicationDTOList;
     }
+
+    public Iterable<JobOpeningDTO> getOnGoingJobOpeningsInScreeningPhase() {
+        List<JobOpening> jobOpeningList = new ArrayList<>();
+        List<JobOpening> jobOpenings = jobOpeningRepository.getJobOpeningListMatchingStatus(String.valueOf(JobOpeningStatusEnum.STARTED));
+        for (JobOpening jobOpening : jobOpenings) {
+            if (recruitmentProcessManagementService.checkIfRecruitmentProcessIsInScreeningPhase(jobOpening.jobReference().toString())){
+                jobOpeningList.add(jobOpening);
+            }
+        }
+        return dtoSvc.convertToDTO(jobOpeningList);
+    }
 }
