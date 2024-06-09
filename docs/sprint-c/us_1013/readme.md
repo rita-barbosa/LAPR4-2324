@@ -298,25 +298,272 @@ public void ensureRankOrderApplicationNullIsInvalid() {
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+The following code belongs to the UI of this functionality. All its methods are according to the design.
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+The doShow() method, declared in the AbstractUI interface.
+````
+protected boolean doShow() {
+    boolean canLeaveFunctionality = false;
+    String chosenOption;
+    SelectWidget<ApplicationDTO> applicationSelect;
+
+    try {
+        JobOpeningDTO jobOpeningDTO = showAndSelectJobOpening();
+
+        applicationSelect = new SelectWidget<>("Select an Application", controller.getApplications(jobOpeningDTO));
+
+        do {
+            chosenOption = showFunctionalityOptions();
+
+            if (!chosenOption.equals("Exit functionality")) {
+                executeFunctionalityOption(chosenOption, jobOpeningDTO, applicationSelect);
+            } else {
+                canLeaveFunctionality = controller.checkNeededApplicationsAreRanked(jobOpeningDTO);
+                if (!canLeaveFunctionality) {
+                    System.out.println("You haven't ranked enough applications.\n");
+                }
+            }
+        } while (!canLeaveFunctionality);
+    } catch (Exception e) {
+        System.out.println(e.getMessage());
+    }
+
+    return false;
+}
+````
+
+[UI] The method to execute the various options this functionality allows.
+````
+private void executeApplicationOption(String chosenOption, JobOpeningDTO jobOpeningDTO, ApplicationDTO applicationDTO) {
+    switch (chosenOption) {
+        case "See Application Files":
+            if (applicationDTO != null) {
+                SelectWidget<String> files = new SelectWidget<>("Select the file you want to see:", listOfApplicationFilesNames(applicationDTO));
+                files.show();
+                String filename = files.selectedElement();
+                if (filename != null) {
+                    seeApplicationFileInWindow(applicationDTO, filename);
+                }
+            } else {
+                System.out.println("You need to choose an application first.\n");
+            }
+            break;
+
+        case "Update Application's Rank":
+            if (applicationDTO != null) {
+                int order;
+                do{
+                   order  = Console.readInteger("Provide the rank order you want to put this application on:");
+                }while (order <= 0);
+                controller.updateRanking(jobOpeningDTO, applicationDTO, order);
+            } else {
+                System.out.println("You need to choose an application first.\n");
+            }
+            break;
+    }
+}
+````
+
+[RankManagementService] The method to update the rank order.
+````
+public void updateRanking(JobOpeningDTO jobOpeningDTO, ApplicationDTO applicationDTO, int order) {
+    Application application = applicationManagementService.getApplication(applicationDTO);
+
+    Optional<Rank> rank = rankRepository.getRankFromJobReference(jobOpeningDTO.getJobReference());
+
+    if (rank.isPresent()) {
+        RankOrder rankOrder;
+        LinkedList<RankOrder> newRankOrders = new LinkedList<>();
+
+        LinkedList<RankOrder> rankOrdersAbove = rank.get().rankOrderUntilOrder(order);
+        LinkedList<RankOrder> rankOrdersBelow = rank.get().rankOrdersSinceOrder(order);
+
+        rankOrdersAbove.removeIf(rankOrderAbove -> rankOrderAbove.application().equals(application));
+        rankOrdersBelow.removeIf(rankOrderAbove -> rankOrderAbove.application().equals(application));
+
+        int orderIndex = 1;
+
+        if (order != 1) {
+            for (RankOrder rankOrderAbove : rankOrdersAbove) {
+                newRankOrders.add(new RankOrder(rankOrderAbove.application(), orderIndex));
+                ++orderIndex;
+            }
+        }
+
+        if (orderIndex < order) {
+            rankOrder = new RankOrder(application, orderIndex);
+        } else {
+            rankOrder = new RankOrder(application, order);
+        }
+
+        newRankOrders.add(rankOrder);
+
+        ++orderIndex;
+
+        for (RankOrder rankOrderBelow : rankOrdersBelow) {
+            newRankOrders.add(new RankOrder(rankOrderBelow.application(), orderIndex));
+            ++orderIndex;
+        }
+
+        double maxNumber = calculateNumberOfRankOrdersToSave(jobOpeningDTO.getNumVacancies());
+        if (newRankOrders.size() > maxNumber) {
+            newRankOrders = new LinkedList<>(newRankOrders.subList(0, (int) maxNumber));
+        }
+
+        rank.get().updateRankOrderList(newRankOrders);
+        rankRepository.save(rank.get());
+    }
+}
+````
+
+The application Pop Up window to see the application files.
+
+![Application Window PopUp](appPopUp.svg)
+
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
+To use this feature, you'll need to run the script named `run-backoffice-app` and log in with Customer Manager
+permissions.
 
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
+Then, navigate to the _Applications_ menu and select option 4 - `Rank Applications` - to access this
+feature.
+
+````
++= Application Ranking ========================================================+
+
+Job Opening
+1. »» Job Reference: ISEP-1
+ » Function: Front End Junior Developer
+ » Contract Type: full-time
+ » Work Mode: remote
+ » Address: 123 Main Street, USA, Flagtown, Star District, 4500-900
+ » Description: Night Guard.
+ » Number of Vacancies: 2
+ » Company: ISEP
+
+
+2. »» Job Reference: ISEP-2
+ » Function: Back End Senior Developer
+ » Contract Type: full-time
+ » Work Mode: remote
+ » Address: 456 Elm Street, Canada, Maple Town, Moonlight District, 4500-900
+ » Description: Night Guard.
+ » Number of Vacancies: 15
+ » Company: ISEP
+
+
+3. »» Job Reference: ISEP-3
+ » Function: Slay Queen
+ » Contract Type: full-time
+ » Work Mode: remote
+ » Address: MM Street, MMM, MM Town, MM District, 4500-900
+ » Description: Gotta get that bag
+ » Number of Vacancies: 8
+ » Company: ISEP
+
+
+4. »» Job Reference: ISEP-5
+ » Function: Night Guard
+ » Contract Type: full-time
+ » Work Mode: remote
+ » Address: Freddy fazbear Street, MMM, Chica Town, Foxy District, 4500-900
+ » Description: Night Guard.
+ » Number of Vacancies: 5
+ » Company: ISEP
+
+
+5. »» Job Reference: ISEP-6
+ » Function: Front End Senior Developer
+ » Contract Type: full-time
+ » Work Mode: remote
+ » Address: Test Street, Portugal, Test Town, Test District, 4500-900
+ » Description: Night Guard.
+ » Number of Vacancies: 4
+ » Company: ISEP
+
+
+6. »» Job Reference: ISEP-7
+ » Function: Front End Junior Developer
+ » Contract Type: full-time
+ » Work Mode: remote
+ » Address: Second Street, Second, Second Town, Second District, 4500-910
+ » Description: Night Guard.
+ » Number of Vacancies: 9
+ » Company: ISEP
+
+
+0. Exit
+Select an option: 
+1
+Functionality Options:
+1. See Rank
+
+2. Update Ranking
+
+0. Exit
+Select an option: 
+1
+===========================================================
+                        RANK (ISEP-1)                         
+===========================================================
+--> Number of Rank Orders to be saved : 3
+[FORMULA] vacancies + (vacancies * system_configuration)
+===========================================================
+
+=====================================================================
+#Number of Order: # 1
+=====================================================================
+#Application: 5
+#File: [output\candidate2\2-letter.txt, output\candidate2\2-cv.txt, output\candidate2\2-candidate-data.txt, output\candidate2\2-email.txt]
+#Application Date: 2024-01-06 00:00:00.0
+#Application Status: NOT_CHECKED
+#Candidate name: Matilde
+#Candidate username: 1220683@isep.ipp.pt
+=====================================================================
+
+
+=====================================================================
+#Number of Order: # 2
+=====================================================================
+#Application: 6
+#File: [output\candidate3\example3.txt]
+#Application Date: 2024-01-08 00:00:00.0
+#Application Status: NOT_CHECKED
+#Candidate name: Joana
+#Candidate username: candidate@email.com
+=====================================================================
+
+
+=====================================================================
+#Number of Order: # 3
+=====================================================================
+#Application: 4
+#File: [output\candidate1\1-report-1.txt, output\candidate1\1-candidate-data.txt, output\candidate1\1-big-file-1.txt, output\candidate1\1-email.txt, output\candidate1\1-cv.txt]
+#Application Date: 2024-01-05 00:00:00.0
+#Application Status: ACCEPTED
+#Candidate name: Matilde
+#Candidate username: 1220683@isep.ipp.pt
+=====================================================================
+
+Functionality Options:
+1. See Rank
+
+2. Update Ranking
+
+0. Exit
+Select an option: 
+0
++==============================================================================+
+````
 
 ## 7. Observations
 
-*This section should be used to include any content that does not fit any of the previous sections.*
+Some aspects of this user story reveled to be somewhat challenging, specially the alterations to the rank order, and
+having everything (rank, rank update, applications, job openings, and file pop-ups) in the console too.
 
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
+Java.Swing was used to generate the window pop-up.
 
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
+An additional functionality was made for the Administrator, who now has the possibility of changing the system configurations
+for the number of ranking orders to be kept in the database. The system configuration options available where the ones
+defined by the client (0.5, 1 and 2).
