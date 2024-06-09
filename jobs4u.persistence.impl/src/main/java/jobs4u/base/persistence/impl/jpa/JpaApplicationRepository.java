@@ -58,6 +58,26 @@ public class JpaApplicationRepository
         return q.getResultList();
     }
 
+    @Override
+    public Iterable<Application> applicationsForJobOpeningWithoutInterviews(String jobReference) {
+        String[] f = jobReference.split("-");
+        final TypedQuery<Application>
+                q = createQuery("SELECT a \n" +
+                        "FROM Application a \n" +
+                        "WHERE a.id IN (\n" +
+                        "    SELECT app.id \n" +
+                        "    FROM JobOpening jo \n" +
+                        "    JOIN jo.applications app \n" +
+                        "    WHERE jo.jobReference.companyCode = :companyCode \n" +
+                        "    AND jo.jobReference.sequentialCode = :sequentialCode\n" +
+                        ")\n" +
+                        "AND a.interview IS NOT NULL",
+                Application.class);
+        q.setParameter("companyCode", f[0]);
+        q.setParameter("sequentialCode", f[1]);
+        return q.getResultList();
+    }
+
 
     @Override
     public Application getApplicationFromDTO(ApplicationDTO applicationDTO) {
@@ -116,5 +136,24 @@ public class JpaApplicationRepository
         return q.getResultList();
     }
 
+    @Override
+    public Iterable<Application> getApplicationsWithInterviewGrade(String jobReference) {
+        String[] f = jobReference.split("-");
+        final TypedQuery<Application>
+                q = createQuery("SELECT a \n" +
+                        "FROM Application a \n" +
+                        "WHERE a.id IN (\n" +
+                        "    SELECT app.id \n" +
+                        "    FROM JobOpening jo \n" +
+                        "    JOIN jo.applications app \n" +
+                        "    WHERE jo.jobReference.companyCode = :companyCode \n" +
+                        "    AND jo.jobReference.sequentialCode = :sequentialCode\n" +
+                        ")\n" +
+                        "AND a.interview.interviewResult IS NOT NULL",
+                Application.class);
+        q.setParameter("companyCode", f[0]);
+        q.setParameter("sequentialCode", f[1]);
+        return q.getResultList();
+    }
 
 }

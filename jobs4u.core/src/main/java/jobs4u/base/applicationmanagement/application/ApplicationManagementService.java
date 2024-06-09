@@ -59,6 +59,12 @@ public class ApplicationManagementService {
         return (List<ApplicationDTO>) applicationDTOService.convertToDTO(applicationList);
     }
 
+    public List<ApplicationDTO> getApplicationsWithInterviewGrade(JobOpening jobOpening){
+        Iterable<Application> applicationList = applicationRepository.getApplicationsWithInterviewGrade(jobOpening.jobReference().toString());
+
+        return (List<ApplicationDTO>) applicationDTOService.convertToDTO(applicationList);
+    }
+
     public Set<Application> getApplications(JobOpening jobOpening){
         return jobOpening.getApplications();
     }

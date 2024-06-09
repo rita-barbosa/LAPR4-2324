@@ -64,18 +64,21 @@ public class ListOrderedCandidatesUI extends AbstractUI {
 
                 assert jobOpeningDTO != null;
                 System.out.println("\nJob Opening:" + jobOpeningDTO.getJobReference());
-                String headerApplication = "Name   |          Email          |  Grade  |  Justification   \n";
+                String headerApplication = String.format("%-15s | %-22s | %-6s | %-50s", "Name", "Email", "Grade", "Justification");
                 System.out.println(headerApplication);
+                System.out.println("---------------------------------------------------------------------------------------");
 
-                //alinhar isto direito
 
                 for (ApplicationDTO app : applicationListDTO) {
                     if (app.getInterview().interviewResult() != null) {
-                        String candidate = app.getCandidateName() + "  |    " + app.getCandidate() + "   |  " + app.getInterview().interviewResult().interviewGrade().toString() + "  |  " + app.getInterview().interviewResult().justification();
+                        String candidate = String.format("%-15s | %-22s | %-6s | %-50s",
+                                app.getCandidateName(),
+                                app.getCandidate(),
+                                app.getInterview().interviewResult().interviewGrade().toString(),
+                                app.getInterview().interviewResult().justification());
                         System.out.println(candidate);
                     }
                 }
-
             }
 
         } catch (final IntegrityViolationException | ConcurrencyException e) {
