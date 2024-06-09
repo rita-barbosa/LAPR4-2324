@@ -19,43 +19,43 @@ class ListCustomerJobOpeningsUI {
 
 class ListCustomerJobOpeningsController {
 + getSessionCredentials()
-+ getconnection(String username, String password, int PORT_NUMBER)
-+ jobOpeningsDataList(String username)
-+ closeConnection(int PORT_NUMBER)
++ getconnection(Username username, String password)
++ jobOpeningsDataList(Username username)
++ closeConnection()
 }
 
 
 class FollowUpConnectionService {
-+ getJobOpeningsDataList(String username)
-+ closeConnection(int PORT_NUMBER)
-+ establishConnection(String username, String password, InetAddress serverIP, int PORT_NUMBER)
++ getJobOpeningsDataList(Username username)
++ closeConnection()
++ establishConnection(Username username, String password)
 }
 
 
 
 class ClientConnectionThread {
-+ receiveJobOpeningsDataList(String username, int code)
-+ closeConnection(int code)
++ receiveJobOpeningsDataList(Username username, int code)
++ closeConnection()
 + create(Socket clientSocket)
 + authenticationProtocol(DataDTO dataDTO)
 }
 
 class DataDTO {
-+ addDataBlock(int DATA_LEN_L, int DATA_LEN_M, DTOable jobOpeningCustomerDataDTO)
++ addDataBlock(int dataLength, byte[] jobOpeningDTO)
 }
 
 
 class DataBlock {
-+ create(int DATA_LEN_L, int DATA_LEN_M, Dtoable jobOpeningCustomerDataDTO)
++ create(int dataLength, byte[] jobOpeningDTO)
 }
 
 class ListingRequestThread {
-+ getJobOpeningsList(int code, String username)
++ getJobOpeningsList(Username username)
 }
 
 
 class JobOpeningManagementService {
-+ getCustomerJobOpeningData(String username)
++ getCustomerJobOpeningData(Username username)
 }
 
 
@@ -64,11 +64,11 @@ class JobOpeningListDTOService {
 }
 
 class CustomerManagementService {
-+ getCustomerByUsername(String username)
++ getCustomerByUsername(Username username)
 }
 
 class CustomerRepository {
-+ getCustomerByUsername(String username)
++ getCustomerByUsername(Username username)
 }
 
 class JobOpeningRepository {
@@ -105,7 +105,7 @@ class ServerSocket {
 + close()
 }
 
-class JobOpeningDataDTO {}
+class JobOpeningDTO {}
 
 ' ASSOCIATIONS
 
@@ -117,7 +117,7 @@ ListCustomerJobOpeningsUI ..> ListCustomerJobOpeningsController
 
 ListCustomerJobOpeningsController ..> AuthorizationService
 ListCustomerJobOpeningsController ..> FollowUpConnectionService
-ListCustomerJobOpeningsController ..> JobOpeningDataDTO
+ListCustomerJobOpeningsController ..> JobOpeningDTO
 ListCustomerJobOpeningsController ..> UserSession
 
 
@@ -133,8 +133,8 @@ FollowUpServer --> ServerSocket
 
 JobOpeningManagementService ..> JobOpeningRepository
 JobOpeningRepository .up.> JobOpening
-JobOpening -up-> JobOpeningDataDTO
-JobOpeningListDTOService -up-> JobOpeningDataDTO
+JobOpening -up-> JobOpeningDTO
+JobOpeningListDTOService -up-> JobOpeningDTO
 JobOpeningRepository --> JobOpeningListDTOService
 
 JobOpeningManagementService ...> CustomerManagementService

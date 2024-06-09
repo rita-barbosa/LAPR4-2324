@@ -59,11 +59,17 @@ deactivate JobSrv
 
 THREAD -> DataDTO** : create(version, code)
 
-loop for all jobOpeningCustomerDataDTO
-THREAD -> DataDTO : addDataBlock(DATA_LEN_L, DATA_LEN_M, jobOpeningCustomerDataDTO)
+loop for all jobOpeningDTO
+THREAD -> DataDTO : addDataBlock(dataLength, jobOpeningDTO)
 activate DataDTO
+note right
+It's actually the byte
+array that originates
+from the serialization
+of a jobOpeningDTO
+end note
 
-DataDTO -> DataBlock** : create(DATA_LEN_L, DATA_LEN_M, jobOpeningCustomerDataDTO)
+DataDTO -> DataBlock** : create(dataLength, jobOpeningDTO)
 deactivate DataDTO
 
 end loop
@@ -78,13 +84,13 @@ deactivate THREAD
 
 end loop
 
-<-- ConnSrv : jobOpeningCustomerDataDTO
+<-- ConnSrv : jobOpeningDTO
 deactivate ConnSrv
 
 
 opt "0 - Exit"
 
- -> ConnSrv : closeConnection(PORT_NUMBER)
+ -> ConnSrv : closeConnection()
 activate ConnSrv
 
 ConnSrv -> CLITHREAD : closeConnection(code)

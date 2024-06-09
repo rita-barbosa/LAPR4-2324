@@ -17,20 +17,18 @@ autonumber
 
 activate UI
 
-UI -> CTRL : getSessionCredentials()
-activate CTRL
-
-CTRL -> AUTHZ : theSession.authenticatedUser
+UI -> AUTHZ : getSessionCredentials()
 activate AUTHZ
+AUTHZ --> UI : theSession.authenticatedUser
 deactivate AUTHZ
 
-deactivate CTRL
 
+UI -> UI : ask for user's password
 
-UI -> CTRL : getconnection(username, password, PORT_NUMBER)
+UI -> CTRL** : create(username, password)
 activate CTRL
 
-    CTRL -> ConnSrv : establishConnection(username, password, serverIP, PORT_NUMBER)
+    CTRL -> ConnSrv : establishConnection(username, password)
     activate ConnSrv
 
     ConnSrv --> ConnSrv : socket(serverIP, PORT_NUMBER)
