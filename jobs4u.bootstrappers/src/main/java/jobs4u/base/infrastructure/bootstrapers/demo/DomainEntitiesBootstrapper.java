@@ -621,7 +621,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         Interview interview3 = new Interview("interview3", new Date(2024 - 1900, Calendar.MARCH, 4),
                 new InterviewResult(22, "errors in questions 1, 2, 4 and 6."), interviewAnswer2);
 
-        Interview interview4 = new Interview("interview4", new Date(2024 -1900, Calendar.MARCH, 5));
+        Interview interview4 = new Interview("interview4", new Date(2024 - 1900, Calendar.MARCH, 5));
 
         ApplicationFile file10 = new ApplicationFile(new File("output/candidate3/example3.txt"));
         Set<ApplicationFile> files3 = new HashSet<>();
@@ -698,7 +698,6 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         applicationsSet.add(application2);
 
         Set<Application> applicationsSet1 = new HashSet<>();
-        application3.applicationStatus().updateStatusDescriptionAsACCEPTED();
         applicationsSet1.add(application3);
 
         Set<Application> applicationsSet2 = new HashSet<>();
@@ -726,6 +725,9 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         Set<Application> applicationSet7 = new HashSet<>();
         applicationSet7.add(application13);
 
+        Set<Application> applicationsSet8 = new HashSet<>();
+        applicationsSet8.add(application1);
+
 
         List<JobOpening> jobs = new ArrayList<>();
         for (JobOpening job : jobOpeningRepository.findAll()) {
@@ -737,6 +739,8 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         jobOpeningRepository.save(jobs.get(1));
         jobs.get(2).setApplications(applicationsSet1);
         jobOpeningRepository.save(jobs.get(2));
+        jobs.get(3).setApplications(applicationsSet8);
+        jobOpeningRepository.save(jobs.get(3));
         jobs.get(4).setApplications(applicationsSet2);
         jobOpeningRepository.save(jobs.get(4));
         jobs.get(5).setApplications(applicationsSet4);
@@ -747,7 +751,6 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         jobOpeningRepository.save(jobs.get(7));
         jobs.get(8).setApplications(applicationSet7);
         jobOpeningRepository.save(jobs.get(8));
-
     }
 }
 

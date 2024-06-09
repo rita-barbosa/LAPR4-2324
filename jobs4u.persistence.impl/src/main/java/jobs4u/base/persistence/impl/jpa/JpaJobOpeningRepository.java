@@ -208,17 +208,20 @@ public class JpaJobOpeningRepository
 
     @Override
     public Iterable<JobOpening> getJobOpeningFromUsername(Username username) {
-        String query = "SELECT e " +
-                "FROM JobOpening e " +
-                "WHERE e.jobReference.companyCode IN (" +
-                "    SELECT c.code.customerCode " +
-                "    FROM Customer c " +
-                "    WHERE c.customerUser.username.value = :username)" +
-                "AND e.status.statusDescription = :status ";
+        List<String> statuses = Arrays.asList("NOT_STARTED", "STARTED", "ENDED");
 
-        final TypedQuery<JobOpening> q = createQuery(query, JobOpening.class);
-        q.setParameter("username", username.toString());
-        q.setParameter("status", "NOT_STARTED");
+        final TypedQuery<JobOpening> q = createQuery(
+                "SELECT e " +
+                        "FROM JobOpening e " +
+                        "WHERE e.jobReference.companyCode IN (" +
+                        "    SELECT c.code.customerCode " +
+                        "    FROM Customer c " +
+                        "    WHERE c.customerUser.username = :username)" +
+                        "AND e.status.statusDescription IN (:statuses)",
+                JobOpening.class);
+
+        q.setParameter("username", username);
+        q.setParameter("statuses", statuses);
         return q.getResultList();
     }
 

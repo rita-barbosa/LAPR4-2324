@@ -17,7 +17,7 @@ public class NotifyCandidateOnApplicationStatusChangedController {
     public void notifyCandidateOfChangedStatus(ApplicationStatusChangedEvent event) {
         Notification notification = new Notification(new NotificationType(String.valueOf(NotificationTypeEnum.CANDIDATE)),
                 new NotificationRecipient(event.getEmailAddress().toString()),
-                new NotificationBody(String.format("YOUR APPLICATION FOR THE JOB OF %s AT %s WAS %s.",jobOpeningManagementService.getJobOpeningByJobRef(event.getJobReference().toString()).get().function(), event.getJobReference().getCompanyCode(),event.getNewStatus())),
+                new NotificationBody(String.format("YOUR APPLICATION FOR THE JOB OF %s AT %s WAS %s.", jobOpeningManagementService.getJobOpeningByJobRef(event.getJobReference().toString()).get().function().toString().toUpperCase(), event.getJobReference().getCompanyCode(), event.getNewStatus())),
                 new NotificationDate(Calendar.getInstance()),
                 new NotificationStatus(String.valueOf(NotificationStatusEnum.UNSEEN)));
 

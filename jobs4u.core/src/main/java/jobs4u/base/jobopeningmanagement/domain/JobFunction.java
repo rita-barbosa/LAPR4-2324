@@ -45,4 +45,9 @@ public class JobFunction implements ValueObject {
     public String getJobFunction() {
         return jobFunction;
     }
+
+    @Override
+    public String toString() {
+        return this.jobFunction;
+    }
 }
