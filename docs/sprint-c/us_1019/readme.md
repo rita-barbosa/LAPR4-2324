@@ -109,8 +109,8 @@ to help me analyze the candidates.
 >
 >
 > **Answer:** I don't see this as an obligation, but I think it makes more sense in this phase, assuming that only in
-> this phase, assuming that only in this phase it is guaranteed that all interviews have been conducted and all
-> candidates have been "evaluated" through the interviews.
+> this phase is guaranteed that all interviews have been conducted and all candidates have been "evaluated" through the
+> interviews.
 
 
 ## 3. Analysis
@@ -149,8 +149,6 @@ To be able to promote encapsulation between layers, it will be used DTOs.
 * JobOpeningDTODTOService
 * ApplicationManagementService
 * ApplicationDTOService
-* CandidateManagementService
-* CandidateDTOService
 
 
 **Application Layer Classes**
@@ -169,12 +167,9 @@ To be able to promote encapsulation between layers, it will be used DTOs.
 
 ![US1019 Sequence Diagram](SD/US1019_SD.svg)
 
-**Ref1:** Check the partial sequence diagram in [team-decisions](../../team-decisions/team-decisions.md#shared-sequence-diagrams) to see the adopted behaviour.
-
-
 ### 4.2. Class Diagram
 
-![a class diagram](CD/US1019_SD.svg)
+![a class diagram](CD/US1019_CD.svg)
 
 ### 4.3. Applied Patterns
 
@@ -184,12 +179,11 @@ To make the design of this user story, were used the following patterns:
 >* Classes
 >  * JobOpeningRepository
 >  * ApplicationRepository
->  * CandidateRepository
 >
 >* Justification
    >
    >  The JobOpening, Application and Candidate repository have the purpose of keeping the persistence of the job opening,
-   >application and candidate existing instances.
+   >and application existing instances.
 
 
 >**_Service Pattern_**
@@ -198,31 +192,18 @@ To make the design of this user story, were used the following patterns:
 >  * JobOpeningDTOService
 >  * ApplicationManagementService
 >  * ApplicationDTOService
->  * CandidateManagementService
->  * CandidateDTOService
 >  * AuthorizationService
 >
 >* Justification
    >
    >  The services are in charge of managing request regarding jobOpenings, applications and candidates,
-   >serving as encapsulation between the controller and the JobOpeningRepository, ApplicationRepository and
-   >CandidateRepository along with the domain classes.
+   >serving as encapsulation between the controller and the JobOpeningRepository and ApplicationRepository
+   >along with the domain classes.
    >  The DtoServices to transform these instances into DTOs.
    >  The authorization service is used to verify the roles of the user.
 
 
 ### 4.4. Tests
-
-**Test 1:** Verifies that the list is in descending order
-
-**Refers to Acceptance Criteria:** 1019.2
-
-````
-@Test
-public void ensureListIsInDescendingOrder() {
-...
-}
-````
 
 **Test 1:** Verifies that the job opening has interviews
 
@@ -237,25 +218,142 @@ public void ensureJobOpeningHasInterview() {
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+### ListOrderedCandidatesController
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+```
+    public Iterable<JobOpeningDTO> getJobOpeningList() {
+        Optional<SystemUser> customerManager = authz.loggedinUserWithPermissions(BaseRoles.CUSTOMER_MANAGER);
+        return customerManager.map(systemUser -> jobOpeningManagementService.getJobOpeningListInAnalysisPhase(systemUser.username())).orElse(null);
+    }
+
+    public List <ApplicationDTO> getApplicationsOrderedByInterviewResult(JobOpeningDTO jobOpeningDTO){
+        JobOpening job = jobOpeningManagementService.getJobOpening(jobOpeningDTO);
+
+        List<ApplicationDTO> applicationListDTO = applicationManagementService.getApplicationsWithInterviewGrade(job);
+
+        List<ApplicationDTO> orderApplicationDTOList = applicationManagementService.getApplicationsOrderedByInterviewResult(applicationListDTO);
+
+        return orderApplicationDTOList;
+    }
+```
+### JobOpeningManagementService
+
+```
+    public Iterable<JobOpeningDTO> getJobOpeningListInAnalysisPhase(Username customerManagerUsername){
+        Iterable<JobOpening> jobs = jobOpeningRepository.getJobOpeningListInAnalysisPhase(customerManagerUsername);
+        return dtoSvc.convertToDTO(jobs);
+    }
+    
+    public JobOpening getJobOpening(JobOpeningDTO jobOpeningDTO) {
+        String jobReference = jobOpeningDTO.getJobReference();
+        JobOpening jobOpening = null;
+
+        for (JobOpening job : jobOpeningRepository.findAll()) {
+            if (job.jobReference().toString().equals(jobReference)) {
+                jobOpening = job;
+            }
+        }
+        return jobOpening;
+    }
+```
+
+### JobOpeningDTOService
+
+```
+public Iterable<JobOpeningDTO> convertToDTO(Iterable<JobOpening> jobOpenings) {
+        Preconditions.noneNull(jobOpenings);
+
+        List<JobOpeningDTO> dtos = new ArrayList<>();
+        for (JobOpening j : jobOpenings) {
+            dtos.add(j.toDTO());
+        }
+
+        return dtos;
+    }
+```
+
+### ApplicationManagementService
+
+```
+    public List<ApplicationDTO> getApplicationsWithInterviewGrade(JobOpening jobOpening){
+        Iterable<Application> applicationList = applicationRepository.getApplicationsWithInterviewGrade(jobOpening.jobReference().toString());
+
+        return (List<ApplicationDTO>) applicationDTOService.convertToDTO(applicationList);
+    }
+    
+    public List<ApplicationDTO> getApplicationsOrderedByInterviewResult(List<ApplicationDTO> applicationListDTO) {
+        List<ApplicationDTO> orderList = applicationListDTO;
+
+        Collections.sort(orderList, new Comparator<ApplicationDTO>() {
+            @Override
+            public int compare(ApplicationDTO app1, ApplicationDTO app2) {
+                Integer grade1 = app1.getInterview().interviewResult().interviewGrade();
+                Integer grade2 = app2.getInterview().interviewResult().interviewGrade();
+
+
+                return grade2.compareTo(grade1);
+            }
+        });
+
+        return orderList;
+    }
+```
+
+### ApplicationDTOService
+
+```
+public Iterable<ApplicationDTO> convertToDTO(Iterable<Application> applications) {
+        Preconditions.noneNull(applications);
+
+        List<ApplicationDTO> dtos = new ArrayList<>();
+        for (Application j : applications) {
+            dtos.add(j.toDTO());
+        }
+
+        return dtos;
+    }
+```
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
+To execute this functionality it is necessary to run the script named `run-backoffice-app` and log in with Customer Manager permissions.
+Then navigate to the menu `Candidates` followed by option  2 - `Get an ordered list of candidates`.
 
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
+````
 
-## 7. Observations
++= List Ordered Candidates ====================================================+
 
-*This section should be used to include any content that does not fit any of the previous sections.*
+INDEX: 0==================================================================
+[Job Reference] ISEP-1
+[Status] STARTED
+[Function] Front End Junior Developer
+[Description] Night Guard.
+[Contract Type] full-time
+[Work Mode] remote
+[Address] 123 Main Street, USA, Flagtown, Star District, 4500-900
+[Customer Code] ISEP
+[Number of Vacancies] 2
+[Requirement Specification] Requirements_Back_End_Dev
+=====================================================================
+INDEX: 1==================================================================
+[Job Reference] ISEP-7
+[Status] STARTED
+[Function] Front End Senior Developer
+[Description] Night Guard.
+[Contract Type] full-time
+[Work Mode] remote
+[Address] Third Street, New Dream, New Town, New District, 4520-920
+[Customer Code] ISEP
+[Number of Vacancies] 3
+[Requirement Specification] Requirements_Front_End_Dev
+=====================================================================
+Select the job opening index:
+1
 
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
+Job Opening:ISEP-7
+Name            | Email                  | Grade | Justification
+-----------------------------------------------------------------------------------
+Joana           | candidate@email.com    | 60   | errors in questions 5 and 7.            
+Matilde         | 1220683@isep.ipp.pt    | 22   | errors in questions 1, 2, 4 and 6.      
++==============================================================================+
+````
