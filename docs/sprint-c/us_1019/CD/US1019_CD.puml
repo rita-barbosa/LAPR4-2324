@@ -9,12 +9,12 @@ title US1019 Class Diagram
 'package "Application" {
     class ListOrderedCandidatesController <<Application>> {
         + getJobOpeningList()
-        + getCandidateList(jobOpeningDTO)
+        + getApplicationsOrderedByInterviewResult(jobOpeningDTO)
     }
 '}
 
 class JobOpeningManagementService <<Service>> {
-    + jobOpeningsOfCustomerManager(username)
+    + getJobOpeningListInAnalysisPhase(username)
     + getJobOpening(jobOpeningDTO)
 }
 
@@ -23,21 +23,13 @@ class JobOpeningDTOService <<Service>> {
 }
 
 class ApplicationManagementService <<Service>> {
-    + getApplicationsList(jobOpening)
+    + getApplicationsWithInterviewGrade(jobOpening)
+    + getApplicationsOrderedByInterviewResult(applicationListDTO)
 }
 
 class ApplicationDTOService <<Service>> {
     + convertToDTO(applicationList)
 }
-
-class CandidateManagementService <<Service>> {
-    + getCandidateList(applicationsListDTO)
-}
-
-class CandidateDTOService <<Service>> {
-    + convertToDTO(candidateList)
-}
-
 
     class AuthenticationService <<Application>> <<Service>> {
         + loggedinUserWithPermissions(BaseRole.CUSTOMER_MANAGER)
@@ -49,61 +41,32 @@ class CandidateDTOService <<Service>> {
     }
 
     class Candidate <<Domain>> <<Aggregate Root>> {
-        - phoneNumber : PhoneNumber
-        - systemUser : SystemUser
         + toDTO()
     }
 
     class JobOpening <<Domain>> <<Aggregate Root>> {
-        - function : String
-        - contractType : ContractType
-        - workMode : WorkMode
-        - companyAddress : Address
-        - costumerCode : String
-        - companyName : String
-        - numVacancies : Integer
-        - description : String
-        - requirementsSpecificationsFile : File
         + toDTO()
     }
 
     class Application <<Domain>> <<Aggregate Root>> {
-        - requirementAnswer : String
-        - requirementResult : Integer
-        - file : File
-        - email : String
-        - applicationDate : Date
-        - applicationStatus : Boolean
-        - candidateName : String
-        - phoneNumber : Integer
-        - interview : Interview
         + toDTO()
     }
 
     class Interview <<Domain>> <<Value Object>> {
-        - interviewTypeDenomination : String
-        - schedule : Date
-        - interviewResult : String
-        - interviewGrade : Integer
-        - justification : String
-        - interviewAnswer :  String
         + valueOf()
     }
 '}
 
 'package "Persistence" {
     class JobOpeningRepository <<Persistence>> <<Repository>> {
-        + getJobOpeningListMatchingCustomerCode(customerCode)
+        + getJobOpeningListInAnalysisPhase(customerCode)
         + getJobOpening(JobOpeningDTO)
     }
 
     class ApplicationRepository <<Persistence>> <<Repository>> {
-        + getApplicationsListWithInterviewResult()
+        + getApplicationsWithInterviewGrade()
     }
 
-    class CandidateRepository <<Persistence>> <<Repository>> {
-        + getCandidateList(applicationsListDTO)
-    }
 '}
 
 ' Associations
@@ -111,13 +74,10 @@ CustomerManager ..> ListOrderedCandidatesController
 ListOrderedCandidatesUI ..> ListOrderedCandidatesController
 ListOrderedCandidatesController ..> JobOpeningRepository
 ListOrderedCandidatesController ..> ApplicationRepository
-ListOrderedCandidatesController ..> CandidateRepository
 ListOrderedCandidatesController ..> ApplicationManagementService
 ListOrderedCandidatesController ..> JobOpeningManagementService
 ListOrderedCandidatesController ..> JobOpeningDTOService
 ListOrderedCandidatesController ..> ApplicationDTOService
-ListOrderedCandidatesController ..> CandidateManagementService
-ListOrderedCandidatesController ..> CandidateDTOService
 
 ' Domain Layer
 Interview "0..1" --> "*" Application : characterizes
@@ -127,17 +87,12 @@ ApplicationManagementService -> Application
 ApplicationManagementService -> ApplicationRepository
 ApplicationDTOService -> Application
 JobOpeningDTOService --> JobOpening
-CandidateManagementService --> CandidateRepository
-CandidateManagementService --> Candidate
-CandidateDTOService --> Candidate
 
 ' Persistence Layer
 JobOpeningRepository <.. JobOpening : persisted by
 
 ApplicationRepository <.. Application : persisted by
 ApplicationRepository "1" --> "*" Interview : rebuilds
-
-CandidateRepository <.. Candidate : persisted by
 
 
 ' Authentication
