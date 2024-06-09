@@ -224,16 +224,17 @@ public class JpaJobOpeningRepository
     }
 
     @Override
-    public Iterable<JobOpening> getSTARTEDJobOpeningList(Username customerManagerUsername) {
+    public Iterable<JobOpening> getJobOpeningListInAnalysisPhase(Username customerManagerUsername) {
         final TypedQuery<JobOpening>
                 q = createQuery("SELECT e \n" +
                         "FROM JobOpening e \n" +
-                        "WHERE e.jobReference.companyCode IN (\n" +
+                        "JOIN RecruitmentProcess rp ON e.jobReference = rp.jobOpening.jobReference\n" +
+                        "WHERE rp.recruitmentProcessStatus.statusDescription = 'ANALYSIS' \n" +
+                        "AND e.jobReference.companyCode IN (\n" +
                         "    SELECT code.customerCode \n" +
                         "    FROM Customer c \n" +
                         "    WHERE c.customerManager.username.value = :manager\n" +
-                        ")\n" +
-                        "AND (e.status.statusDescription = 'STARTED')",
+                        ")",
                 JobOpening.class);
         q.setParameter("manager", customerManagerUsername.toString());
         return q.getResultList();
@@ -252,6 +253,25 @@ public class JpaJobOpeningRepository
                         "    WHERE c.customerManager.username.value = :manager\n" +
                         ")",
                 JobOpening.class);
+        q.setParameter("manager", customerManagerUsername.toString());
+        return q.getResultList();
+    }
+
+    @Override
+    public Iterable<JobOpening> getJobOpeningListMatchingStatusFromCustomerManager(String status, Username customerManagerUsername) {
+        final TypedQuery<JobOpening>
+                q = createQuery("SELECT e" +
+                        " FROM JobOpening e" +
+                        " JOIN RecruitmentProcess rp ON e.jobReference = rp.jobOpening.jobReference" +
+                        " WHERE (rp.recruitmentProcessStatus.statusDescription = 'ANALYSIS' OR  rp.recruitmentProcessStatus.statusDescription = 'INTERVIEW')" +
+                        " AND e.status.statusDescription = :status" +
+                        " AND e.jobReference.companyCode IN (" +
+                        "    SELECT code.customerCode " +
+                        "    FROM Customer c " +
+                        "    WHERE c.customerManager.username.value = :manager" +
+                        ")",
+                JobOpening.class);
+        q.setParameter("status", status);
         q.setParameter("manager", customerManagerUsername.toString());
         return q.getResultList();
     }

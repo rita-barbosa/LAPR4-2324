@@ -3,6 +3,7 @@ package jobs4u.base.persistence.impl.inmemory;
 import eapli.framework.infrastructure.authz.domain.model.Username;
 import eapli.framework.infrastructure.repositories.impl.inmemory.InMemoryDomainRepository;
 import eapli.framework.time.domain.model.DateInterval;
+import jakarta.persistence.TypedQuery;
 import jobs4u.base.applicationmanagement.domain.Application;
 import jobs4u.base.customermanagement.domain.Customer;
 import jobs4u.base.customermanagement.domain.CustomerCode;
@@ -179,14 +180,16 @@ public class InMemoryJobOpeningRepository
     }
 
     @Override
-    public Iterable<JobOpening> getSTARTEDJobOpeningList(Username customerManagerUsername) {
+    public Iterable<JobOpening> getJobOpeningListInAnalysisPhase(Username customerManagerUsername) {
         CustomerRepository custRepo = PersistenceContext.repositories().customers();
         List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername);
 
-        for (Customer customer : customers) {
-            return match(e -> customer.customerCode().toString().contains(e.jobReference().getcustomerCode()) && (e.jobOpeningStatus().equals(JobOpeningStatusEnum.STARTED)));
-        }
-        return Collections.emptyList();
+        return match(e -> {
+            if (e.getRecruitmentProcess().currentActivePhase().equalsIgnoreCase("interview") || e.getRecruitmentProcess().currentActivePhase().equalsIgnoreCase("analysis")) {
+                return customers.stream().anyMatch(customer -> customer.customerCode().toString().equals(e.jobReference().getcustomerCode()));
+            }
+            return false;
+        });
     }
 
     @Override
@@ -201,5 +204,18 @@ public class InMemoryJobOpeningRepository
             return false;
         });
     }
+
+    @Override
+    public Iterable<JobOpening> getJobOpeningListMatchingStatusFromCustomerManager(String started, Username customerManagerUsername) {
+    CustomerRepository custRepo = PersistenceContext.repositories().customers();
+    List<Customer> customers = custRepo.getCustomersByUsername(customerManagerUsername);
+
+        return match(e -> {
+        if (e.currentStatus().toString().equals(started) && (e.getRecruitmentProcess().currentActivePhase().equalsIgnoreCase("analysis") || e.getRecruitmentProcess().currentActivePhase().equalsIgnoreCase("interview"))) {
+            return customers.stream().anyMatch(customer -> customer.customerCode().toString().equals(e.jobReference().getcustomerCode()));
+        }
+        return false;
+    });
+}
 
 }

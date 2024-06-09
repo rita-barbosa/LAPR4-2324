@@ -41,7 +41,8 @@ public interface JobOpeningRepository extends DomainRepository<JobReference, Job
     Iterable<JobOpening> jobOpeningsListOfCustomerManager(Username customerManagerUsername);
 
     Iterable<JobOpening> getJobOpeningFromUsername(Username username);
-    Iterable<JobOpening> getSTARTEDJobOpeningList(Username customerManagerUsername);
+    Iterable<JobOpening> getJobOpeningListInAnalysisPhase(Username customerManagerUsername);
 
     Iterable<JobOpening> jobOpeningsInResultListOfCustomerManager(Username customerManagerUsername);
+    Iterable<JobOpening> getJobOpeningListMatchingStatusFromCustomerManager(String phase, Username customerManagerUsername);
 }
