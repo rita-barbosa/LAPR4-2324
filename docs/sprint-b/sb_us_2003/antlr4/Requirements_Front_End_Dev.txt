@@ -1,40 +1,31 @@
-REQUIREMENT #1
-[Single Choice] "Do you prefer using React or Angular for front-end development?" Answer Model: "[Choice]"
-1) "React"
-2) "Angular"
-R:.
+[MC]-1 "Which of the following are front end languages?"
+1) HTML
+2) Python
+3) CSS
+A:.
 
-REQUIREMENT #2
-[Multiple Choice] "Which of the following are front-end technologies?" Answer Model: "[CHOICE] and [CHOICE]"
-1) "HTML"
-2) "Python"
-3) "CSS"
-R:.
+[DN]-1 "What is the pixel width of a standard Bootstrap container?"
+A:.
 
-REQUIREMENT #3
-[Whole Number] "How many years have you been working with JavaScript?"
-R:.
+[SA]-1 "Name a popular CSS preprocessor."
+A:.
 
-REQUIREMENT #4
-[True/False] "Are you familiar with responsive web design?"
-R:.
+[T]-1 "At what time do you usually start coding?"
+A:.
 
-REQUIREMENT #5
-[Numeric Scale] "Rate your proficiency in CSS with the given scale." Answer Model: [1-5]
-R:.
+[WN]-1 "How many years have you been working with JavaScript?"
+A:.
 
-REQUIREMENT #6
-[Decimal Number] "What is the pixel width of a standard Bootstrap container?"
-R:.
+[D]-1 "When did you start learning web development?"
+A:.
 
-REQUIREMENT #7
-[Short Answer] "Name a popular CSS preprocessor."
-R:.
+[NS]-1 "Rate your proficiency in CSS on a scale of one to five."
+A:.
 
-REQUIREMENT #8
-[Date] "When did you start learning web development?" [DD/MM/YYYY]
-R:.
+[SC]-1 "Do you prefer using React or Angular for front end development?"
+1) React
+2) Angular
+A:.
 
-REQUIREMENT #9
-[Time] "At what time do you usually start coding?" [HH:MM]
-R:.
+[TF]-1 "Are you familiar with responsive web design?"
+A:.
