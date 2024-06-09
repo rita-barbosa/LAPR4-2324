@@ -2,14 +2,18 @@ package jobs4u.base.applicationmanagement.application;
 
 import jobs4u.base.applicationmanagement.domain.ApplicationFile;
 import jobs4u.base.applicationmanagement.domain.FileWordCountThread;
+import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-//TODO CHANGE PRINT STACKTRACE
 public class ApplicationFilesThreadService {
 
     static Map<String, Map<String, Integer>> map = new TreeMap<>();
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceContext.class);
+
 
     public Map<String, Pair<Integer, List<String>>> getTop20Words(Set<ApplicationFile> applicationFiles) {
         map.clear();
@@ -28,7 +32,7 @@ public class ApplicationFilesThreadService {
                 thread.join();
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOGGER.error("Thread interrupted", e);
         }
 
         Map<String, Map<String, Integer>> newMap = map;

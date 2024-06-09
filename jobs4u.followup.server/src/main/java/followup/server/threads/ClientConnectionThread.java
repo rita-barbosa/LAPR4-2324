@@ -11,18 +11,21 @@ import jobs4u.base.network.data.DataBlock;
 import jobs4u.base.network.data.DataDTO;
 import jobs4u.base.usermanagement.domain.BasePasswordPolicy;
 import jobs4u.base.usermanagement.domain.BaseRoles;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
 
-//TODO ADD LOGGER COMMENTS
 public class ClientConnectionThread implements Runnable {
 
     private final Socket socket;
     private DataOutputStream sOut;
     private DataInputStream sIn;
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceContext.class);
+
 
     public ClientConnectionThread(Socket clientSock) {
         socket = clientSock;
@@ -30,7 +33,7 @@ public class ClientConnectionThread implements Runnable {
             sOut = new DataOutputStream(socket.getOutputStream());
             sIn = new DataInputStream(socket.getInputStream());
         } catch (IOException e) {
-            //add logger comment
+            LOGGER.error("Error while creating socket", e);
         }
     }
 
@@ -43,7 +46,7 @@ public class ClientConnectionThread implements Runnable {
         try {
             dataDTO = receiveRequest();
         } catch (IOException e) {
-            //add logger comment
+            LOGGER.error("Error while receiving request", e);
             throw new RuntimeException(e + "\nCouldn't read first data request from input stream.");
         }
 
@@ -82,7 +85,7 @@ public class ClientConnectionThread implements Runnable {
                     break;
                 }
             } catch (IOException e) {
-                //add logger comment
+                LOGGER.error("Error while receiving request", e);
                 throw new RuntimeException(e + "\nCouldn't create thread.\n");
             }
 
@@ -93,7 +96,7 @@ public class ClientConnectionThread implements Runnable {
                 try {
                     requestThread.join();
                 } catch (InterruptedException e) {
-                    //add logger comment
+                    LOGGER.error("Error while waiting for request", e);
                     throw new RuntimeException(e + "\nThread join error.");
                 }
             }
@@ -119,7 +122,8 @@ public class ClientConnectionThread implements Runnable {
             sOut.write(bytes);
             sOut.flush();
         } catch (IOException e) {
-            //add logger comment
+            LOGGER.error("Error while sending empty response.", e);
+
         }
     }
 
@@ -140,7 +144,7 @@ public class ClientConnectionThread implements Runnable {
             System.out.println("\nClosing connection.\n");
             socket.close();
         } catch (IOException e) {
-            //add logger comment
+            LOGGER.error("Error while closing connection.", e);
             throw new RuntimeException(e + "\nCouldn't close socket.");
         }
     }
