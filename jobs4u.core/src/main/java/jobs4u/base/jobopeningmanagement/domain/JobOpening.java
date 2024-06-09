@@ -310,17 +310,17 @@ public class JobOpening implements AggregateRoot<JobReference>, DTOable<JobOpeni
         Preconditions.noneNull(requirementSpecification);
         Preconditions.ensure(!status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.ENDED)));
         if (status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.STARTED))) {
-            Preconditions.ensure(recruitmentProcess.currentActivePhase().equalsIgnoreCase("Application"));
+            Preconditions.ensure(recruitmentProcess.currentActivePhase().equalsIgnoreCase("application phase"));
         }
         this.requirementSpecification = requirementSpecification;
     }
 
     public void changeInterviewModel(InterviewModel interviewModel) {
-        Preconditions.noneNull(requirementSpecification);
+        Preconditions.noneNull(interviewModel);
         Preconditions.ensure(!status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.ENDED)));
         if (status.getStatusDescription().equals(String.valueOf(JobOpeningStatusEnum.STARTED))) {
             String active = recruitmentProcess.currentActivePhase();
-            Preconditions.ensure(active.equalsIgnoreCase("Application") || active.equalsIgnoreCase("Screening"));
+            Preconditions.ensure(active.equalsIgnoreCase("application phase") || active.equalsIgnoreCase("screening phase"));
         }
         this.interviewModel = interviewModel;
     }

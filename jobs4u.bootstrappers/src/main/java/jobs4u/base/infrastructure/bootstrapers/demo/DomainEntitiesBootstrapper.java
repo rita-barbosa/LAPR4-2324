@@ -6,7 +6,6 @@ import eapli.framework.infrastructure.authz.domain.model.SystemUser;
 import eapli.framework.time.domain.model.DateInterval;
 import eapli.framework.time.util.Calendars;
 import jobs4u.base.applicationmanagement.domain.*;
-import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
 import jobs4u.base.candidatemanagement.application.CandidateManagementService;
 import jobs4u.base.candidatemanagement.domain.Candidate;
 import jobs4u.base.candidatemanagement.domain.PhoneNumber;
@@ -37,7 +36,6 @@ import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRep
 import jobs4u.base.usermanagement.domain.BaseRoles;
 import jobs4u.base.workmodemanagement.domain.WorkMode;
 
-import javax.swing.text.html.Option;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -250,8 +248,8 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
             start30 = Calendars.fromDate(df.parse("26-03-2024"));
             end30 = Calendars.fromDate(df.parse("27-03-2024"));
             dateInterval6 = new DateInterval(start26, end30);
-        } catch (ParseException e) {
-            System.out.println(e.getMessage());
+        } catch (ParseException ignored) {
+
         }
 
         List<Phase> phases1 = new ArrayList<>();
@@ -347,12 +345,18 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
 
         RecruitmentProcess recruitmentProcess6 = new RecruitmentProcess(dateInterval6.start(), dateInterval6.end(), phases6, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.RESULTS)));
 
+        RecruitmentProcess recruitmentProcess7 = new RecruitmentProcess(dateInterval2.start(), dateInterval2.end(), phases2, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.ANALYSIS)));
+
+        RecruitmentProcess recruitmentProcess8 = new RecruitmentProcess(dateInterval1.start(), dateInterval1.end(), phases1, new RecruitmentProcessStatus(String.valueOf(RecruitmentProcessStatusEnum.INTERVIEW)));
+
         recruitmentProcess1 = recruitmentProcessRepository.save(recruitmentProcess1);
         recruitmentProcess2 = recruitmentProcessRepository.save(recruitmentProcess2);
         recruitmentProcess3 = recruitmentProcessRepository.save(recruitmentProcess3);
         recruitmentProcess4 = recruitmentProcessRepository.save(recruitmentProcess4);
         recruitmentProcess5 = recruitmentProcessRepository.save(recruitmentProcess5);
         recruitmentProcess6 = recruitmentProcessRepository.save(recruitmentProcess6);
+        recruitmentProcess7 = recruitmentProcessRepository.save(recruitmentProcess7);
+        recruitmentProcess8 = recruitmentProcessRepository.save(recruitmentProcess8);
 
         recruitmentProcessList.add(recruitmentProcess1);
         recruitmentProcessList.add(recruitmentProcess2);
@@ -360,6 +364,8 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         recruitmentProcessList.add(recruitmentProcess4);
         recruitmentProcessList.add(recruitmentProcess5);
         recruitmentProcessList.add(recruitmentProcess6);
+        recruitmentProcessList.add(recruitmentProcess7);
+        recruitmentProcessList.add(recruitmentProcess8);
     }
 
 
@@ -375,7 +381,8 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         JobReference jobReference4 = new JobReference("ISEP", 4);
         JobReference jobReference5 = new JobReference("ISEP", 5);
         JobReference jobReference6 = new JobReference("AVIP", 0);
-
+        JobReference jobReference7 = new JobReference("ISEP", 6);
+        JobReference jobReference8 = new JobReference("ISEP", 7);
 
         JobOpening jobOpening1 = new JobOpening("Front End Junior Developer", contract, mode, "123 Main Street",
                 "Flagtown", "Star District", "USA", "4500-900", 2, description,
@@ -402,9 +409,16 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
                 requirementSpecificationsList.get(1), interviewModelsList.get(1), jobReference5);
 
         JobOpening jobOpening7 = new JobOpening("Back End Senior Developer", contract, mode, "Third Street",
-                "Third Town", "Third District", "Third", "4510-910", 6, description,
+                "Third Town", "Third District", "Third", "4510-910", 1, description,
                 requirementSpecificationsList.get(0), interviewModelsList.get(0), jobReference6);
 
+        JobOpening jobOpening8 = new JobOpening("Front End Senior Developer", contract, mode, "Third Street",
+                "New Town", "New District", "New Dream", "4520-920", 3, description,
+                requirementSpecificationsList.get(1), interviewModelsList.get(1), jobReference7);
+
+        JobOpening jobOpening9 = new JobOpening("Back End Junior Developer", contract, mode, "Flower Street",
+                "Sun Town", "Sea District", "Fever Sun", "4560-910", 5, description,
+                requirementSpecificationsList.get(0), interviewModelsList.get(0), jobReference8);
 
         jobOpening1.updateStatusToNotStarted();
         jobOpening2.updateStatusToNotStarted();
@@ -412,6 +426,8 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         jobOpening5.updateStatusToNotStarted();
         jobOpening6.updateStatusToNotStarted();
         jobOpening7.updateStatusToNotStarted();
+        jobOpening8.updateStatusToNotStarted();
+        jobOpening9.updateStatusToNotStarted();
 
 
         jobOpening1 = jobOpeningRepository.save(jobOpening1);
@@ -421,6 +437,8 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         jobOpening5 = jobOpeningRepository.save(jobOpening5);
         jobOpening6 = jobOpeningRepository.save(jobOpening6);
         jobOpening7 = jobOpeningRepository.save(jobOpening7);
+        jobOpening8 = jobOpeningRepository.save(jobOpening8);
+        jobOpening9 = jobOpeningRepository.save(jobOpening9);
 
 
         List<JobOpening> jobOpenings = new ArrayList<>();
@@ -431,6 +449,8 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         jobOpenings.add(jobOpening5);
         jobOpenings.add(jobOpening6);
         jobOpenings.add(jobOpening7);
+        jobOpenings.add(jobOpening8);
+        jobOpenings.add(jobOpening9);
 
         for (int i = 0; i < 3; i++) {
             jobOpenings.get(i).addRecruitmentProcess(recruitmentProcessList.get(i));
@@ -448,7 +468,7 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         jobOpening.updateStatusToStarted();
         jobOpeningRepository.save(jobOpening);
 
-        for (int j = 3; j < 6; j++) {
+        for (int j = 3; j < 8; j++) {
             jobOpenings.get(j).addRecruitmentProcess(recruitmentProcessList.get(j));
             jobOpenings.get(j).updateStatusToNotStarted();
             recruitmentProcessList.get(j).referToJobOpening(jobOpenings.get(j));
@@ -465,6 +485,8 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         jobOpeningList.add(jobOpening5);
         jobOpeningList.add(jobOpening6);
         jobOpeningList.add(jobOpening7);
+        jobOpeningList.add(jobOpening8);
+        jobOpeningList.add(jobOpening9);
     }
 
     private void persistRequirementSpecifications() {
@@ -587,15 +609,19 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
 
         InterviewAnswer interviewAnswer1 = InterviewAnswer.valueOf("plugins-config-file/interview/i-answer-1.txt");
         Interview interview1 = new Interview("interview1", new Date(2024 - 1900, Calendar.MARCH, 3),
-                new InterviewResult(60, "the grade is above 50"), interviewAnswer1);
+                new InterviewResult(60, "errors in questions 5 and 7."), interviewAnswer1);
 
         RequirementAnswer requirementAnswer2 = RequirementAnswer.valueOf("plugins-config-file/requirement/r-answer-2.txt");
         RequirementResult requirementResult2 = RequirementResult.valueOf(false);
         Date date2 = new Date(2024 - 1900, Calendar.JANUARY, 8);
         InterviewAnswer interviewAnswer2 = InterviewAnswer.valueOf("plugins-config-file/interview/i-answer-2.txt");
         Interview interview2 = new Interview("interview2", new Date(2024 - 1900, Calendar.MARCH, 4),
-                new InterviewResult(80, "the grade is above 50"), interviewAnswer2);
+                new InterviewResult(80, "error in question 3."), interviewAnswer2);
 
+        Interview interview3 = new Interview("interview3", new Date(2024 - 1900, Calendar.MARCH, 4),
+                new InterviewResult(22, "errors in questions 1, 2, 4 and 6."), interviewAnswer2);
+
+        Interview interview4 = new Interview("interview4", new Date(2024 - 1900, Calendar.MARCH, 5));
 
         ApplicationFile file10 = new ApplicationFile(new File("output/candidate3/example3.txt"));
         Set<ApplicationFile> files3 = new HashSet<>();
@@ -620,56 +646,61 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         Date date5 = new Date(2024 - 1900, Calendar.JANUARY, 12);
 
 
-        Application application, application1, application2, application3, application4, application5, application6, application7, application8, application9, application10;
+        Application application, application1, application2, application3, application4, application5, application6, application7, application8,
+                application9, application10, application11, application12, application13;
         PhoneNumber phone = new PhoneNumber("+351", "910000000");
         Optional<Candidate> candidate1 = candidateRepository.findByPhoneNumber(phone);
         PhoneNumber phone1 = new PhoneNumber("+351", "910000001");
         Optional<Candidate> candidate2 = candidateRepository.findByPhoneNumber(phone1);
-        Optional<Candidate> c4 = candidateRepository.findByPhoneNumber(new PhoneNumber("+351", "910000034"));
+        Optional<Candidate> c4 = candidateRepository.findByPhoneNumber(new PhoneNumber("+351", "910095800"));
 
 
         if (candidate1.isPresent() && candidate2.isPresent() && c4.isPresent()) {
             Candidate candidate = candidate1.get();
             Candidate candidate3 = candidate2.get();
             Candidate candidate4 = c4.get();
-            application = new Application(requirementAnswer1, requirementResult, files1, date, candidate, interview1);
-            application1 = new Application(requirementAnswer1, requirementResult1, files2, date1, candidate, interview1);
-            application2 = new Application(requirementAnswer1, requirementResult1, files3, date2, candidate4, interview1);
-            application3 = new Application(requirementAnswer1, requirementResult1, files4, date3, candidate, interview1);
-            application4 = new Application(requirementAnswer1, requirementResult1, files5, date4, candidate3, interview1);
+            application = new Application(requirementAnswer1, requirementResult, files1, date, candidate3, interview1);
+            application1 = new Application(requirementAnswer2, requirementResult, files2, date1, candidate, interview2);
+            application2 = new Application(requirementAnswer1, requirementResult, files3, date2, candidate4, interview3);
+            application3 = new Application(requirementAnswer1, requirementResult, files4, date3, candidate, interview1);
+            application4 = new Application(requirementAnswer1, requirementResult, files5, date4, candidate3, interview4);
             application5 = new Application(requirementAnswer1, requirementResult1, files6, date5, candidate3, interview1);
             application6 = new Application(requirementAnswer1, requirementResult1, files2, date1, candidate, interview1);
-            application7 = new Application(requirementAnswer1, requirementResult1, files3, date2, candidate4, interview1);
-            application8 = new Application(requirementAnswer2, requirementResult2, files4, date3, candidate, interview2);
-            application9 = new Application(requirementAnswer2, requirementResult2, files1, date, candidate4, interview2);
+            application7 = new Application(requirementAnswer1, requirementResult, files3, date2, candidate3, interview1);
+            application8 = new Application(requirementAnswer2, requirementResult, files4, date3, candidate, interview3);
+            application9 = new Application(requirementAnswer2, requirementResult, files1, date, candidate4, interview2);
             application10 = new Application(requirementAnswer2, requirementResult2, files5, date4, candidate, interview2);
+            application11 = new Application(requirementAnswer2, requirementResult, files4, date3, candidate, interview3);
+            application12 = new Application(requirementAnswer1, requirementResult, files2, date1, candidate4, interview1);
+            application13 = new Application(requirementAnswer1, requirementResult, files2, date1, candidate4, interview4);
 
         } else {
             application = new Application(requirementAnswer1, requirementResult, files1, date, interview1);
-            application1 = new Application(requirementAnswer1, requirementResult1, files2, date1, interview1);
-            application2 = new Application(requirementAnswer1, requirementResult1, files3, date2, interview1);
-            application3 = new Application(requirementAnswer1, requirementResult1, files4, date3, interview1);
-            application4 = new Application(requirementAnswer1, requirementResult1, files5, date4, interview1);
+            application1 = new Application(requirementAnswer2, requirementResult, files2, date1, interview2);
+            application2 = new Application(requirementAnswer1, requirementResult, files3, date2, interview3);
+            application3 = new Application(requirementAnswer1, requirementResult, files4, date3, interview1);
+            application4 = new Application(requirementAnswer1, requirementResult, files5, date4, interview4);
             application5 = new Application(requirementAnswer1, requirementResult1, files6, date5, interview1);
             application6 = new Application(requirementAnswer1, requirementResult1, files2, date1, interview1);
-            application7 = new Application(requirementAnswer1, requirementResult1, files3, date2, interview1);
-            application8 = new Application(requirementAnswer2, requirementResult2, files4, date3, interview2);
-            application9 = new Application(requirementAnswer2, requirementResult2, files1, date, interview2);
+            application7 = new Application(requirementAnswer1, requirementResult, files3, date2, interview1);
+            application8 = new Application(requirementAnswer2, requirementResult, files4, date3, interview3);
+            application9 = new Application(requirementAnswer2, requirementResult, files1, date, interview2);
             application10 = new Application(requirementAnswer2, requirementResult2, files5, date4, interview2);
+            application11 = new Application(requirementAnswer2, requirementResult, files4, date3, interview3);
+            application12 = new Application(requirementAnswer1, requirementResult, files2, date1, interview1);
+            application13 = new Application(requirementAnswer1, requirementResult, files2, date1, interview4);
+
         }
 
         Set<Application> applicationsSet = new HashSet<>();
-        application.applicationStatus().updateStatusDescriptionAsACCEPTED();
         applicationsSet.add(application);
         applicationsSet.add(application1);
         applicationsSet.add(application2);
 
         Set<Application> applicationsSet1 = new HashSet<>();
-        application3.applicationStatus().updateStatusDescriptionAsACCEPTED();
         applicationsSet1.add(application3);
 
         Set<Application> applicationsSet2 = new HashSet<>();
-        application4.applicationStatus().updateStatusDescriptionAsACCEPTED();
         applicationsSet2.add(application4);
 
         Set<Application> applicationsSet3 = new HashSet<>();
@@ -677,12 +708,25 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         applicationsSet3.add(application6);
 
         Set<Application> applicationsSet4 = new HashSet<>();
+        application8.applicationStatus().updateStatusDescriptionAsREJECTED();
+        application9.applicationStatus().updateStatusDescriptionAsACCEPTED();
+        application7.applicationStatus().updateStatusDescriptionAsACCEPTED();
         applicationsSet4.add(application8);
         applicationsSet4.add(application9);
         applicationsSet4.add(application7);
 
         Set<Application> applicationsSet5 = new HashSet<>();
         applicationsSet5.add(application10);
+
+        Set<Application> applicationsSet6 = new HashSet<>();
+        applicationsSet6.add(application11);
+        applicationsSet6.add(application12);
+
+        Set<Application> applicationSet7 = new HashSet<>();
+        applicationSet7.add(application13);
+
+        Set<Application> applicationsSet8 = new HashSet<>();
+        applicationsSet8.add(application1);
 
 
         List<JobOpening> jobs = new ArrayList<>();
@@ -695,13 +739,18 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
         jobOpeningRepository.save(jobs.get(1));
         jobs.get(2).setApplications(applicationsSet1);
         jobOpeningRepository.save(jobs.get(2));
+        jobs.get(3).setApplications(applicationsSet8);
+        jobOpeningRepository.save(jobs.get(3));
         jobs.get(4).setApplications(applicationsSet2);
         jobOpeningRepository.save(jobs.get(4));
         jobs.get(5).setApplications(applicationsSet4);
         jobOpeningRepository.save(jobs.get(5));
         jobs.get(6).setApplications(applicationsSet3);
         jobOpeningRepository.save(jobs.get(6));
-
+        jobs.get(7).setApplications(applicationsSet6);
+        jobOpeningRepository.save(jobs.get(7));
+        jobs.get(8).setApplications(applicationSet7);
+        jobOpeningRepository.save(jobs.get(8));
     }
 }
 

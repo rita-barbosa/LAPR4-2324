@@ -8,11 +8,6 @@ activate USER
 
 USER -> SYS : asks to upload a text file with the candidates\n responses for an interview
 activate SYS
-SYS --> USER : shows the interview templates and asks\n to select one
-deactivate SYS
-
-USER -> SYS : selects the interview model
-activate SYS
 
 'loop until the user wants
 

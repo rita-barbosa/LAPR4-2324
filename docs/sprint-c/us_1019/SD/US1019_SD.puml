@@ -11,17 +11,15 @@ autonumber
 actor "Customer Manager" as CM
 participant "<<presentation>>\n:ListOrderedCandidatesUI" as UI
 participant "<<application>>\n:ListOrderedCandidatesController" as CTRL
-participant "<<repository>>\n:JobOpeningRepository" as JobOpeningRepository
+participant ":AuthorizationService" as AUTHZ <<service>>
 participant "<<service>>\n:JobOpeningManagementService" as JobManagement
+participant "<<service>>\n:JobOpeningDTOService" as JOS_DTO
 participant "<<repository>>\n:JobOpeningRepository" as JobOpeningRepository
+participant "<<domain>>\n:JobOpening" as JobOpening
 participant "<<service>>\n:ApplicationManagementService" as AppManagement
 participant "<<repository>>\n:ApplicationRepositoryRepository" as ApplicationRepository
 participant "<<service>>\n:ApplicationDTOService" as AppDTOServ
 participant "<<domain>>\n:Application" as Application
-participant "<<service>>\n:CandidateManagementService" as CandidateManagement
-participant "<<repository>>\n:CandidateRepository" as CandidateRepository
-participant "<<service>>\n:CandidateDTOService" as CanDTOServ
-participant "<<domain>>\n:Candidate" as Candidate
 
 activate CM
 
@@ -33,10 +31,29 @@ UI -> CTRL** : create()
 UI -> CTRL: getJobOpeningList()
 activate CTRL
 
-    ref over CTRL
-    **[ref1]:** Check **sequence-diagram-get-job-openings**
-    in the folder **team-decisions**
-    end ref
+CTRL -> AUTHZ : loggedinUserWithPermissions(BaseRole.CUSTOMER_MANAGER)
+    activate AUTHZ
+    deactivate AUTHZ
+
+    CTRL -> JobManagement: jobOpeningsOfCustomerManager(username)
+    activate JobManagement
+
+    JobManagement -> JobOpeningRepository : getJobOpeningListInAnalysisPhase(customerManagerUsername)
+    activate JobOpeningRepository
+    deactivate JobOpeningRepository
+
+JobManagement -> JobOpeningRepository : convertToDTO(jobOpeningList)
+activate JobOpeningRepository
+
+    loop for each JobOpening
+        JobOpeningRepository -> JobOpening : toDTO()
+        activate JobOpening
+        deactivate JobOpening
+    end loop
+deactivate JobOpeningRepository
+
+JobManagement --> CTRL : jobOpeningListDTO
+deactivate JobManagement
 
     CTRL --> UI : jobOpeningListDTO
 
@@ -48,7 +65,7 @@ deactivate UI
 CM -> UI : selects the job opening
 activate UI
 
-UI -> CTRL: getCandidateList(jobOpeningDTO)
+UI -> CTRL: getApplicationsOrderedByInterviewResult(jobOpeningDTO)
 activate CTRL
 
     CTRL -> JobManagement : getJobOpening(jobOpeningDTO)
@@ -64,10 +81,10 @@ activate CTRL
     deactivate JobManagement
 
 
-    CTRL -> AppManagement : getApplicationsList(jobOpening)
+    CTRL -> AppManagement : getApplicationsWithInterviewGrade(jobOpening)
     activate AppManagement
 
-    AppManagement -> ApplicationRepository : getApplicationsListWithInterviewResult()
+    AppManagement -> ApplicationRepository : getApplicationsWithInterviewGrade()
     activate ApplicationRepository
     deactivate ApplicationRepository
 
@@ -86,31 +103,14 @@ activate CTRL
     AppManagement --> CTRL : applicationsListDTO
     deactivate AppManagement
 
-    'CHECK THIS PART
+    CTRL -> AppManagement : getApplicationsOrderedByInterviewResult(applicationsListDTO)
+    activate AppManagement
 
-    CTRL -> CandidateManagement : getCandidateList(applicationsListDTO)
-    activate CandidateManagement
-
-    CandidateManagement -> CandidateRepository : getCandidateList(applicationsListDTO)
-    activate CandidateRepository
-    deactivate CandidateRepository
-
-    CandidateManagement --> CanDTOServ :  convertToDTO(candidateList)
-        activate CanDTOServ
-
-        loop for each candidate
-        CanDTOServ -> Candidate : toDTO()
-        activate Candidate
-        deactivate Candidate
-        end loop
-
-        deactivate CanDTOServ
-
-        CandidateManagement --> CTRL : candidateListDTO
-        deactivate CandidateManagement
+    AppManagement --> CTRL : orderApplicationDTOList
+    deactivate AppManagement
 
 
-    CTRL --> UI : candidateListDTO
+    CTRL --> UI : orderApplicationDTOList
     deactivate CTRL
 
 

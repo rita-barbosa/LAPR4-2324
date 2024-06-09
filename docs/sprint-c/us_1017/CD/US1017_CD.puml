@@ -8,53 +8,28 @@ title US1017 Class Diagram
 
 'package "Application" {
     class UploadInterviewResponsesController <<Application>> {
-        + getInterviewModelTemplates()
-        + getApplicationList()
         + getJobOpeningList()
-        + getAllApplicationInformation(applicationDTO)
+        + getApplicationList()
     }
 '}
 
 class JobOpeningManagementService <<Service>> {
-+ jobOpeningsOfCustomerManager(username)
+    + getJobOpeningsInInterviewAndAnalysisPhase(username)
     + getJobOpening(jobOpeningDTO)
-    + getApplicationList(jobOpeningDTOList)
 }
 
 class InterviewModelManagementService <<Service>> {
-    + getInterviewModelTemplates()
-    + getInterviewModel(interviewModelDTO)
-}
-
-class InterviewModelDTOService <<Service>> {
-    + convertToDTO(interviewModelList)
-}
-
-class JobOpeningDTOService <<Service>> {
-    + convertToDTO(jobOpeningList)
+    + checkAnswersFileIsValid(interviewName, filepath)
 }
 
 class ApplicationManagementService <<Service>> {
-    + getApplicationsList(jobOpening)
-    + getAllApplicationInformation(applicationDTO)
+    + getApplicationsFromJobReference(jobReference)
+    + uploadInterviewAnswerFile(applicationDTO, filepath)
 }
 
 class ApplicationDTOService <<Service>> {
     + convertToDTO(applicationList)
 }
-
-class InterviewTemplateManagerService <<Service>> {
-    + checkFileFormat(filepath)
-}
-
-class InterviewModelPlugin <<Plugin>> {
-    + checkFileFormat(filepath)
-}
-
-class InterviewModelParser <<Parser>> <<Interpreter>> {
-    + checkFileSyntax(filepath)
-}
-
 
     class AuthenticationService <<Application>> <<Service>> {
         + loggedinUserWithPermissions(BaseRole.CUSTOMER_MANAGER)
@@ -65,65 +40,45 @@ class InterviewModelParser <<Parser>> <<Interpreter>> {
     }
 
     class JobOpening <<Domain>> <<Aggregate Root>> {
-        - function : String
-        - contractType : ContractType
-        - workMode : WorkMode
-        - companyAddress : Address
-        - costumerCode : String
-        - companyName : String
-        - numVacancies : Integer
-        - description : String
-        - requirementsSpecificationsFile : File
         + toDTO()
     }
 
     class Application <<Domain>> <<Aggregate Root>> {
-        - requirementAnswer : String
-        - requirementResult : Integer
-        - file : File
-        - email : String
-        - applicationDate : Date
-        - applicationStatus : Boolean
-        - candidateName : String
-        - phoneNumber : Integer
-        - interview : Interview
         + toDTO()
     }
 
     class Interview <<Domain>> <<Value Object>> {
-        - interviewTypeDenomination : String
-        - schedule : Date
-        - interviewResult : String
-        - interviewGrade : Integer
-        - justification : String
-        - interviewAnswer :  String
         + valueOf()
     }
 
-    class InterviewModel <<Domain>> <<Value Object>> {
-        - interviewModelName : String
-        - interviewModelDescription : String
-
-        + toDTO()
-    }
+    class InterviewAnswer <<Domain>> <<Value Object>> {
+            + InterviewAnswer(fileWithAnswers)
+        }
 '}
 
 'package "Persistence" {
     class InterviewModelRepository <<Persistence>> <<Repository>> {
-        + getInterviewModelTemplates()
-        + getInterviewModel(interviewModelDTO)
+        + getFileByName(interviewName)
     }
 
     class JobOpeningRepository <<Persistence>> <<Repository>> {
-        + getJobOpeningListMatchingCustomerManager(customerManagerUsername)
+        + getJobOpeningsInInterviewAndAnalysisPhase(phase, customerManagerUsername)
         + getJobOpening(JobOpeningDTO)
     }
 
     class ApplicationRepository <<Persistence>> <<Repository>> {
-        + getApplicationsListWithInterviewResult()
+        + getApplicationsFromJobReference(jobReference)
+        + getApplicationFromDTO(applicationDTO)
+        + save(application)
     }
 
 '}
+
+package "Plugin" {
+    class Main {
+    + checkFileFormat(String filepath)
+    }
+}
 
 ' Associations
 CustomerManager ..> UploadInterviewResponsesController
@@ -132,26 +87,19 @@ UploadInterviewResponsesController ..> JobOpeningRepository
 UploadInterviewResponsesController ..> ApplicationRepository
 UploadInterviewResponsesController ..> ApplicationManagementService
 UploadInterviewResponsesController ..> JobOpeningManagementService
-UploadInterviewResponsesController ..> JobOpeningDTOService
 UploadInterviewResponsesController ..> ApplicationDTOService
 UploadInterviewResponsesController ..> InterviewModelManagementService
-UploadInterviewResponsesController ..> InterviewModelDTOService
-UploadInterviewResponsesController ..> InterviewTemplateManagerService
-
+UploadInterviewResponsesController ..> AuthorizationService
 
 ' Domain Layer
 Interview "0..1" -> "*" Application : characterizes
+InterviewAnswer "1" -> "1" Interview : characterizes
 JobOpeningManagementService --> JobOpeningRepository
 JobOpeningManagementService --> JobOpening
 ApplicationManagementService --> Application
 ApplicationManagementService --> ApplicationRepository
 ApplicationDTOService --> Application
-JobOpeningDTOService --> JobOpening
-InterviewModelManagementService --> InterviewModel
 InterviewModelManagementService --> InterviewModelRepository
-InterviewModelDTOService --> InterviewModel
-InterviewTemplateManagerService -> InterviewModelPlugin
-InterviewModelPlugin --> InterviewModelParser
 
 
 ' Persistence Layer
@@ -161,9 +109,8 @@ JobOpeningRepository <.. JobOpening : persisted by
 ApplicationRepository <.. Application : persisted by
 ApplicationRepository "1" --> "*" Interview : rebuilds
 
-InterviewModelRepository <.. InterviewModel : persisted by
-
 ' Authentication
 AuthenticationService ..> UploadInterviewResponsesController
+UploadInterviewResponsesController ...> Main
 
 @enduml

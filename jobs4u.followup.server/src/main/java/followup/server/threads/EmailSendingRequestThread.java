@@ -1,20 +1,23 @@
 package followup.server.threads;
 
+import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.network.FollowUpRequestCodes;
 import jobs4u.base.network.SerializationUtil;
 import jobs4u.base.network.data.DataBlock;
 import jobs4u.base.network.data.DataDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.List;
 
-//TODO ADD LOGGER COMMENTS
-//TODO REMOVE FRODO SERVER RESPONSES (FIND WORKAROUND)
 public class EmailSendingRequestThread implements Runnable {
 
     private static final String SMTP_SERVER_DNS_NAME = "frodo.dei.isep.ipp.pt";
     private static final int FRODO_SMTP_PORT = 25;
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceContext.class);
+
 
     private final DataDTO data;
     private final DataOutputStream sOut;
@@ -44,7 +47,7 @@ public class EmailSendingRequestThread implements Runnable {
             //reads the smtp server responses line by line
             responseReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
-            //add logger comment
+            LOGGER.error("Error while connecting to smtp server", e);
             throw new RuntimeException(e + "\nCouldn't connect to " + SMTP_SERVER_DNS_NAME);
         }
 
@@ -80,12 +83,11 @@ public class EmailSendingRequestThread implements Runnable {
             commandPrinter.println(info);
             //signaling the end of the email message
             commandPrinter.println(".");
-            //System.out.println("End of Data Response: " + responseReader.readLine());
 
             // close connection (server side)
             commandPrinter.println("QUIT");
-            //System.out.println("QUIT Response: " + responseReader.readLine());
         } catch (IOException e) {
+            LOGGER.error("Error while sending email.", e);
             System.out.println("Couldn't send email to " + recipientEmail);
         }
 
@@ -107,7 +109,7 @@ public class EmailSendingRequestThread implements Runnable {
             sOut.write(bytes);
             sOut.flush();
         } catch (IOException e) {
-            //add logger comment
+            LOGGER.error("Error while sending empty response", e);
         }
     }
 

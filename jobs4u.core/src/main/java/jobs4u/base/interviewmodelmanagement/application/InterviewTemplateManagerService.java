@@ -4,9 +4,12 @@ import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.interviewmodelmanagement.domain.InterviewModel;
 import jobs4u.base.interviewmodelmanagement.repositories.InterviewModelRepository;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
+import plugins.FileManagement;
+import plugins.InterviewModelPlugin;
 
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -24,19 +27,15 @@ public class InterviewTemplateManagerService {
 
     public boolean generateNewTemplate(InterviewModel interviewModel, String outputDirectory) {
         try {
-            String[] command = {"java", "-jar", interviewModel.className(), "-template", (outputDirectory + "\\")};
-
-            ProcessBuilder processBuilder = new ProcessBuilder(command);
-            Process process = processBuilder.start();
-
-            int exitCode = process.waitFor();
-            System.out.println("Template command executed. Process exited with code: " + exitCode);
-            if (exitCode == 0){
-                return true;
-            }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            ClassLoader loader = ClassLoader.getSystemClassLoader();
+            FileManagement dataImporterInstance = (FileManagement) loader.loadClass(interviewModel.dataImporter()).getDeclaredConstructor().newInstance();
+            InterviewModelPlugin interviewModelEvaluator = (InterviewModelPlugin) loader.loadClass(interviewModel.className()).getDeclaredConstructor().newInstance();
+            dataImporterInstance.importData(interviewModel.configurationFile().toString());
+            interviewModelEvaluator.generateTextFile((outputDirectory + "\\" + interviewModel.nameString() + ".txt"));
+            return true;
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException e) {
+            return false;
         }
-        return false;
     }
 }

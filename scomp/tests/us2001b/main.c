@@ -10,10 +10,6 @@ void call_func(void (*)(const char *, int *, int *), const char *directory, int 
 
 void call_func_copy_files(void (*)(int, char *, char *), int n, char *input_directory, char *output_directory);
 
-void call_func_delegate_candidate(void (*)(int, int, int, int (*)[2]), int lastCandidate, int copiedCandDiff, int child, int fd[][2]);
-
-void call_func_available_child(void (*)(int *, int), int *child, int fd);
-
 void call_func_generate_report(void  (*)(int, char*),int lastCandidate, char *output_directory);
 
 // Define setup and teardown functions if needed

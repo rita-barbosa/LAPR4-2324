@@ -2,6 +2,7 @@ package jobs4u.base.network;
 
 import eapli.framework.infrastructure.authz.domain.model.Username;
 import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
+import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.network.responseprocessors.ApplicationListResponseProcessor;
 import jobs4u.base.network.responseprocessors.JobOpeningListResponseProcessor;
@@ -10,6 +11,8 @@ import jobs4u.base.network.responseprocessors.ResponseProcessor;
 import jobs4u.base.network.data.DataDTO;
 import jobs4u.base.notificationmanagement.dto.NotificationDTO;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -22,16 +25,15 @@ import java.util.List;
 import java.util.Map;
 
 
-//TODO ADD LOGGER COMMENTS
-//TODO CHECK SERVERIP ADDRESS
 public class FollowUpConnectionService {
 
-    //get server IP
     private static Socket clientSocket;
     private static DataOutputStream sOut;
     private static DataInputStream sIn;
     private InetAddress serverIp;
     public static int PORT_NUMBER = 6666;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceContext.class);
 
     public FollowUpConnectionService() {
     }
@@ -64,7 +66,7 @@ public class FollowUpConnectionService {
             serverIp = InetAddress.getLocalHost();
             return true;
         } catch (UnknownHostException ex) {
-            //add logger comments
+            LOGGER.error("Unable to get local host address.", ex);
         }
         return false;
     }
@@ -99,9 +101,8 @@ public class FollowUpConnectionService {
             int byteLength = sIn.readInt();
             byte[] bytes = new byte[byteLength];
             sIn.readFully(bytes);
-            DataDTO dataDTOanswer = DataDTO.fromByteArray(bytes);
 
-            return dataDTOanswer;
+            return DataDTO.fromByteArray(bytes);
         } catch (IOException e) {
             throw new RuntimeException(e + "\n Unable to send authentication request.\n");
         }
@@ -124,7 +125,7 @@ public class FollowUpConnectionService {
             }
 
         } catch (IOException e) {
-            //put logger comment
+            LOGGER.error("Unable to correctly close the connection.", e);
             return Pair.of(false, "Connection closed.");
         }
     }
@@ -145,23 +146,6 @@ public class FollowUpConnectionService {
             throw new RuntimeException(e + "\n Unable to send job opening list request.\n");
         }
     }
-
-//    public List<ApplicationDTO> receiveCandidateApplicationList(Username username) {
-//        //send candidate applications request with dataDTO
-//        try {
-//            DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.APPLIST.getCode());
-//            byte[] serialized = SerializationUtil.serialize(username);
-//            dataDTO.addDataBlock(serialized.length, serialized);
-//            byte[] message = dataDTO.toByteArray();
-//            sOut.writeInt(message.length);
-//            sOut.write(message);
-//            sOut.flush();
-//            return processListResponse(new ApplicationListResponseProcessor());
-//
-//        } catch (IOException e) {
-//            throw new RuntimeException(e + "\n Unable to send applications list request.\n");
-//        }
-//    }
 
     public List<Map.Entry<ApplicationDTO, Integer>> receiveCandidateApplicationAndNumberList(Username username) {
         //send candidate applications request with dataDTO
@@ -268,7 +252,7 @@ public class FollowUpConnectionService {
             sIn.readFully(bytes);
             dataDTO = DataDTO.fromByteArray(bytes);
         } catch (IOException e) {
-            //get LOGGER
+            LOGGER.error("\n Unable to send empty response.\n");
         }
 
         assert dataDTO != null;

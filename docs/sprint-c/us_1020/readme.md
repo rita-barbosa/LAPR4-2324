@@ -161,26 +161,121 @@ company/customer, the email must contain the list of selected candidates, includ
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+### PublishResultJobOpeningController
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this
-requirement.*
+````
+public void publishResultForJobOpening(JobOpeningDTO jobOpeningDTO, String userPassword) {
+    Optional<SystemUser> customerManagerOpt = authz.loggedinUserWithPermissions(BaseRoles.CUSTOMER_MANAGER);
+
+    if (customerManagerOpt.isPresent()) {
+        publishResults(jobOpeningDTO, customerManagerOpt.get().email(), userPassword);
+    } else {
+        throw new IllegalArgumentException("Couldn't retrieve logged in user.");
+    }
+}
+
+private void publishResults(JobOpeningDTO jobOpeningDTO, EmailAddress customerManager, String userPassword) {
+    Optional<Rank> r = rankRepository.ofIdentity(new JobReference(jobOpeningDTO.getJobReference()));
+
+    if (r.isEmpty()) {
+        throw new IllegalArgumentException("Coudln't obtain the rank for the selected job opening.");
+    }
+
+    Rank rank = r.get();
+    final List<Candidate> acceptedCandidateList = new ArrayList<>();
+    String newStatus;
+
+    for (RankOrder entry : rank.rankOrder()) {
+        if (entry.numberRanked() <= jobOpeningDTO.getNumVacancies()) {
+            Application app = entry.acceptApplication();
+            newStatus = app.applicationStatus().getStatusDescription();
+            acceptedCandidateList.add(app.candidate());
+            appRepo.save(app);
+            sendEmail(customerManager, entry.candidateEmail(), rank.identity(), userPassword);
+        } else {
+            Application app = entry.rejectApplication();
+            newStatus = app.applicationStatus().getStatusDescription();
+            appRepo.save(app);
+        }
+        dispatcher.publish(new ApplicationStatusChangedEvent(entry.candidateEmail(), rank.identity(), newStatus));
+    }
+    Optional<Customer> customer = customerRepository.getCustomerByCustomerCode(jobOpeningDTO.getCustomerCode());
+    sendEmail(customerManager, customer.get().customerUser().email(), acceptedCandidateList, rank.identity(), userPassword);
+}
+````
+
+````
+private void sendEmail(EmailAddress senderEmail, EmailAddress receiverEmail, JobReference jo, String userPassword) {
+    try {
+        Username user = getSessionCredentials();
+        Pair<Boolean, String> connection = establishConnection(user, userPassword);
+        if (!connection.getKey()) {
+            throw new IllegalArgumentException("Error: Could not establish connection" + connection.getValue());
+        }
+        String text = "Hello, this is Jobs4u, we came to tell you that your application has been accepted for the job opening: " + jo.toString();
+        connectionService.sendEmail(senderEmail.toString(), receiverEmail.toString(), "JobOpening Result", text);
+        FollowUpConnectionService.closeConnection();
+    } catch (NoSuchElementException | IllegalArgumentException e) {
+        LOGGER.error(e.getMessage());
+    }
+}
+
+private void sendEmail(EmailAddress senderEmail, EmailAddress receiverEmail, List<Candidate> cand, JobReference jo, String userPassword) {
+    try {
+        Username user = getSessionCredentials();
+        Pair<Boolean, String> connection = establishConnection(user, userPassword);
+        if (!connection.getKey()) {
+            throw new IllegalArgumentException("Error: Could not establish connection" + connection.getValue());
+        }
+        connectionService.sendEmail(senderEmail.toString(), receiverEmail.toString(), "JobOpening Result", emailInfo(jo, cand));
+        FollowUpConnectionService.closeConnection();
+    } catch (NoSuchElementException | IllegalArgumentException e) {
+        LOGGER.error(e.getMessage());
+    }
+}
+````
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
+To use this feature, you'll need to run the script named `run-backoffice-app` and log in with Customer Manager
+permissions.
 
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
+Then, navigate to the _Job Opening_ menu and select option 11 - `Publish results of job opening` - to
+access this feature.
+
+Additionally, the server needs to be initiated. Since it uses the DEI local SMTP server (frodo.dei.isep.ipp.pt), it is
+essential that the email addresses of the customer manager, candidates, and customers who will send and receive emails
+are ISEP mailboxes (…@isep.ipp.pt).
+
+````
++= Publish results of job opening =============================================+
+
+Please enter your password: 
+Password-1
+Select a job opening to publish the results of
+1. 
+»» Job Reference: AVIP-1
+ » Function: Back End Senior Developer
+ » Contract Type: full-time
+ » Work Mode: remote
+ » Address: Third Street, Third, Third Town, Third District, 4510-910
+ » Description: Night Guard.
+ » Number of Vacancies: 6
+ » Company: AVIP
+
+0. Exit
+Select an option: 
+1
+The results have been successfully published.
++==============================================================================+
+````
 
 ## 7. Observations
 
-*This section should be used to include any content that does not fit any of the previous sections.*
+This user story underwent many changes due to server incompatibilities. Initially, the plan was to use threads, but
+despite implementing thread synchronization, the functionality was not working as required. Numerous modifications would
+have been necessary to make it work. 
 
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
+Therefore, with the deadline approaching, we decided that altering the planned
+implementation would be more beneficial.
 
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*

@@ -7,12 +7,14 @@ autonumber
 box System #LightBlue
     participant "<<presentation>>\n:UploadRequirementAnswersUI" as UI
     participant "<<application>>\n:UploadRequirementAnswersController" as CTRL
+
+    participant "<<service>>\n:JobOpeningManagementService" as JobSrv
+    participant "<<service>>\n:JobOpeningDTOService" as JobSrvDTO
+    database "<<repository>>\n:JobOpeningRepository" as JobRepo
+
     participant "<<service>>\n:RecruitmentProcessManagementService" as RecruitSrv
     participant "<<domain>>\n:RecruitmentProcess" as RecruitmentProcess
     database "<<repository>>\n:RecruitmentProcessRepository" as RecruitmentProcessRepository
-    participant "<<service>>\n:JobOpeningManagementService" as JobSrv
-    participant "<<domain>>\n:JobOpening" as JobOp
-    database "<<repository>>\n:JobOpeningRepository" as JobRepo
 
     participant "<<service>>\n:ApplicationManagementService" as AppSrv
     participant "<<domain>>\n:Application" as App
@@ -36,18 +38,35 @@ UI -> CTRL : getJobOpenings()
 activate UI
 activate CTRL
 
-CTRL -> JobSrv : getOnGoingJobOpenings()
+CTRL -> JobSrv : getOnGoingJobOpeningsInScreeningPhase()
 activate JobSrv
 
 JobSrv -> JobRepo : getJobOpeningsWithSTARTEDStatus()
 activate JobRepo
 deactivate JobRepo
 
-loop for all jobOpenings in the list
-    JobSrv -> JobOp : toDto()
-    activate JobOp
-    deactivate JobOp
+loop
+JobSrv -> RecruitSrv : checkIfRecruitmentProcessIsInScreeningPhase(jobReference)
+activate RecruitSrv
+
+RecruitSrv -> RecruitmentProcessRepository : getRecruitmentProcessByJobReference((jobReference)
+activate RecruitmentProcessRepository
+deactivate RecruitmentProcessRepository
+
+RecruitSrv -> RecruitmentProcess : currentActivePhase()
+activate RecruitmentProcess
+
+RecruitmentProcess --> RecruitSrv : "Screening phase"
+deactivate RecruitmentProcess
+
+
+deactivate RecruitSrv
 end loop
+
+JobSrv -> JobSrvDTO : convertToDTO(list)
+activate JobSrvDTO
+deactivate JobSrvDTO
+
 
 JobSrv --> CTRL : jobOpeningsListDTO
 deactivate JobSrv
@@ -66,27 +85,6 @@ note right
     string within the
     JobOpeningDTO
 end note
-
-
-CTRL -> RecruitSrv : checkIfRecruitmentProcessIsInScreeningPhase(jobReference)
-activate RecruitSrv
-
-RecruitSrv -> RecruitmentProcessRepository : getRecruitmentProcessByJobReference(jobReference)
-activate RecruitmentProcessRepository
-deactivate RecruitmentProcessRepository
-
-RecruitSrv -> RecruitmentProcess : currentActivePhase()
-activate RecruitmentProcess
-
-RecruitmentProcess --> RecruitSrv : phaseDenomination
-deactivate RecruitmentProcess
-
-alt phaseDenomination == SCREENING
-RecruitSrv --> CTRL : true
-end alt
-deactivate RecruitSrv
-
-|||
 
 CTRL -> AppSrv : getApplicationsFromJobReference(jobReference)
 activate AppSrv
@@ -152,6 +150,7 @@ deactivate App
 
 AppSrv -> AppRepo : save(application)
 activate AppRepo
+
 deactivate AppRepo
 deactivate AppSrv
 

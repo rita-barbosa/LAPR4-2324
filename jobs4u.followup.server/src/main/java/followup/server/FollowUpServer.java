@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-//TODO SEE SERVER SOCKET PORT
 public class FollowUpServer {
 
     static ServerSocket serverSocket;
@@ -15,7 +14,6 @@ public class FollowUpServer {
         System.out.println("Server has been initiated.\n");
         Socket clientSocket;
         try {
-            //change PORT
             serverSocket = new ServerSocket(6666);
         } catch (IOException ex) {
             System.out.println("Failed to open server socket.\n");

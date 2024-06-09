@@ -42,6 +42,15 @@ public class InMemoryApplicationRepository
     }
 
     @Override
+    public Iterable<Application> applicationsForJobOpeningWithoutInterviews(String jobReference) {
+        JobOpeningRepository jobOpeningRepository = PersistenceContext.repositories().jobOpenings();
+        Optional<JobOpening> jos = jobOpeningRepository.getJobOpeningByJobReference(new JobReference(jobReference));
+        jos.ifPresent(jobOpening -> match(e -> e.interview() != null && jobOpening.getApplications().contains(e)));
+        return Collections.emptyList();
+    }
+
+
+    @Override
     public Iterable<Application> applicationsFromCandidate(String phoneNumber) {
         return match(e -> e.candidate().phoneNumber().number().equals(phoneNumber));
     }
@@ -64,6 +73,14 @@ public class InMemoryApplicationRepository
 
     @Override
     public Iterable<Application> getApplicationFromCandidateUserName(Username username) {
-        return match(e -> e.candidate().user().username().equals(username));
+        return match(e -> e.candidate().user().username().equals(username)); //change this later to be correct and related to the jpaApplicationRepository
+    }
+
+    @Override
+    public Iterable<Application> getApplicationsWithInterviewGrade(String jobReference) {
+        JobOpeningRepository jobOpeningRepository = PersistenceContext.repositories().jobOpenings();
+        Optional<JobOpening> jobOpenings = jobOpeningRepository.getJobOpeningByJobReference(new JobReference(jobReference));
+        jobOpenings.ifPresent(jobOpening -> match(e -> e.interview().interviewResult() != null && jobOpening.getApplications().contains(e)));
+        return Collections.emptyList();
     }
 }

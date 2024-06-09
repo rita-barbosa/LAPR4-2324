@@ -51,7 +51,6 @@ public class ChangePhaseStatesController {
         try {
             return recruitmentProcessManagementService.getRecruitmentProcessWithJobReference(new JobReference(jobReference));
         }catch(Exception e){
-            System.out.println("[ No Job Openings Found Associated To This Customer Manager ]");
             throw new ClassNotFoundException("It was not possible to retrieve the job opening's data.");
         }
     }

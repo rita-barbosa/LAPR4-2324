@@ -19,4 +19,7 @@ public interface ApplicationRepository extends DomainRepository<Long, Applicatio
 
     Iterable<Application> getApplicationFromCandidateUserName(Username username);
 
+    Iterable<Application> applicationsForJobOpeningWithoutInterviews(String jobReference);
+
+    Iterable<Application> getApplicationsWithInterviewGrade(String jobReference);
 }

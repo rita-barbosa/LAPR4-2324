@@ -165,7 +165,7 @@ public class MainMenu extends AbstractUI {
             final Menu usersMenu = buildUsersMenu();
             mainMenu.addSubMenu(USERS_OPTION, usersMenu);
             final Menu rankMenu = buildAdminRankMenu();
-            mainMenu.addSubMenu(2, rankMenu);
+            mainMenu.addSubMenu(3, rankMenu);
 //            final Menu settingsMenu = buildAdminSettingsMenu();
 //            mainMenu.addSubMenu(SETTINGS_OPTION, settingsMenu);
         }

@@ -7,21 +7,29 @@ import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.requirementsmanagement.application.UploadRequirementAnswersController;
 
+import java.util.NoSuchElementException;
+
 public class UploadRequirementAnswersUI extends AbstractUI {
 
     UploadRequirementAnswersController controller = new UploadRequirementAnswersController();
 
     @Override
     protected boolean doShow() {
+        SelectWidget<JobOpeningDTO> jobOpeningDTOSelectWidget;
 
-        SelectWidget<JobOpeningDTO> jobOpeningDTOSelectWidget = new SelectWidget<>("Select Job Opening",
-                controller.getJobOpenings());
+        try{
+            jobOpeningDTOSelectWidget = new SelectWidget<>("Select Job Opening:",
+                    controller.getJobOpenings());
+        }catch (NoSuchElementException e){
+            return false;
+        }
+
         jobOpeningDTOSelectWidget.show();
         JobOpeningDTO jobOpeningDTO = jobOpeningDTOSelectWidget.selectedElement();
 
         ApplicationDTO applicationDTO;
         try {
-            SelectWidget<ApplicationDTO> applicationDTOSelectWidget = new SelectWidget<>("Select Application",
+            SelectWidget<ApplicationDTO> applicationDTOSelectWidget = new SelectWidget<>("Select Application:",
                     controller.getApplications(jobOpeningDTO.getJobReference()));
             applicationDTOSelectWidget.show();
             applicationDTO = applicationDTOSelectWidget.selectedElement();
@@ -45,6 +53,6 @@ public class UploadRequirementAnswersUI extends AbstractUI {
 
     @Override
     public String headline() {
-        return "Import requirement answers";
+        return "Import Requirement Answers";
     }
 }

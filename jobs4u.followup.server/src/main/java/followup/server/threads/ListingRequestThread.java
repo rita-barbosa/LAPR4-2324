@@ -1,6 +1,7 @@
 package followup.server.threads;
 
 import eapli.framework.infrastructure.authz.domain.model.Username;
+import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.network.FollowUpRequestCodes;
 import jobs4u.base.applicationmanagement.application.ApplicationManagementService;
 import jobs4u.base.applicationmanagement.dto.ApplicationDTO;
@@ -8,6 +9,8 @@ import jobs4u.base.jobopeningmanagement.application.JobOpeningManagementService;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.network.SerializationUtil;
 import jobs4u.base.network.data.DataDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -15,11 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-//TODO ADD LOGGER COMMENTS
 public class ListingRequestThread implements Runnable {
 
     public final DataDTO data;
     private final DataOutputStream sOut;
+    private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceContext.class);
 
     public ListingRequestThread(DataDTO dataDTO, DataOutputStream dataOutputStream) {
         this.data = dataDTO;
@@ -65,6 +68,7 @@ public class ListingRequestThread implements Runnable {
             sOut.write(bytes);
             sOut.flush();
         } catch (IOException e) {
+            LOGGER.error("Couldn't send response.", e);
             //add logger comment
             throw new RuntimeException(e + "\nCouldn't serialize to stream and send response.\n");
         }

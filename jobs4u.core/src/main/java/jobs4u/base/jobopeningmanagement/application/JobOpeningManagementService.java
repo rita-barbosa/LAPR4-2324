@@ -12,6 +12,7 @@ import jobs4u.base.jobopeningmanagement.domain.JobOpeningStatusEnum;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.recruitmentprocessmanagement.application.RecruitmentProcessManagementService;
 import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcess;
+import jobs4u.base.recruitmentprocessmanagement.domain.RecruitmentProcessStatusEnum;
 import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.domain.JobOpening;
@@ -179,8 +180,8 @@ public class JobOpeningManagementService {
         return dtoSvc.convertToDTO(jobOpeningRepository.jobOpeningsListOfCustomerManager(customerManagerUsername));
     }
 
-    public Iterable<JobOpeningDTO> getSTARTEDJobOpeningsOfCustomerManager(Username customerManagerUsername){
-        Iterable<JobOpening> jobs = jobOpeningRepository.getSTARTEDJobOpeningList(customerManagerUsername);
+    public Iterable<JobOpeningDTO> getJobOpeningListInAnalysisPhase(Username customerManagerUsername){
+        Iterable<JobOpening> jobs = jobOpeningRepository.getJobOpeningListInAnalysisPhase(customerManagerUsername);
         return dtoSvc.convertToDTO(jobs);
     }
 
@@ -191,6 +192,15 @@ public class JobOpeningManagementService {
             jobOpeningDTOs.add(jobOpening.toDTO());
         }
         return jobOpeningDTOs;
+    }
+
+    public List<JobOpeningDTO> getJobOpeningsInInterviewAndAnalysisPhase(Username customerManagerUsername){
+        Iterable<JobOpening> jobOpenings = jobOpeningRepository.getJobOpeningListMatchingStatusFromCustomerManager(String.valueOf(JobOpeningStatusEnum.STARTED), customerManagerUsername);
+        List<JobOpeningDTO> jobOpeningInInterviewAndAnalysisPhase = new ArrayList<>();
+        for (JobOpening jobOpening : jobOpenings) {
+            jobOpeningInInterviewAndAnalysisPhase.add(jobOpening.toDTO());
+        }
+        return jobOpeningInInterviewAndAnalysisPhase;
     }
 
     public Iterable<JobOpeningDTO> jobOpeningsInResultListOfCustomerManager(Username customerManagerUsername) {
@@ -205,5 +215,16 @@ public class JobOpeningManagementService {
             applicationDTOList.addAll(applicationDTOFromJobOpening);
         }
         return applicationDTOList;
+    }
+
+    public Iterable<JobOpeningDTO> getOnGoingJobOpeningsInScreeningPhase() {
+        List<JobOpening> jobOpeningList = new ArrayList<>();
+        List<JobOpening> jobOpenings = jobOpeningRepository.getJobOpeningListMatchingStatus(String.valueOf(JobOpeningStatusEnum.STARTED));
+        for (JobOpening jobOpening : jobOpenings) {
+            if (recruitmentProcessManagementService.checkIfRecruitmentProcessIsInScreeningPhase(jobOpening.jobReference().toString())){
+                jobOpeningList.add(jobOpening);
+            }
+        }
+        return dtoSvc.convertToDTO(jobOpeningList);
     }
 }

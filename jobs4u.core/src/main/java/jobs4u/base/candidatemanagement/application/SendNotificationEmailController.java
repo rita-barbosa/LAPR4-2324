@@ -22,9 +22,9 @@ import java.util.Optional;
 
 public class SendNotificationEmailController {
     private final AuthorizationService authorizationService = AuthzRegistry.authorizationService();
-    private final JobOpeningManagementService jobOpeningManagementService= new JobOpeningManagementService();
+    private final JobOpeningManagementService jobOpeningManagementService = new JobOpeningManagementService();
 
-    private final FollowUpConnectionService followUpConnectionService= new FollowUpConnectionService();
+    private final FollowUpConnectionService followUpConnectionService = new FollowUpConnectionService();
 
 
     public Iterable<JobOpeningDTO> getJobOpeningsList() {
@@ -32,20 +32,22 @@ public class SendNotificationEmailController {
 
         return jobOpeningManagementService.activeJobOpenings();
     }
+
     private Pair<Boolean, String> establishConnection(Username username, String password) {
         return followUpConnectionService.establishConnection(username, password);
     }
+
     public boolean sendEmail(JobOpeningDTO jobOpeningDTO, String userPassword) {
         authorizationService.ensureAuthenticatedUserHasAnyOf(BaseRoles.CUSTOMER_MANAGER, BaseRoles.ADMIN);
         try {
             //get job opening and applications list
-            JobOpening jobOpening= jobOpeningManagementService.getJobOpening(jobOpeningDTO);
+            JobOpening jobOpening = jobOpeningManagementService.getJobOpening(jobOpeningDTO);
             Iterable<Application> applications = jobOpening.getApplications();
             //get customer manager
             Optional<SystemUser> customerManager = authorizationService.loggedinUserWithPermissions(BaseRoles.CUSTOMER_MANAGER);
 
-            String customerManagerEmail ="";
-            if (customerManager.isPresent()){
+            String customerManagerEmail = "";
+            if (customerManager.isPresent()) {
                 customerManagerEmail = customerManager.get().email().toString();
             }
             //Conection to server
@@ -55,14 +57,14 @@ public class SendNotificationEmailController {
             if (!connection.getKey()) {
                 throw new IllegalArgumentException("Error: Could not establish connection" + connection.getValue());
             }
-            for (Application application : applications){
-                if (application.requirementResult()!= null){
-                    followUpConnectionService.sendEmail(customerManagerEmail,application.candidate().email().toString(),"Verification Process Result","Hello, this email is intended to inform you that the result of your verification process was: "+application.requirementResult().toString()+". Best Regards.");
+            for (Application application : applications) {
+                if (application.requirementResult() != null) {
+                    followUpConnectionService.sendEmail(customerManagerEmail, application.candidate().email().toString(), "Verification Process Result", "Hello, this email is intended to inform you that the result of your verification process was: " + application.requirementResult().toString() + ". Best Regards.");
                 }
             }
             FollowUpConnectionService.closeConnection();
         } catch (NoSuchElementException | IllegalArgumentException e) {
-            System.out.println("Error");
+            return false;
         }
         return true;
     }

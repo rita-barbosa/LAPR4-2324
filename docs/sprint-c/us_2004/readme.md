@@ -196,25 +196,186 @@ No new tests were made regarding the domain entities within this functionality.
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidencies that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+This functionality UI class.
+````
+protected boolean doShow() {
+    SelectWidget<JobOpeningDTO> jobOpeningDTOSelectWidget;
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+    try{
+        jobOpeningDTOSelectWidget = new SelectWidget<>("Select Job Opening:",
+                controller.getJobOpenings());
+    }catch (NoSuchElementException e){
+        return false;
+    }
+
+    jobOpeningDTOSelectWidget.show();
+    JobOpeningDTO jobOpeningDTO = jobOpeningDTOSelectWidget.selectedElement();
+
+    ApplicationDTO applicationDTO;
+    try {
+        SelectWidget<ApplicationDTO> applicationDTOSelectWidget = new SelectWidget<>("Select Application:",
+                controller.getApplications(jobOpeningDTO.getJobReference()));
+        applicationDTOSelectWidget.show();
+        applicationDTO = applicationDTOSelectWidget.selectedElement();
+    } catch (RuntimeException e) {
+        System.out.println(e.getMessage());
+        return false;
+    }
+
+    assert applicationDTO != null;
+    String filepath = Console.readLine("Please enter the filepath of the requirement answers file: ");
+
+    assert false;
+    if (controller.uploadFile(applicationDTO, jobOpeningDTO.getRequirementName(), filepath)) {
+        System.out.println("File uploaded successfully.");
+    } else {
+        System.out.println("File not uploaded.\nPlease check the syntax or format of the file.");
+    }
+
+    return false;
+}
+````
+
+Method to get the job Openings of which its recruitment process is in the Screening phase.
+````
+public Iterable<JobOpeningDTO> getOnGoingJobOpeningsInScreeningPhase() {
+    List<JobOpening> jobOpeningList = new ArrayList<>();
+    List<JobOpening> jobOpenings = jobOpeningRepository.getJobOpeningListMatchingStatus(String.valueOf(JobOpeningStatusEnum.STARTED));
+    for (JobOpening jobOpening : jobOpenings) {
+        if (recruitmentProcessManagementService.checkIfRecruitmentProcessIsInScreeningPhase(jobOpening.jobReference().toString())){
+            jobOpeningList.add(jobOpening);
+        }
+    }
+    return dtoSvc.convertToDTO(jobOpeningList);
+}
+````
+
+Method to check the file syntax.
+````
+public boolean checkAnswersFileIsValid(String requirementName, String filepath) {
+    ClassLoader loader = ClassLoader.getSystemClassLoader();
+    try {
+            Optional<RequirementSpecification> rs = requirementSpecificationRepository.requirementSpecificationByRequirementName(requirementName);
+            if (rs.isPresent()) {
+                RequirementSpecification requirementSpec = rs.get();
+                FileManagement dataImporterInstance = (FileManagement) loader.loadClass(requirementSpec.dataImporter()).getDeclaredConstructor().newInstance();
+                dataImporterInstance.importData(requirementSpec.configurationFile().toString());
+                return dataImporterInstance.checkFileFormat(filepath);
+            }
+    } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
+             InvocationTargetException e) {
+        LOGGER.error("Unable to access plugin.");
+        return false;
+    }
+    return false;
+}
+````
+
+Method to upload it to the system.
+````
+public void uploadAnswersFile(ApplicationDTO applicationDTO, String filepath) {
+    Application application = applicationRepository.getApplicationFromDTO(applicationDTO);
+    application.updateRequirementAnswer(filepath);
+    applicationRepository.save(application);
+}
+````
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
+To use this feature, you'll need to run the script named `run-backoffice-app` and log in with Operator
+permissions.
 
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
+Then, navigate to the _Plugins_ menu and select option 2 - `Import Requirement Answer Files` - to access this
+feature.
+
+````
++= Jobs4U [ @operator@email.com ] =============================================+
+
+1. My account >
+--------------
+2. Plugins >
+3. Candidates >
+4. Applications >
+--------------
+0. Exit
+
+Please choose an option
+2
+
+>> Plugins >
+1. Generate and export Requirement Specification Template
+2. Import Requirement Answer Files
+0. Return 
+
+Please choose an option
+2
+
++= Import Requirement Answers =================================================+
+
+Select Job Opening:
+1. »» Job Reference: ISEP-2
+ » Function: Back End Senior Developer
+ » Contract Type: full-time
+ » Work Mode: remote
+ » Address: 456 Elm Street, Canada, Maple Town, Moonlight District, 4500-900
+ » Description: Night Guard.
+ » Number of Vacancies: 15
+ » Company: ISEP
+
+
+0. Exit
+Select an option: 
+1
+Select Application:
+1. 
+=====================================================================
+#Application: 7
+#File: [output\candidate4\example4.txt]
+#Application Date: 2024-01-10 00:00:00.0
+#Application Status: NOT_CHECKED
+#Candidate name: Matilde
+#Candidate username: 1220683@isep.ipp.pt
+=====================================================================
+
+
+2. 
+=====================================================================
+#Application: 8
+#File: [output\candidate1\1-report-1.txt, output\candidate1\1-candidate-data.txt, output\candidate1\1-big-file-1.txt, output\candidate1\1-email.txt, output\candidate1\1-cv.txt]
+#Application Date: 2024-01-05 00:00:00.0
+#Application Status: NOT_CHECKED
+#Candidate name: Joana
+#Candidate username: candidate@email.com
+=====================================================================
+
+
+3. 
+=====================================================================
+#Application: 9
+#File: [output\candidate5\example5.txt]
+#Application Date: 2024-01-12 00:00:00.0
+#Application Status: NOT_CHECKED
+#Candidate name: Matilde
+#Candidate username: 1220683@isep.ipp.pt
+=====================================================================
+
+
+0. Exit
+Select an option: 
+1
+Please enter the filepath of the requirement answers file: 
+C:\Users\hp15d\Downloads\i-answer-5.txt
+File uploaded successfully.
++==============================================================================+
+
+
++= Jobs4U [ @operator@email.com ] =============================================+
+````
+
 
 ## 7. Observations
 
-*This section should be used to include any content that does not fit any of the previous sections.*
+This functionality makes use of an external system, the plugin, which has many functionalities, among them, to check the 
+format and syntax of a requirement answer file.
 
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
-
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
+Each requirement specification know which instance of the plugin to be used to check syntax and evaluate files.

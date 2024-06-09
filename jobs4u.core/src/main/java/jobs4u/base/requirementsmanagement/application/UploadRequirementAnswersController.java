@@ -7,6 +7,7 @@ import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.recruitmentprocessmanagement.application.RecruitmentProcessManagementService;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class UploadRequirementAnswersController {
 
@@ -19,24 +20,26 @@ public class UploadRequirementAnswersController {
     public UploadRequirementAnswersController() {
         this.jobOpeningManagementService = new JobOpeningManagementService();
         this.applicationManagementService = new ApplicationManagementService();
-        this.requirementSpecificationManagementService =  new RequirementSpecificationManagementService();
+        this.requirementSpecificationManagementService = new RequirementSpecificationManagementService();
         this.recruitmentProcessManagementService = new RecruitmentProcessManagementService();
     }
 
-
-    public List<JobOpeningDTO> getJobOpenings() {
-        return jobOpeningManagementService.getOnGoingJobOpenings();
+    public Iterable<JobOpeningDTO> getJobOpenings() {
+        if (jobOpeningManagementService.getOnGoingJobOpeningsInScreeningPhase().iterator().hasNext()){
+            return jobOpeningManagementService.getOnGoingJobOpeningsInScreeningPhase();
+        }
+        throw new NoSuchElementException("No Job Openings in Screening Phase");
     }
 
     public List<ApplicationDTO> getApplications(String jobReference) {
-        if (recruitmentProcessManagementService.checkIfRecruitmentProcessIsInScreeningPhase(jobReference)){
+        if (!applicationManagementService.getApplicationsFromJobReference(jobReference).isEmpty()){
             return applicationManagementService.getApplicationsFromJobReference(jobReference);
         }
-        throw new RuntimeException("\n[WARNING] Recruitment process is not in analysis phase.");
+        throw new NoSuchElementException("No Applications in Job Reference: " + jobReference);
     }
 
     public boolean uploadFile(ApplicationDTO applicationDTO, String requirementName, String filepath) {
-        if(requirementSpecificationManagementService.checkAnswersFileIsValid(requirementName, filepath)){
+        if (requirementSpecificationManagementService.checkAnswersFileIsValid(requirementName, filepath)) {
             applicationManagementService.uploadAnswersFile(applicationDTO, filepath);
             return true;
         }

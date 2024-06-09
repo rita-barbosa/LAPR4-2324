@@ -22,7 +22,7 @@ class UploadRequirementAnswersController {
 }
 
 class JobOpeningManagementService {
-+ getOnGoingJobOpenings()
++ getOnGoingJobOpeningsInScreeningPhase()
 }
 
 class RecruitmentProcessManagementService {
@@ -40,6 +40,10 @@ class RecruitmentProcess {
 
 class JobOpening {
 + toDto()
+}
+
+class :JobOpeningDTOService {
++ convertToDTO(List<JobOpening> list)
 }
 
 class JobOpeningDTO {}
@@ -100,13 +104,14 @@ UploadRequirementAnswersUI .left.> UploadRequirementAnswersController
 UploadRequirementAnswersController ..> JobOpeningManagementService
 UploadRequirementAnswersController ..> ApplicationManagementService
 UploadRequirementAnswersController ..> RequirementSpecificationManagementService
-UploadRequirementAnswersController ...> RecruitmentProcessManagementService
 
 'SERVICES AND DOMAIN
 JobOpeningManagementService ..> JobOpeningRepository
 JobOpeningManagementService --> JobOpening
 JobOpeningRepository --> JobOpening
 JobOpening --> JobOpeningDTO
+JobOpeningManagementService ...> RecruitmentProcessManagementService
+JobOpeningManagementService ...> JobOpeningDTOService
 
 ApplicationManagementService ..> ApplicationRepository
 ApplicationManagementService --> Application
