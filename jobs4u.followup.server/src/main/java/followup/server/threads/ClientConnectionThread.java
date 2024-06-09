@@ -141,7 +141,6 @@ public class ClientConnectionThread implements Runnable {
 
     public void closeConnection() {
         try {
-            System.out.println("\nClosing connection.\n");
             socket.close();
         } catch (IOException e) {
             LOGGER.error("Error while closing connection.", e);

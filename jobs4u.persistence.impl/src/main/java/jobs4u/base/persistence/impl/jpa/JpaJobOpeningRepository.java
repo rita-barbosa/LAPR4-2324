@@ -54,7 +54,6 @@ public class JpaJobOpeningRepository
         int size = c.size();
         JobReference lastJobReference = null;
         if (size == 0) {
-            System.out.println("First job opening being registered in the system!");
             return new JobReference(customerCode, 0);
         }
         for (JobOpening element : jobOpenings) {

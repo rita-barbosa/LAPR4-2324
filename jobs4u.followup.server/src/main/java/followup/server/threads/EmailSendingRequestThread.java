@@ -83,11 +83,9 @@ public class EmailSendingRequestThread implements Runnable {
             commandPrinter.println(info);
             //signaling the end of the email message
             commandPrinter.println(".");
-            //System.out.println("End of Data Response: " + responseReader.readLine());
 
             // close connection (server side)
             commandPrinter.println("QUIT");
-            //System.out.println("QUIT Response: " + responseReader.readLine());
         } catch (IOException e) {
             LOGGER.error("Error while sending email.", e);
             System.out.println("Couldn't send email to " + recipientEmail);

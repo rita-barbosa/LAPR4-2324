@@ -32,8 +32,7 @@ public class InMemoryJobOpeningRepository
         int repoSize = (int) size();
         JobReference lastJobReference = null;
         if (repoSize == 0) {
-            System.out.println("First job opening being registered in the system!");
-            return new JobReference(customerCode, 0);
+                       return new JobReference(customerCode, 0);
         }
         Iterable<JobOpening> jobOpenings = findAll();
         for (JobOpening element : jobOpenings) {

@@ -6,7 +6,6 @@ import eapli.framework.infrastructure.authz.domain.model.SystemUser;
 import eapli.framework.time.domain.model.DateInterval;
 import eapli.framework.time.util.Calendars;
 import jobs4u.base.applicationmanagement.domain.*;
-import jobs4u.base.applicationmanagement.repositories.ApplicationRepository;
 import jobs4u.base.candidatemanagement.application.CandidateManagementService;
 import jobs4u.base.candidatemanagement.domain.Candidate;
 import jobs4u.base.candidatemanagement.domain.PhoneNumber;
@@ -37,7 +36,6 @@ import jobs4u.base.recruitmentprocessmanagement.repository.RecruitmentProcessRep
 import jobs4u.base.usermanagement.domain.BaseRoles;
 import jobs4u.base.workmodemanagement.domain.WorkMode;
 
-import javax.swing.text.html.Option;
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -250,8 +248,8 @@ public class DomainEntitiesBootstrapper extends UsersBootstrapperBase implements
             start30 = Calendars.fromDate(df.parse("26-03-2024"));
             end30 = Calendars.fromDate(df.parse("27-03-2024"));
             dateInterval6 = new DateInterval(start26, end30);
-        } catch (ParseException e) {
-            System.out.println(e.getMessage());
+        } catch (ParseException ignored) {
+
         }
 
         List<Phase> phases1 = new ArrayList<>();

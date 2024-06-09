@@ -83,11 +83,8 @@ public class FileWordCountThread implements Runnable {
             //CLOSES THE FILE
             Reader.close();
         } catch (FileNotFoundException e) {
-            System.out.println("An error has occurred.");
             e.printStackTrace();
         }
-
-
     }
 
     private void defineUnwantedCharacters() {

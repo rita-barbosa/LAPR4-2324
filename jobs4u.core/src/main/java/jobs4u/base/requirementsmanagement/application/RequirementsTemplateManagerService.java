@@ -4,9 +4,13 @@ import jobs4u.base.infrastructure.persistence.PersistenceContext;
 import jobs4u.base.jobopeningmanagement.dto.JobOpeningDTO;
 import jobs4u.base.requirementsmanagement.domain.RequirementSpecification;
 import jobs4u.base.requirementsmanagement.repositories.RequirementSpecificationRepository;
+import plugins.FileManagement;
+import plugins.InterviewModelPlugin;
+import plugins.RequirementsSpecificationPlugin;
 
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -25,21 +29,16 @@ public class RequirementsTemplateManagerService {
 
     public boolean generateNewTemplate(RequirementSpecification requirementSpecification, String outputDirectory) {
         try {
-            String[] command = {"java", "-jar", requirementSpecification.className().toString(), "-template", (outputDirectory + "\\")};
-
-            ProcessBuilder processBuilder = new ProcessBuilder(command);
-            Process process = processBuilder.start();
-
-            int exitCode = process.waitFor();
-            System.out.println("Template command executed. Process exited with code: " + exitCode);
-            if (exitCode == 0) {
-                return true;
-            }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            ClassLoader loader = ClassLoader.getSystemClassLoader();
+            FileManagement dataImporterInstance = (FileManagement) loader.loadClass(requirementSpecification.dataImporter()).getDeclaredConstructor().newInstance();
+            RequirementsSpecificationPlugin interviewModelEvaluator = (RequirementsSpecificationPlugin) loader.loadClass(requirementSpecification.className()).getDeclaredConstructor().newInstance();
+            dataImporterInstance.importData(requirementSpecification.configurationFile().toString());
+            interviewModelEvaluator.generateTextFile((outputDirectory + "\\" + requirementSpecification.requirementName().name() + ".txt"));
+            return true;
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException e) {
+            return false;
         }
-        return false;
     }
-
 }
 
