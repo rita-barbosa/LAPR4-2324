@@ -23,7 +23,6 @@ import java.util.Map;
 
 
 //TODO ADD LOGGER COMMENTS
-//TODO CHECK SERVERIP ADDRESS
 public class FollowUpConnectionService {
 
     //get server IP
@@ -99,9 +98,8 @@ public class FollowUpConnectionService {
             int byteLength = sIn.readInt();
             byte[] bytes = new byte[byteLength];
             sIn.readFully(bytes);
-            DataDTO dataDTOanswer = DataDTO.fromByteArray(bytes);
 
-            return dataDTOanswer;
+            return DataDTO.fromByteArray(bytes);
         } catch (IOException e) {
             throw new RuntimeException(e + "\n Unable to send authentication request.\n");
         }
@@ -145,23 +143,6 @@ public class FollowUpConnectionService {
             throw new RuntimeException(e + "\n Unable to send job opening list request.\n");
         }
     }
-
-//    public List<ApplicationDTO> receiveCandidateApplicationList(Username username) {
-//        //send candidate applications request with dataDTO
-//        try {
-//            DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.APPLIST.getCode());
-//            byte[] serialized = SerializationUtil.serialize(username);
-//            dataDTO.addDataBlock(serialized.length, serialized);
-//            byte[] message = dataDTO.toByteArray();
-//            sOut.writeInt(message.length);
-//            sOut.write(message);
-//            sOut.flush();
-//            return processListResponse(new ApplicationListResponseProcessor());
-//
-//        } catch (IOException e) {
-//            throw new RuntimeException(e + "\n Unable to send applications list request.\n");
-//        }
-//    }
 
     public List<Map.Entry<ApplicationDTO, Integer>> receiveCandidateApplicationAndNumberList(Username username) {
         //send candidate applications request with dataDTO

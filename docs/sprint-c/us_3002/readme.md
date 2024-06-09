@@ -265,25 +265,173 @@ public void ensureDataBlockDataIsNotNull() {
 
 ## 5. Implementation
 
-*In this section the team should present, if necessary, some evidences that the implementation is according to the
-design. It should also describe and explain other important artifacts necessary to fully understand the implementation
-like, for instance, configuration files.*
+This functionality UI class.
 
-*It is also a best practice to include a listing (with a brief summary) of the major commits regarding this requirement.*
+````
+public boolean show() {
+    SystemUser user;
+
+    try {
+        Optional<UserSession> session = authorizationService.session();
+        if (session.isPresent()) {
+            user = session.get().authenticatedUser();
+        } else {
+            throw new NoSuchElementException("No session found");
+        }
+    } catch (NoSuchElementException e) {
+        return false;
+    }
+
+    assert user != null;
+    username = user.username();
+    String password = Console.readLine("Please provide your password again:");
+
+    controller = new ListCustomerJobOpeningsController(username, password);
+
+    System.out.println("Connection successfully established.");
+    super.show();
+    Pair<Boolean, String> response = controller.closeConnection();
+    System.out.println(response.getValue());
+
+    return false;
+}
+````
+
+Controller constructor with the authentication protocol.
+````
+public ListCustomerJobOpeningsController(Username username, String password) {
+    this.connectionService = new FollowUpConnectionService();
+    this.authorizationService = AuthzRegistry.authorizationService();
+    Pair <Boolean, String> pair = establishConnection(username, password);
+    if (!pair.getLeft()) {
+        throw new NoSuchElementException(pair.getRight());
+    }
+}
+````
+
+FollowUpConnectionService method to get the customer's job openings, with message serialization and response process.
+````
+public List<JobOpeningDTO> receiveJobOpeningsDataList(Username username) {
+    //send job opening request with dataDTO
+    try {
+        DataDTO dataDTO = new DataDTO(FollowUpRequestCodes.JOBOPLIST.getCode());
+        byte[] serialized = SerializationUtil.serialize(username);
+        dataDTO.addDataBlock(serialized.length, serialized);
+        byte[] message = dataDTO.toByteArray();
+        sOut.writeInt(message.length);
+        sOut.write(message);
+        sOut.flush();
+        return processListResponse(new JobOpeningListResponseProcessor());
+
+    } catch (IOException e) {
+        throw new RuntimeException(e + "\n Unable to send job opening list request.\n");
+    }
+}
+````
+
+The method in ListingRequestThread class that communicates with the database and sends the requested data.
+````
+public void run() {
+int code = data.code();
+Username username = (Username) SerializationUtil.deserialize(data.dataBlockList().get(0).data());
+DataDTO dataDTO = null;
+
+
+// check code
+//according to code redirection to the right service
+if (code == FollowUpRequestCodes.APPLIST.getCode()) {
+    //get Application Service
+    ApplicationManagementService appSrv = new ApplicationManagementService();
+    Map<ApplicationDTO, Integer> applicationsDTOMap = appSrv.getApplicationsAndNumber(username);
+    List<Map.Entry<ApplicationDTO, Integer>> applicationDTOList = new ArrayList<>(applicationsDTOMap.entrySet());
+
+
+    dataDTO = new DataDTO(code);
+    for (Map.Entry<ApplicationDTO, Integer> app : applicationDTOList) {
+        byte[] key = SerializationUtil.serialize(app.getKey());
+        dataDTO.addDataBlock(key.length, key);
+        byte[] value = SerializationUtil.serialize(app.getValue());
+        dataDTO.addDataBlock(value.length, value);
+    }
+
+} else if (code == FollowUpRequestCodes.JOBOPLIST.getCode()) {
+    //get Job Opening Service
+    JobOpeningManagementService jobSrv = new JobOpeningManagementService();
+    Iterable<JobOpeningDTO> jobOpeningsDTO = jobSrv.getJobOpeningFromUsername(username);
+    dataDTO = DataDTO.turnListIntoDataDTO(code, jobOpeningsDTO);
+}
+
+//send response
+assert dataDTO != null;
+try {
+    byte[] bytes = dataDTO.toByteArray();
+    sOut.writeInt(bytes.length);
+    sOut.write(bytes);
+    sOut.flush();
+} catch (IOException e) {
+    //add logger comment
+    throw new RuntimeException(e + "\nCouldn't serialize to stream and send response.\n");
+}
+}
+````
 
 ## 6. Integration/Demonstration
 
-In this section the team should describe the efforts realized in order to integrate this functionality with the other
-parts/components of the system
+To use this feature, you'll need to run the script named `run-customer-app` and log in with Customer Manager
+permissions.
 
-It is also important to explain any scripts or instructions required to execute an demonstrate this functionality
+Then, navigate to the _Job Opening_ menu and select option 2 - `See my job openings` - to access this
+feature.
+
+````
++= Jobs4u [ @isep@email.com ] 
++==============================================================================+
+
+
+1. My account >
+2. See my job openings >
+3. Notifications >
+--------------
+0. Exit
+
+Please choose an option
+2
+Please provide your password again:
+############
+Connection successfully established.
+
++= Your Job Openings List =====================================================+
+
+The following job openings are associated with the customer:
+1. ==================================================================
+[Job Reference] ISEP-3
+[Position/Function] Slay Queen
+[Applications] : 1
+[Recruitment Process] Active since: 10-02-2024
+=====================================================================
+
++==============================================================================+
+
+Connection successfully closed.
+
+
++= Jobs4u [ @isep@email.com ] 
++==============================================================================+
+````
 
 ## 7. Observations
 
-*This section should be used to include any content that does not fit any of the previous sections.*
+The implementation of the FollowUp Server proved to be challenging at the beginning, but after it was completed, the
+implementation of this functionality was quite fluid.
 
-*The team should present here, for instance, a critical prespective on the developed work including the analysis of
-alternative solutioons or related works*
+The retrieval of the password was not possible, because the class SystemUser only permits the retrieval of the username.
+To circle this problem, the password is request again before establishing connection with the server.
 
-*The team should include in this section statements/references regarding third party works that were used in the
-development this work.*
+Some troubles occurred when passing the username of the customer and other, more complex, objects through the TCP connection,
+so the class SerializationUtil was made.
+
+The message, after being converted to a byte array, follows the message format defined within RCOMP's documentation:
+version, code, data length L, data length M, data, and so on.
+
+A message is a DataDTO, with contains the version, the message code, and a list of DataBlocks, each with its length and
+array of bytes.
