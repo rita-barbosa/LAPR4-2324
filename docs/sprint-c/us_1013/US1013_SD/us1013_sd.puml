@@ -5,6 +5,7 @@ title US1013 Sequence Diagram
 participant "<<presentation>>\n:ApplicationRankingUI" as UI
 participant ":ApplicationFilePopUpWindow" as PopUp <<application>>
 participant "<<application>>\n:ApplicationRankingController" as CTRL
+participant "<<domain>>\n:DescendingInterviewResultComparator" as COMPARATOR
 
 participant "<<service>>\n:RecruitmentProcessManagementService" as RecruitSrv
 participant "<<domain>>\n:RecruitmentProcess" as RecruitmentProcess
@@ -14,6 +15,7 @@ participant "<<service>>\n:JobOpeningManagementService" as JobSrv
 database "<<repository>>\n:JobOpeningRepository" as JobOpeningRepository
 
 participant "<<service>>\n:RankManagementService" as RankSrv
+participant "<<domain>>\n:Rank" as Rank
 participant "<<domain>>\n:RankOrder" as RankOrder
 database "<<repository>>\n:RankRepository" as RankRepository
 
@@ -40,6 +42,9 @@ UI -> UI : show()
 
 '======= Check if Phase is Right =======
 
+alt option = see rank
+
+
 UI -> CTRL : getRankOrderList(jobReference)
 activate CTRL
 
@@ -50,15 +55,13 @@ RecruitSrv -> RecruitmentProcessRepository : getRecruitmentProcessByJobReference
 activate RecruitmentProcessRepository
 deactivate RecruitmentProcessRepository
 
-RecruitSrv -> RecruitmentProcess : indicatePhaseByDate(currentDate)
-note right
-currentDate = LocalDate.now()
-end note
+RecruitSrv -> RecruitmentProcess : currentActivePhase()
+
 activate RecruitmentProcess
 RecruitmentProcess --> RecruitSrv : phase
 deactivate RecruitmentProcess
 
-alt phase.phaseType == ANALYSIS
+alt phase == ANALYSIS
 RecruitSrv --> CTRL : true
 end alt
 deactivate RecruitSrv
@@ -80,29 +83,55 @@ end loop
 RankSrv --> CTRL : rankListDTO
 deactivate RankSrv
 
-alt rankListDTO.size == 0
-    CTRL -> JobSrv : getApplications(jobReference)
+CTRL --> UI : rankListDTO
+deactivate CTRL
+
+UI -> UI : show()
+
+end alt
+
+UI -> CTRL : getApplications(jobOpeningDTO)
+activate CTRL
+
+    CTRL -> JobSrv : getJobOpening(jobOpeningDTO)
     activate JobSrv
-        JobSrv -> JobOpeningRepository : getApplicationsFromJobReference(jobReference)
+
+        JobSrv -> JobOpeningRepository : findAll
         activate JobOpeningRepository
         deactivate JobOpeningRepository
 
-        JobSrv -> AppDTOSrv : convertApplicationsToDTO(applicationsList)
+        deactivate JobSrv
+
+        CTRL -> AppSrv : getApplications(jobOpening)
+        activate AppSrv
+        deactivate AppSrv
+
+        CTRL -> RecruitSrv : checkRecruitmentProcessHasInterview(jobReference)
+        activate RecruitSrv
+
+        RecruitSrv -> RecruitmentProcessRepository : getRecruitmentProcessByJobReference(jobReference)
+        activate RecruitmentProcessRepository
+        deactivate RecruitmentProcessRepository
+
+        RecruitSrv -> RecruitmentProcess : hasInterview()
+        activate RecruitmentProcess
+        deactivate RecruitmentProcess
+
+        RecruitSrv --> CTRL : true
+        deactivate RecruitSrv
+
+        alt true
+            CTRL --> COMPARATOR** : sort(applications)
+        end alt
+
+        CTRL --> AppDTOSrv : convertApplicationsToDTO(applications)
         activate AppDTOSrv
         deactivate AppDTOSrv
 
-        JobSrv --> CTRL : applicationsListDTO
-    deactivate JobSrv
+        CTRL --> UI : applicationsListDTO
+        deactivate CTRL
 
-    CTRL --> UI : applicationsListDTO
-
-else rankListDTO.size > 0
-
-    CTRL --> UI : rankListDTO
-    deactivate CTRL
-end alt
-
-UI -> UI : show()
+        UI -> UI : show()
 
 '======= Show Application Files =======
 opt user chooses to see application files
@@ -145,60 +174,42 @@ end opt
 autonumber resume
 
 '======= Update Application Rank =======
-UI -> CTRL : updateRanking(applicationDTO, score)
+UI -> CTRL : updateRanking(jobOpeningDTO, applicationDTO, order)
 activate CTRL
 
-    CTRL -> RankSrv : updateRanking(applicationDTO, score)
+    CTRL -> RankSrv : updateRanking(jobOpeningDTO, applicationDTO, order)
     deactivate CTRL
     activate RankSrv
 
-    RankSrv -> AppSrv : getApplicationFromDTO(applicationDTO)
+    RankSrv -> AppSrv : getApplication(applicationDTO)
     activate AppSrv
 
-        AppSrv -> ApplicationRepository : getApplicationFromDTO(applicationDTO)
+        AppSrv -> ApplicationRepository : getApplication(applicationDTO)
         activate ApplicationRepository
         deactivate ApplicationRepository
 
     deactivate AppSrv
 
-
-    RankSrv -> RankOrder : create(application, score)
-
-    RankSrv -> RankSrv : incrementRankOrderSinceScore(score)
-    activate RankSrv
-
-    RankSrv -> RankOrder : create(application, score)
-    activate RankOrder
-    deactivate RankOrder
-
-    RankSrv -> RankRepository : save(RankOrder)
-    deactivate RankSrv
+    RankSrv -> RankRepository : getRankFromJobReference((jobReference)
     activate RankRepository
-        autonumber stop
-        RankRepository -[#white]> RankRepository
     deactivate RankRepository
 
-    alt score != 1
-autonumber resume
-    RankSrv -> RankSrv : decrementRankOrderUntilScore(score)
-    activate RankSrv
+    RankSrv -> Rank : rankOrderUntilOrder(order)
+    activate Rank
+    deactivate Rank
 
-        RankSrv -> RankOrder : create(application, score)
-        activate RankOrder
-        deactivate RankOrder
+    RankSrv -> Rank : rankOrdersSinceOrder(order)
+    activate Rank
+    deactivate Rank
+    note left
+    These rankOrder lists will have
+    their ranked number corrected
+    according to the new rankOrder
+    end note
 
-        RankSrv -> RankRepository : save(RankOrder)
-    deactivate RankSrv
-    activate RankRepository
-        autonumber stop
-        RankRepository -[#white]> RankRepository
-        |||
-    deactivate RankRepository
+    RankSrv -> RankOrder** : create(application, score)
 
-    end alt
-
-    autonumber resume
-    RankSrv -> RankRepository : save(specificRankOrder)
+    RankSrv -> RankRepository : save(rank)
     deactivate RankSrv
     activate RankRepository
         autonumber stop
@@ -212,42 +223,24 @@ opt option = 0 ("exit")
 UI -> CTRL : checkNeededApplicationsAreRanked(jobReference)
 activate CTRL
 
-    CTRL -> JobSrv : checkNeededApplicationsAreRanked(jobOpeningDTO)
-    activate JobSrv
+    CTRL -> RankSrv : checkNeededApplicationsAreRanked(jobOpeningDTO)
+    activate RankSrv
 
-        JobSrv -> JobOpeningRepository : getJobOpeningFromDTO(jobOpeningDTO)
-        activate JobOpeningRepository
-        deactivate JobOpeningRepository
+    RankSrv -> RankRepository : getRankFromJobReference((jobReference)
+    activate RankRepository
+    deactivate RankRepository
 
-        JobSrv -> RankSrv : checkNeededApplicationsAreRanked(applicationsList, numberVacancies)
-        activate RankSrv
+    RankSrv -> RankSrv :  calculateNumberOfRankOrdersToSave(numVacancies)
 
-            loop for (numberVacancies + (n * numberVacancies))
-                RankSrv -> RankRepository : getRankOrderAssociated(application)
-                 note right
-                    Where **n** is the number
-                    defined in the system
-                    configuration
-                end note
-                activate RankRepository
-                deactivate RankRepository
-
-                alt score > 0
-                    RankSrv --> RankSrv : true
-                end alt
-
-            end loop
-
-
-           RankSrv --> JobSrv : true
+    alt calculated number > rank.orders.size
+        RankSrv --> CTRL : false
+        CTRL --> UI : missing rank orders
+    else
+        RankSrv --> CTRL : true
+        CTRL --> UI : all ranked
         deactivate RankSrv
-
-        JobSrv --> CTRL : true
-    deactivate JobSrv
-
-    CTRL --> UI : all ranked
-
-deactivate CTRL
+        deactivate CTRL
+    end alt
 
 end opt
 

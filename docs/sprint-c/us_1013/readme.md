@@ -285,22 +285,12 @@ public void ensureRankOrderOrderValueNegativeIsInvalid() {
 }
 ````
 
-**Test 4:** Verifies that a rank has minimum number of rankOrder instances
+**Test 4:** Verifies that a rankOrder cannot have its application null
 
-**Refers to Acceptance Criteria:** 1013.6
+**Refers to Acceptance Criteria:** ----
 ````
 @Test
-public void ensureRankHasMinimumRankOrderInstances() {
-...
-}
-````
-
-**Test 5:** Verifies that a rank cannot be empty
-
-**Refers to Acceptance Criteria:** 1013.6 
-````
-@Test
-public void ensureRankEmptyIsInvalid() {
+public void ensureRankOrderApplicationNullIsInvalid() {
 ...
 }
 ````

@@ -20,12 +20,16 @@ class ApplicationRankingController {
 + getJobOpeningList()
 + getRankOrderList(String jobReference)
 + getApplicationFile(ApplicationDTO applicationDTO, String filename)
-+ updateRanking(ApplicationDTO applicationDTO, int score)
++ updateRanking(jobOpeningDTO, applicationDTO, order)
 + checkNeededApplicationsAreRanked(String jobReference)
 }
 
 class AuthorizationService {
 + loggedinUserWithPermissions(Role BaseRole.CUSTOMER_MANAGER)
+}
+
+class DescendingInterviewResultComparator {
++ compare(Application a1, Application a2)
 }
 
 class CustomerManagementService {
@@ -66,7 +70,8 @@ class RecruitmentProcessManagementService {
 + checkIfRecruitmentProcessIsInAnalysisPhase(String jobReference)
 }
 class RecruitmentProcess {
-+ indicatePhaseByDate(LocalDate currentDate)
++ currentActivePhase()
++ hasInterview()
 }
 class RecruitmentProcessRepository {
 + getRecruitmentProcessByJobReference(JobReference jobReference)
@@ -74,11 +79,9 @@ class RecruitmentProcessRepository {
 
 class RankManagementService {
 + getRank(String jobReference)
-+ updateRanking(ApplicationDTO applicationDTO, int score)
++ updateRanking(jobOpeningDTO, applicationDTO, order)
 + checkNeededApplicationsAreRanked(List<Application> applicationsList, int numberVacancies)
-+ getRankOrderAssociated(Application application)
-+ incrementRankOrderSinceScore(int score)
-+ decrementRankOrderUntilScore(int score)
++ calculateNumberOfRankOrdersToSave(numVacancies)
 }
 
 class RankOrder {
@@ -86,11 +89,19 @@ class RankOrder {
 + toDTO()
 }
 
+class RankOrderDTO {
+- int numberRanked
+- ApplicationDTO applicationDTO
+}
+
+class Rank {
++ rankOrderUntilOrder(order)
++ rankOrdersSinceOrder(order)
+}
+
 class RankRepository {
 + getRankFromJobReference(JobReference jobReference)
-+ getRankOrderAssociated(Application application)
 + save(RankOrder rankOrder)
-+ remove(RankOrder rankOrder)
 }
 
 class ApplicationListDTOService {
@@ -101,7 +112,7 @@ class ApplicationManagementService {
 + getApplicationFileContent(ApplicationDTO applicationDTO, String filename)
 }
 class ApplicationRepository {
-+ getApplicationFromDTO(ApplicationDTO applicationDTO)
++ getApplication(ApplicationDTO applicationDTO)
 }
 
 
@@ -153,6 +164,7 @@ JobOpeningManagementService ..> CustomerDTO
 RankManagementService ..> RankRepository
 RankRepository --> RankOrder
 RankOrderDTO <-- RankOrder
+RankOrderDTO -> "1" ApplicationDTO
 RankManagementService --> ApplicationManagementService
 
 'APPLICATION
